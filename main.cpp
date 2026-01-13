@@ -1,8 +1,18 @@
 #include <iostream>
+#include <vector>
+#include <cstring>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <fcntl.h>
 
-int main()
-{
+int main() {
+    int fds[2];
 
-    std::cout << "Will start working on 13/01/2026  rajab-24-1447\n" ;
-
+    pipe(fds);
+    
+    std::cout << fds[0] << std::endl;
+    std::cout << fds[1] << std::endl;
+    open("abcd", O_CREAT);
 }
