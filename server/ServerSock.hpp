@@ -13,6 +13,10 @@
 #include <unistd.h>
 #include <netinet/in.h>
 
+#define COLOR_RED   "\033[31m"
+#define COLOR_BOLD  "\033[1m"
+#define COLOR_RESET "\033[0m"
+
 #define MAX_QUEUE 100 // back log or total penging connection
 using namespace std;
 
