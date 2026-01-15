@@ -17,85 +17,135 @@ std::string URIParser::decode(std::string str) {
     return res;
 }
 
-bool URIParser::isValidIPv4(std::string IPv4) {
-    if (IPv4.empty() || IPv4.size() < 7 || IPv4.size() > 15) return false;
-    int octets = 0, currentVal = 0, digitCount = 0;
-    for (size_t i = 0; i < IPv4.size(); ++i) {
-        if (std::isdigit(IPv4[i])) {
-            if (digitCount == 1 && currentVal == 0) return false;
-            currentVal = currentVal * 10 + (IPv4[i] - '0');
-            digitCount++;
-            if (currentVal > 255 || digitCount > 3) return false;
-        } 
-        else if (IPv4[i] == '.') {
-            if (digitCount == 0 || octets == 3) return false;
-            octets++; currentVal = 0; digitCount = 0;
-        } 
-        else return false;
-    }
-    return (octets == 3 && digitCount > 0);
-}
-
-bool URIParser::isValidIPv6(std::string IPv6) {
-    if (IPv6.size() < 2) return false; 
+HttpError URIParser::isValidIPv6(const std::string& IPv6) {
+    if (IPv6.size() < 2) 
+        return HttpError(400, "IPv6 address is too short");
 
     if ((IPv6[0] == ':' && IPv6[1] != ':') || 
-        (IPv6.back() == ':' && IPv6[IPv6.size() - 2] != ':'))
-        return false;
-
+        (IPv6.back() == ':' && IPv6[IPv6.size() - 2] != ':')) {
+        return HttpError(400, "Invalid colon placement in IPv6");
+    }
     bool hasDoubleColon = false;
     short pieceCount = 0, i = 0;
     while (i < (short)IPv6.size()) {
         if (IPv6[i] == ':') {
             if (i + 1 < (short)IPv6.size() && IPv6[i + 1] == ':') {
-                if (hasDoubleColon) return false;
+                if (hasDoubleColon) 
+                    return HttpError(400, "Multiple double colons (::) are not allowed");
                 hasDoubleColon = true;
-                i += 2; continue;
+                i += 2; 
+                continue;
             }
-            i++; continue;
+            i++; 
+            continue;
         }
         unsigned char hexCount = 0;
         while (i < (short)IPv6.size() && IPv6[i] != ':') {
-            if (!std::isxdigit(IPv6[i])) return false;
-            if (++hexCount > 4) return false;
+            if (!std::isxdigit(IPv6[i])) 
+                return HttpError(400, "IPv6 contains non-hex characters");
+            if (++hexCount > 4) 
+                return HttpError(400, "IPv6 hex group exceeds 4 digits");
             i++;
         }
-        if (hexCount == 0) return false;
+        
+        if (hexCount == 0) 
+            return HttpError(400, "Empty hex group in IPv6");
         pieceCount++;
     }
-    return pieceCount > 0;
+
+    if (pieceCount == 0)
+        return HttpError(400, "Invalid IPv6 piece count");
+
+    return HttpError(200);
 }
 
-std::string URIParser::extractScheme(const std::string& uri) {
+HttpError URIParser::isValidIPv4(const std::string& IPv4) {
+    if (IPv4.empty()) 
+        return HttpError(400, "IPv4 address is empty");
+    if (IPv4.size() < 7 || IPv4.size() > 15) 
+        return HttpError(400, "IPv4 length is invalid (must be 7-15 chars)");
+
+    int octets = 0, currentVal = 0, digitCount = 0;
+    for (size_t i = 0; i < IPv4.size(); ++i) {
+        if (std::isdigit(IPv4[i])) {
+            if (digitCount == 1 && currentVal == 0) 
+                return HttpError(400, "Leading zeros are not allowed in IPv4");
+            
+            currentVal = currentVal * 10 + (IPv4[i] - '0');
+            digitCount++;
+            
+            if (currentVal > 255) 
+                return HttpError(400, "Octet value exceeds 255");
+            if (digitCount > 3) 
+                return HttpError(400, "Too many digits in one octet");
+        } 
+        else if (IPv4[i] == '.') {
+            if (digitCount == 0) 
+                return HttpError(400, "Empty octet between dots");
+            if (octets == 3) 
+                return HttpError(400, "Too many dots in IPv4");
+            
+            octets++;
+            currentVal = 0;
+            digitCount = 0;
+        } 
+        else
+            return HttpError(400, "IPv4 contains invalid characters");
+    }
+    if (octets != 3 || digitCount == 0)
+        return HttpError(400, "Invalid IPv4 format (must be x.x.x.x)");
+    return HttpError(200);
+}
+
+HttpError URIParser::extractScheme(const std::string& uri, std::string& outScheme) {
     size_t colonPos = uri.find(':');
     size_t slashPos = uri.find('/');
-    if (colonPos == std::string::npos || (colonPos + 1 != slashPos)
-        || (slashPos != std::string::npos && colonPos > slashPos))
-        return "";
-    std::string Scheme = uri.substr(0, colonPos);
-    if (Scheme.empty() || !std::isalpha(Scheme[0])) return "";
-    for (size_t i = 0; i < Scheme.length(); ++i) {
-        char c = Scheme[i];
-        if (!std::isalnum(c) && c != '+' && c != '-' && c != '.') return "";
-        Scheme[i] = std::tolower(c);
+
+    if (colonPos == std::string::npos)
+        return HttpError(400, "Missing scheme separator ':'");
+    if (colonPos + 1 != slashPos)
+        return HttpError(400, "Invalid scheme format: colon must be followed by '/'");
+    if (slashPos != std::string::npos && colonPos > slashPos)
+        return HttpError(400, "Scheme colon found after first slash");
+    std::string scheme = uri.substr(0, colonPos);
+    if (scheme.empty() || !std::isalpha(static_cast<unsigned char>(scheme[0])))
+        return HttpError(400, "Scheme must start with an alphabetic character");
+    for (size_t i = 0; i < scheme.length(); ++i) {
+        char c = scheme[i];
+        if (!std::isalnum(static_cast<unsigned char>(c)) && c != '+' && c != '-' && c != '.')
+            return HttpError(400, "Scheme contains invalid characters");
+        scheme[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     }
-    return Scheme;
+    outScheme = scheme;
+    return HttpError(200);
 }
 
-std::string URIParser::extractAuthority(const std::string& uri, const std::string& scheme) {
-    if (scheme.empty()) return "";
+HttpError URIParser::extractAuthority(const std::string& uri, const std::string& scheme, std::string& outAuthority) {
+    if (scheme.empty())
+        return HttpError(400, "Cannot extract authority: Scheme is empty");
+
     size_t authorityStart = uri.find("://");
-    if (authorityStart == std::string::npos) return "";
+    if (authorityStart == std::string::npos)
+        return HttpError(400, "Missing authority separator '://'");
     authorityStart += 3;
     size_t authorityEnd = uri.find_first_of("/?#", authorityStart);
-    if (authorityEnd == std::string::npos) authorityEnd = uri.length();
-    return uri.substr(authorityStart, authorityEnd - authorityStart);
+    if (authorityEnd == std::string::npos)
+        authorityEnd = uri.length();
+    outAuthority = uri.substr(authorityStart, authorityEnd - authorityStart);
+    return HttpError(200);
 }
 
-std::string URIParser::extractUserInfo(const std::string& authority) {
+HttpError URIParser::extractUserInfo(const std::string& authority, std::string& outUserInfo) {
+    outUserInfo = "";
+
+    if (authority.empty())
+        return HttpError(200);
     size_t atPos = authority.find('@');
-    if (atPos == std::string::npos) return "";
-    return decode(authority.substr(0, atPos));
+    if (atPos == std::string::npos)
+        return HttpError(200);
+    std::string encodedUserInfo = authority.substr(0, atPos);
+    outUserInfo = decode(encodedUserInfo);
+    return HttpError(200);
 }
 
 bool URIParser::isRegChar(unsigned char c) {
@@ -109,78 +159,123 @@ bool URIParser::isRegChar(unsigned char c) {
     }
 }
 
-bool URIParser::isValidRegName(const std::string& name) {
+HttpError URIParser::isValidRegName(const std::string& name) {
+    if (name.empty())
+        return HttpError(400, "Registered name is empty");
+
     for (size_t i = 0; i < name.size(); ++i) {
         unsigned char c = name[i];
-        if (isRegChar(c)) continue;
-        if (c == '%' && i + 2 < name.size() && 
-            std::isxdigit(static_cast<unsigned char>(name[i+1])) && 
-            std::isxdigit(static_cast<unsigned char>(name[i+2]))) {
-            i += 2; continue;
+        if (isRegChar(c)) 
+            continue;
+        if (c == '%') {
+            if (i + 2 < name.size() && 
+                std::isxdigit(static_cast<unsigned char>(name[i+1])) && 
+                std::isxdigit(static_cast<unsigned char>(name[i+2]))) {
+                i += 2;
+                continue;
+            }
+            return HttpError(400, "Invalid percent-encoding in Host name");
         }
-        return false;
+        return HttpError(400, "Host name contains forbidden characters");
     }
-    return true;
+    return HttpError(200);
 }
 
-std::string URIParser::extractHost(const std::string& authority) {
-    if (authority.empty()) return "";
+HttpError URIParser::extractHost(const std::string& authority, std::string& outHost) {
+    if (authority.empty()) 
+        return HttpError(400, "Authority is empty");
+
     size_t start = authority.find_last_of('@');
     start = (start == std::string::npos) ? 0 : start + 1;
+
     if (start < authority.size() && authority[start] == '[') {
         size_t endBracket = authority.find(']', start);
-        if (endBracket == std::string::npos) return "";
+        if (endBracket == std::string::npos) 
+            return HttpError(400, "Missing closing bracket for IPv6");
         std::string ip = authority.substr(start + 1, endBracket - start - 1);
-        return (isValidIPv6(ip)) ? "[" + ip + "]" : "";
+        return isValidIPv6(ip);
     }
     size_t colonPos = authority.find_last_of(':');
     size_t hostEnd = (colonPos != std::string::npos && colonPos > start) ? colonPos : authority.size();
+    
     std::string host = authority.substr(start, hostEnd - start);
-    if (host.empty()) return "";
-    if (std::isdigit(static_cast<unsigned char>(host[0])) && isValidIPv4(host))
-        return host;
-    return isValidRegName(host) ? host : "";
+    
+    if (host.empty()) 
+        return HttpError(400, "Host is empty");
+
+    if (std::isdigit(static_cast<unsigned char>(host[0])))
+        return isValidIPv4(host);
+
+    return isValidRegName(host);
 }
 
-int URIParser::extractPort(const std::string &authority) {
+HttpError URIParser::extractPort(const std::string& authority, int& outPort) {
     size_t colonPos = authority.find_last_of(':');
-    if (colonPos == std::string::npos) return -1;
+    
+    if (colonPos == std::string::npos) {
+        outPort = -1;
+        return HttpError(200); 
+    }
     std::string portStr = authority.substr(colonPos + 1);
-    if (portStr.empty()) return -1;
+    if (portStr.empty()) 
+        return HttpError(400, "Port number is missing after ':'");
+
     for (size_t i = 0; i < portStr.length(); i++) {
-        if (!std::isdigit(portStr[i])) return -1;
+        if (!std::isdigit(portStr[i])) 
+            return HttpError(400, "Port must be numeric");
     }    
     unsigned long portNum = std::strtoul(portStr.c_str(), NULL, 10);
-    if (portNum > 65535) return -1;
-    return static_cast<int>(portNum);
+    if (portNum > 65535) 
+        return HttpError(400, "Port out of range (max 65535)");
+    outPort = static_cast<int>(portNum);
+    return HttpError(200);
 }
 
-std::string URIParser::extractPath(const std::string& uri, const std::string& scheme, const std::string& authority) {
+HttpError URIParser::extractPath(const std::string& uri, const std::string& authority, std::string& outPath) {
     size_t pathStart = 0;
-    size_t pathEnd = uri.size();
-    if (!scheme.empty()) {
-        pathStart = scheme.size() + 1;
-        if (!authority.empty()) pathStart += 2 + authority.length();
+    if (authority.empty())
+        pathStart = 0; 
+    else {
+        size_t authPos = uri.find(authority);
+        if (authPos == std::string::npos)
+            return HttpError(400, "Authority not found in URI");
+        pathStart = authPos + authority.length();
     }
-    size_t endDelim = uri.find_first_of("?#", pathStart);
-    if (endDelim != std::string::npos) pathEnd = endDelim;
-    if (pathStart >= pathEnd) return "";
-    return decode(uri.substr(pathStart, pathEnd - pathStart));
+    size_t endPos = uri.find_first_of("?#", pathStart);
+    if (endPos == std::string::npos)
+        endPos = uri.length();
+    std::string rawPath = uri.substr(pathStart, endPos - pathStart);
+    outPath = decode(rawPath);
+    return HttpError(200);
 }
 
-std::string URIParser::extractQuery(const std::string& uri) {
+HttpError URIParser::extractQuery(const std::string& uri, std::string& outQuery) {
+    outQuery = "";
+    
     size_t queryStart = uri.find('?');
-    if (queryStart == std::string::npos) return "";
+    if (queryStart == std::string::npos)
+        return HttpError(200);
+
     size_t fragmentStart = uri.find('#', queryStart + 1);
+    std::string rawQuery;
+
     if (fragmentStart == std::string::npos)
-        return decode(uri.substr(queryStart + 1));
-    return decode(uri.substr(queryStart + 1, fragmentStart - (queryStart + 1)));
+        rawQuery = uri.substr(queryStart + 1);
+    else
+        rawQuery = uri.substr(queryStart + 1, fragmentStart - (queryStart + 1));
+    outQuery = decode(rawQuery);
+    return HttpError(200);
 }
 
-std::string URIParser::extractFragment(const std::string& uri) {
+HttpError URIParser::extractFragment(const std::string& uri, std::string& outFragment) {
+    outFragment = "";
+
     size_t hashPos = uri.find('#');
+    
     if (hashPos == std::string::npos || hashPos + 1 >= uri.length())
-        return "";
-    return decode(uri.substr(hashPos + 1));
-}
+        return HttpError(200);
+    std::string rawFragment = uri.substr(hashPos + 1);
+    outFragment = decode(rawFragment);
 
+    return HttpError(200);
+}
