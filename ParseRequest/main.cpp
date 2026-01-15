@@ -73,28 +73,12 @@ int main() {
 
 
 
-bool    extractListen(std::string Listen, unsigned short &Port, std::string &Ip)
-{
-	Port = URIParser::extractPort(Listen);
-	Ip = URIParser::extractHost(Listen);
-
-	if (Port == -1 && Ip == "")
-		return false;
-	if (Port == -1)
-	{
-		if (isNumber(Ip))
-		{
-			Port = std::stoi(Ip);
-			Ip = "";
-		}
-	}
-	return true;
-}
-
 bool    parseListen(std::string Listen, unsigned short &Port, std::string &Ip)
 {
-	extractListen(Listen, Port, Ip);
-
+	if (URIParser::extractPort(Listen, Port).getCodeStatus() != 200)
+		// throw (400);
+	if (URIParser::extractHost(Listen, Ip).getCodeStatus() != 200)
+		// throw (400);
 	if (Ip != "")
 	{
 		if (Ip == "*")

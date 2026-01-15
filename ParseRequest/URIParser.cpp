@@ -198,26 +198,26 @@ HttpError URIParser::extractHost(const std::string& authority, std::string& outH
     size_t colonPos = authority.find_last_of(':');
     size_t hostEnd = (colonPos != std::string::npos && colonPos > start) ? colonPos : authority.size();
     
-    std::string host = authority.substr(start, hostEnd - start);
+    std::string outHost = authority.substr(start, hostEnd - start);
     
-    if (host.empty()) 
-        return HttpError(400, "Host is empty");
+    if (outHost.empty()) 
+        return HttpError(200, "Defualt Host");
 
-    if (std::isdigit(static_cast<unsigned char>(host[0])))
-        return isValidIPv4(host);
+    if (std::isdigit(static_cast<unsigned char>(outHost[0])))
+        return isValidIPv4(outHost);
 
-    return isValidRegName(host);
+    return isValidRegName(outHost);
 }
 
-HttpError URIParser::extractPort(const std::string& authority, int& outPort) {
+HttpError URIParser::extractPort(const std::string& authority, unsigned short &outPort) {
     size_t colonPos = authority.find_last_of(':');
     
     if (colonPos == std::string::npos) {
-        outPort = -1;
+        outPort = DEFUALT_PORT;
         return HttpError(200); 
     }
     std::string portStr = authority.substr(colonPos + 1);
-    if (portStr.empty()) 
+    if (portStr.empty())
         return HttpError(400, "Port number is missing after ':'");
 
     for (size_t i = 0; i < portStr.length(); i++) {
