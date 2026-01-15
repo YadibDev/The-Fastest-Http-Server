@@ -30,8 +30,9 @@ public:
     ServerSock();
     ~ServerSock();
 
-    void buildSockets(const vector<unsigned short> &ports, unsigned int ipV4);
+    void buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ipV4);
     bool isServerSocket(int);
+    void removeSocket(int);
     const set<int> &getServerSockets();
 };
 

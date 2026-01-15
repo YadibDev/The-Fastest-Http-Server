@@ -22,6 +22,12 @@ ServerSock::~ServerSock()
     std::cout << "-------------------------" << std::endl;
 }
 
+void ServerSock::removeSocket(int fd)
+{
+    this->_Sockets.erase(fd);
+    close(fd);
+}
+
 // initilaizing the sturct with the port and ip of the passive socket
 void ServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
 {
@@ -52,26 +58,29 @@ int ServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
 }
 
 // builds sockets that exist in vector
-void ServerSock::buildSockets(const vector<unsigned short> &ports, unsigned int ipV4)
+void ServerSock::buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ipV4)
 {
     vector<unsigned short>::const_iterator it = ports.begin();
     vector<unsigned short>::const_iterator end = ports.end();
 
-    while (it != end)
+    vector<unsigned int>::const_iterator itIp = ipV4.begin();
+    vector<unsigned int>::const_iterator endIp = ipV4.end();
+
+    while (it != end && itIp != endIp)
     {
         try
         {
-            int fd = _buildSingleSocket(*it, ipV4);
+            int fd = _buildSingleSocket(*it, *itIp);
             _Sockets.insert(fd);
             _totalSocks++;
         }
         catch (const std::exception &e)
         {
             std::cout << COLOR_BOLD << COLOR_RED;
-            std::cout << "Error : " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << ' ' << *itIp << ':' << *it << std::endl;
             std::cout << COLOR_RESET;
         }
-        ++it;
+        ++it, ++itIp;
     }
 
     if (_totalSocks == 0)

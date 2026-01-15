@@ -5,7 +5,9 @@
 #include <cstring>
 #include <sys/epoll.h>
 #include <set>
+#include <unistd.h>
 #include <netinet/in.h>
+#include "ServerSock.hpp"
 
 using namespace std;
 
@@ -15,12 +17,11 @@ private:
     int _EpollFd;
     struct epoll_event tempEvent;    
 public:
-    EpollHandler(const set<int> &SocketsServer);
+    EpollHandler(ServerSock &SocketsServer);
     ~EpollHandler();
 
-    void addClient(int fd, int ability, bool isClient = true);
+    bool addClient(int fd, int ability);
 
-    void removeClient(int fd);
     void changeAbility(int fd, int newAbility);
     size_t tryPollNewClients(struct epoll_events ClientBuffer[], size_t size, int timeout);
 
