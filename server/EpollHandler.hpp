@@ -23,7 +23,7 @@ public:
     bool addClient(int fd, int ability);
 
     void changeAbility(int fd, int newAbility);
-    size_t tryPollNewClients(struct epoll_events ClientBuffer[], size_t size, int timeout);
+    int tryPollNewClients(struct epoll_event *ClientBuffer, size_t size, int timeout);
 
 };
 
