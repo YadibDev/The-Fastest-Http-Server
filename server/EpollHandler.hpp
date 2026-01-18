@@ -13,9 +13,11 @@ using namespace std;
 
 class EpollHandler
 {
+
 private:
     int _EpollFd;
     struct epoll_event tempEvent;    
+
 public:
     EpollHandler(ServerSock &SocketsServer);
     ~EpollHandler();

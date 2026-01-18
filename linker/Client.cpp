@@ -65,3 +65,6 @@
 //     END FUNCTION
 
 // END CLASS
+
+#include "Client.hpp"
+Client::Client(const sockaddr_in &addr){};

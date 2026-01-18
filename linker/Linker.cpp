@@ -1,6 +1,6 @@
 #include "Linker.hpp"
 
-Linker::Linker(ServerSock &SocketsServer) : _EventHanler(SocketsServer)
+Linker::Linker(ServerSock &SocketsServer)
 {
 
 }
@@ -33,7 +33,12 @@ void Linker::removeClient(int fd)
     close(fd);
 }
 
-void Linker::insertClient(int fd)
+void Linker::insertClient(int fd, const sockaddr_in &addr)
 {
-
+    this->_clientsDB[fd] = Client(addr);
 }
+
+void TimeOutClients()
+{
+    // add algo in future
+};

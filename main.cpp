@@ -7,7 +7,8 @@
 #include <poll.h>
 #include <fcntl.h>
 
-int main() {
+int main()
+{
     int fds[2];
 
     pipe(fds);
