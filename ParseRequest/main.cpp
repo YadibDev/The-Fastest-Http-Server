@@ -35,34 +35,110 @@ bool isNumber(const std::string& s) {
 
 
 
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"      // للخطأ
+#define GREEN   "\033[32m"      // للنجاح
+#define YELLOW  "\033[33m"      // للعناوين
+#define BLUE    "\033[34m"      // للمدخلات
+#define CYAN    "\033[36m"      // للقيم المستخرجة
+
+
+#include <arpa/inet.h>
+#include <iostream>
+#include <string>
+#include <cstring>
+
+
+struct s_ListenAddress {
+    struct sockaddr_storage storage;
+    int family;
+    socklen_t len;
+};
+
+
+int getIPTypeSimple(const std::string& ip) {
+    if (ip.empty()) return 0;
+
+    bool hasDot = (ip.find('.') != std::string::npos);
+    bool hasColon = (ip.find(':') != std::string::npos);
+
+    if (hasColon && !hasDot) return 6;
+    if (hasDot && !hasColon) return 4;
+
+    return 0;
+}
+
+
+void    extractClientMaxBodySize(std::string str, size_t &result)
+{
+    if (str.empty()) throw 400;
+
+    result = 0;
+    size_t i = 0;
+
+    while (i < str.size() && isdigit(str[i]))
+    {
+        size_t prev = result;
+        result = (result * 10) + (str[i] - '0');
+        if (result < prev) throw 400;
+        i++;
+    }
+
+    if (i < str.size())
+    {
+        char unit = toupper(str[i]);
+        if (unit == 'K') result *= 1024;
+        else if (unit == 'M') result *= 1024 * 1024;
+        else if (unit == 'G') result *= 1024 * 1024 * 1024;
+        else throw 400;
+        
+        i++;
+    }
+}
 
 int main() {
-	// std::string rawRequest = "GET /index.html?lang=fr HTTP/1.1\r\n";
-	std::string listen = "";
-	short port = -1;
-	std::string ip = "";
+    std::string listen = "";
+    unsigned short port = 0;
+    std::string ip = "";
+    uint32_t IPv4 = 0;
 
-	while (1)
-	{
-		std::cout << "Entre Listen = \n";
-		if (!getline(std::cin, listen))
-			break;
-		std::cout << "getline : " << listen << std::endl;
-		port = URIParser::extractPort(listen);
-		ip = URIParser::extractHost(listen);
-		if (ip != "" && port != -1)
-		{
-			std::cout << "Port : " << port << std::endl;
-			std::cout << "Ip : " << ip << std::endl;
-		}
-		else if (isNumber(ip))
-			std::cout << "Port : " << ip << std::endl;
-		else
-			std::cout << "Ip : " << ip << std::endl;
-		std::cout << "\n\n";
-	}
+    std::cout << YELLOW << "========================================" << RESET << std::endl;
+    std::cout << YELLOW << "     Webserv URI/Listen Manual Tester   " << RESET << std::endl;
+    std::cout << YELLOW << "========================================" << RESET << std::endl;
+    std::cout << "Examples: [::1]:80, 127.0.0.1:443, *, 8080" << std::endl;
 
-	return 0;
+    while (true)
+    {
+        std::cout << BLUE << "\n[?] Enter Listen string: " << RESET;
+        if (!std::getline(std::cin, listen)) {
+            std::cout << "\nExiting..." << std::endl;
+            break;
+        }
+
+        port = 0;
+        ip = "";
+
+        try {
+            std::cout << GREEN << "[+] PARSE SUCCESS" << RESET << std::endl;
+            std::cout << CYAN << "    " << std::setw(10) << std::left << "IP Address : " << RESET << ip << std::endl;
+            std::cout << CYAN << "    " << std::setw(10) << std::left << "    IP Address Binary: " << RESET << IPv4 << std::endl;
+            std::cout << std::dec << std::endl;            std::cout << CYAN << "    " << std::setw(10) << std::left << "Port       : " << RESET << port << std::endl;
+        } 
+        catch (int error) {
+            std::cerr << RED << "[!] PARSE FAILED" << RESET << std::endl;
+            std::cerr << RED << "    Error Code: " << error << RESET << std::endl;
+            std::cerr << RED << "    Reason    : Bad Request / Invalid Format" << RESET << std::endl;
+        }
+
+        std::cout << YELLOW << "----------------------------------------" << RESET << std::endl;
+        listen.clear();
+    }
+
+    return 0;
 }
 
 
@@ -70,33 +146,3 @@ int main() {
 
 
 
-
-
-
-bool    parseListen(std::string Listen, unsigned short &Port, std::string &Ip)
-{
-	if (URIParser::extractPort(Listen, Port).getCodeStatus() != 200)
-		// throw (400);
-	if (URIParser::extractHost(Listen, Ip).getCodeStatus() != 200)
-		// throw (400);
-	if (Ip != "")
-	{
-		if (Ip == "*")
-			Ip = "0.0.0.0";
-		else if (!URIParser::isValidIPv4(Ip))
-		{
-			if (!URIParser::isValidIPv6(Ip))
-			{
-				// status.setStatus(1, "ERROR Ip\n");
-				return false;
-			}
-		}
-	}
-	else
-		Ip = "0.0.0.0";
-	if (Port == -1)
-	{
-		// status.setStatus(1, "ERROR Port\n");
-		return false;
-	}
-}

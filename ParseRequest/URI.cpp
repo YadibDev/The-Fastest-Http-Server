@@ -2,14 +2,14 @@
 
 URI::URI(std::string uriString)
 {
-    _scheme    = URIParser::extractScheme(uriString);
-    _authority = URIParser::extractAuthority(uriString, _scheme);
-    _userInfo  = URIParser::extractUserInfo(_authority);
-    _host      = URIParser::extractHost(_authority);
-    _port      = URIParser::extractPort(_authority);
-    _path      = URIParser::extractPath(uriString, _scheme, _authority);
-    _query     = URIParser::extractQuery(uriString);
-    _fragment  = URIParser::extractFragment(uriString);
+    URIParser::extractScheme(uriString, _scheme);
+    URIParser::extractAuthority(uriString, _scheme, _authority);
+    URIParser::extractUserInfo(_authority, _userInfo);
+    URIParser::extractHost(_authority, _host);
+    URIParser::extractPort(_authority, _port);
+    URIParser::extractPath(uriString, _authority, _path);
+    URIParser::extractQuery(uriString, _query);
+    URIParser::extractFragment(uriString, _fragment);
 }
 
 const std::string& URI::getScheme()    const { return _scheme; }

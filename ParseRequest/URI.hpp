@@ -7,7 +7,7 @@ class URI
 {
 private:
     std::string _uri, _scheme, _userInfo, _authority, _host, _path, _query, _fragment;
-    int _port;
+    unsigned short _port;
 
 public:
 
