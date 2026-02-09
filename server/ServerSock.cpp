@@ -121,11 +121,14 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
     }
 
     sockaddr *castIt = reinterpret_cast<sockaddr *>(addr);
-    socklen_t temp;
+    socklen_t temp; // hold size of sockaddr_in temporary because i don't need it
     int fd;
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
+    {
+        _statusError.setStatus(static_cast<int>(StatusError::ACCEPT_FAIL));
         return -1;
+    }
 
     return fd;
 }

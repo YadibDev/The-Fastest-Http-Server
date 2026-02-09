@@ -18,3 +18,20 @@ i used many ressource to understand what is http and how the web server should b
     https://www.cloudflare.com/learning/ddos/glossary/hypertext-transfer-protocol-http/
 
 and also i use ai to deep dive in the concept of socket and why we need epoll and pool to manage multiple client etc ...
+
+
+what is socket 
+socket is an endpoint to make two devices connect and exchange data
+
+to create a socket you must use some system call:
+
+how to use socket system call:
+
+// Create a non-blocking TCP socket using IPv4.
+// AF_INET        -> Address family: IPv4
+// SOCK_STREAM    -> Socket type: stream-oriented (TCP)
+// SOCK_NONBLOCK  -> Make the socket non-blocking (I/O calls return immediately)
+// 0              -> Let the OS choose the default protocol for TCP
+int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+
+
