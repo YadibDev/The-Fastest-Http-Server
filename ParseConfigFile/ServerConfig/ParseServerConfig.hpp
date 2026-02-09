@@ -11,22 +11,24 @@ struct ListenInfo {
 	int         port;
 };
 
-class ServerConfig {
+class clsServerConfig {
+
 private:
 	std::vector<ListenInfo>		_listens;
 	std::vector<std::string>	_server_names;
 	std::map<int, std::string>	_error_pages;
 	size_t						_max_body_size;
 	std::vector<LocationConfig>	_locations;
+	clsParse<TokenType>			_Parse;
 
 public:
-	ServerConfig();
-	~ServerConfig();
 
-	void addLocation(const LocationConfig& loc) {
-		_locations.push_back(loc);
-	}
+	clsServerConfig(clsParse<TokenType>	Parse);
+	~clsServerConfig();
 
+	void addLocation(const LocationConfig& loc);
+
+	HttpError	parseBlockServer();
 };
 
 #endif

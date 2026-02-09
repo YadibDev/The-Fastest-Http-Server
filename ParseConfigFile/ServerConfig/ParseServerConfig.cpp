@@ -1,9 +1,14 @@
 #include "ParseServerConfig.hpp"
 
-ServerConfig::ServerConfig() : _max_body_size(1048576) {}
+clsServerConfig::ServerConfig(clsParse<TokenType>	Parse) : _max_body_size(1048576), _Parse(Parse) {}
 
-ServerConfig::~ServerConfig() {}
+clsServerConfig::~ServerConfig() {}
 
-void    ServerConfig::addLocation(){
-        _locations.push_back(loc);
+void    clsServerConfig::addLocation(){
+	_locations.push_back(loc);
+}
+
+HttpError	parseBlockServer()
+{
+	if (_Parse.peek())
 }
