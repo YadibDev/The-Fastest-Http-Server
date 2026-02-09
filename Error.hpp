@@ -7,7 +7,7 @@
 class HttpError
 {
 private:
-    int         _codeStatus;
+    int _codeStatus;
     std::string _msgError;
 
 public:
@@ -22,10 +22,10 @@ public:
         _msgError = str;
     }
 
-    int                getCodeStatus() const {return _codeStatus;}
-    const std::string& getMsgError() const {return _msgError;}
-    
-    bool isError() const { return _codeStatus;};
+    int getCodeStatus() const { return _codeStatus; }
+    const std::string &getMsgError() const { return _msgError; }
+
+    bool isError() const { return _codeStatus; };
     void setStatus(int code, std::string msg = "")
     {
         code = _codeStatus;

@@ -1,8 +1,7 @@
 #include "ServerSock.hpp"
 
-ServerSock::ServerSock()
+ServerSock::ServerSock() : _totalInterfaces(0) , _totalSocks(0)
 {
-    this->_totalSocks = 0;
 }
 
 // free all data and closing all the fds of socket
@@ -54,6 +53,10 @@ int ServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
     if (listen(fdSock, MAX_QUEUE) == -1)
         throw std::runtime_error("listen system call fail");
 
+
+    this->_allIps.push_back(ipV4);
+    this->_allPorts.push_back(port);
+    _totalInterfaces++;
     return fdSock;
 }
 
@@ -98,6 +101,15 @@ bool ServerSock::_isServerSocket(int fd)
     set<int>::iterator end = _Sockets.end();
 
     return (_Sockets.find(fd) != end);
+}
+
+bool ServerSock::isServerIp(unsigned int ip, unsigned int port)
+{
+    for (int i = 0; i < _totalInterfaces; i++)
+        if (ip == this->_allIps[i] && port == _allPorts[i])
+            return true;
+    
+    return false;
 }
 
 int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)

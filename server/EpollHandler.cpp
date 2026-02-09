@@ -1,9 +1,7 @@
-
 #include "EpollHandler.hpp"
 
-EpollHandler::EpollHandler(ServerSock &SocketsServer)
+EpollHandler::EpollHandler()
 {
-    size_t total = 0;
     this->_EpollFd = epoll_create(1);  // epoll_create was use the flag size to pre-allocate the size you send to it , to use it after
 
     if (this->_EpollFd == -1)
@@ -11,6 +9,17 @@ EpollHandler::EpollHandler(ServerSock &SocketsServer)
         clog << "epoll_create fail" << std::endl;
         return ;        // should think about this edge case and do a solution like in the total watching list 0 fds
     }
+}
+
+EpollHandler::~EpollHandler ()
+{
+    if (this->_EpollFd != -1)
+        close(_EpollFd);
+}
+
+bool EpollHandler::addServerSockets(ServerSock &SocketsServer, int ability)
+{
+    size_t total = 0;
 
     set<int> socksFd = SocketsServer.getServerSockets();
     set<int>::iterator it = socksFd.begin();
@@ -18,7 +27,7 @@ EpollHandler::EpollHandler(ServerSock &SocketsServer)
 
     while (it != end)
     {
-        if (addClient(*it, EPOLLIN)) // did i must add this ==> 'EPOLLET'
+        if (addClient(*it, ability)) // did i must add this ==> 'EPOLLET'
             total++;
         else
         {
@@ -29,14 +38,11 @@ EpollHandler::EpollHandler(ServerSock &SocketsServer)
     }
 
     if (total == 0)
-        std::clog << COLOR_BOLD << COLOR_RED<< "EPOLL ADD FAIL TO ADD FDS to the watching list" << std::endl;
-        // i should handle the 0 epoll fd are watched by throwing an error or without it depend on the best
-}
-
-EpollHandler::~EpollHandler ()
-{
-    if (this->_EpollFd != -1)
-        close(_EpollFd);
+    {
+        std::clog << COLOR_BOLD << COLOR_RED<< "EPOLL_CTL_ADD FAIL TO ADD FDS to the watching list" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 //, bool isClient = 1

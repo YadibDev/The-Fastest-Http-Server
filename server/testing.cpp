@@ -7,37 +7,32 @@
 int main()
 {
     srand(time(NULL));
-    ServerSock Server;
 
-    vector<unsigned short> randomPorts;
-    vector<unsigned int> randomIp;
+    vector<unsigned short> randomPorts[2];
+    vector<unsigned int> randomIp[2];
 
     try
     {
-        randomPorts.push_back(8080);
-        randomIp.push_back(0);
-        Server.buildSockets(randomPorts, randomIp);
+        randomPorts[0].push_back(8080);
+        randomIp[0].push_back(0);
+        randomPorts[1].push_back(9090);
+        randomIp[1].push_back(2130706433);
 
-        EpollHandler eventHandler(Server);
-
-        epoll_event buff[10];
-        
-        
-        eventHandler.tryPollNewClients(buff, 10, -1);
-
-        sockaddr_in client;
-        sockaddr_in server;
-        socklen_t a;
-        int fdClient = accept(*Server.getServerSockets().begin(), (sockaddr*) &client, &a);
-
-        getsockname(fdClient, (sockaddr*) &server, &a);
-
-        cout << "port client :\n"; 
-        cout << client.sin_port << std::endl;
-        short n;
-        cout << "server client :\n"; 
-        cout << ntohs(server.sin_port) << std::endl;
-        
+        int size = 2;
+        EpollHandler eventHandler;
+        std::vector<ServerSock> Servers(2, ServerSock());
+        for (int i = 0; i < size; i++)
+        {
+            Servers[i].buildSockets(randomPorts[i], randomIp[i]);
+            if (eventHandler.addServerSockets(Servers[i]))
+                std::cout << "Server " << i << " created by success\n";
+            std::cout << "Done" << std::endl;
+        }
+        sockaddr_in test;
+        socklen_t t;
+        std::cout << getsockname(*Servers[0].getServerSockets().begin(), (sockaddr *)&test, &t) << std::endl;;
+        std::cout << getpeername(*Servers[0].getServerSockets().begin(), (sockaddr *)&test, &t) << std::endl;;
+        perror("hak :");
 
     }
     catch (std::exception &e)

@@ -19,10 +19,11 @@ private:
     struct epoll_event tempEvent;    
 
 public:
-    EpollHandler(ServerSock &SocketsServer);
+    EpollHandler();
     ~EpollHandler();
 
-    bool addClient(int fd, int ability);
+    bool addServerSockets(ServerSock &SocketsServer, int ability = EPOLLIN);
+    bool addClient(int fd, int ability = EPOLLIN);
 
     void changeAbility(int fd, int newAbility);
     int tryPollNewClients(struct epoll_event *ClientBuffer, size_t size, int timeout);
