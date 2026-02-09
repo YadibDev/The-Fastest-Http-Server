@@ -4,22 +4,20 @@
 #include <iostream>
 #include <string>
 #include "../ParseServerConfig.hpp"
+#include "../../Utils/Lexer.hpp"
 
-class ConfigueFile
+class clsParseConfigueFile
 {
-    std::string RowData;
-    std::vector<ServerConfig> servers;
+	std::vector<ServerConfig>	_servers;
+	clsParse<TokenType>			_Parse;
 
-    void    ParseConfigue()
-    {
-        while()
-        {
-            
-        }
-    }
-
-    public:
-        ConfigueFile (const std::string &fileName);
+	public:
+		clsParseConfigueFile (clsParse<TokenType> Parse) : _Parse(Parse);
+		std::vector<ServerConfig> ParseConfigue()
+		{
+			
+			while (_Parse.peek().)
+		}
 }
 
 #endif
