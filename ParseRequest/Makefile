@@ -3,7 +3,7 @@ NAME        = uri_parser
 CC          = c++
 FLAGS       = -Wall -Wextra -Werror -std=c++98
 
-SRC         = URI.cpp URIParser.cpp HelperFunctions.cpp clsStartLine.cpp main.cpp HttpError.cpp
+SRC         = URI.cpp URIParser.cpp ../Utils/HelperFunctions.cpp clsStartLine.cpp main.cpp ../Utils/HttpError.cpp
 OBJ         = $(SRC:.cpp=.o)
 
 all: $(NAME)
@@ -11,7 +11,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.cpp URI.hpp URIParser.hpp clsStartLine.hpp HelperFunctions.hpp HttpError.hpp
+%.o: %.cpp URI.hpp URIParser.hpp clsStartLine.hpp ../Utils/HelperFunctions.hpp ../Utils/HttpError.hpp
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:

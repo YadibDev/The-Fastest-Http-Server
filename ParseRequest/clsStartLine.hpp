@@ -3,7 +3,7 @@
 
 #include <string>
 #include "URI.hpp"
-#include "HelperFunctions.hpp"
+#include "../Utils/HelperFunctions.hpp"
 
 class clsStartLine {
 public:

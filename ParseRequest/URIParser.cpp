@@ -290,9 +290,84 @@ HttpError	URIParser::extractFragment(const std::string& uri, std::string& outFra
 	return HttpError(200);
 }
 
-HttpError	URIParser::normalizeSyntax(const std::string& uri, std::string& outUri)
-{
-	uri = normalizeCase(uri);
-    uri = normalizePercentEncoding(uri);
-    uri = removeDotSegments(uri);
+#include <string>
+
+inline int from_hex(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+void decode_segment(const std::string& uri, size_t start, size_t end, std::string& buffer) {
+    buffer.clear();
+    for (size_t j = start; j < end; ++j) {
+        if (uri[j] == '%' && j + 2 < end) {
+            int h1 = from_hex(uri[j + 1]);
+            int h2 = from_hex(uri[j + 2]);
+            if (h1 != -1 && h2 != -1) {
+                buffer += static_cast<char>((h1 << 4) | h2);
+                j += 2;
+            } else {
+                buffer += uri[j];
+            }
+        } else {
+            buffer += uri[j];
+        }
+    }
+}
+
+void resolve_segment(const std::string& segment, std::string& outUri) {
+    if (segment == ".") return;
+    
+    if (segment == "..") {
+        if (!outUri.empty()) {
+            size_t lastSlash = outUri.rfind('/');
+            if (lastSlash != std::string::npos) {
+                outUri.resize(lastSlash);
+            } else {
+                outUri.clear();
+            }
+        }
+        return;
+    }
+    outUri += '/';
+    outUri += segment;
+}
+
+HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) {
+    if (uri.empty()) {
+        outUri = "/";
+        return HttpError(200);
+    }
+
+    outUri.clear();
+    outUri.reserve(uri.length());
+
+    std::string decodedBuffer;
+    decodedBuffer.reserve(256);
+
+    size_t len = uri.length();
+    size_t i = 0;
+
+    while (i < len) {
+        if (uri[i] == '/') {
+            i++;
+            continue;
+        }
+
+        size_t start = i;
+        while (i < len && uri[i] != '/')
+            i++;
+        decode_segment(uri, start, i, decodedBuffer);
+        resolve_segment(decodedBuffer, outUri);
+    }
+
+    if (outUri.empty())
+        outUri = "/";
+
+    if (len > 1 && uri[len - 1] == '/' && outUri.back() != '/')
+        outUri += '/';
+
+    return HttpError(200);
 }

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "../LocationConfig/LocationConfigData.hpp"
+#include "../LocationConfig/ParseLocationConfig.hpp"
 
 struct ListenInfo {
 	std::string host;

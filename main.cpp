@@ -7,18 +7,32 @@
 #include <poll.h>
 #include <fcntl.h>
 
+int hexCharToDec(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    return -1;
+}
+
+long hexToDec(const std::string& hex)
+{
+    long decimalValue = 0;
+    
+    for (std::size_t i = 0; i < hex.length(); ++i)
+    {
+        int digit = hexCharToDec(hex[i]);
+        
+        if (digit == -1)
+            return -1;
+        
+        decimalValue = (decimalValue << 4) | digit;
+    }
+    
+    return decimalValue;
+}
+
 int main()
 {
     int pipe_fds[2];
-    pipe(pipe_fds);
-
-    struct sockaddr_in addr;
-    socklen_t len = sizeof(addr);
-
-    if (getsockname(pipe_fds[0], (struct sockaddr *)&addr, &len) == -1)
-    {
-        perror("getsockname");
-        // Will print: "getsockname: Socket operation on non-socket"
-        printf("errno = %d (ENOTSOCK = %d)\n", errno, ENOTSOCK);
-    }
+    std::cout << hexToDec("5K") << std::endl;
 }

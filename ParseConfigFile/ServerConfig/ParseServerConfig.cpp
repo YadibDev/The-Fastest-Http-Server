@@ -10,5 +10,5 @@ void    clsServerConfig::addLocation(){
 
 HttpError	parseBlockServer()
 {
-	if (_Parse.peek())
+	if (_Parse.peek().)
 }
