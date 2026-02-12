@@ -5,9 +5,16 @@
 #include "../../Utils/HttpError.hpp"
 #include <iostream>
 
+	enum e_method {
+    	GET = 1,
+    	POST = 2,
+    	DELETE = 4
+	};
+
 class clsParseLocationConfig
 {
 	private:
+
 		enum RequestState {
 			READING_LINE,
 			READING_HEADERS,
@@ -25,13 +32,24 @@ class clsParseLocationConfig
 		HttpError ParseRequest(std::string &rawData);
 	
 }
+_index
+
 
 #include <string>
 #include <vector>
 #include <map>
 
+struct stReturnData
+{    
+	short       code;
+	std::string value;
+
+    stReturnData() : code(0), value("") {}	
+};
+
 class clsLocationConfig {
 private:
+
 	std::string							_path;
 	std::string							_root;
 	std::vector<std::string>			_methods;

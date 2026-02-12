@@ -8,6 +8,7 @@
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
 #include "../../ParseRequest/URIParser.hpp"
+#include "../LocationConfig/LocationConfig.hpp"
 
 
 
@@ -21,6 +22,41 @@ struct s_parse_context {
 
 class ConfigDirectiveParser {
 public:
+
+	void URIParser::parseLocationPath(s_parse_context& ctx, st_location& loc) {
+    	ctx.parser.advance(); 
+
+    	std::string token = ctx.parser.peek().value;
+
+    	if (token == "=") {
+    	    loc.matchType = MATCH_EXACT;
+    	    ctx.parser.advance();
+    	} else if (token == "^~") {
+    	    loc.matchType = MATCH_PRIORITY;
+    	    ctx.parser.advance();
+    	}
+		else
+    	    loc.matchType = MATCH_PREFIX;
+
+    	if (ctx.parser.peek().type != TOKEN_WORD) {
+    	    ctx.error.setStatus(400, "Location Error: Missing URI path");
+    	    return;
+    	}
+	
+    	loc.uri = ctx.parser.peek().value;
+
+    	if (loc.uri[0] == '~') {
+    	    ctx.error.setStatus(400, "Location Error: Regex is not supported in this configuration");
+    	    return;
+    	}
+
+    	ctx.parser.advance();
+
+    	if (ctx.parser.peek().type != TOKEN_OBRACE) {
+    	    ctx.error.setStatus(400, "Location Error: Expected '{' after path");
+    	    return;
+    	}
+	}
 
 	static std::string ParseRoot(s_parse_context& ctx) {
 		ctx.parser.advance(); 
@@ -121,8 +157,135 @@ public:
 		return addr;
 	}
 
+	static stReturnData ParseReturn(s_parse_context& ctx)
+	{
+		stReturnData ReturData;
+
+		ctx.parser.advance();
+		char* end;
+    
+    	ReturData.code = std::strtol(ctx.parser.peek().value.c_str(), &end, 10);
+
+    	if (*end != '\0')
+        	ReturData.code = -1;
+		if (ctx.parser.advance().type != TOKEN_WORD)
+		{
+			ctx.error.setStatus(400, "Syntax Error: Expected URI after return code");
+			return ReturData;
+		}
+		ReturData.value = ctx.parser.peek().value;
+		if (ctx.parser.advance().type != TOKEN_SEMICOLON)
+		{
+			ctx.error.setStatus(400, "Syntax Error: Missing ';' after return directive");
+			return ReturData;
+		}
+		ctx.parser.advance();
+		return ReturData;
+	}
+
+	static std::string ParseUploadPath(s_parse_context& ctx)
+	{
+    	ctx.parser.advance();
+    	if (ctx.parser.peek().type != TOKEN_WORD)
+    	    return (ctx.error.setStatus(400, "Syntax Error: Expected path after 'upload_path'"), "");
+
+    	std::string path = ctx.parser.peek().value;
+
+    	if (!isValidPath(ctx, path, true))
+		    return (ctx.error.setStatus(400, "Syntax Error: Invalid upload path -> " + path), "");
+    	
+		ctx.parser.advance();
+
+    	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+    	    return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after upload_path"), "");
+
+    	ctx.parser.advance();
+    	return path;
+	}
+	
+
+	void URIParser::ParseCGI(s_parse_context& ctx, std::map<std::string, std::string>& cgiMap) {
+	    ctx.parser.advance();
+
+	    if (ctx.parser.peek().type != TOKEN_WORD) {
+	        ctx.error.setStatus(400, "CGI Error: Expected extension");
+	        return;
+	    }
+	    const std::string& extension = ctx.parser.peek().value;
+
+	    if (extension.size() < 2 || extension[0] != '.') {
+	        ctx.error.setStatus(400, "CGI Error: Invalid extension format");
+	        return;
+	    }
+	    ctx.parser.advance();
+
+	    if (ctx.parser.peek().type != TOKEN_WORD) {
+	        ctx.error.setStatus(400, "CGI Error: Expected binary path");
+	        return;
+	    }
+	    const std::string& binPath = ctx.parser.peek().value;
+
+	    if (!isValidPath(ctx, binPath, false)) {
+	        ctx.error.setStatus(400, "CGI Error: Invalid binary path -> " + binPath);
+	        return;
+	    }
+	    ctx.parser.advance();
+
+	    if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
+	        ctx.error.setStatus(400, "CGI Error: Expected ';'");
+	        return;
+	    }
+	    ctx.parser.advance();
+
+	    cgiMap[extension] = binPath;
+	}
+
+	short URIParser::parseMethods(s_parse_context& ctx) {
+	    short combinedMethods = 0;
+	    ctx.parser.advance(); 
+
+	    if (ctx.parser.peek().type == TOKEN_SEMICOLON)
+	        return (ctx.error.setStatus(400, "limit_except cannot be empty"), 0);
+
+	    while (ctx.parser.peek().type == TOKEN_WORD)
+		{
+	        std::string method = ctx.parser.peek().value;
+	        if (method == "GET") combinedMethods |= GET;
+	        else if (method == "POST") combinedMethods |= POST;
+	        else if (method == "DELETE") combinedMethods |= DELETE;
+	        else
+	            return (ctx.error.setStatus(400, "Unknown method: " + method), 0);
+	        ctx.parser.advance();
+	    }
+
+	    if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
+	        return (ctx.error.setStatus(400, "Expected ';' after methods"), 0);
+	    
+		ctx.parser.advance();
+	    return combinedMethods;
+	}
 
 private:
+
+	bool isValidPath(s_parse_context& ctx, const std::string& path, ) {
+	    struct stat info;
+		bool expectDir;
+		int accessMode;
+
+	    if (stat(path.c_str(), &info) != 0)
+	        return (ctx.error.setStatus(400, "Path Error: Not found -> " + path), false);
+
+	    if (expectDir && !S_ISDIR(info.st_mode))
+	        return (ctx.error.setStatus(400, "Path Error: Expected a directory -> " + path), false);
+
+	    if (!expectDir && S_ISDIR(info.st_mode))
+	        return (ctx.error.setStatus(400, "Path Error: Expected a file, not a directory -> " + path), false);
+
+	    if (access(path.c_str(), accessMode) != 0)
+	        return (ctx.error.setStatus(400, "Permission Error: Access denied -> " + path), false);
+
+	    return true;
+	}
 
 	static unsigned long long convertToBytes(long long value, char unit, HttpError&	error) {
 	    unsigned long long multiplier = 1;
