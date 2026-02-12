@@ -22,6 +22,74 @@ class   clsParseLocation
 	HttpError			ERROR;
 
 
+	bool    ParseRoot() {
+    	return (true);
+	}
+
+	bool	ParseIndex()
+	{
+		std::queue<std::string> index;
+		if (_parser.advance().type != TOKEN_WORD)
+			return (false);
+		while (_parser.peek().type != TOKEN_SEMICOLON && _parser.peek().type != TOKEN_EOF)
+		{
+			index.push(_parser.peek().value);
+			_parser.advance();
+		}
+		if (_parser.peek().type != TOKEN_SEMICOLON)
+			return (false);
+		Location.setIndex(index);
+		return (true);
+	}
+
+	bool	ParseAutoIndex() 
+	{
+	    _parser.advance();
+	    if (_parser.peek().type == TOKEN_WORD) 
+	    {
+	        std::string value = _parser.peek().value;
+	        if (value == "on")
+	            Location.autoindex = true;
+	        else if (value == "off")
+	            Location.autoindex = false;
+	    	else
+	            return (false);
+	        _parser.advance();
+	    } 
+	    else
+	        return (false);
+
+	    if (_parser.peek().type != TOKEN_SEMICOLON)
+	        return (false);
+
+	    _parser.advance();
+
+	    return (true);
+	}
+
+	bool    ParseMethods() {
+	    return (true);
+	}
+
+	bool    ParseClientMaxBodySize() {
+	    return (true);
+	}
+
+	bool    ParseReturn() {
+	    return (true);
+	}
+
+	bool    ParseUploadPath() {
+	    return (true);
+	}
+
+	bool    ParseCgiPass() {
+	    return (true);
+	}
+
+	bool    ParseErrorPage() {
+	    return (true);
+	}
 
 	enLocationDirective getLocationDirectiveType(const std::string& key) {
 	    static std::map<std::string, enLocationDirective> directives;
@@ -47,38 +115,38 @@ class   clsParseLocation
 	}
 
 
-	void ParseLocationDirective()
+	bool ParseLocationDirective()
 	{
     	std::string key = parser.peek().value;
     	enLocationDirective dirType = getLocationDirectiveType(key);
 
     	switch (dirType) {
     	    case L_DIR_ROOT:
-    	        ParseRoot(Location);
+    	        return (ParseRoot(Location));
     	        break;
     	    case L_DIR_INDEX:
-    	        ParseIndex(Location);
+    	        return (ParseIndex(Location));
     	        break;
     	    case L_DIR_AUTOINDEX:
-    	        ParseAutoindex(Location);
+    	        return (ParseAutoindex(Location));
     	        break;
     	    case L_DIR_ACCEPTED_METHODS:
-    	        ParseMethods(Location);
+    	        return (ParseMethods(Location));
     	        break;
     	    case L_DIR_CLIENT_MAX_BODY_SIZE:
-    	        ParseMaxBody(Location);
+    	        return (ParseMaxBody(Location));
     	        break;
     	    case L_DIR_RETURN:
-    	        ParseReturn(Location);
+    	        return (ParseReturn(Location));
     	        break;
     	    case L_DIR_UPLOAD_PATH:
-    	        ParseUploadPath(Location);
+    	        return (ParseUploadPath(Location));
     	        break;
     	    case L_DIR_CGI_PASS:
-    	        ParseCgiPass(Location);
+    	        return (ParseCgiPass(Location));
     	        break;
     	    case L_DIR_ERROR_PAGE:
-    	        ParseErrorPage(Location);
+    	        return (ParseErrorPage(Location));
     	        break;
     	    default:
     	        ERROR.setStatus(400, "Syntax Error: Unknown location directive '" + key + "'");
@@ -101,7 +169,8 @@ class   clsParseLocation
 
 		while (_parser.peek().type != TOKEN_RBRACE && _parser.peek().type != TOKEN_EOF)
 		{
-			ParseLocationDirective();
+			if (!ParseLocationDirective())
+				break ;
 		}
 		if (_parser.peek().type != TOKEN_RBRACE)
 			return (ERROR.setStatus(400, "Error in }"), Location);

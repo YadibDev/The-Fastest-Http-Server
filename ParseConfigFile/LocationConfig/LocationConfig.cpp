@@ -17,7 +17,7 @@ void clsLocationConfig::setMethods(const std::vector<std::string>& methods) {
     this->_methods = methods;
 }
 
-void clsLocationConfig::setIndex(const std::string& index) {
+void clsLocationConfig::setIndex(const std::queue< std::string > index) {
     this->_index = index;
 }
 
