@@ -22,3 +22,12 @@ void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 bool HelperFunctions::isCRLF(const std::string& str) {
     return (str == "\r\n");
 }
+
+unsigned long long HelperFunctions::getCurrentTimeInMs()
+{
+    struct timeval Time;
+
+    gettimeofday(&Time, NULL);
+
+    return (Time.tv_sec * 1000) + (Time.tv_usec / 1000);
+}

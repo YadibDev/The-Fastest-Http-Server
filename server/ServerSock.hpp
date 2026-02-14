@@ -18,12 +18,7 @@
 #define MAX_QUEUE 100 // back log or total pending connection
 using namespace std;
 
-enum class StatusError
-{
-    DEFAULT = 0,
-    ACCEPT_FAIL = 1,
-    NOT_SOCKET_SERVER,
-};
+
 
 class ServerSock
 {

@@ -28,7 +28,7 @@ public:
     bool isError() const { return _codeStatus; };
     void setStatus(int code, std::string msg = "")
     {
-        code = _codeStatus;
+        _codeStatus = code;
         _msgError = msg;
     }
 };

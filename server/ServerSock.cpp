@@ -1,5 +1,12 @@
 #include "ServerSock.hpp"
 
+enum StatusError
+{
+    DEFAULT = 0,
+    ACCEPT_FAIL = 1,
+    NOT_SOCKET_SERVER,
+};
+
 ServerSock::ServerSock() : _totalInterfaces(0) , _totalSocks(0)
 {
 }
@@ -105,7 +112,7 @@ bool ServerSock::_isServerSocket(int fd)
 
 bool ServerSock::isServerIp(unsigned int ip, unsigned int port)
 {
-    for (int i = 0; i < _totalInterfaces; i++)
+    for (size_t i = 0; i < _totalInterfaces; i++)
         if (ip == this->_allIps[i] && port == _allPorts[i])
             return true;
     
@@ -116,7 +123,7 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        _statusError.setStatus(static_cast<int>(StatusError::NOT_SOCKET_SERVER) );
+        _statusError.setStatus(NOT_SOCKET_SERVER);
         return 0;
     }
 
@@ -126,7 +133,7 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
-        _statusError.setStatus(static_cast<int>(StatusError::ACCEPT_FAIL));
+        _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }
 
