@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "../Utils/HttpError.hpp"
+#include "../Utils/HelperFunctions.hpp"
 
 enum RequestState {
 	READING_LINE,
@@ -34,4 +35,4 @@ public:
 	
 };
 
-#endifش
+#endif
