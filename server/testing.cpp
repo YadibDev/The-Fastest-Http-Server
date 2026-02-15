@@ -3,6 +3,11 @@
 #include "ServerSock.hpp"
 #include "EpollHandler.hpp"
 
+#include <cstdlib> // for srand, rand
+#include <ctime>   // for time
+#include <cstdio>  // for perror
+#include <vector>  // ensure vector is available
+
 
 int main()
 {

@@ -44,3 +44,74 @@ NAME = webserv
 # re:	fclean all
 
 # .PHONY: clean
+
+
+
+# compiler settings
+CPP = g++
+# use C++11 to avoid initializer-list complaints and general modern features
+CPPFLAGS = -Wall -Wextra -Werror -std=c++11
+
+# directories containing source files; adjust/add as project grows
+SRCDIRS := . Utils
+
+# only the sources needed to build the `header` binary. this keeps `make`
+# fast and avoids compiling unrelated parts of the project. the globbing
+# approach from before would traverse the whole tree and pull in files that
+# currently fail to build; the comment below reflects the user's request that
+# "it should only run for Header".
+# The binary built by default needs a `main` function; header_main.cpp
+# contains a simple exercise of the parser.  Update or replace as needed.
+HEADER_SRCS := Header.cpp \
+	header_main.cpp \
+	Utils/HelperFunctions.cpp \
+	Utils/HelperString.cpp \
+	Utils/HttpError.cpp
+HEADER_OBJS := $(HEADER_SRCS:.cpp=.o)
+TARGET := header
+
+all: $(TARGET)
+
+$(TARGET): $(HEADER_OBJS)
+	$(CPP) $(CPPFLAGS) $^ -o $@
+
+# if you later want to build the whole project you can add a separate target
+# and re-introduce the recursive find, but the default build is now minimal.
+
+# generic rule to produce object files from sources
+%.o: %.cpp
+	$(CPP) $(CPPFLAGS) -c $< -o $@
+
+clean:
+	# remove header-specific object files; also sweep any stray .o left behind
+	# and explicitly wipe out objects from utility subdirectories so stale
+	# files compiled with the old `cc` invocation are purged.
+	rm -f $(HEADER_OBJS) *.o Utils/*.o
+
+fclean: clean
+	rm -f $(TARGET)
+
+re: fclean all
+
+# --- testing support --------------------------------------------------
+
+# pick up any test sources placed under tests/
+TEST_SRC := $(wildcard tests/*.cpp)
+TEST_BIN := header_test
+
+# build and run tests
+# delegate to the Makefile living in tests/ so that additional test binaries
+# or helpers can be added without touching the top-level makefile.
+test:
+	$(MAKE) -C tests
+	./tests/$(TEST_BIN)
+
+# convenience target to compile and then execute the header binary
+run: $(TARGET)
+	./$(TARGET)
+
+# keep the helper variables in case someone wants to invoke them directly
+$(TEST_BIN): $(TEST_SRC)
+	$(CPP) $(CPPFLAGS) $^ -o $@
+
+.PHONY: all clean fclean re test

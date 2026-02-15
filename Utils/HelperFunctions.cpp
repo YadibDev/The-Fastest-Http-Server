@@ -60,10 +60,10 @@ bool HelperFunctions::is_CTLsString(const std::string& str) {
 	return false;
 }
 
-bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, int POS)
+bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
 {
 
-	for (int i = POS; i < str.size(); i++)
+	for (size_t i = POS; i < str.size(); i++)
 	{
 		if (str[i] == ' ' || str[i] == '\t')
 			break ;

@@ -12,7 +12,7 @@ public:
 	static long			hexToDec(const std::string& hex);
 	static bool			is_numeric(const std::string& str);
 	static bool			is_CTLsString(const std::string& str);
-	static bool			checkIfTheFirstWord(std::string str, std::string Start, int POS);
+	static bool			checkIfTheFirstWord(std::string str, std::string Start, size_t POS);
 	static std::string	normalizeLWS(const std::string& input);
 	static bool			isLWS(char c);
 

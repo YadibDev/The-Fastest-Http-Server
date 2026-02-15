@@ -62,7 +62,7 @@ size_t FindCRLF(const std::string &Str, const std::string &CRLF)
 
 bool IsStringDigit(const std::string &StringDigit)
 {
-    int i = 0;
+    size_t i = 0;
     if (StringDigit.empty())
         return false;
     while (i < StringDigit.size())
@@ -94,7 +94,7 @@ std::string  TrimStr(std::string Str,const std::string &Sep)
 
 std::string ConvertStringToLower(std::string &Str)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Str.size())
     {
         if (std::isalpha(Str[i]))
@@ -106,7 +106,7 @@ std::string ConvertStringToLower(std::string &Str)
 
 bool Ischar(const std::string &Sep, char C)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Sep.size())
         if (Sep[i++] == C)
             return (true);
@@ -123,7 +123,7 @@ int SkeeSep(const std::string &Str, const std::string &Sep)
 
 int SkeeSep(const std::string &Str, char Sep)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Str.size() && Sep == Str[i])
         i++;
     return (i);
@@ -161,7 +161,7 @@ std::vector<std::string> Split(std::string Str, char Sep , int TimesSplit)
     return Strings;
 }
 
-int ReadData(int FD, std::string &Data, size_t Size)
+int ReadData(int FD, std::string &Data, ssize_t Size)
 {
     Data.resize(Size);
     ssize_t SizeByte = read(FD, &Data[0], Size);
@@ -172,7 +172,7 @@ int ReadData(int FD, std::string &Data, size_t Size)
     return (SizeByte);
 }
 
-std::string GetNextLine(int FD, std::string &BigData, size_t Size)
+std::string GetNextLine(int FD, std::string &BigData, ssize_t Size)
 {
     std::string Buffer;
     std::string CleanLine;

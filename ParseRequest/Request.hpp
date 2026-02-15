@@ -23,16 +23,18 @@ struct  stArguments {
 
 class clsRequest {
 private:
+	RequestState                        _state;
 	std::string                         _method;
 	std::string                         _uri;
 	std::string                         _version;
 	std::map<std::string, std::string>  _headers;
 	std::vector<char>                   _body;
-	stArguments 					   _arguments;
+	stArguments 			   _arguments;
 
 public:
-	Request(std::string Data) : _state(READING_LINE), _arguments({0, HttpError(), Data}) {}
-	
+	clsRequest();
+	void parse(const std::string &rawData);
+	bool isCompleted() const;
 };
 
 #endif

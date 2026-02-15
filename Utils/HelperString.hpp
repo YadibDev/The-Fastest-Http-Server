@@ -24,8 +24,8 @@
 #include <string>
 #include <ctime>
 
-int ReadData(int FD, std::string &Data, size_t Size);
-std::string GetNextLine(int FD, std::string &BigData, size_t Size);
+int ReadData(int FD, std::string &Data, ssize_t Size);
+std::string GetNextLine(int FD, std::string &BigData, ssize_t Size);
 std::string ConvertStringToLower(std::string &Str);
 bool Ischar(const std::string &Sep, char C);
 int SkeeSep(const std::string &Str, const std::string &Sep);
