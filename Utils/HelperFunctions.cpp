@@ -72,3 +72,32 @@ bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start,
 	}
 	return (true);
 }
+
+bool HelperFunctions::isLWS(char c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
+
+std::string HelperFunctions::normalizeLWS(const std::string& input)
+{
+    std::string result;
+    size_t i = 0;
+    bool inSpace = false;
+
+    while (i < input.size() && isLWS(input[i]))
+        i++;
+
+    for (; i < input.size(); i++)
+    {
+        if (isLWS(input[i]))
+            inSpace = true;
+        else
+        {
+            if (inSpace && !result.empty())
+                result += ' ';
+            result += input[i];
+            inSpace = false;
+        }
+    }
+    return result;
+}

@@ -13,6 +13,8 @@ public:
 	static bool			is_numeric(const std::string& str);
 	static bool			is_CTLsString(const std::string& str);
 	static bool			checkIfTheFirstWord(std::string str, std::string Start, int POS);
+	static std::string	normalizeLWS(const std::string& input);
+	static bool			isLWS(char c);
 
 private:
 	HelperFunctions() {}
