@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <poll.h>
 #include <fcntl.h>
+#include <stdio.h>
 
 int main()
 {
@@ -17,8 +18,8 @@ int main()
 
     if (getsockname(pipe_fds[0], (struct sockaddr *)&addr, &len) == -1)
     {
-        perror("getsockname");
+        // perror("getsockname");
         // Will print: "getsockname: Socket operation on non-socket"
-        printf("errno = %d (ENOTSOCK = %d)\n", errno, ENOTSOCK);
+        // printf("errno = %d (ENOTSOCK = %d)\n", errno, ENOTSOCK);
     }
 }
