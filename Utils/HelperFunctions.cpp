@@ -101,3 +101,38 @@ std::string HelperFunctions::normalizeLWS(const std::string& input)
     }
     return result;
 }
+
+bool HelperFunctions::myIsspace(std::string str, size_t pos)
+{
+	for (size_t i = pos; i < str.size(); i++)
+	{
+		if (isLWS(str[i]))
+			return (true);
+	}
+	return (false);
+}
+
+std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string& value)
+{
+    std::vector<std::string> result;
+    std::string current;
+
+    for (size_t i = 0; i < value.size(); i++)
+    {
+        if (value[i] == ',')
+        {
+            current = normalizeLWS(current);
+            if (!current.empty())
+                result.push_back(current);
+            current.clear();
+        }
+        else
+            current += value[i];
+    }
+
+    current = normalizeLWS(current);
+    if (!current.empty())
+        result.push_back(current);
+
+    return result;
+}

@@ -79,7 +79,7 @@ $(TARGET): $(HEADER_OBJS)
 # and re-introduce the recursive find, but the default build is now minimal.
 
 # generic rule to produce object files from sources
-%.o: %.cpp
+%.o: %.cpp Header.hpp
 	$(CPP) $(CPPFLAGS) -c $< -o $@
 
 clean:

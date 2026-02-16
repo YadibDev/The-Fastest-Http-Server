@@ -1,23 +1,28 @@
 #include <iostream>
 #include <map>
 #include "Header.hpp"
+using namespace std;
 
 int main() {
-    std::map<std::string, std::string> headerMap;
+    std::map<std::string, std::vector<std::string> > headerMap;
     stArguments args;
-    args._Data = "Host: example.com\r\nUser-Agent: TestAgent\r\nAccept: text/html\r\n\r\n";
+    args._Data = "Complex-Fold: test, hi, there\r\n"
+        "Next-Header: value\r\n"
+        "";
     args._Pos = 0;
     args._Error.setStatus(0, "");
     bool TheStartOfHeader = true;
 
+
+    std::cout << "\n\n\n";
     ParseHeader parser(headerMap);
-    if (parser.parseHeader(args, TheStartOfHeader)) {
-        for (std::map<std::string, std::string>::iterator it = headerMap.begin();
-             it != headerMap.end(); ++it)
-            std::cout << it->first << ": " << it->second << std::endl;
-    } else {
-        std::cerr << "Error parsing headers: " << args._Error.getCodeStatus()
-                  << " - " << args._Error.getMsgError() << std::endl;
+    parser.parseHeader(args, TheStartOfHeader);
+    for (const auto& header : headerMap) {
+        std::cout << "Header: " << header.first << "\n";
+        for (const auto& value : header.second) {
+            std::cout << "  Value: " << value << "\n";
+        }
     }
+    std::cout << "ERROR CODE: " << args._Error.getCodeStatus() << " - " << args._Error.getMsgError() << std::endl;
     return 0;
 }
