@@ -1,62 +1,31 @@
-#define PARSECONFIGUEFILE_HPP
 #ifndef PARSECONFIGUEFILE_HPP
+#define PARSECONFIGUEFILE_HPP
 
 #include <iostream>
 #include <string>
-#include "../ParseServerConfig.hpp"
+#include <vector>
+#include "../ServerConfig/ParseServerConfig.hpp"
 #include "../../Utils/HttpError.hpp"
 #include "../../Utils/Lexer.hpp"
 
 class clsParseConfigueFile
 {
-	static enum	eKeyBlock {SERVER_BLOCK};
-	std::vector<clsServerConfig>	_servers;
-	clsParse<TokenType>			_Parse;
+public:
+    enum eKeyBlock { SERVER_BLOCK };
 
-	enum eKeyBlock searchBlock(std::string WORD)
-	{
-		switch (WORD)
-		{
-			case "server":
-				return eKeyBlock::SERVER_BLOCK;
-		
-			default:
-				break;
-		}
-	}
+private:
+    std::vector<clsServerConfig> _servers;
+    clsParse<TokenType> _Parse;
 
-	void addServer(const clsServerConfig& serve) {
-		_servers.push_back(serve);
-	}
+    eKeyBlock searchBlock(const std::string& WORD);
+    void addServer(const clsServerConfig& serve);
+    HttpError BlockServer();
 
-	HttpError BlockServer()
-	{
-		clsServerConfig ServerConfig(_Parse);
-		HttpError Error = ServerConfig.parseBlockServer()._codeStatus
-		if (Error._codeStatus != 200)
-			return Error;
-		addServer(ServerConfig);
-		return Error;
-	}
+public:
+    clsParseConfigueFile(clsParse<TokenType> Parse);
 
-	public:
-		clsParseConfigueFile (clsParse<TokenType> Parse) : _Parse(Parse);
-		HttpError ParseConfigue()
-		{
-			while (_Parse.peek().type != TokenType::TOKEN_EOF)
-			{
-				if (searchBlock(_Parse.peek().value) == eKeyBlock::SERVER_BLOCK)
-					
-				else if (_Parse.peek().value == "\n")
-				{
-					_Parse.advance();
-					continue ;
-				}
-				else
-					return HttpError(400, "syntax Error in " + _Parse.peek().value);
-			}
-			return HttpError(200, "");
-		}
-}
+    HttpError ParseConfigue();
+    std::vector<clsServerConfig> getServers() const;
+};
 
 #endif
