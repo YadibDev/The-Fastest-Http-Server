@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 14:00:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/17 19:38:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class clsResponse
         void Date();
         void CachControl();
         void Server();
+        void Reset();
     public:
         clsResponse();
 

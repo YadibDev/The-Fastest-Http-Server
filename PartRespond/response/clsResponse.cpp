@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 15:07:10 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/17 19:40:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ void clsResponse::StoredInFileOrStr()
         _Body += Data;
         ReadData(FD, Data, 100);
     }
+    close(FD);
 }
 
 std::string clsResponse::ChunkData(const std::string &Str)
@@ -216,10 +217,26 @@ void clsResponse::SetFileFromDisk(std::string FileFromDisk)
 {
     _FileFromDisk = FileFromDisk ;
 }
+
+void clsResponse::Reset()
+{
+    _Status = 0;
+    _BodySize = 0;
+    _FileName = "";
+    _FileFromDisk = "";
+    _Body = "";
+    _Type = "";
+    _IsConnection = false;
+    StoredType(_TypeContent, "response/file.type");
+    StoredDefaultType();
+}
+
 clsResponse::~clsResponse()
 {
-    _HeaderFeild.clear();
-    _Mod.clear();
+    if (!_HeaderFeild.empty())
+        _HeaderFeild.clear();
+    if (!_Mod.empty())
+        _Mod.clear();
     _Status = 0;
     _BodySize = 0;
     _FileName = "";
