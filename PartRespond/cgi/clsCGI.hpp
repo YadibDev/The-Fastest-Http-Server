@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   librarys.hpp                                       :+:      :+:    :+:   */
+/*   clsCGI.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 16:01:35 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 15:22:41 by achamdao         ###   ########.fr       */
+/*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
+/*   Updated: 2026/02/17 17:36:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef LIBRARYS_HPP
-# define LIBRARYS_HPP
+# ifndef CLS_CGI_HPP
+# define CLS_CGI_HPP
 
-enum eMod{GET, ERROR,POST ,UPLOAD, REDIRECTION, DELETE, CHUNK, CGI};
+#include "../mainprocess/librarys.hpp"
 
-#include "../helperfunction/HelperString.hpp"
+class clsCGI
+{
+    private:
+        pid_t _PIDCHILD;
+        bool _IsRunCGI;
+        long long _StartTime;
+        int _FD;
+        
+    public:
+        long long GetCurrentTime();
+        char **MakeEnv(class RequestHandler);
+        // int RunCGI(std::string NameFile, Data OData, int TimeOut);
+};
 
 #endif
-

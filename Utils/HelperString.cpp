@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 20:47:16 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/12 14:53:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/17 17:29:40 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ size_t FindCRLF(const std::string &Str, const std::string &CRLF)
 
 bool IsStringDigit(const std::string &StringDigit)
 {
-    int i = 0;
+    size_t i = 0;
     if (StringDigit.empty())
         return false;
     while (i < StringDigit.size())
@@ -94,7 +94,7 @@ std::string  TrimStr(std::string Str,const std::string &Sep)
 
 std::string ConvertStringToLower(std::string &Str)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Str.size())
     {
         if (std::isalpha(Str[i]))
@@ -106,7 +106,7 @@ std::string ConvertStringToLower(std::string &Str)
 
 bool Ischar(const std::string &Sep, char C)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Sep.size())
         if (Sep[i++] == C)
             return (true);
@@ -123,7 +123,7 @@ int SkeeSep(const std::string &Str, const std::string &Sep)
 
 int SkeeSep(const std::string &Str, char Sep)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < Str.size() && Sep == Str[i])
         i++;
     return (i);
@@ -161,7 +161,7 @@ std::vector<std::string> Split(std::string Str, char Sep , int TimesSplit)
     return Strings;
 }
 
-int ReadData(int FD, std::string &Data, size_t Size)
+int ReadData(int FD, std::string &Data, ssize_t Size)
 {
     Data.resize(Size);
     ssize_t SizeByte = read(FD, &Data[0], Size);
@@ -172,7 +172,7 @@ int ReadData(int FD, std::string &Data, size_t Size)
     return (SizeByte);
 }
 
-std::string GetNextLine(int FD, std::string &BigData, size_t Size)
+std::string GetNextLine(int FD, std::string &BigData, ssize_t Size)
 {
     std::string Buffer;
     std::string CleanLine;
@@ -242,4 +242,46 @@ std::string	Convert_Hex(const std::string &Str, int Num)
 	while (i >= 0)
 		Result += MaxHex[i--];
 	return (Result);
+}
+
+void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName)
+{
+    std::vector<std::string> Split1;
+    std::string Line;
+    std::string Buffer;
+    std::string Key;
+    std::string Value;
+    int FD = open(FileName.c_str(), O_RDONLY, 644);
+    if (FD < 0)
+    {
+        StoredType.clear();
+        return ;
+    }
+    Line = GetNextLine(FD, Buffer, 100);
+    while (!Line.empty())
+    {
+        Line = TrimStr(Line, "\t ");
+        Split1 = Split(Line, ':', 0);
+        if (Split1.empty() || Split1.size() != 2)
+        {
+            StoredType.clear();
+            return ;
+        }
+        Key = Split1[0];
+        Value = Split1[1];
+        if (Key[0] != '.')
+        {
+            StoredType.clear();
+            return ;
+        }
+        Key = Key.substr(1, Key.size());
+        if (Key == "")
+        {
+            StoredType.clear();
+            return ;
+        }
+        Key =Split1[0];
+        StoredType[Key] = Value;
+        Line = GetNextLine(FD, Buffer, 100);
+    }
 }

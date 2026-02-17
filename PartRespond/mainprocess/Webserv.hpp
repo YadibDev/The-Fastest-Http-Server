@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 15:22:46 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/11 16:08:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/17 17:38:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "../response/clsResponse.hpp"
 #include "../cgi/clsParseOutCGI.hpp"
 #include "../cgi/clsCGI.hpp"
-#include "../Data/Data.hpp"
 #include "clsMainProcess.hpp"
 
 #endif

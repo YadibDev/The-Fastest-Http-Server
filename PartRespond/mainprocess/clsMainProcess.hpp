@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:40:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 15:25:38 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/17 17:37:43 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ class clsMainProcess
     clsResponse Response;
     clsParseOutCGI ParseOutCGI;
     clsCGI CGI;
-    Data Data;
     int _Status;
     std::map <short,short> _Mod;
     public:
+        clsMainProcess();
         clsResponse GetclsResponse();
         void PartRedirection();
         void PartPermission();
@@ -34,6 +34,7 @@ class clsMainProcess
         void PartPOSMethod();
         void PartGETMethod();
         void MainProcess();
+        ~clsMainProcess();
 };
 #endif
 
