@@ -20,7 +20,7 @@ int main()
     ServerSock server;
     EpollHandler epoll;
 
-    clsResponse Response;
+    // clsResponse Response;
 
 
     string respond;
@@ -72,15 +72,20 @@ int main()
                     std::cout << "read size" << size << std::endl;
                     std::cout << buffer << endl;
 
+                    clsResponse Response;
 
                     Response.SetFileFromDisk("index.html");
                     Response.SetMod(GET);
                     Response.SetStatus(200);
+                    Response.SetType("text/html");
+                    respond = "";
+
                     respond = Response.MakeResponse();
                     respond += Response.GetBody();
                     ofset = send(fd, respond.c_str(), respond.size(), MSG_DONTWAIT);
                     if (ofset < respond.size())
                         epoll.changeAbility(fd, EPOLLOUT);
+                    Response.~clsResponse();
                 }
             }
             // else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)

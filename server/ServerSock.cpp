@@ -130,10 +130,11 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 
     sockaddr *castIt = reinterpret_cast<sockaddr *>(addr);
     socklen_t temp; // hold size of sockaddr_in temporary because i don't need it
-    int fd;
+    int fd = 0;
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
+        std::cout << fd << std::endl;
         char arr[100] = "ahmed";
         perror(arr);
         std::cout << arr << std::endl;
