@@ -10,23 +10,25 @@
 #include "server/EpollHandler.hpp"
 #include "server/ServerSock.hpp"
 #include <vector>
+#include "PartRespond/mainprocess/Webserv.hpp"
+
 using namespace std;
+
 int main()
 {
+
     ServerSock server;
     EpollHandler epoll;
 
-    string respond = "HTTP/1.1 200 OK\r\n"
-                     "Connection: keep-alive\r\n"
-                     "Content-length: 10\r\n"
-                     "Server: yadib\r\n"
-                     "\r\n"
-                     "Hello World";
+    clsResponse Response;
+
+
+    string respond;
 
     vector<unsigned short> allPort;
     vector<unsigned int> allIps;
 
-    allPort.push_back(8081);
+    allPort.push_back(8080);
     allIps.push_back(0);
 
     server.buildSockets(allPort, allIps);
@@ -70,20 +72,27 @@ int main()
                     std::cout << "read size" << size << std::endl;
                     std::cout << buffer << endl;
 
+
+                    Response.SetFileFromDisk("index.html");
+                    Response.SetMod(GET);
+                    Response.SetStatus(200);
+                    respond = Response.MakeResponse();
+                    respond += Response.GetBody();
                     ofset = send(fd, respond.c_str(), respond.size(), MSG_DONTWAIT);
                     if (ofset < respond.size())
                         epoll.changeAbility(fd, EPOLLOUT);
                 }
             }
-            else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
-            {
-                ofset = send(ClientBuffer[i].data.fd, &respond[ofset], respond.size() - ofset, MSG_DONTWAIT);
-                if (ofset >= respond.size())
-                {
-                    epoll.changeAbility(ClientBuffer[i].data.fd, EPOLLIN);
-                    ofset = 0;
-                }
-            }
+            // else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
+            // {
+            //     int ofset = 0;
+            //     ofset = send(ClientBuffer[i].data.fd, &respond[ofset], respond.size() - ofset, MSG_DONTWAIT);
+            //     if (ofset >= respond.size())
+            //     {
+            //         epoll.changeAbility(ClientBuffer[i].data.fd, EPOLLIN);
+            //         ofset = 0;
+            //     }
+            // }
         }
     }
 }

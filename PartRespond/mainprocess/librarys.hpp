@@ -15,7 +15,7 @@
 
 enum eMod{GET, ERROR,POST ,UPLOAD, REDIRECTION, DELETE, CHUNK, CGI};
 
-#include "Utils/HelperString.hpp"
+#include "../../Utils/HelperString.hpp"
 
 #endif
 

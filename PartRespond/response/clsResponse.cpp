@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
+#include "../../Utils/HelperString.hpp"
 
 clsResponse::clsResponse()
 {

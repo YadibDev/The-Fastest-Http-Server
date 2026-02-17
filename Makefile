@@ -4,7 +4,10 @@ NAME = webserv
 
 SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cpp main.cpp
 
-ALL_FILES += $(SERVER_FILES)
+UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp  
+RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
+
+ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

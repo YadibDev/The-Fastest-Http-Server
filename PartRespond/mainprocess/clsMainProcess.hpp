@@ -26,7 +26,7 @@ class clsMainProcess
     std::map <short,short> _Mod;
     public:
         clsMainProcess();
-        clsResponse GetclsResponse();
+        clsResponse GetclsResponse(); 
         void PartRedirection();
         void PartPermission();
         void PartCGI();
