@@ -2,35 +2,52 @@
 #define __ServerSock_HPP___
 
 #include <iostream>
-#include <string>
 #include <cstring>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <vector>
-#include <map>
 #include <set>
-#include <string>
 #include <unistd.h>
 #include <netinet/in.h>
+#include "../Error.hpp"
 
-#define MAX_QUEUE 100 // back log or total penging connection
+#define COLOR_RED "\033[31m"
+#define COLOR_BOLD "\033[1m"
+#define COLOR_RESET "\033[0m"
+
+#define MAX_QUEUE 100 // back log or total pending connection
 using namespace std;
+
+enum class StatusError
+{
+    DEFAULT = 0,
+    ACCEPT_FAIL = 1,
+    NOT_SOCKET_SERVER,
+};
 
 class ServerSock
 {
 private:
-    struct sockaddr_in temp;
+    vector<unsigned int> _allIps;
+    vector<unsigned short> _allPorts;
+    size_t _totalInterfaces;
     set<int> _Sockets;
-    int _buildSingleSocket(unsigned short port, unsigned int ipV4);
     size_t _totalSocks;
-    void _initializeSockaffr(unsigned short port, unsigned int ipV4);
+    HttpError _statusError;
+    struct sockaddr_in temp;
+
+    int _buildSingleSocket(unsigned short, unsigned int);
+    void _initializeSockaffr(unsigned short, unsigned int);
+    bool _isServerSocket(int);
 
 public:
     ServerSock();
     ~ServerSock();
 
-    void buildSockets(const vector<unsigned short> &ports, unsigned int ipV4);
-    bool isServerSocket(int);
+    bool isServerIp(unsigned int ip, unsigned int port);
+    void buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ip);
+    void removeSocket(int);
+    int tryAcceptNewClient(int sockServer, sockaddr_in *addr);
     const set<int> &getServerSockets();
 };
 

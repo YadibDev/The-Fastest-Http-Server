@@ -7,12 +7,18 @@
 #include <poll.h>
 #include <fcntl.h>
 
-int main() {
-    int fds[2];
+int main()
+{
+    int pipe_fds[2];
+    pipe(pipe_fds);
 
-    pipe(fds);
-    
-    std::cout << fds[0] << std::endl;
-    std::cout << fds[1] << std::endl;
-    open("abcd", O_CREAT);
+    struct sockaddr_in addr;
+    socklen_t len = sizeof(addr);
+
+    if (getsockname(pipe_fds[0], (struct sockaddr *)&addr, &len) == -1)
+    {
+        perror("getsockname");
+        // Will print: "getsockname: Socket operation on non-socket"
+        printf("errno = %d (ENOTSOCK = %d)\n", errno, ENOTSOCK);
+    }
 }

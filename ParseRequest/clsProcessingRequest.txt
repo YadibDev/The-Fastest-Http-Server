@@ -1,0 +1,36 @@
+FUNCTION int longestPrefixMatch (string Location, string Path)
+{
+	check byte by byte if we have arrieved in / add length from start to /
+	start = /
+	for example
+	Location = "/upload/img"
+	Path = "/upload/img/img2.png"
+
+	/upload == /upload >> 7 add in count
+	/img == /img >> 4 add in count
+
+	return count is = 11
+}
+
+FUNCTION GiveCorrectLocation(vector Location, string Path)
+{
+	Var Max
+	int indx;
+	for (vector from finish)
+	{
+		tmp = longestPrefixMatch(vector[i], Path);
+		if (tmp > Max)
+		{
+			Max = tmp;
+			index = i;
+		}
+	}
+	return index;
+}
+
+FUNCTION PhysicalPath()
+{
+	Location = GiveCorrectLocation(Locations, Path);
+	Path = remove from start to Location.size() from Path;
+	and join root fo location with Path;
+}
