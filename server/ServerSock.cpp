@@ -118,12 +118,13 @@ bool ServerSock::isServerIp(unsigned int ip, unsigned int port)
     
     return false;
 }
-
+#include <stdio.h>
 int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
         _statusError.setStatus(NOT_SOCKET_SERVER);
+        std::cout << "Not server socket \n";
         return 0;
     }
 
@@ -133,6 +134,9 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
+        char arr[100] = "ahmed";
+        perror(arr);
+        std::cout << arr << std::endl;
         _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }

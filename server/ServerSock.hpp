@@ -18,17 +18,16 @@
 #define MAX_QUEUE 100 // back log or total pending connection
 using namespace std;
 
-
-
-class ServerSock
-{
+ 
+class ServerSock   
+{  
 private:
     vector<unsigned int> _allIps;
     vector<unsigned short> _allPorts;
     size_t _totalInterfaces;
-    set<int> _Sockets;
+    set<int> _Sockets; 
     size_t _totalSocks;
-    HttpError _statusError;
+    HttpError _statusError; 
     struct sockaddr_in temp;
 
     int _buildSingleSocket(unsigned short, unsigned int);
