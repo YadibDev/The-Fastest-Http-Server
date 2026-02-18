@@ -118,7 +118,7 @@ LexerConfig<TEnum>  GenericLexer<TEnum>::getConfig()
 
 
 template <typename TEnum>
-clsParse<TEnum>::clsParse(std::vector<Token<TEnum>> Tokens, TEnum eofType) 
+clsParse<TEnum>::clsParse(std::vector<Token<TEnum>> &Tokens, TEnum eofType) 
     : _cursor(0), _Tokens(Tokens), _eofType(eofType) {}
 
 template <typename TEnum>

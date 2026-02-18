@@ -28,6 +28,7 @@ void	clsRequest::getDataParse(const std::string &RawData)
 void clsRequest::parse(const std::string& rawData);
 {
     getDataParse(rawData);
+    if (_state == READING_LINE)
 }
     
 bool clsRequest::isCompleted() const { return _state == COMPLETED; }

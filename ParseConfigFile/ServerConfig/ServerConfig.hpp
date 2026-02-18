@@ -7,22 +7,19 @@
 #include "../LocationConfig/LocationConfig.hpp"
 
 
-struct ListenInfo {
-	std::string host;
-	int         port;
-};
+
 
 class clsServerConfig {
 
 private:
-	std::vector<ListenInfo>			_listens;
+	std::vector<sockaddr_in>			_listens;
 	// std::vector<std::string>		_server_names;
-	std::map<int, stErrorPagedata>	_error_pages;
-	size_t							_max_body_size;
-	std::vector<clsLocation>		_LocationExact;
-	std::vector<clsLocation>		_LocationPrefix;
-	clsParse<TokenType>				_Parse;
-	HttpError						_ERROR;
+	std::map<short, stErrorPagedata>	_error_pages;
+	size_t								_max_body_size;
+	std::vector<clsLocation>			_LocationExact;
+	std::vector<clsLocation>			_LocationPrefix;
+	clsParse<TokenType>					_Parse;
+	HttpError							_ERROR;
 	
 	bool				ParseListen(s_parse_context& ctx);
 	// bool	ParseServerName(s_parse_context& ctx);

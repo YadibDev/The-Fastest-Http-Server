@@ -1,18 +1,21 @@
-#ifndef ___LINKER_HPP___
-#define ___LINKER_HPP___
+#ifndef ___Monitor_HPP___
+#define ___Monitor_HPP___
 
-#include "server/EpollHandler.hpp"
+#include "../server/EpollHandler.hpp"
 #include "Client.hpp"
 #include <map>
+#include <sys/time.h>
+#include "../Utils/HelperFunctions.hpp"
 
-class Linker
+
+class Monitor
 {
 private:
     map<int, Client> _clientsDB;
 
 public:
-	Linker(ServerSock &SocketsServer);
-    ~Linker();
+	Monitor(ServerSock &SocketsServer);
+    ~Monitor();
 
     Client &GetClientAt(int fd);
     void TimeOutClients();

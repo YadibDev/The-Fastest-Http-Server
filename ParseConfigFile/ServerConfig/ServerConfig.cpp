@@ -9,7 +9,7 @@ clsServerConfig::~clsServerConfig() {}
 
 bool	clsServerConfig::ParseListen(s_parse_context& ctx)
 {
-	ConfigDirectiveParser::ParseListen(ctx);
+	_listens.push_back(ConfigDirectiveParser::ParseListen(ctx));
 	if (ctx.error.isError())
 		return (false);
 	return (true);
@@ -23,7 +23,7 @@ bool	clsServerConfig::ParseListen(s_parse_context& ctx)
 
 bool	clsServerConfig::ParseErrorPage(s_parse_context& ctx)
 {
-	ConfigDirectiveParser::ParseErrorPage(ctx);
+	_error_pages = ConfigDirectiveParser::ParseErrorPage(ctx);
 	if (ctx.error.isError())
 		return (false);
 	return (true);

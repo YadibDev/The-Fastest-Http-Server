@@ -1,15 +1,5 @@
 #include "ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 
-enum TokenType {
-    TOKEN_NULL,
-    TOKEN_WORD,
-    TOKEN_LBRACE,
-    TOKEN_RBRACE,
-    TOKEN_SEMICOLON,
-    TOKEN_FASSILA,
-    TOKEN_JOUJNO9ATE,
-    TOKEN_EOF
-};
 
 int main()
 {
@@ -19,13 +9,13 @@ int main()
 
     HelperFunctions::ReadData(fd, Data, Size);
 
-    LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+    LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
 
     GenericLexer<TokenType> Lexer(Data, cfg);
 
     std::vector< Token<TokenType> > Tokens = Lexer.tokenize();
 
-    clsParse Parse(Tokens, TokenType::TOKEN_EOF);
+    clsParse<TokenType> Parse(Tokens, TOKEN_EOF);
     clsParseConfigueFile configFile(Parse);
 
     

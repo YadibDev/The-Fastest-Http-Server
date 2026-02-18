@@ -2,7 +2,7 @@
 #define LOCATIONCONFIG_HPP
 
 
-#include "ParseConfigFile/ServerConfig/ConfigDirectiveParser.hpp"
+#include "../ServerConfig/ConfigDirectiveParser.hpp"
 
 
 class clsLocation

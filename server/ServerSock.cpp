@@ -1,5 +1,12 @@
 #include "ServerSock.hpp"
 
+enum StatusError
+{
+    DEFAULT = 0,
+    ACCEPT_FAIL = 1,
+    NOT_SOCKET_SERVER,
+};
+
 ServerSock::ServerSock() : _totalInterfaces(0) , _totalSocks(0)
 {
 }
@@ -105,28 +112,33 @@ bool ServerSock::_isServerSocket(int fd)
 
 bool ServerSock::isServerIp(unsigned int ip, unsigned int port)
 {
-    for (int i = 0; i < _totalInterfaces; i++)
+    for (size_t i = 0; i < _totalInterfaces; i++)
         if (ip == this->_allIps[i] && port == _allPorts[i])
             return true;
     
     return false;
 }
-
+#include <stdio.h>
 int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        _statusError.setStatus(static_cast<int>(StatusError::NOT_SOCKET_SERVER) );
+        _statusError.setStatus(NOT_SOCKET_SERVER);
+        std::cout << "Not server socket \n";
         return 0;
     }
 
     sockaddr *castIt = reinterpret_cast<sockaddr *>(addr);
-    socklen_t temp; // hold size of sockaddr_in temporary because i don't need it
-    int fd;
+    socklen_t temp = sizeof(sockaddr_in); // hold size of sockaddr_in temporary because i don't need it
+    int fd = 0;
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
-        _statusError.setStatus(static_cast<int>(StatusError::ACCEPT_FAIL));
+        std::cout << fd << std::endl;
+        char arr[100] = "ahmed";
+        perror(arr);
+        std::cout << arr << std::endl;
+        _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }
 
