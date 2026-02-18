@@ -16,16 +16,16 @@ void clsParseConfigueFile::addServer(const clsServerConfig& serve)
     _servers.push_back(serve);
 }
 
-HttpError clsParseConfigueFile::BlockServer()
+bool    clsParseConfigueFile::BlockServer()
 {
-    clsServerConfig ServerConfig(_Parse);
-    HttpError Error = ServerConfig.parseBlockServer(); // افترض parseBlockServer() يعيد HttpError
-
-    if (Error._codeStatus != 200)
-        return Error;
-
-    addServer(ServerConfig);
-    return Error;
+    clsServerConfig server(_Parse);
+    if (!server.parseBlockServer())
+    {
+        _error = server.getError();
+        return false;
+    }
+    addServer(server);
+    return true;
 }
 
 bool clsParseConfigueFile::ParseConfigue()
@@ -42,11 +42,8 @@ bool clsParseConfigueFile::ParseConfigue()
         blockType = searchBlock(blockName);
         
         if (blockType == SERVER_BLOCK) {
-            HttpError err = BlockServer();
-            if (err.isError()) {
-                _error = err;
+            if (!BlockServer())
                 return false;
-            }
         }
         else
             return (_error.setStatus(400, "Unknown block: " + blockName), false);

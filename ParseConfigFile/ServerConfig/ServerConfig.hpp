@@ -47,6 +47,8 @@ public:
 	size_t							getMaxBodySize() const;
 	std::vector<clsLocation>		getLocationExact() const;
 	std::vector<clsLocation>		getLocationPrefix() const;
+
+	HttpError getError() const;
 };
 
 #endif

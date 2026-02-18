@@ -151,3 +151,6 @@ std::vector<clsLocation> clsServerConfig::getLocationPrefix() const {
 	return _LocationPrefix;
 }
 
+HttpError clsServerConfig::getError() const {
+	return _ERROR;
+}
