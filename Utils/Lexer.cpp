@@ -111,6 +111,13 @@ std::vector<Token<TEnum>> GenericLexer<TEnum>::tokenize() {
 }
 
 template <typename TEnum>
+LexerConfig<TEnum>  GenericLexer<TEnum>::getConfig()
+{
+    return (_config);
+}
+
+
+template <typename TEnum>
 clsParse<TEnum>::clsParse(std::vector<Token<TEnum>> Tokens, TEnum eofType) 
     : _cursor(0), _Tokens(Tokens), _eofType(eofType) {}
 

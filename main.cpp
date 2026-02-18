@@ -28,7 +28,7 @@ int main()
     clsParse Parse(Tokens, TokenType::TOKEN_EOF);
     clsParseConfigueFile configFile(Parse);
 
-
+    
     
     return 0;
 }

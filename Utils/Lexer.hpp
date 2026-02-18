@@ -59,6 +59,7 @@ private:
 
 public:
     GenericLexer(std::string source, const LexerConfig<TEnum>& cfg);
+    LexerConfig<TEnum>  getConfig();
     std::vector< Token<TEnum> > tokenize();
 };
 

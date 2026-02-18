@@ -136,3 +136,176 @@ std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string&
 
     return result;
 }
+
+
+
+// Achraf
+
+bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word, bool Switch) {
+    int i = 0;
+    int lenghtBigStr = BigStr.size();
+    int lenghtWord = Word.size();
+
+    if (Switch) {
+        while (i < lenghtBigStr && i < lenghtWord) {
+            if (BigStr[i] != Word[i])
+                return false;
+            i++;
+        }
+    } else {
+        while (lenghtBigStr > 0 && lenghtWord > 0) {
+            if (BigStr[--lenghtBigStr] != Word[--lenghtWord])
+                return false;
+        }
+    }
+    return (!lenghtWord || (Switch && lenghtWord == i));
+}
+
+size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF) {
+    size_t i = (Str.size()) ? Str.size() - 1 : 0;
+    size_t j = (CRLF.size()) ? CRLF.size() - 1 : 0;
+    if (Str.empty())
+        return std::string::npos;
+    while (true) {
+        if (!Iswhaitspace(Str[i])) {
+            if (CRLF[j] != Str[i])
+                break;
+        }
+        if (i == 0 || j == 0)
+            break;
+        if (!Iswhaitspace(Str[i]))
+            j--;
+        i--;
+    }
+    return (j == 0) ? i : std::string::npos;
+}
+
+bool HelperFunctions::IsStringDigit(const std::string &StringDigit) {
+    if (StringDigit.empty()) return false;
+    for (size_t i = 0; i < StringDigit.size(); i++) {
+        if (!std::isdigit(StringDigit[i]))
+            return false;
+    }
+    return true;
+}
+
+bool HelperFunctions::Iswhaitspace(char C) {
+    return (C == ' ' || C == '\t');
+}
+
+std::string HelperFunctions::TrimStr(std::string Str, const std::string &Sep) {
+    if (Str.empty()) return Str;
+    size_t Start = 0;
+    size_t End = Str.length() - 1;
+    while (Start < Str.length() && Ischar(Sep, Str[Start]))
+        Start++;
+    while (End > Start && Ischar(Sep, Str[End]))
+        End--;
+    return Str.substr(Start, End - Start + 1);
+}
+
+std::string HelperFunctions::ConvertStringToLower(std::string &Str) {
+    for (size_t i = 0; i < Str.size(); i++) {
+        if (std::isalpha(Str[i]))
+            Str[i] = std::tolower(Str[i]);
+    }
+    return Str;
+}
+
+bool HelperFunctions::Ischar(const std::string &Sep, char C) {
+    for (size_t i = 0; i < Sep.size(); i++) {
+        if (Sep[i] == C)
+            return true;
+    }
+    return false;
+}
+
+int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep) {
+    int i = 0;
+    while (i < (int)Str.size() && Ischar(Sep, Str[i]))
+        i++;
+    return i;
+}
+
+int HelperFunctions::SkeeSep(const std::string &Str, char Sep) {
+    size_t i = 0;
+    while (i < Str.size() && Sep == Str[i])
+        i++;
+    return i;
+}
+
+std::vector<std::string> HelperFunctions::Split(std::string Str, char Sep, int TimesSplit) {
+    std::vector<std::string> Strings;
+    size_t Pos = 0;
+    int i = 0;
+    if (Str.empty()) return Strings;
+    
+    Str = Str.substr(SkeeSep(Str, Sep));
+    while ((Pos = Str.find(Sep)) != std::string::npos) {
+        if (TimesSplit > 0 && i == TimesSplit - 1)
+            break;
+        Strings.push_back(Str.substr(0, Pos));
+        size_t nextPos = Pos + SkeeSep(Str.substr(Pos), Sep);
+        Str = Str.substr(nextPos);
+        i++;
+    }
+    if (!Str.empty()) Strings.push_back(Str);
+    return Strings;
+}
+
+int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
+    Data.resize(Size);
+    ssize_t SizeByte = read(FD, &Data[0], Size);
+    if (SizeByte < 0) return -1;
+    if (SizeByte != Size) Data.resize(SizeByte);
+    return SizeByte;
+}
+
+std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size) {
+    std::string Buffer;
+    std::string CleanLine;
+    size_t Pos = 0;
+    ssize_t SizeByte = 0;
+
+    while ((Pos = BigData.find('\n')) == std::string::npos) {
+        SizeByte = ReadData(FD, Buffer, Size);
+        if (SizeByte < 0) return "";
+        if (SizeByte == 0) break;
+        BigData += Buffer;
+    }
+    if (Pos != std::string::npos) {
+        Pos += 1;
+        CleanLine = BigData.substr(0, Pos);
+        BigData = BigData.substr(Pos);
+    } else {
+        CleanLine = BigData;
+        BigData.clear();
+    }
+    return CleanLine;
+}
+
+std::string HelperFunctions::GTMHTTP(tm* GMT) {
+    const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    std::stringstream ss;
+    ss << Days[GMT->tm_wday] << ", " << GMT->tm_mday << " " << Months[GMT->tm_mon] << " " 
+       << GMT->tm_year + 1900 << " " << GMT->tm_hour << ":" << GMT->tm_min << ":" << GMT->tm_sec << " GMT";
+    return ss.str();
+}
+
+std::string HelperFunctions::DateTime() {
+    time_t Time = time(0);
+    tm* GMT = gmtime(&Time);
+    return GTMHTTP(GMT);
+}
+
+std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
+    if (Num == 0) return "0";
+    std::string MaxHex;
+    while (Num > 0) {
+        MaxHex += Str[Num % 16];
+        Num /= 16;
+    }
+    std::reverse(MaxHex.begin(), MaxHex.end());
+    return MaxHex;
+}

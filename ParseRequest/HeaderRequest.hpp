@@ -9,7 +9,7 @@
 
 
 
-enum eMethods { GET, POST, DELETE };
+enum eMethods { GET = 1, POST = 2, DELETE = 4 };
 
 enum RequestState {
 	READING_LINE,

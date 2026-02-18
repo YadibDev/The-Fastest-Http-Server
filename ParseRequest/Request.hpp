@@ -18,6 +18,10 @@ private:
 	std::map<std::string, std::string>  _headers;
 	std::vector<char>                   _body;
 	stArguments							_arguments;
+	std::string							_Buffer;
+	std::string							_Remainder;
+
+	void	getDataParse();
 
 public:
 	clsStartLine					 	_startLine;
