@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 20:47:16 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 19:40:14 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/18 18:00:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,4 +285,13 @@ void StoredType(std::map<std::string, std::string> &StoredType, const std::strin
         Line = GetNextLine(FD, Buffer, 100);
     }
     close(FD);
+}
+
+
+std::string GetTypeDataFile(const std::string &Str)
+{
+    size_t Pos;
+    if ((Pos = Str.find('.')) == std::string::npos)
+        return "";
+    return (Str.substr(Pos, Str.size()));
 }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 19:38:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/18 17:40:01 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "../mainprocess/librarys.hpp"
 #include "../response/clsErrorPage.hpp"
+#include "RequestHandler.hpp"
 
 class clsResponse
 {
@@ -29,6 +30,7 @@ class clsResponse
         std::string _HeaderFeild;
         std::string  _FileName;
         std::string  _FileFromDisk;
+        RequestHandler _DataRequest;
         std::map<std::string, std::string> _TypeContent;
 
         void StoredDefaultType();
@@ -49,10 +51,11 @@ class clsResponse
         void Reset();
     public:
         clsResponse();
-
+        
         std::string GetBody();
         std::string GetFileName();
         void SetStatus(short Status);
+        void SetRequestHandler(RequestHandler DataRequest);
         void SetFileFromDisk(std::string FileFromDisk);
         void SetMod(short Mode);
         void SetType(std::string Type);

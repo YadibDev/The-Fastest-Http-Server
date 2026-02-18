@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 19:40:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/18 22:28:29 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,29 @@ void clsResponse::InitialHeaders()
 
 std::string clsResponse::ErrorRespnseHandling()
 {
-    // search in class request handler for 
+    std::map <int, stErrorPagedata> ErrorPage = _DataRequest.getErrorPages();
+    int PrevStatus = _Status;
+    if (ErrorPage.count(_Status))
+    {
+        if (ErrorPage[_Status].Status != -1)
+            _Status = ErrorPage[_Status].Status;
+        _FileFromDisk = ErrorPage[_Status].Path;
+        StoredInFileOrStr();
+        if (!_Mod.count(ERROR))
+        {
+            _ErrorPage.SetMod(_Mod);
+            _ErrorPage.SetBodySize(_BodySize);
+            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPage[_Status].Path)));
+            return _ErrorPage.ResponseError(_Status);
+        }
+        else
+        {
+            _ErrorPage.SetBodySize(0);
+            _ErrorPage.SetType(GetTypeData(".html"));
+            _Body = _ErrorPage.GetBody(_Status);
+            return _ErrorPage.ResponseError(_Status);
+        }
+    }
     _ErrorPage.SetType(GetTypeData(".html"));
     _Body = _ErrorPage.GetBody(_Status);
     return _ErrorPage.ResponseError(_Status);
@@ -95,16 +117,13 @@ void clsResponse::ConnectionKeepAlive()
 }
 void clsResponse::Transfer_Encoding()
 {
-    std::stringstream Headers;
-    Headers << "Transfer-Encoding: chunked\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
 void clsResponse::Redirction()
 {
     std::stringstream Headers;
-    // get data from config file
-    Headers << "Location: "<<"..."<<"\r\n";
+    Headers << "Location: "<<_DataRequest.return_url<<"\r\n";
     _HeaderFeild += Headers.str();
 }
 void clsResponse::Date()
@@ -139,7 +158,12 @@ void clsResponse::StoredInFileOrStr()
         _Status = 500;
         return ;
     }
-    ReadData(FD, Data, 100);
+    if (ReadData(FD, Data, 100) == -1)
+    {
+        _Mod[ERROR] = ERROR;
+        _Status = 500;
+        return ;
+    }
     while(!Data.empty())
     {
         _BodySize += Data.size();
@@ -152,7 +176,13 @@ void clsResponse::StoredInFileOrStr()
             return ;
         }
         _Body += Data;
-        ReadData(FD, Data, 100);
+       if (ReadData(FD, Data, 100) == -1)
+        {
+            _BodySize = 0;
+            _Mod[ERROR] = ERROR;
+            _Status = 500;
+            return ;
+        }
     }
     close(FD);
 }
@@ -229,6 +259,11 @@ void clsResponse::Reset()
     _IsConnection = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
+}
+
+void clsResponse::SetRequestHandler(RequestHandler DataRequest)
+{
+    _DataRequest = DataRequest;
 }
 
 clsResponse::~clsResponse()
