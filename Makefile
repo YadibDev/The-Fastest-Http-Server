@@ -6,8 +6,10 @@ SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp  
 RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
+CONFIG_FILES = ParseConfigFile/ConfigFile/ParseConfigueFile.cpp ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp \
+				 ParseConfigFile/ServerConfig/ServerConfig.cpp
 
-ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES)
+ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES) $(CONFIG_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

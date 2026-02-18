@@ -7,8 +7,11 @@
 // {
 //     // srand(time(NULL));
 
-//     vector<unsigned short> randomPorts[2];
-//     vector<unsigned int> randomIp[2];
+// #include <cstdlib> // for srand, rand
+// #include <ctime>   // for time
+// #include <cstdio>  // for perror
+// #include <vector>  // ensure vector is available
+
 
 //     try
 //     {

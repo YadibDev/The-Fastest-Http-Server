@@ -112,47 +112,89 @@ void extractClientMaxBodySize(std::string str, size_t &result)
     }
 }
 
-int main()
-{
-    std::string listen = "";
-    unsigned short port = 0;
-    std::string ip = "";
-    uint32_t IPv4 = 0;
+// int main()
+// {
+//     std::string listen = "";
+//     unsigned short port = 0;
+//     std::string ip = "";
+//     uint32_t IPv4 = 0;
 
-    std::cout << YELLOW << "========================================" << RESET << std::endl;
-    std::cout << YELLOW << "     Webserv URI/Listen Manual Tester   " << RESET << std::endl;
-    std::cout << YELLOW << "========================================" << RESET << std::endl;
-    std::cout << "Examples: [::1]:80, 127.0.0.1:443, *, 8080" << std::endl;
+//     std::cout << YELLOW << "========================================" << RESET << std::endl;
+//     std::cout << YELLOW << "     Webserv URI/Listen Manual Tester   " << RESET << std::endl;
+//     std::cout << YELLOW << "========================================" << RESET << std::endl;
+//     std::cout << "Examples: [::1]:80, 127.0.0.1:443, *, 8080" << std::endl;
 
-    while (true)
-    {
-        std::cout << BLUE << "\n[?] Enter Listen string: " << RESET;
-        if (!std::getline(std::cin, listen))
-        {
-            std::cout << "\nExiting..." << std::endl;
-            break;
+//     while (true)
+//     {
+//         std::cout << BLUE << "\n[?] Enter Listen string: " << RESET;
+//         if (!std::getline(std::cin, listen))
+//         {
+//             std::cout << "\nExiting..." << std::endl;
+//             break;
+//         }
+
+//         port = 0;
+//         ip = "";
+
+//         try
+//         {
+//             std::cout << GREEN << "[+] PARSE SUCCESS" << RESET << std::endl;
+//             std::cout << CYAN << "    " << std::setw(10) << std::left << "IP Address : " << RESET << ip << std::endl;
+//             std::cout << CYAN << "    " << std::setw(10) << std::left << "    IP Address Binary: " << RESET << IPv4 << std::endl;
+//             std::cout << std::dec << std::endl;
+//             std::cout << CYAN << "    " << std::setw(10) << std::left << "Port       : " << RESET << port << std::endl;
+//         }
+//         catch (int error)
+//         {
+//             std::cerr << RED << "[!] PARSE FAILED" << RESET << std::endl;
+//             std::cerr << RED << "    Error Code: " << error << RESET << std::endl;
+//             std::cerr << RED << "    Reason    : Bad Request / Invalid Format" << RESET << std::endl;
+//         }
+
+//         std::cout << YELLOW << "----------------------------------------" << RESET << std::endl;
+//         listen.clear();
+//     }
+
+//     return 0;
+// }
+
+
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+
+int main() {
+    std::string result;
+    
+    std::string tests[] = {
+        "/index.html",
+        "/my%20file.html",          
+        "/A/B/../C",                
+        "/A/./B",                   
+        "/%2e%2e/%2e%2e/etc/passwd",
+        "//A////B",                 
+        "/direct/file/",            
+        ""                          
+    };
+
+    std::cout << "--- Testing URI Parsing System ---" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+
+    for (int i = 0; i < 8; ++i) {
+        std::cout << "Input  : [" << tests[i] << "]" << std::endl;
+        
+        HttpError err = URIParser::normalizePath(tests[i], result);
+        
+        if (!err.isError()) {
+            std::cout << "Result : [" << result << "]" << std::endl;
+        } else {
+            std::cout << "Status : Error " << err.getCodeStatus() << std::endl;
         }
-
-        port = 0;
-        ip = "";
-
-        try
-        {
-            std::cout << GREEN << "[+] PARSE SUCCESS" << RESET << std::endl;
-            std::cout << CYAN << "    " << std::setw(10) << std::left << "IP Address : " << RESET << ip << std::endl;
-            std::cout << CYAN << "    " << std::setw(10) << std::left << "    IP Address Binary: " << RESET << IPv4 << std::endl;
-            std::cout << std::dec << std::endl;
-            std::cout << CYAN << "    " << std::setw(10) << std::left << "Port       : " << RESET << port << std::endl;
-        }
-        catch (int error)
-        {
-            std::cerr << RED << "[!] PARSE FAILED" << RESET << std::endl;
-            std::cerr << RED << "    Error Code: " << error << RESET << std::endl;
-            std::cerr << RED << "    Reason    : Bad Request / Invalid Format" << RESET << std::endl;
-        }
-
-        std::cout << YELLOW << "----------------------------------------" << RESET << std::endl;
-        listen.clear();
+        
+        std::cout << "----------------------------------" << std::endl;
     }
 
     return 0;

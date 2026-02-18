@@ -1,0 +1,55 @@
+main.cpp:3:6: error: multiple definition of ‘enum TokenType’
+    3 | enum TokenType {
+      |      ^~~~~~~~~
+In file included from ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp:14,
+                 from ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp:5,
+                 from ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp:7,
+                 from ParseConfigFile/ConfigFile/ParseConfigueFile.hpp:7,
+                 from main.cpp:1:
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:67:6: note: previous definition here
+   67 | enum TokenType {
+      |      ^~~~~~~~~
+main.cpp: In function ‘int main()’:
+main.cpp:22:53: error: expected unqualified-id before ‘,’ token
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                                                     ^
+main.cpp:22:53: error: expected ‘)’ before ‘,’ token
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                               ~                     ^
+      |                                                     )
+main.cpp:22:55: error: ‘TokenType’ is not a class or namespace
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                                                       ^~~~~~~~~
+main.cpp:22:75: error: qualified-id in declaration before ‘,’ token
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                                                                           ^
+main.cpp:22:77: error: ‘TokenType’ is not a class or namespace
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                                                                             ^~~~~~~~~
+main.cpp:22:98: error: qualified-id in declaration before ‘)’ token
+   22 |     LexerConfig<TokenType> cfg(TokenType::TOKEN_WORD, TokenType::TOKEN_EOF, TokenType::TOKEN_NULL);
+      |                                                                                                  ^
+main.cpp:24:44: error: no matching function for call to ‘GenericLexer<TokenType>::GenericLexer(std::string&, LexerConfig<TokenType> (&)(...))’
+   24 |     GenericLexer<TokenType> Lexer(Data, cfg);
+      |                                            ^
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:61:5: note: candidate: ‘GenericLexer<TEnum>::GenericLexer(std::string, const LexerConfig<TEnum>&) [with TEnum = TokenType; std::string = std::__cxx11::basic_string<char>]’
+   61 |     GenericLexer(std::string source, const LexerConfig<TEnum>& cfg);
+      |     ^~~~~~~~~~~~
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:61:64: note:   no known conversion for argument 2 from ‘LexerConfig<TokenType>(...)’ to ‘const LexerConfig<TokenType>&’
+   61 |     GenericLexer(std::string source, const LexerConfig<TEnum>& cfg);
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:51:5: note: candidate: ‘GenericLexer<TEnum>::GenericLexer() [with TEnum = TokenType]’
+   51 |     GenericLexer();
+      |     ^~~~~~~~~~~~
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:51:5: note:   candidate expects 0 arguments, 2 provided
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:45:7: note: candidate: ‘GenericLexer<TokenType>::GenericLexer(const GenericLexer<TokenType>&)’
+   45 | class GenericLexer {
+      |       ^~~~~~~~~~~~
+ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Utils/Lexer.hpp:45:7: note:   candidate expects 1 argument, 2 provided
+main.cpp:28:14: error: missing template arguments before ‘Parse’
+   28 |     clsParse Parse(Tokens, TokenType::TOKEN_EOF);
+      |              ^~~~~
+main.cpp:29:37: error: ‘Parse’ was not declared in this scope
+   29 |     clsParseConfigueFile configFile(Parse);
+      |                                     ^~~~~
+make: *** [Makefile:23: main.o] Error 1

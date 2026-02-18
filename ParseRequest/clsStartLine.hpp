@@ -3,11 +3,10 @@
 
 #include <string>
 #include "URI.hpp"
-#include "HelperFunctions.hpp"
+#include "HeaderRequest.hpp"
 
 class clsStartLine {
 public:
-    enum eMethods { GET, POST, DELETE };
 
 private:
     bool        _isAbsoluteURI;
