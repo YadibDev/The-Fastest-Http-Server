@@ -1,15 +1,21 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra  --std=c++98
+CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cpp main.cpp
 
-UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp  
-RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
-CONFIG_FILES = ParseConfigFile/ConfigFile/ParseConfigueFile.cpp ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp \
-				 ParseConfigFile/ServerConfig/ServerConfig.cpp
+UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp \
+		Utils/Lexer.cpp
 
-ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES) $(CONFIG_FILES)
+RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
+
+
+CONFIG_FILES = ParseConfigFile/ConfigFile/ParseConfigueFile.cpp ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp \
+				ParseConfigFile/ServerConfig/ServerConfig.cpp ParseConfigFile/LocationConfig/LocationConfig.cpp
+
+REQUEST_FILES = ParseRequest/URI.cpp ParseRequest/URIParser.cpp
+
+ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

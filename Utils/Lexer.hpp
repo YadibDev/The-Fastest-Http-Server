@@ -48,7 +48,7 @@ private:
     std::string _src;
     size_t _cursor;
 
-    GenericLexer();
+    
 
     bool isSeparator(char c);
     bool isQuote(char c);

@@ -1,55 +1,55 @@
 #include "LocationConfig.hpp"
 
 
-bool	clsLocation::ParseRoot(s_parse_context& ctx)
+bool	clsLocation::ParseRoot()
 {
 	_root = ConfigDirectiveParser::ParseRoot(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseIndex(s_parse_context& ctx)
+bool	clsLocation::ParseIndex()
 {
 	_index = ConfigDirectiveParser::ParseIndex(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseAutoIndex(s_parse_context& ctx)
+bool	clsLocation::ParseAutoIndex()
 {
 	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseMethods(s_parse_context& ctx)
+bool	clsLocation::ParseMethods()
 {
 	_allow_methods = ConfigDirectiveParser::parseMethods(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseClientMaxBodySize(s_parse_context& ctx)
+bool	clsLocation::ParseClientMaxBodySize()
 {
 	_client_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseReturn(s_parse_context& ctx)
+bool	clsLocation::ParseReturn()
 {
 	_return = ConfigDirectiveParser::ParseReturn(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseUploadPath(s_parse_context& ctx)
+bool	clsLocation::ParseUploadPath()
 {
 	_upload_path = ConfigDirectiveParser::ParseUploadPath(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseCgiPass(s_parse_context& ctx)
+bool	clsLocation::ParseCgiPass()
 {
 	ConfigDirectiveParser::ParseCGI(ctx, _cgi_pass.empty() ? _cgi_pass : _cgi_pass);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseErrorPage(s_parse_context& ctx)
+bool	clsLocation::ParseErrorPage()
 {
 	_error_pages = ConfigDirectiveParser::ParseErrorPage(ctx);
 	return !ctx.error.isError();
@@ -84,7 +84,7 @@ clsLocation::getLocationDirectiveType(const std::string& key)
 	return L_DIR_UNKNOWN;
 }
 
-bool    clsLocation::ParseLocationDirective(s_parse_context& ctx)
+bool    clsLocation::ParseLocationDirective()
 {
 	if (ctx.parser.peek().type != TOKEN_WORD)
 		return (false);
@@ -94,46 +94,47 @@ bool    clsLocation::ParseLocationDirective(s_parse_context& ctx)
 
 	switch (dirType)
 	{
-		case L_DIR_ROOT:					return	ParseRoot(ctx);
-		case L_DIR_INDEX:					return	ParseIndex(ctx);
-		case L_DIR_AUTOINDEX:				return	ParseAutoIndex(ctx);
-		case L_DIR_ACCEPTED_METHODS:		return	ParseMethods(ctx);
-		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize(ctx);
-		case L_DIR_RETURN:					return	ParseReturn(ctx);
-		case L_DIR_UPLOAD_PATH:				return	ParseUploadPath(ctx);
-		case L_DIR_CGI_PASS:				return	ParseCgiPass(ctx);
-		case L_DIR_ERROR_PAGE:				return	ParseErrorPage(ctx);
+		case L_DIR_ROOT:					return	ParseRoot();
+		case L_DIR_INDEX:					return	ParseIndex();
+		case L_DIR_AUTOINDEX:				return	ParseAutoIndex();
+		case L_DIR_ACCEPTED_METHODS:		return	ParseMethods();
+		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
+		case L_DIR_RETURN:					return	ParseReturn();
+		case L_DIR_UPLOAD_PATH:				return	ParseUploadPath();
+		case L_DIR_CGI_PASS:				return	ParseCgiPass();
+		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
 		default:							return (false);
 	}
 }
 
-clsLocation::clsLocation(clsParse<TokenType> parser)
-	: _parser(parser)
+clsLocation::clsLocation(s_parse_context& ctxs)
+	: ctx(ctxs)
 {
 }
 
 bool    clsLocation::parseLocation()
 {
-	_parser.advance();
-	s_parse_context ctx(_parser, _ERROR);
+	ctx.parser.advance();
 
 	if (!ConfigDirectiveParser::parseLocationPath(ctx, _locationData))
 		return false;
 
-	if (_parser.advance().type != TOKEN_LBRACE)
-		return (_ERROR.setStatus(400, "Error in {"), false);
+	// if (ctx.parser.advance().type != TOKEN_LBRACE)
+	// 	return (_ERROR.setStatus(400, "Error in {"), false);
 
-	while (_parser.peek().type != TOKEN_RBRACE &&
-		   _parser.peek().type != TOKEN_EOF)
+	while (ctx.parser.peek().type != TOKEN_RBRACE &&
+		   ctx.parser.peek().type != TOKEN_EOF)
 	{
-		if (!ParseLocationDirective(ctx))
+		if (!ParseLocationDirective())
 			break;
 	}
 
-	if (_parser.peek().type != TOKEN_RBRACE)
-		return (_ERROR.setStatus(400, "Error in }"), false);
-
-	return (_ERROR.setStatus(200, ""), true);
+	if (ctx.parser.peek().type != TOKEN_RBRACE)
+		return (ctx.error.setStatus(400, "Error in }"), false);
+	ctx.parser.advance();
+	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+		ctx.parser.advance();
+	return (ctx.error.setStatus(200, ""), true);
 }
 
 
@@ -175,7 +176,7 @@ std::map<short, stErrorPagedata> clsLocation::getErrorPages() const {
 }
 
 HttpError clsLocation::getError() const {
-	return _ERROR;
+	return ctx.error;
 }
 
 stlocation clsLocation::getLocationData() const {

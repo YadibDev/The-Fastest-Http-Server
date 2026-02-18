@@ -1,7 +1,6 @@
 #include "ConfigDirectiveParser.hpp"
 
 bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& loc) {
-    ctx.parser.advance(); 
 
     std::string token = ctx.parser.peek().value;
 
@@ -27,6 +26,10 @@ bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& 
 
     if (ctx.parser.peek().type != TOKEN_LBRACE)
         return (ctx.error.setStatus(400, "Location Error: Expected '{' after path"), false);
+
+    ctx.parser.advance();
+	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+		ctx.parser.advance();
     return true;
 }
 
@@ -44,6 +47,8 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
         return (ctx.error.setStatus(400, "Missing ';' after root"), "");
     
     ctx.parser.advance();
+    while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+		ctx.parser.advance();
     return root;
 }
 
@@ -121,6 +126,8 @@ sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx) {
     }
 
     ctx.parser.advance();
+    while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+		ctx.parser.advance();
     return addr;
 }
 

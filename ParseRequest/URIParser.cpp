@@ -22,7 +22,7 @@ HttpError	URIParser::isValidIPv6(const std::string& IPv6) {
 		return HttpError(400, "IPv6 address is too short");
 
 	if ((IPv6[0] == ':' && IPv6[1] != ':') || 
-		(IPv6.back() == ':' && IPv6[IPv6.size() - 2] != ':')) {
+		((IPv6[(IPv6.size() - 1)]) == ':' && IPv6[IPv6.size() - 2] != ':')) {
 		return HttpError(400, "Invalid colon placement in IPv6");
 	}
 	bool hasDoubleColon = false;
@@ -366,7 +366,7 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
     if (outUri.empty())
         outUri = "/";
 
-    if (len > 1 && uri[len - 1] == '/' && outUri.back() != '/')
+    if (len > 1 && uri[len - 1] == '/' && outUri[outUri.size() - 1] != '/')
         outUri += '/';
 
     return HttpError(200);

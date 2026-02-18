@@ -12,12 +12,12 @@
 class clsParseConfigueFile
 {
 public:
-	enum eKeyBlock { SERVER_BLOCK };
+	enum eKeyBlock { SERVER_BLOCK, UNKNOWN};
 
 private:
 	std::vector<clsServerConfig>	_servers;
-	clsParse<TokenType>				_Parse;
-	HttpError						_error;
+	clsParse<TokenType>				&_Parse;
+	HttpError						&_ERROR;
 
 	eKeyBlock searchBlock(const std::string& WORD);
 	void addServer(const clsServerConfig& serve);
@@ -28,6 +28,7 @@ public:
 
 	bool ParseConfigue();
 	std::vector<clsServerConfig> getServers() const;
+	HttpError					getError();
 };
 
 #endif

@@ -1,14 +1,17 @@
 #include "ParseConfigueFile.hpp"
 
-clsParseConfigueFile::clsParseConfigueFile(clsParse<TokenType> Parse)
+clsParseConfigueFile::clsParseConfigueFile(clsParse<TokenType> &Parse)
     : _Parse(Parse)
-{}
+{
+    
+}
 
 clsParseConfigueFile::eKeyBlock clsParseConfigueFile::searchBlock(const std::string& WORD)
 {
+    std::cout << "|" << WORD << "|" << std::endl;
     if (WORD == "server")
         return SERVER_BLOCK;
-    throw HttpError(400, "Unknown block: " + WORD);
+    return UNKNOWN;
 }
 
 void clsParseConfigueFile::addServer(const clsServerConfig& serve)
@@ -18,7 +21,7 @@ void clsParseConfigueFile::addServer(const clsServerConfig& serve)
 
 bool    clsParseConfigueFile::BlockServer()
 {
-    clsServerConfig server(_Parse);
+    clsServerConfig server();
     if (!server.parseBlockServer())
     {
         _error = server.getError();
@@ -30,6 +33,8 @@ bool    clsParseConfigueFile::BlockServer()
 
 bool clsParseConfigueFile::ParseConfigue()
 {
+    s_parse_context	ctx(_Parse, _ERROR);
+
     while (_Parse.peek().type != TOKEN_EOF) {
         if (_Parse.peek().type != TOKEN_WORD) {
             _error.setStatus(400, "Syntax Error: Expected block name");
@@ -42,8 +47,10 @@ bool clsParseConfigueFile::ParseConfigue()
         blockType = searchBlock(blockName);
         
         if (blockType == SERVER_BLOCK) {
+            
             if (!BlockServer())
                 return false;
+            
         }
         else
             return (_error.setStatus(400, "Unknown block: " + blockName), false);
@@ -55,4 +62,10 @@ bool clsParseConfigueFile::ParseConfigue()
 std::vector<clsServerConfig> clsParseConfigueFile::getServers() const
 {
     return (_servers);
+}
+
+
+HttpError					clsParseConfigueFile::getError()
+{
+    return _error;
 }

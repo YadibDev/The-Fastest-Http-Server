@@ -300,12 +300,19 @@ std::string HelperFunctions::DateTime() {
 }
 
 std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
-    if (Num == 0) return "0";
-    std::string MaxHex;
-    while (Num > 0) {
-        MaxHex += Str[Num % 16];
-        Num /= 16;
-    }
-    std::reverse(MaxHex.begin(), MaxHex.end());
-    return MaxHex;
+    int		i = 0;
+	std::string	MaxHex;
+	std::string	Result;
+
+	if (Num == 0)
+		return ("0");
+	while (Num > 0)
+	{
+		MaxHex += Str[Num % 16];
+		Num /= 16;
+	}
+    i = MaxHex.size() - 1;
+	while (i >= 0)
+		Result += MaxHex[i--];
+	return (Result);
 }
