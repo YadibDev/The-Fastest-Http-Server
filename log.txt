@@ -1,0 +1,51 @@
+List of missing/unfinished items in the Parsing part (folders: ParseConfigFile, ParseRequest, RequestHandler)
+
+NOTE: The following helper functions in `ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp` have been implemented recently:
+- `isValidPath` — checks filesystem existence and verifies directory vs file expectations; for files it also verifies executable permission bits.
+- `convertToBytes` — converts numeric values with optional units (K/M/G) into bytes and reports invalid units.
+- `extractNumericPart` — extracts the leading numeric portion from a size string and returns its length.
+- `setSockaddr_in` — parses `host:port` style listen strings and builds a `sockaddr_in`, validating host/port via `URIParser` helpers.
+- `validateIPWithSystem` — validates IPv4 addresses using `inet_pton` and returns the numeric address.
+
+Remaining issues (priority order):
+
+1) ParseConfigFile/ServerConfig/ServerConfig.cpp
+- The function `clsServerConfig::parseBlockServer()` is incomplete — it should parse the `server` block and handle directives like `listen`, `server_name`, `error_page`, `client_max_body_size`, and collect `location` blocks.
+- Implementation problems: constructor name is inconsistent (`clsServerConfig::ServerConfig` vs `clsServerConfig::clsServerConfig`), includes are mismatched, and `addLocation` implementation does not match the header signature.
+
+2) ParseConfigFile/ServerConfig/ConfigDirectiveParser.hpp & .cpp
+- Remaining: resolve mismatch/duplication between `ParseMethods` and `parseMethods` and ensure signatures in the header match implementations.
+- With the helper implementations in place, directives such as `listen`, `client_max_body_size`, `upload_path`, and `methods` can now be fully parsed once the methods-parsing glue is completed.
+
+3) ParseConfigFile/LocationConfig
+- Many parser methods in `clsLocation` are still stubs or return default values; these need full parsing implementations: `ParseMethods`, `ParseClientMaxBodySize`, `ParseReturn`, `ParseUploadPath`, `ParseCgiPass`, `ParseErrorPage`.
+- Fix name mismatches between header and cpp (e.g. `ParseAutoIndex` vs `ParseAutoindex`, `parser` vs `_parser`) to restore compilation.
+
+4) ParseConfigFile/ConfigueFile (note folder/file spelling "Configue")
+- `clsParseConfigueFile::BlockServer()` depends on `clsServerConfig::parseBlockServer()` — this remains blocked until `parseBlockServer` is completed.
+
+5) ParseRequest/Request.cpp & Request.hpp
+- `clsRequest::parse(const std::string& rawData)` is declared but not implemented in `Request.cpp`.
+- `Request.hpp` declares members (`clsStartLine _startLine; ParseHeader _headerParser;`) but `clsStartLine` lacks a default constructor, making `clsRequest` initialization invalid; adjust constructors or provide defaults.
+- The overall `Request` assembly (incremental parsing, header integration) remains to be completed.
+
+6) ParseRequest/clsStartLine.cpp
+- Some members may remain uninitialized (e.g. `_isAbsoluteURI`) and helper usages should be verified against `HelperFunctions` signatures.
+
+7) RequestHandler/RequestHandler.hpp and ProcessRequestHandler
+- `RequestHandler.hpp` has inconsistent member names and initializer lists; unify names (e.g. `_physicalPath` vs `physical_path`, `allow_methods` vs `allowMethod`).
+- In `ProcessRequestHandler.hpp`, `MethodAllowed` must correctly test allowed methods against configured method flags.
+- `ProcessRequestHandler::processRequest` is unimplemented; it must choose the server/virtual-host, select the best `location`, check permissions/methods, and prepare an appropriate response.
+
+8) General/structural issues
+- Include path inconsistencies and misspellings (`ConfigueFile` vs `ConfigFile`) will cause organizational and build problems.
+- Many files show mismatches between `.hpp` declarations and `.cpp` definitions (names, signatures, member variables), leading to compilation errors.
+
+Suggested next steps (recommended priorities):
+- 1) Fix `clsServerConfig::parseBlockServer()` and correct constructor/signature mismatches in ParseConfigFile/ServerConfig.
+- 2) Complete `clsLocation` parsing functions and synchronize header/cpp names.
+- 3) Implement the remaining directive-parsing glue (methods parsing, error_page handling) now that helper utilities exist.
+- 4) Implement `clsRequest::parse()` and fix `clsStartLine` construction issues.
+- 5) Tidy `RequestHandler` and `ProcessRequestHandler` to use consistent member names and add `processRequest` logic.
+
+If you want, I can start with any of the suggested priorities — tell me which file/function to tackle first and I'll update the TODO list and `log.txt` as I progress.

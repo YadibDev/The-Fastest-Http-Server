@@ -1,86 +1,68 @@
 #ifndef LOCATIONCONFIG_HPP
 #define LOCATIONCONFIG_HPP
 
-#include "LocationConfigData.hpp"
-#include "../../Utils/HttpError.hpp"
-#include <iostream>
 
-	enum e_method {
-    	GET = 1,
-    	POST = 2,
-    	DELETE = 4
-	};
+#include "ParseConfigFile/ServerConfig/ConfigDirectiveParser.hpp"
 
-class clsParseLocationConfig
+
+class clsLocation
 {
-	private:
-
-		enum RequestState {
-			READING_LINE,
-			READING_HEADERS,
-			READING_BODY,
-			COMPLETED,
-			ERROR
-		};
-
-		clsLocationConfig	LocationConfig;
-		enum RequestState	State;
-
-		HttpError parseRequestLine ();
-	public:
-		clsParseLocationConfig() : _state(READING_LINE);
-		HttpError ParseRequest(std::string &rawData);
-	
-}
-_index
-
-
-#include <string>
-#include <vector>
-#include <map>
-
-struct stReturnData
-{    
-	short       code;
-	std::string value;
-
-    stReturnData() : code(0), value("") {}	
-};
-
-class clsLocationConfig {
 private:
 
-	std::string							_path;
+	clsParse<TokenType>					_parser;
+	HttpError							_ERROR;
+	stlocation							_locationData;
 	std::string							_root;
-	std::vector<std::string>			_methods;
 	std::vector<std::string>			_index;
 	bool								_autoindex;
-	std::string							_return_url;
-	std::string							_upload_store;
-	std::map<std::string, std::string>	_cgi_info;
+	short								_allow_methods;
+	unsigned long long					_client_max_body_size;
+	stReturnData						_return;
+	std::string							_upload_path;
+	std::map<std::string, std::string>	_cgi_pass;
+	std::map<short, stErrorPagedata>	_error_pages;
+
+
+	bool	ParseRoot(s_parse_context& ctx);
+
+	bool	ParseIndex(s_parse_context& ctx);
+
+	bool	ParseAutoIndex(s_parse_context& ctx);
+
+	bool	ParseMethods(s_parse_context& ctx);
+
+	bool	ParseClientMaxBodySize(s_parse_context& ctx);
+
+	bool	ParseReturn(s_parse_context& ctx);
+
+	bool	ParseUploadPath(s_parse_context& ctx);
+
+	bool	ParseCgiPass(s_parse_context& ctx);
+
+	bool	ParseErrorPage(s_parse_context& ctx);
+	
+	bool	ParseLocationDirective(s_parse_context& ctx);
+	
+	enBlocksDirective	getLocationDirectiveType(const std::string& key);
 
 public:
-	clsLocationConfig();
-	~clsLocationConfig();
 
-	void setPath(const std::string& path);
-	void setRoot(const std::string& root);
-	void setMethods(const std::vector<std::string>& methods);
-	void setIndex(const std::string& index);
-	void setAutoindex(bool autoindex);
-	void setReturnUrl(const std::string& url);
-	void setUploadStore(const std::string& store);
-	void addCgi(const std::string& extension, const std::string& binPath);
-	void addMethod(const std::string& method);
+	clsLocation(clsParse<TokenType> parser);
 
-	const std::string& getPath() const;
-	const std::string& getRoot() const;
-	const std::vector<std::string>& getMethods() const;
-	const std::string& getIndex() const;
-	bool getAutoindex() const;
-	const std::string& getReturnUrl() const;
-	const std::string& getUploadStore() const;
-	const std::map<std::string, std::string>& getCgiInfo() const;
+	bool								parseLocation();
+	
+	std::string							getRoot() const;
+	std::vector<std::string>			getIndex() const;
+	bool								getAutoIndex() const;
+	short								getAllowMethods() const;
+	unsigned long long					getClientMaxBodySize() const;
+	stReturnData						getReturn() const;
+	std::string							getUploadPath() const;
+	std::map<std::string, std::string>	getCgiPass() const;
+	std::map<short, stErrorPagedata>	getErrorPages() const;
+
+	stlocation							getLocationData() const;
+	HttpError							getError() const;
 };
 
 #endif

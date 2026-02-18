@@ -7,7 +7,6 @@
 
 class clsStartLine {
 public:
-    enum eMethods { GET, POST, DELETE };
 
 private:
     bool        _isAbsoluteURI;
