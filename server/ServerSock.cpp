@@ -129,7 +129,7 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
     }
 
     sockaddr *castIt = reinterpret_cast<sockaddr *>(addr);
-    socklen_t temp; // hold size of sockaddr_in temporary because i don't need it
+    socklen_t temp = sizeof(sockaddr_in); // hold size of sockaddr_in temporary because i don't need it
     int fd = 0;
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)

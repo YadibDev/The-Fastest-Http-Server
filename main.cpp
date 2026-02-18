@@ -28,7 +28,7 @@ int main()
     vector<unsigned short> allPort;
     vector<unsigned int> allIps;
 
-    allPort.push_back(8080);
+    allPort.push_back(8081);
     allIps.push_back(0);
 
     server.buildSockets(allPort, allIps);
@@ -44,6 +44,7 @@ int main()
             size_t ofset = 0;
             int fd = ClientBuffer[i].data.fd;
             sockaddr_in addr;
+            memset(&addr, 0, sizeof(addr));
             if ((ClientBuffer[i].events | EPOLLIN) == EPOLLIN)
             {
                 int newClient = server.tryAcceptNewClient(fd, &addr);
@@ -85,7 +86,8 @@ int main()
                     ofset = send(fd, respond.c_str(), respond.size(), MSG_DONTWAIT);
                     if (ofset < respond.size())
                         epoll.changeAbility(fd, EPOLLOUT);
-                    Response.~clsResponse();
+                    close(fd);
+                    // Response.~clsResponse();
                 }
             }
             // else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
