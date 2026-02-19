@@ -6,14 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:17:52 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/18 17:21:27 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/19 15:18:29 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 
  RequestHandler::RequestHandler(): _physicalPath(""), _autoindex(false),_allowMethod(0),
-          _method(GET),return_status(0),return_url(""),upload_store("")
+         return_status(0),return_url(""),upload_store("")
 {
     
 }

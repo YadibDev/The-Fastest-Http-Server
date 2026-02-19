@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/18 22:28:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/19 15:24:56 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,33 +52,41 @@ void clsResponse::InitialHeaders()
     Date();
     CachControl();
     Server();
-    // if the client want close conection we called function Close connection
-    ConnectionKeepAlive();
+    std::map<std::string, std::vector<std::string> >  Headers = _DataRequest.getHeaders();
+    if (Headers.count("connection"))
+    {
+        if (Headers["connection"][0] == "close")
+            ConnectionClose();
+        else
+            ConnectionKeepAlive();
+    }
+    else
+        ConnectionKeepAlive();
 }
 
 std::string clsResponse::ErrorRespnseHandling()
 {
-    std::map <int, stErrorPagedata> ErrorPage = _DataRequest.getErrorPages();
+    std::map <int, stErrorPagedata> ErrorPageConf = _DataRequest.getErrorPages();
     int PrevStatus = _Status;
-    if (ErrorPage.count(_Status))
+    if (ErrorPageConf.count(_Status))
     {
-        if (ErrorPage[_Status].Status != -1)
-            _Status = ErrorPage[_Status].Status;
-        _FileFromDisk = ErrorPage[_Status].Path;
+        if (ErrorPageConf[_Status].Status != -1)
+            _Status = ErrorPageConf[_Status].Status;
+        _FileFromDisk = ErrorPageConf[_Status].Path;
         StoredInFileOrStr();
         if (!_Mod.count(ERROR))
         {
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPage[_Status].Path)));
+            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf[_Status].Path)));
             return _ErrorPage.ResponseError(_Status);
         }
         else
         {
             _ErrorPage.SetBodySize(0);
             _ErrorPage.SetType(GetTypeData(".html"));
-            _Body = _ErrorPage.GetBody(_Status);
-            return _ErrorPage.ResponseError(_Status);
+            _Body = _ErrorPage.GetBody(PrevStatus);
+            return _ErrorPage.ResponseError(PrevStatus);
         }
     }
     _ErrorPage.SetType(GetTypeData(".html"));
@@ -142,7 +150,7 @@ void clsResponse::CachControl()
 void clsResponse::Server()
 {
     std::stringstream Headers;
-    Headers << "Server: Name Server\r\n";
+    Headers << "Server: HTTP/1.1\r\n";
     _HeaderFeild += Headers.str();
 }
 
@@ -150,7 +158,7 @@ void clsResponse::StoredInFileOrStr()
 {
     std::string Data;
     if (_FileFromDisk == "")
-        return ;                                         
+        return ;                                     
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
