@@ -28,6 +28,8 @@ public:
     static bool isLWS(char c);
     static bool myIsspace(std::string str, size_t pos);
     static std::vector<std::string> splitCommaSeparated(const std::string &value);
+    static bool strIsSpace(const std::string &str);
+
 
     // Acheraf
     static bool CmpWord(const std::string &BigStr, const std::string &Word, bool Switch);

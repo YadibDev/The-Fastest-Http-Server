@@ -16,15 +16,15 @@ public:
 
 private:
 	std::vector<clsServerConfig>	_servers;
-	clsParse<TokenType>				&_Parse;
-	HttpError						&_ERROR;
+	clsParse<TokenType>				_Parse;
+	HttpError						_ERROR;
 
 	eKeyBlock searchBlock(const std::string& WORD);
 	void addServer(const clsServerConfig& serve);
-	bool BlockServer();
+	bool BlockServer(s_parse_context	&ctx);
 
 public:
-	clsParseConfigueFile(clsParse<TokenType> Parse);
+	clsParseConfigueFile(clsParse<TokenType> &Parse);
 
 	bool ParseConfigue();
 	std::vector<clsServerConfig> getServers() const;

@@ -3,10 +3,17 @@
 clsRequest::clsRequest() : _state(READING_LINE) {}
     
 
-void	getDataParse(const std::string &RawData)
+void	clsRequest::getDataParse(const std::string &RawData)
 {
     if (RawData.empty())
         return ;
+
+    if (_state == READING_BODY)
+    {
+        _Buffer += _Remainder + RawData;
+        _Remainder = "";
+        return ;
+    }
     size_t pos = RawData.find("\r\n");
 
     if (pos != std::string::npos)
@@ -15,12 +22,13 @@ void	getDataParse(const std::string &RawData)
         _Remainder = RawData.substr(pos + 2);
     }
     else
-    {
-        _Buffer = _Remainder + RawData;
-        _Remainder = "";
-    }
+        _Remainder = _Remainder + RawData;
 }
 
 void clsRequest::parse(const std::string& rawData);
+{
+    getDataParse(rawData);
+    if (_state == READING_LINE)
+}
     
 bool clsRequest::isCompleted() const { return _state == COMPLETED; }

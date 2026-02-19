@@ -137,6 +137,14 @@ std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string&
     return result;
 }
 
+bool HelperFunctions::strIsSpace(const std::string &str) {
+    for (size_t i = 0; i < str.size(); i++) {
+        if (!isspace(str[i]))
+            return false;
+    }
+    return true;
+}
+
 
 
 // Achraf

@@ -21,7 +21,7 @@ private:
 	std::string							_Buffer;
 	std::string							_Remainder;
 
-	void	getDataParse();
+	void	getDataParse(const std::string &RawData);
 
 public:
 	clsStartLine					 	_startLine;

@@ -18,7 +18,9 @@ private:
 	std::vector<sockaddr_in>		_listens;
 	// std::vector<std::string>		_server_names;
 	std::string						_root;
-	std::map<int, stErrorPagedata>	_error_pages;
+	std::vector<std::string>			_index;
+	std::map<short, stErrorPagedata>	_error_pages;
+
 	size_t							_max_body_size;
 	std::vector<clsLocation>		_LocationExact;
 	std::vector<clsLocation>		_LocationPrefix;
@@ -30,6 +32,7 @@ private:
 	bool				ParseClientMaxBodySize();
 	bool				ParseLocation();
 	bool				ParseRoot();
+	bool				ParseIndex();
 
 	enBlocksDirective	getServerDirectiveType(const std::string& key);
 	bool				ParseServerDirective();
@@ -41,12 +44,14 @@ public:
 
 	bool	parseBlockServer();
 
-	std::vector<sockaddr_in>		getListens() const; // address
+	std::vector<sockaddr_in>			getListens() const; // address
 	// std::vector<std::string>		getServerNames() const;
-	std::map<int, stErrorPagedata>	getErrorPages() const;
-	size_t							getMaxBodySize() const;
-	std::vector<clsLocation>		getLocationExact() const;
-	std::vector<clsLocation>		getLocationPrefix() const;
+	std::map<short, stErrorPagedata>	getErrorPages() const;
+	size_t								getMaxBodySize() const;
+	std::vector<clsLocation>			getLocationExact() const;
+	std::vector<clsLocation>			getLocationPrefix() const;
+	std::string							getRoot() const;
+	std::vector<std::string>			getIndex() const;
 
 	HttpError getError() const;
 };

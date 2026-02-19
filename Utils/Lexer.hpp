@@ -79,11 +79,11 @@ std::string tokenTypeToString(TokenType t);
 
 template <typename TEnum>
 class clsParse {
-    int _cursor;
+    size_t                      _cursor;
     std::vector< Token<TEnum> > _Tokens;
     TEnum _eofType;
 public:
-    clsParse(std::vector< Token<TEnum> > Tokens, TEnum eofType);
+    clsParse(std::vector< Token<TEnum> > &Tokens, TEnum eofType);
     ~clsParse();
     Token<TEnum> peek();
     Token<TEnum> advance();
