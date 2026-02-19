@@ -9,8 +9,8 @@ class clsLocation
 {
 private:
 
-	clsParse<TokenType>					_parser;
-	HttpError							_ERROR;
+	
+	s_parse_context						&ctx;
 	stlocation							_locationData;
 	std::string							_root;
 	std::vector<std::string>			_index;
@@ -23,31 +23,31 @@ private:
 	std::map<short, stErrorPagedata>	_error_pages;
 
 
-	bool	ParseRoot(s_parse_context& ctx);
+	bool	ParseRoot();
 
-	bool	ParseIndex(s_parse_context& ctx);
+	bool	ParseIndex();
 
-	bool	ParseAutoIndex(s_parse_context& ctx);
+	bool	ParseAutoIndex();
 
-	bool	ParseMethods(s_parse_context& ctx);
+	bool	ParseMethods();
 
-	bool	ParseClientMaxBodySize(s_parse_context& ctx);
+	bool	ParseClientMaxBodySize();
 
-	bool	ParseReturn(s_parse_context& ctx);
+	bool	ParseReturn();
 
-	bool	ParseUploadPath(s_parse_context& ctx);
+	bool	ParseUploadPath();
 
-	bool	ParseCgiPass(s_parse_context& ctx);
+	bool	ParseCgiPass();
 
-	bool	ParseErrorPage(s_parse_context& ctx);
+	bool	ParseErrorPage();
 	
-	bool	ParseLocationDirective(s_parse_context& ctx);
+	bool	ParseLocationDirective();
 	
 	enBlocksDirective	getLocationDirectiveType(const std::string& key);
 
 public:
 
-	clsLocation(clsParse<TokenType> parser);
+	clsLocation(s_parse_context& ctxs);
 
 	bool								parseLocation();
 	
@@ -63,6 +63,7 @@ public:
 
 	stlocation							getLocationData() const;
 	HttpError							getError() const;
+
 };
 
 #endif

@@ -86,8 +86,10 @@ private:
 	static bool								isValidPath(s_parse_context& ctx, const std::string& path, bool expectDir);
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);
 	static long long						extractNumericPart(const std::string& str, short &length);
-	static sockaddr_in						setSockaddr_in(const std::string& input, s_parse_context& ctx);
-	static uint32_t							validateIPWithSystem(const std::string& ip, int family, s_parse_context& ctx);
+	static sockaddr_in						setSockaddr_in(const std::string& input);
+	static uint32_t							validateIPWithSystem(const std::string& ip, int family);
+	static void								skipWhitespace(s_parse_context& ctx);
+
 };
 
 #endif

@@ -31,9 +31,6 @@ void LexerConfig<TEnum>::addWithSpace(std::string WithSpace) {
 }
 
 template <typename TEnum>
-GenericLexer<TEnum>::GenericLexer() {}
-
-template <typename TEnum>
 GenericLexer<TEnum>::GenericLexer(std::string source, const LexerConfig<TEnum>& cfg)
     : _config(cfg), _src(source), _cursor(0) {}
 
@@ -62,7 +59,7 @@ bool GenericLexer<TEnum>::isCommentStart() {
 }
 
 template <typename TEnum>
-void GenericLexer<TEnum>::handleQuote(char quoteType, std::vector<Token<TEnum>>& tokens) {
+void GenericLexer<TEnum>::handleQuote(char quoteType, std::vector<Token<TEnum> >& tokens) {
     std::string wordVal = "";
     _cursor++;
     while (_cursor < _src.length() && _src[_cursor] != quoteType) {
@@ -87,8 +84,8 @@ bool GenericLexer<TEnum>::skipComment() {
 }
 
 template <typename TEnum>
-std::vector<Token<TEnum>> GenericLexer<TEnum>::tokenize() {
-    std::vector<Token<TEnum>> tokens;
+std::vector<Token<TEnum> > GenericLexer<TEnum>::tokenize() {
+    std::vector<Token<TEnum> > tokens;
     while (_cursor < _src.length()) {
         char c = _src[_cursor];
         if (_config.withSpace.find(c) != std::string::npos) { _cursor++; continue; }
@@ -118,7 +115,7 @@ LexerConfig<TEnum>  GenericLexer<TEnum>::getConfig()
 
 
 template <typename TEnum>
-clsParse<TEnum>::clsParse(std::vector<Token<TEnum>> &Tokens, TEnum eofType) 
+clsParse<TEnum>::clsParse(std::vector< Token<TEnum> > &Tokens, TEnum eofType) 
     : _cursor(0), _Tokens(Tokens), _eofType(eofType) {}
 
 template <typename TEnum>
@@ -126,7 +123,7 @@ clsParse<TEnum>::~clsParse() {}
 
 template <typename TEnum>
 Token<TEnum> clsParse<TEnum>::peek() {
-    if (_cursor == _Tokens.size()) return Token<TEnum>(_eofType, "");
+    if (_cursor >= _Tokens.size()) return Token<TEnum>(_eofType, "");
     return _Tokens[_cursor];
 }
 

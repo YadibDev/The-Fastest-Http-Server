@@ -48,7 +48,7 @@ private:
     std::string _src;
     size_t _cursor;
 
-    GenericLexer();
+    
 
     bool isSeparator(char c);
     bool isQuote(char c);
@@ -79,7 +79,7 @@ std::string tokenTypeToString(TokenType t);
 
 template <typename TEnum>
 class clsParse {
-    int _cursor;
+    size_t                      _cursor;
     std::vector< Token<TEnum> > _Tokens;
     TEnum _eofType;
 public:

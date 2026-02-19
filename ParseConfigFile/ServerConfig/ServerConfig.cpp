@@ -1,13 +1,13 @@
 #include "ServerConfig.hpp"
 
-clsServerConfig::clsServerConfig(clsParse<TokenType>	Parse) : _max_body_size(1048576), _Parse(Parse) {}
+clsServerConfig::clsServerConfig(s_parse_context	&ctxs) : _max_body_size(1048576), ctx(ctxs) {}
 
 clsServerConfig::~clsServerConfig() {}
 
 
 // Logo Parsing Functions
 
-bool	clsServerConfig::ParseListen(s_parse_context& ctx)
+bool	clsServerConfig::ParseListen()
 {
 	_listens.push_back(ConfigDirectiveParser::ParseListen(ctx));
 	if (ctx.error.isError())
@@ -15,13 +15,13 @@ bool	clsServerConfig::ParseListen(s_parse_context& ctx)
 	return (true);
 }
 
-// bool	clsServerConfig::ParseServerName(s_parse_context& ctx)
+// bool	clsServerConfig::ParseServerName()
 // {
 // 	// لبغيت نزيد server_name
 // 	return (true);
 // }
 
-bool	clsServerConfig::ParseErrorPage(s_parse_context& ctx)
+bool	clsServerConfig::ParseErrorPage()
 {
 	_error_pages = ConfigDirectiveParser::ParseErrorPage(ctx);
 	if (ctx.error.isError())
@@ -29,7 +29,7 @@ bool	clsServerConfig::ParseErrorPage(s_parse_context& ctx)
 	return (true);
 }
 
-bool	clsServerConfig::ParseClientMaxBodySize(s_parse_context& ctx)
+bool	clsServerConfig::ParseClientMaxBodySize()
 {
 	ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
 	if (ctx.error.isError())
@@ -37,17 +37,17 @@ bool	clsServerConfig::ParseClientMaxBodySize(s_parse_context& ctx)
 	return (true);
 }
 
-bool	clsServerConfig::ParseRoot(s_parse_context& ctx)
+bool	clsServerConfig::ParseRoot()
 {
-	ConfigDirectiveParser::ParseRoot(ctx);
+	_root = ConfigDirectiveParser::ParseRoot(ctx);
 	if (ctx.error.isError())
 		return (false);
 	return (true);
 }
 
-bool	clsServerConfig::ParseLocation(s_parse_context& ctx)
+bool	clsServerConfig::ParseLocation()
 {
-	clsLocation loc(_Parse);
+	clsLocation loc(ctx);
 	loc.parseLocation();
 	if (!loc.getError().isError())
 	{
@@ -89,7 +89,7 @@ enBlocksDirective	clsServerConfig::getServerDirectiveType(const std::string& key
 	return L_DIR_UNKNOWN;
 }
 
-bool    clsServerConfig::ParseServerDirective(s_parse_context& ctx)
+bool    clsServerConfig::ParseServerDirective()
 {
 	if (ctx.parser.peek().type != TOKEN_WORD)
 		return (false);
@@ -99,43 +99,47 @@ bool    clsServerConfig::ParseServerDirective(s_parse_context& ctx)
 
 	switch (dirType)
 	{
-		case L_DIR_LISTEN:					return	ParseListen(ctx);
-		case L_DIR_ROOT:					return	ParseRoot(ctx);
-		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize(ctx);
-		case L_DIR_ERROR_PAGE:				return	ParseErrorPage(ctx);
-		case L_DIR_LOCATION:				return	ParseLocation(ctx);
+		case L_DIR_LISTEN:					return	ParseListen();
+		case L_DIR_ROOT:					return	ParseRoot();
+		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
+		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
+		case L_DIR_LOCATION:				return	ParseLocation();
 		default:							return	(false);
 	}
 }
 
 bool	clsServerConfig::parseBlockServer()
 {
+	if (ctx.parser.advance().type != TOKEN_LBRACE)
+		return (ctx.error.setStatus(400, "Syntax Error: Expected '{' at the beginning of server block"), false);
 
-	s_parse_context ctx(_Parse, _ERROR);
+	ctx.parser.advance();
+	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+		ctx.parser.advance();
 
-	if (_Parse.advance().type != TOKEN_LBRACE)
-		return (_ERROR.setStatus(400, "Syntax Error: Expected '{' at the beginning of server block"), false);
-
-	while (_Parse.peek().type != TOKEN_RBRACE &&
-		   _Parse.peek().type != TOKEN_EOF)
+	while (ctx.parser.peek().type != TOKEN_RBRACE &&
+		   ctx.parser.peek().type != TOKEN_EOF)
 	{
-		if (!ParseServerDirective(ctx))
-			return (_ERROR.setStatus(400, "Unknown directive in server block: " + _Parse.peek().value), false);
+		if (!ParseServerDirective())
+			return (ctx.error.setStatus(400, "Unknown directive in server block: " + ctx.parser.peek().value), false);
 	}
 
-	if (_Parse.peek().type != TOKEN_RBRACE)
-		return (_ERROR.setStatus(400, "Syntax Error: Expected '}' at the end of server block"), false);
+
+	if (ctx.parser.peek().type != TOKEN_RBRACE)
+		return (ctx.error.setStatus(400, "Syntax Error: Expected '}' at the end of server block"), false);
+
+	ctx.parser.advance();
 
 	return true;
 }
 
 // Getters
 
-std::vector<ListenInfo> clsServerConfig::getListens() const {
+std::vector<sockaddr_in> clsServerConfig::getListens() const {
 	return _listens;
 }
 
-std::map<int, stErrorPagedata> clsServerConfig::getErrorPages() const {
+std::map<short, stErrorPagedata> clsServerConfig::getErrorPages() const {
 	return _error_pages;
 }
 
@@ -152,5 +156,9 @@ std::vector<clsLocation> clsServerConfig::getLocationPrefix() const {
 }
 
 HttpError clsServerConfig::getError() const {
-	return _ERROR;
+	return ctx.error;
+}
+
+std::string clsServerConfig::getRoot() const {
+	return _root;
 }
