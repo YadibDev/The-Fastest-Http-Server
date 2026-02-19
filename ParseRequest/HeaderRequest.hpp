@@ -1,12 +1,16 @@
 #include <string>
 #include <map>
 #include <vector>
+#ifndef HEADERREQUEST_HPP
+#define HEADERREQUEST_HPP
+
+#include <string>
+#include <map>
+#include <vector>
 #include "URI.hpp"
 #include "../Utils/HelperFunctions.hpp"
 #include "../Utils/HttpError.hpp"
-#include "Request.hpp"
 #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
-
 
 
 enum eMethods { GET = 1, POST = 2, DELETE = 4 };
@@ -20,8 +24,11 @@ enum RequestState {
 };
 
 struct  stArguments {
-	size_t		_Pos;
-	HttpError	_Error;
-	std::string	_Data;
+	size_t        _Pos;
+	HttpError    _Error;
+	std::string    _Data;
+	RequestState _State;
 };
+
+#endif
 

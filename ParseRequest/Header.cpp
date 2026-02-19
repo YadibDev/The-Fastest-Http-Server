@@ -73,9 +73,8 @@ bool ParseHeader::parseHeader(stArguments &args, bool &TheStartOfHeader)
 	{
 		size_t fieldName = args._Data.find(":", args._Pos);
 		if (fieldName == std::string::npos)
-		{
 			return (args._Error.setStatus(400, "Not found Space in fieldName"), false);
-		}
+
 		headerField = args._Data.substr(args._Pos, fieldName - args._Pos);
 		if (!checkHeaderField(headerField))
 			return (args._Error.setStatus(400, "Invalid Header Field"), false);
@@ -88,7 +87,7 @@ bool ParseHeader::parseHeader(stArguments &args, bool &TheStartOfHeader)
 			if (checkDoubleCRLF(args._Data, args._Pos))
 			{
 				args._Pos += 4;
-				state = READING_BODY;
+				args._State = READING_BODY;
 				return (true);
 			}
 			else

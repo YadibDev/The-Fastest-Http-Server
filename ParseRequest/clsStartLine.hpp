@@ -19,17 +19,17 @@ private:
     std::string _version;
     short       statuCode;
 
-    bool        _parseMethod(std::string methodStr);
-    bool        _parseVersion(std::string version);
-    void        _parsURI(std::string URI_str);
-    std::string getPart(std::string str, size_t &indx);
+    bool        _parseMethod(const std::string &methodStr);
+    bool        _parseVersion(const std::string &version);
+    void        _parsURI(const std::string &URI_str);
+    std::string getPart(const std::string &str, size_t &indx);
     void        _parseStartLine(std::string startLine);
 
-    void        skipWhitespace(std::string str, size_t &indx);
-    bool        isCRLF(std::string str, size_t indx);
+    // helper functions are provided by HelperFunctions; not class members
 
 public:
-    clsStartLine(std::string startLine);
+    clsStartLine();
+    clsStartLine(const std::string &startLine);
     
     // Getters
     bool                isAbsoluteURI() const;

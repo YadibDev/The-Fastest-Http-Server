@@ -12,6 +12,6 @@ class   clsParseRequest
 
     clsParseRequest();
     ~clsParseRequest();
-}
+};
 
 #endif
