@@ -8,7 +8,6 @@ clsParseConfigueFile::clsParseConfigueFile(clsParse<TokenType> &Parse)
 
 clsParseConfigueFile::eKeyBlock clsParseConfigueFile::searchBlock(const std::string& WORD)
 {
-    std::cout << "|" << WORD << "|" << std::endl;
     if (WORD == "server")
         return SERVER_BLOCK;
     return UNKNOWN;

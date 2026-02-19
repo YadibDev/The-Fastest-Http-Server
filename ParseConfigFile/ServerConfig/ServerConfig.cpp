@@ -45,6 +45,14 @@ bool	clsServerConfig::ParseRoot()
 	return (true);
 }
 
+bool	clsServerConfig::ParseIndex()
+{
+	_index = ConfigDirectiveParser::ParseIndex(ctx);
+	if (ctx.error.isError())
+		return (false);
+	return (true);
+}
+
 bool	clsServerConfig::ParseLocation()
 {
 	clsLocation loc(ctx);
@@ -75,6 +83,7 @@ enBlocksDirective	clsServerConfig::getServerDirectiveType(const std::string& key
 	{
 		directives["listen"]               = L_DIR_LISTEN;
 		directives["root"]                  = L_DIR_ROOT;
+		directives["index"]                 = L_DIR_INDEX;
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
 		directives["error_page"]           = L_DIR_ERROR_PAGE;
 		directives["location"]             = L_DIR_LOCATION;
@@ -101,6 +110,7 @@ bool    clsServerConfig::ParseServerDirective()
 	{
 		case L_DIR_LISTEN:					return	ParseListen();
 		case L_DIR_ROOT:					return	ParseRoot();
+		case L_DIR_INDEX:					return	ParseIndex();
 		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
 		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
 		case L_DIR_LOCATION:				return	ParseLocation();
@@ -121,7 +131,7 @@ bool	clsServerConfig::parseBlockServer()
 		   ctx.parser.peek().type != TOKEN_EOF)
 	{
 		if (!ParseServerDirective())
-			return (ctx.error.setStatus(400, "Unknown directive in server block: " + ctx.parser.peek().value), false);
+			return (false);
 	}
 
 
@@ -129,6 +139,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '}' at the end of server block"), false);
 
 	ctx.parser.advance();
+	ConfigDirectiveParser::skipWhitespace(ctx);
 
 	return true;
 }

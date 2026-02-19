@@ -18,7 +18,7 @@ private:
 	short								_allow_methods;
 	unsigned long long					_client_max_body_size;
 	stReturnData						_return;
-	std::string							_upload_path;
+	std::string							_upload_store;
 	std::map<std::string, std::string>	_cgi_pass;
 	std::map<short, stErrorPagedata>	_error_pages;
 
@@ -35,7 +35,7 @@ private:
 
 	bool	ParseReturn();
 
-	bool	ParseUploadPath();
+	bool	ParseUploadStore();
 
 	bool	ParseCgiPass();
 
@@ -57,7 +57,7 @@ public:
 	short								getAllowMethods() const;
 	unsigned long long					getClientMaxBodySize() const;
 	stReturnData						getReturn() const;
-	std::string							getUploadPath() const;
+	std::string							getUploadStore() const;
 	std::map<std::string, std::string>	getCgiPass() const;
 	std::map<short, stErrorPagedata>	getErrorPages() const;
 

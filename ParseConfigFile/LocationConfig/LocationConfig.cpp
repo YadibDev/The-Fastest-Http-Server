@@ -37,9 +37,9 @@ bool	clsLocation::ParseReturn()
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseUploadPath()
+bool	clsLocation::ParseUploadStore()
 {
-	_upload_path = ConfigDirectiveParser::ParseUploadPath(ctx);
+	_upload_store = ConfigDirectiveParser::ParseUploadStore(ctx);
 	return !ctx.error.isError();
 }
 
@@ -70,7 +70,7 @@ clsLocation::getLocationDirectiveType(const std::string& key)
 		directives["allow_methods"]        = L_DIR_ACCEPTED_METHODS;
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
 		directives["return"]                = L_DIR_RETURN;
-		directives["upload_path"]          = L_DIR_UPLOAD_PATH;
+		directives["upload_store"]          = L_DIR_UPLOAD_STORE;
 		directives["cgi_pass"]             = L_DIR_CGI_PASS;
 		directives["error_page"]           = L_DIR_ERROR_PAGE;
 	}
@@ -100,7 +100,7 @@ bool    clsLocation::ParseLocationDirective()
 		case L_DIR_ACCEPTED_METHODS:		return	ParseMethods();
 		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
 		case L_DIR_RETURN:					return	ParseReturn();
-		case L_DIR_UPLOAD_PATH:				return	ParseUploadPath();
+		case L_DIR_UPLOAD_STORE:			return	ParseUploadStore();
 		case L_DIR_CGI_PASS:				return	ParseCgiPass();
 		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
 		default:							return (false);
@@ -126,7 +126,7 @@ bool    clsLocation::parseLocation()
 		   ctx.parser.peek().type != TOKEN_EOF)
 	{
 		if (!ParseLocationDirective())
-			break;
+			return (false);
 	}
 
 	if (ctx.parser.peek().type != TOKEN_RBRACE)
@@ -163,8 +163,8 @@ stReturnData clsLocation::getReturn() const {
 	return _return;
 }
 
-std::string clsLocation::getUploadPath() const {
-	return _upload_path;
+std::string clsLocation::getUploadStore() const {
+	return _upload_store;
 }
 
 std::map<std::string, std::string> clsLocation::getCgiPass() const {

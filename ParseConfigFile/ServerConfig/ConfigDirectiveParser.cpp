@@ -155,7 +155,7 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
 	return ReturData;
 }
 
-std::string ConfigDirectiveParser::ParseUploadPath(s_parse_context& ctx) {
+std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_WORD)
 		return (ctx.error.setStatus(400, "Expected path after 'upload_path'"), "");
