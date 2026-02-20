@@ -4,8 +4,16 @@
 #include "../../Utils/Lexer.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
-#include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "../ParseRequest/URI/URI.hpp"
+
+
+
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <map>
 #include <string>
 #include <vector>
@@ -28,4 +36,33 @@ struct  stArguments {
 	RequestState _State;
 };
 
+
+struct stlocation {
+	enum eType {
+		EXACT,
+		PREFIX
+	};
+
+	eType		matchType;
+	std::string uri;
+};
+
+struct stReturnData {    
+	short       code;
+	std::string value;
+
+	stReturnData() : code(0), value("") {}    
+};
+
+struct stErrorPagedata {
+	short       response;
+	std::string uri;
+
+	stErrorPagedata() : response(0), uri("") {}
+};
+
 #endif
+
+
+// #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+// #include "../ParseRequest/URI/URI.hpp"

@@ -22,6 +22,10 @@ public:
 	RequestHandler();
 	~RequestHandler();
 
+
+	bool	MethodAllowed();
+
+
 	void setPhysicalPath(const std::string& path);
 	void setAutoIndex(bool autoindex);
 	void setAllowMethod(bool allowMethod);

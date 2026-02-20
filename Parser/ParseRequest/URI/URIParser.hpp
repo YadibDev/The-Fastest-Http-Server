@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "../Utils/HttpError.hpp"
-#include "../Utils/HelperFunctions.hpp"
+#include "../../../Utils/HttpError.hpp"
+#include "../../../Utils/HelperFunctions.hpp"
 
 class URIParser {
     private:

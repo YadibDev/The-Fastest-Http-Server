@@ -1,20 +1,11 @@
 #ifndef CONFIG_DIRECTIVE_PARSER_HPP
 #define CONFIG_DIRECTIVE_PARSER_HPP
 
-#include <string>
-#include <map>
-#include <vector>
-#include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
-#include "../../Utils/Lexer.hpp"
-#include "../../Utils/HelperFunctions.hpp"
-#include "../../Utils/HttpError.hpp"
-#include "../../ParseRequest/URI/URI.hpp"
+
+
+#include "../../Header/HeaderFiles.hpp"
+
 
 
 enum enBlocksDirective
@@ -42,29 +33,7 @@ struct s_parse_context {
 		: parser(p), error(e) {}
 };
 
-struct stlocation {
-	enum eType {
-		EXACT,
-		PREFIX
-	};
 
-	eType		matchType;
-	std::string uri;
-};
-
-struct stReturnData {    
-	short       code;
-	std::string value;
-
-	stReturnData() : code(0), value("") {}    
-};
-
-struct stErrorPagedata {
-	short       response;
-	std::string uri;
-
-	stErrorPagedata() : response(0), uri("") {}
-};
 
 class ConfigDirectiveParser {
 public:

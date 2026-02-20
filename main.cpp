@@ -1,6 +1,6 @@
-#include "ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
-#include "ParseRequest/Request.hpp"
-#include "RequestHandler/ProcessRequestHandler.hpp"
+#include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "Parser/ParseRequest/Request/Request.hpp"
+#include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include <iostream>
 #include <fcntl.h>
 #include <arpa/inet.h>
@@ -46,7 +46,7 @@ int main() {
     std::vector<clsServerConfig> servers = configFile.getServers();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
 
-    std::string Requestest = "GET /index.html HTTP/1.1\r\nHost: example.com\r\n\r\n";
+    std::string Requestest = "POST /uploads/test.txt HTTP/1.1\r\nHost: example.com\r\n\r\n";
     clsRequest request;
 
     request.parse(Requestest);

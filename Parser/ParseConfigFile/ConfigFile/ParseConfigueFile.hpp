@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 #include "../ServerConfig/ServerConfig.hpp"
-#include "../../Utils/Lexer.hpp"
-#include "../../Utils/HttpError.hpp"
+#include "../../Header/HeaderFiles.hpp"
 
 
 class clsParseConfigueFile
