@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:40:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 17:25:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:43:17 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ class clsMainProcess
 {
     private:
         clsResponse _Response;
-        clsParseOutCGI _ParseOutCGI;
-        clsCGI _CGI;
+        // clsParseOutCGI _ParseOutCGI;
+        // clsCGI _CGI;
         RequestHandler _DataRequest;
         void _PartRedirection();
         void _PartPermission();
