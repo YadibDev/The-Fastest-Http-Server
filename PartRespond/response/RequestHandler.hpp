@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:09:34 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 17:04:36 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:31:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ enum Method
 class RequestHandler
 {
     
-    private:
+    public:
         std::string _physicalPath;
         bool        _allowMethod;
         std::string _query;

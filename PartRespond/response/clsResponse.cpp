@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/19 15:24:56 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 22:06:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,24 @@ clsResponse::clsResponse()
     _Body = "";
     _Type = "";
     _IsConnection = false;
+    _Erno = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
-std::string clsResponse::MakeResponse()
+void clsResponse::MakeResponse()
 {
     if (!_Mod.count(ERROR))
+    {
+        _FileFromDisk = _DataRequest.getPhysicalPath();
+        _Type = GetTypeData(GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
+    }
     if (!_Mod.count(ERROR))
         InitialHeaders();
     if (_Mod.count(ERROR))
-        return ErrorRespnseHandling();
+        _HeaderFeild = ErrorRespnseHandling();
      _HeaderFeild += "\r\n";
-    return _HeaderFeild;
 }
 
 void clsResponse::InitialHeaders()
@@ -67,14 +71,15 @@ void clsResponse::InitialHeaders()
 std::string clsResponse::ErrorRespnseHandling()
 {
     std::map <int, stErrorPagedata> ErrorPageConf = _DataRequest.getErrorPages();
-    int PrevStatus = _Status;
+    short PrevStatus = _Status;
     if (ErrorPageConf.count(_Status))
     {
+        _Mod.clear();
         if (ErrorPageConf[_Status].Status != -1)
             _Status = ErrorPageConf[_Status].Status;
         _FileFromDisk = ErrorPageConf[_Status].Path;
         StoredInFileOrStr();
-        if (!_Mod.count(ERROR))
+        if (!_Erno)
         {
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
@@ -164,12 +169,14 @@ void clsResponse::StoredInFileOrStr()
     {
         _Mod[ERROR] = ERROR;
         _Status = 500;
+        _Erno = true;
         return ;
     }
     if (ReadData(FD, Data, 100) == -1)
     {
         _Mod[ERROR] = ERROR;
         _Status = 500;
+        _Erno = true;
         return ;
     }
     while(!Data.empty())
@@ -189,6 +196,7 @@ void clsResponse::StoredInFileOrStr()
             _BodySize = 0;
             _Mod[ERROR] = ERROR;
             _Status = 500;
+            _Erno = true;
             return ;
         }
     }
@@ -268,7 +276,10 @@ void clsResponse::Reset()
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
-
+std::string clsResponse::GetHeaderFeild()
+{
+    return _HeaderFeild;
+}
 void clsResponse::SetRequestHandler(RequestHandler DataRequest)
 {
     _DataRequest = DataRequest;
