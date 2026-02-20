@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:13:46 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/19 15:23:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:15:42 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@ using namespace std;
 int main(void)
 {
     clsResponse Response;
+    clsMainProcess MainProcess;
     Response.SetFileFromDisk("file.txt");
     Response.SetStatus(200);
     Response.SetType(GetTypeDataFile("response/file"));

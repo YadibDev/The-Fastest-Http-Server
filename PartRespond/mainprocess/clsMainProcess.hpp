@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:40:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 17:37:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:25:05 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,25 @@
 #include "../response/clsResponse.hpp"
 #include "../cgi/clsParseOutCGI.hpp"
 #include "../cgi/clsCGI.hpp"
+#include "../response/RequestHandler.hpp"
 
 class clsMainProcess
 {
-    clsResponse Response;
-    clsParseOutCGI ParseOutCGI;
-    clsCGI CGI;
-    int _Status;
-    std::map <short,short> _Mod;
+    private:
+        clsResponse _Response;
+        clsParseOutCGI _ParseOutCGI;
+        clsCGI _CGI;
+        RequestHandler _DataRequest;
+        void _PartRedirection();
+        void _PartPermission();
+        void _PartCGI();
+        void _PartDeleteMethod();
+        void _PartPOSMethod();
+        void _PartGETMethod();
     public:
+        void MainProcess(const RequestHandler &DataRequest);
         clsMainProcess();
         clsResponse GetclsResponse(); 
-        void PartRedirection();
-        void PartPermission();
-        void PartCGI();
-        void PartDeleteMethod();
-        void PartPOSMethod();
-        void PartGETMethod();
-        void MainProcess();
         ~clsMainProcess();
 };
 #endif

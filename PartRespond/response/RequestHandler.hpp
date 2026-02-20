@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:09:34 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/19 15:40:45 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:04:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ struct stErrorPagedata
 };
 enum Method
 {
-    // GET = 1 << 0,
-    // POST = 1 << 1,
-    // DELETE = 1 << 2
+    GET = 1 << 0,
+    POST = 1 << 1,
+    DELETE = 1 << 2
 };
 
 class RequestHandler
@@ -44,7 +44,6 @@ class RequestHandler
         std::string _body;
         std::string _filePathBody;
     public:
-        bool            getAutoindex() const;
         bool            getAllowMethod() const;
         Method          getMethod() const;
 

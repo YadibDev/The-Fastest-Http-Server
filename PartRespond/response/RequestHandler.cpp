@@ -6,19 +6,16 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:17:52 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/19 15:18:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:04:26 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 
- RequestHandler::RequestHandler(): _physicalPath(""), _autoindex(false),_allowMethod(0),
+ RequestHandler::RequestHandler(): _physicalPath(""), _allowMethod(0),
          return_status(0),return_url(""),upload_store("")
 {
     
-}
-bool RequestHandler::getAutoindex() const {
-    return _autoindex;
 }
 
 bool RequestHandler::getAllowMethod() const {

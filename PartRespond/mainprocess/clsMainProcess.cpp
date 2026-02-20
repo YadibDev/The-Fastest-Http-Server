@@ -6,95 +6,89 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 16:29:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:28:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 
-void clsMainProcess::PartRedirection()
+void clsMainProcess::_PartRedirection()
 {
-    // _Status = (IsMyhost)? 302 : 301;
-    // _Mod = REDIRECTION
-    // Response.MakeResponse(Status, Data);
+    _Response.SetStatus(_DataRequest.return_status);
+    _Response.SetMod(REDIRECTION);
+    _Response.MakeResponse();
 }
 
-void clsMainProcess::PartPermission()
+void clsMainProcess::_PartPermission()
 {
-    // _Status = 403 ;
-    // _Mod = ERROR
-    // Response.MakeResponse(Status, Data, );
+    _Response.SetStatus(403);
+    _Response.SetMod(ERROR);
+    _Response.MakeResponse();
 }
 
-void clsMainProcess::PartCGI()
+void clsMainProcess::_PartCGI()
 {
-    // _Status = 200 ;
-    // int _FD = (RunCGI());
-    // if (_FD < 0)
-    // {
-    //     _Mod = ERROR
-    //     _Status = _FD * -1;
-    // }
-    // else
-    //     ; //here set Mod and Status
+    _Response.SetStatus(200);
+    
 }
 
-void clsMainProcess::PartDeleteMethod()
+void clsMainProcess::_PartDeleteMethod()
 {
-    // _Status = 200 ;
-    // _Mod = DELETE;
-    // if (access(Data.FilePath))
-    // {
-    //     _Status = 404 ;
-    //     _Mod = ERROR;
-    // }
-    // // delete file or folder any things
-    // Response.MakeResponse(Status, Data, ); 
-}
-
-void clsMainProcess::PartPOSMethod()
-{
-    // _Status = 200 ;
-    // _Mod = UPLOAD
-    // // upload data in file uploding 
-    // Response.MakeResponse(Status, Data, ); 
-}
-
-void clsMainProcess::PartGETMethod()
-{
-    if (access("Data.FilePath", F_OK))
+    _Response.SetMod(DELETE);
+    _Response.SetStatus(200);
+    if (access(_DataRequest.getPhysicalPath().c_str(), F_OK))
     {
-        Response.SetMod(ERROR);
-        Response.SetStatus(404);
-        Response.MakeResponse();
+        _Response.SetMod(ERROR);
+        _Response.SetStatus(404);
+        _Response.MakeResponse();
+    }
+    // // delete file or folder any things
+    _Response.MakeResponse();
+} 
+
+void clsMainProcess::_PartPOSMethod()
+{
+    _Response.SetStatus(200);
+    _Response.SetMod(UPLOAD);
+    _Response.MakeResponse();
+}
+
+void clsMainProcess::_PartGETMethod()
+{
+    if (access(_DataRequest.getPhysicalPath().c_str(), F_OK))
+    {
+        _Response.SetMod(ERROR);
+        _Response.SetStatus(404);
+        _Response.MakeResponse();
     }
     else
     {
-        _Status = 200 ;
-        _Mod[GET] = GET;
-        Response.SetMod(GET);
-        Response.SetStatus(200);
-        Response.MakeResponse();
+        _Response.SetMod(GET);
+        _Response.SetStatus(200);
+        _Response.MakeResponse();
     }
 }
 
-void clsMainProcess::MainProcess()
+void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
-    // if (Data.location)
-    //     PartRedirection();
-    // else if ((Data.permission | Data.Method )!= Data.Method)
-    //     PartPermission();
-    // else if (Data.RunCGI)
-    //     PartCGI();
-    // else if (Data.Method == DELETE)
-    //     PartDeleteMethod();
-    // else if (Data.Method == POST)
-    //     PartPOSMethod();
-    if (GET)
-        PartGETMethod();
+    bool check = false;
+    _DataRequest = DataRequest;
+    if (_DataRequest.return_url != "")
+        _PartRedirection();
+    else if (check != 0)
+        _PartPermission();
+    else if ((_DataRequest.getMethod() == Method::GET))
+        _PartGETMethod();
+    else if (check != 0)
+        _PartCGI();
+    else if ((_DataRequest.getMethod() == Method::DELETE))
+        _PartDeleteMethod();
+    else if ((_DataRequest.getMethod() == Method::POST))
+        _PartPOSMethod();
         
 }
+
 clsResponse clsMainProcess::GetclsResponse()
 {
-    return Response;
+    return _Response;
 }
