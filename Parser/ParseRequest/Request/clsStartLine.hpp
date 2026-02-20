@@ -3,7 +3,7 @@
 
 #include <string>
 #include "URI.hpp"
-#include "HeaderRequest.hpp"
+#include "../RequestHandler/ParentHeader.hpp"
 
 class clsStartLine {
 public:

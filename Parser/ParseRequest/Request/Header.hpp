@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-#include "HeaderRequest.hpp"  // for stArguments and RequestState
+#include "../RequestHandler/ParentHeader.hpp"
 
 class ParseHeader {
 public:
@@ -11,7 +11,7 @@ public:
 	ParseHeader(std::map<std::string, std::vector<std::string> >& headers);
 	
 	bool 	parseSingleHeader(const std::string& line, HttpError& error);
-	std::vector<std::string> getHeaderValues(const std::string& headerField) const;
+	std::map<std::string, std::vector<std::string> > &getHeaderValues() const;
 	
 	private:
 	RequestState state;

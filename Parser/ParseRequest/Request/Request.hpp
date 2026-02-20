@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "HeaderRequest.hpp"
+#include "../RequestHandler/ParentHeader.hpp"
 #include "clsStartLine.hpp"
 #include "Header.hpp"
 

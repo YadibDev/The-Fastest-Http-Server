@@ -1,16 +1,15 @@
-#include <string>
-#include <map>
-#include <vector>
-#ifndef HEADERREQUEST_HPP
-#define HEADERREQUEST_HPP
+
+#ifndef PARENTHEADER_HPP
+#define PARENTHEADER_HPP
 
 #include <string>
 #include <map>
 #include <vector>
-#include "URI.hpp"
+#include "../ParseRequest/URI.hpp"
 #include "../Utils/HelperFunctions.hpp"
 #include "../Utils/HttpError.hpp"
 #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "../ParseRequest/Request.hpp"
 
 
 enum eMethods { GET = 1, POST = 2, DELETE = 4 };

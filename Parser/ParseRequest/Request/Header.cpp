@@ -78,10 +78,6 @@ bool ParseHeader::parseSingleHeader(const std::string& line, HttpError& error)
 
 
 
-std::vector<std::string> ParseHeader::getHeaderValues(const std::string& headerField) const
-{
-	std::map<std::string, std::vector<std::string> >::const_iterator it = headerMap.find(headerField);
-	if (it != headerMap.end())
-		return it->second;
-	return std::vector<std::string>();
+std::map<std::string, std::vector<std::string> >& ParseHeader::getHeaderValues() const {
+	return headerMap;
 }
