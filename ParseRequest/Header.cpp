@@ -8,7 +8,7 @@
 ParseHeader::ParseHeader(std::map<std::string, std::vector<std::string> >& headers)
 	: state(READING_HEADERS), headerMap(headers) {}
 
-bool ParseHeader::checkHeaderField(std::string HeaderField)
+bool ParseHeader::checkHeaderField(std::string &HeaderField)
 {
 	if (HeaderField.empty() || HelperFunctions::myIsspace(HeaderField, 0))
 		return (false);
@@ -58,42 +58,30 @@ void ParseHeader::storeHeader(std::string &headerField, std::string &fieldValue,
 	headerField.clear();
 }
 
-bool ParseHeader::parseHeader(stArguments &args, bool &TheStartOfHeader)
+bool ParseHeader::parseSingleHeader(const std::string& line, HttpError& error)
 {
-	std::string fieldValue = "";
-	std::string headerField = "";
+    size_t colonPos = line.find(':');
+    if (colonPos == std::string::npos)
+        return (error.setStatus(400, "Invalid Header Field: Missing colon"), false);
 
-	if (TheStartOfHeader)
-	{
-		TheStartOfHeader = false;
-		if (args._Data.empty() || args._Data[0] == ' ' || args._Data[0] == '\t')
-			return (args._Error.setStatus(400, "Bad Request"), false);
-	}
-	while (args._Data.size() > args._Pos)
-	{
-		size_t fieldName = args._Data.find(":", args._Pos);
-		if (fieldName == std::string::npos)
-			return (args._Error.setStatus(400, "Not found Space in fieldName"), false);
+    std::string headerField = line.substr(0, colonPos);
+    if (!checkHeaderField(headerField))
+        return (error.setStatus(400, "Invalid Header Field Name"), false);
 
-		headerField = args._Data.substr(args._Pos, fieldName - args._Pos);
-		if (!checkHeaderField(headerField))
-			return (args._Error.setStatus(400, "Invalid Header Field"), false);
-		args._Pos = fieldName + 1;
-		if (!getValue(args, fieldValue))
-			return (false);
-		storeHeader(headerField, fieldValue, headerMap);
-		if (args._Data.size() > args._Pos && args._Data[args._Pos] == '\r')
-		{
-			if (checkDoubleCRLF(args._Data, args._Pos))
-			{
-				args._Pos += 4;
-				args._State = READING_BODY;
-				return (true);
-			}
-			else
-				return (args._Error.setStatus(400, "Invalid Header Format"), false);
-		}
-	}
-	return (true);
+    std::string fieldValue = line.substr(colonPos + 1);
+    fieldValue = HelperFunctions::normalizeLWS(fieldValue);
+
+    storeHeader(headerField, fieldValue, headerMap);
+
+    return true;
 }
 
+
+
+std::vector<std::string> ParseHeader::getHeaderValues(const std::string& headerField) const
+{
+	std::map<std::string, std::vector<std::string> >::const_iterator it = headerMap.find(headerField);
+	if (it != headerMap.end())
+		return it->second;
+	return std::vector<std::string>();
+}

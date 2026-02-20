@@ -65,13 +65,7 @@ void clsStartLine::_parseStartLine(std::string startLine) {
 	size_t indx = 0;
 	_parseMethod(getPart(startLine, indx));
 	_parsURI(getPart(startLine, indx));
-	_parseVersion(getPart(startLine, indx));
-	
-	if (startLine.size() > 2)
-		if (!HelperFunctions::isCRLF(startLine))
-			statuCode = 400;
-		
-	
+	_parseVersion(getPart(startLine, indx));		
 }
 
 // Getters

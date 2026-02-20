@@ -13,8 +13,6 @@
 class clsRequest {
 private:
 	RequestState                        _state;
-	std::string                         _uri;
-	std::string                         _version;
 	std::map<std::string, std::vector<std::string> >  _headers;
 	std::vector<char>                   _body;
 	stArguments							_arguments;

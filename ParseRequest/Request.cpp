@@ -2,54 +2,43 @@
 
 clsRequest::clsRequest()
     : _state(READING_LINE), _startOfHeader(true), _headerParser(_headers) {}
-    
 
-void	clsRequest::getDataParse(const std::string &RawData)
-{
-    if (RawData.empty())
-        return ;
-
-    if (_state == READING_BODY)
-    {
-        _Buffer += _Remainder + RawData;
-        _Remainder = "";
-        return ;
-    }
-    size_t pos = RawData.find("\r\n");
-
-    if (pos != std::string::npos)
-    {
-        _Buffer = _Remainder + RawData.substr(0, pos + 2);
-        _Remainder = RawData.substr(pos + 2);
-    }
-    else
-        _Remainder = _Remainder + RawData;
-}
 
 void clsRequest::parse(const std::string& rawData)
 {
-    getDataParse(rawData);
-    if (_state == READING_LINE)
+    _Buffer += rawData;
+    size_t pos;
+
+    while ((pos = _Buffer.find("\r\n")) != std::string::npos)
     {
-        size_t pos = _Buffer.find("\r\n");
-        if (pos != std::string::npos)
+        std::string line = _Buffer.substr(0, pos);
+        _Buffer.erase(0, pos + 2);
+
+        if (_state == READING_LINE)
         {
-            _startLine = clsStartLine(_Buffer.substr(0, pos));
-            _Buffer = _Buffer.substr(pos + 2);
-            _arguments._Data = _Buffer;
-            _arguments._Pos = pos + 2;
+            clsStartLine startLine(line);
+            _startLine = startLine;
             _state = READING_HEADERS;
         }
+        else if (_state == READING_HEADERS)
+        {
+            if (line.empty())
+            {
+                _state = READING_BODY;
+                break;
+            }
+            if (!_headerParser.parseSingleHeader(line, _arguments._Error))
+                return;
+        }
+        
+        if (_state == READING_BODY)
+            break;
     }
-    if (_state == READING_HEADERS)
-    {
-        _headerParser.parseHeader(_arguments, _startOfHeader);
-    }
+
     if (_state == READING_BODY)
     {
-        // we can read the body
+        // Body
         _state = COMPLETED;
     }
 }
-    
 bool clsRequest::isCompleted() const { return _state == COMPLETED; }

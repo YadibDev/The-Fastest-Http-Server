@@ -29,6 +29,9 @@ public:
     static bool myIsspace(std::string str, size_t pos);
     static std::vector<std::string> splitCommaSeparated(const std::string &value);
     static bool strIsSpace(const std::string &str);
+    static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
+
+
 
 
     // Acheraf
