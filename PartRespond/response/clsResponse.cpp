@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 22:06:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 22:12:25 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ std::string clsResponse::ErrorRespnseHandling()
     short PrevStatus = _Status;
     if (ErrorPageConf.count(_Status))
     {
-        _Mod.clear();
         if (ErrorPageConf[_Status].Status != -1)
             _Status = ErrorPageConf[_Status].Status;
         _FileFromDisk = ErrorPageConf[_Status].Path;
