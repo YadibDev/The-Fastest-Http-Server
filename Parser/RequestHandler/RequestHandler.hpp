@@ -1,11 +1,7 @@
 #ifndef REQUESTHANDLER_HPP
 #define REQUESTHANDLER_HPP
 
-#include <string>
-#include <vector>
-#include <map>
-#include "ParentHeader.hpp"
-
+#include "../Header/HeaderFiles.hpp"
 
 class RequestHandler {
 private:

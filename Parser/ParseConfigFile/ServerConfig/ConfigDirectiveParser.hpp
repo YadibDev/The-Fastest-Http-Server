@@ -14,7 +14,7 @@
 #include "../../Utils/Lexer.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
-#include "../../ParseRequest/URIParser.hpp"
+#include "../../ParseRequest/URI/URI.hpp"
 
 
 enum enBlocksDirective

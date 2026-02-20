@@ -1,9 +1,8 @@
 #ifndef CLSSTARTLINE_HPP
 #define CLSSTARTLINE_HPP
 
-#include <string>
-#include "URI.hpp"
-#include "../RequestHandler/ParentHeader.hpp"
+#include "../../Header/HeaderFiles.hpp"
+
 
 class clsStartLine {
 public:

@@ -4,9 +4,10 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "../RequestHandler/ParentHeader.hpp"
+
 #include "clsStartLine.hpp"
 #include "Header.hpp"
+#include "../../Header/HeaderFiles.hpp"
 
 
 

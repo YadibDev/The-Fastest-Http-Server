@@ -1,6 +1,6 @@
 #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "../ParseRequest/Request/Request.hpp"
 #include "RequestHandler.hpp"
-#include "../ParseRequest/Request.hpp"
 
 class ProcessRequestHandler
 {

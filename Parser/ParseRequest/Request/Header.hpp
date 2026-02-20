@@ -1,9 +1,7 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
 
-#include <map>
-#include <string>
-#include "../RequestHandler/ParentHeader.hpp"
+#include "../../Header/HeaderFiles.hpp"
 
 class ParseHeader {
 public:

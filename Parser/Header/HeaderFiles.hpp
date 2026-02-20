@@ -1,15 +1,14 @@
+#ifndef HEADERFILES_HPP
+#define HEADERFILES_HPP
 
-#ifndef PARENTHEADER_HPP
-#define PARENTHEADER_HPP
-
-#include <string>
-#include <map>
-#include <vector>
-#include "../ParseRequest/URI.hpp"
-#include "../Utils/HelperFunctions.hpp"
-#include "../Utils/HttpError.hpp"
+#include "../../Utils/Lexer.hpp"
+#include "../../Utils/HelperFunctions.hpp"
+#include "../../Utils/HttpError.hpp"
 #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
-#include "../ParseRequest/Request.hpp"
+#include "../ParseRequest/URI/URI.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 
 enum eMethods { GET = 1, POST = 2, DELETE = 4 };
@@ -30,4 +29,3 @@ struct  stArguments {
 };
 
 #endif
-
