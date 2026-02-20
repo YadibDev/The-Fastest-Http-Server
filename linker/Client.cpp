@@ -55,6 +55,7 @@ void Client::UpdateTime() // update with the time of last reqquest
 void Client::ResetAll()
 {
     this->SetState(BEGIN);
+    // i will add reset of request and respond
 }
 
 Client::~Client()

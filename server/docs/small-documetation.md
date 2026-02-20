@@ -16,6 +16,8 @@ i used many ressource to understand what is http and how the web server should b
     https://geeksforgeeks.org/computer-networks/socket-in-computer-network/
     what is http
     https://www.cloudflare.com/learning/ddos/glossary/hypertext-transfer-protocol-http/
+    what is epoll:
+    https://medium.com/@m-ibrahim.research/mastering-epoll-the-engine-behind-high-performance-linux-networking-85a15e6bde90
 
 and also i use ai to deep dive in the concept of socket and why we need epoll and pool to manage multiple client etc ...
 

@@ -10,27 +10,33 @@
 #include <stdio.h>
 #include "server/EpollHandler.hpp"
 #include "server/ServerSock.hpp"
+#include "linker/Monitor.hpp"
 #include <vector>
 #include "PartRespond/mainprocess/Webserv.hpp"
 
 using namespace std;
 
+struct block
+{
+    // config file source
+    ServerSock Server;
+    Monitor Manager;
+};
+
 int main()
 {
-
-    ServerSock server;
-    EpollHandler epoll;
-
-    // clsResponse Response;
-
-
-    string respond;
-
     vector<unsigned short> allPort;
     vector<unsigned int> allIps;
-
     allPort.push_back(8081);
     allIps.push_back(0);
+
+    EpollHandler epoll;
+
+    vector<block> allServers;
+
+    struct block firstServer;
+    allServers.push_back(firstServer);
+
 
     server.buildSockets(allPort, allIps);
 
@@ -103,3 +109,4 @@ int main()
             // }
         }
     }
+}

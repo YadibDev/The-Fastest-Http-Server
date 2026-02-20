@@ -2,7 +2,8 @@ CPP = c++
 CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
-SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cpp main.cpp
+SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cpp main.cpp \
+				linker/Monitor.cpp linker/Client.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp \
 		Utils/Lexer.cpp
@@ -26,7 +27,7 @@ $(NAME) : $(OBJ)
 	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
 
 %.o : %.cpp
-	$(CPP) $(CPPFLAGS) $< -c -MMD -MP  -o $@
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
 
 clean:
 	rm -rf $(OBJ) $(DEP)

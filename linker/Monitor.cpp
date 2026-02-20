@@ -1,6 +1,6 @@
 #include "Monitor.hpp"
 
-Monitor::Monitor(ServerSock &SocketsServer)
+Monitor::Monitor()
 {
 
 }

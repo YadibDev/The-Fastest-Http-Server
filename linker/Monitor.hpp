@@ -14,7 +14,7 @@ private:
     map<int, Client> _clientsDB;
 
 public:
-	Monitor(ServerSock &SocketsServer);
+	Monitor();
     ~Monitor();
 
     Client &GetClientAt(int fd);
