@@ -8,8 +8,8 @@ SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/test
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp \
 		Utils/Lexer.cpp Utils/HelperFunctions.cpp
 
-RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
-
+RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp \
+				PartRespond/response/RequestHandler.cpp
 
 CONFIG_FILES = ParseConfigFile/ConfigFile/ParseConfigueFile.cpp ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp \
 				ParseConfigFile/ServerConfig/ServerConfig.cpp ParseConfigFile/LocationConfig/LocationConfig.cpp
