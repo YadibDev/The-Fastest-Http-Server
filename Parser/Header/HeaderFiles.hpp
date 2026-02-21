@@ -19,14 +19,14 @@
 #include <vector>
 
 
-enum eMethods { GET = 1, POST = 2, DELETE = 4 };
+enum eMethods { GET = 1, POST = 2, DELETE = 4};
 
 enum RequestState {
 	READING_LINE,
 	READING_HEADERS,
 	READING_BODY,
 	COMPLETED,
-	ERROR
+	ERROR = 100
 };
 
 struct  stArguments {

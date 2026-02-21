@@ -37,7 +37,7 @@ void clsMainProcess::_PartCGI()
 
 void clsMainProcess::_PartDeleteMethod()
 {
-    _Response.SetMod(DELETEM);
+    _Response.SetMod(DELETE);
     _Response.SetStatus(200);
     if (access(_DataRequest.getPhysicalPath().c_str(), F_OK))
     {
@@ -67,7 +67,7 @@ void clsMainProcess::_PartGETMethod()
     }
     else
     {
-        _Response.SetMod(GETM);
+        _Response.SetMod(GET);
         _Response.SetStatus(200);
         _Response.SetRequestHandler(_DataRequest);
         _Response.MakeResponse();
@@ -82,13 +82,13 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         _PartRedirection();
     else if (check != 0)
         _PartPermission();
-    else if ((_DataRequest.getMethod() ==GET))
+    else if ((_DataRequest.getMethod() == "GET"))
         _PartGETMethod();
     else if (check != 0)
         _PartCGI();
-    else if ((_DataRequest.getMethod() == DELETE))
+    else if ((_DataRequest.getMethod() == "DELETE"))
         _PartDeleteMethod();
-    else if ((_DataRequest.getMethod() == POST))
+    else if ((_DataRequest.getMethod() == "POST"))
         _PartPOSMethod();
         
 }

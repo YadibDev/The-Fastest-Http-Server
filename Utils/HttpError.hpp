@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef HTTP_ERROR_HPP
+#define HTTP_ERROR_HPP
 
 #include <iostream>
 #include <string>
@@ -18,3 +20,4 @@ public:
     void setStatus(int code, std::string msg = "");
 };
 
+#endif

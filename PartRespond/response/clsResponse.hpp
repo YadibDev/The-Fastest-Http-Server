@@ -15,7 +15,7 @@
 
 #include "../mainprocess/librarys.hpp"
 #include "../response/clsErrorPage.hpp"
-#include "RequestHandler.hpp"
+#include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsResponse
 {

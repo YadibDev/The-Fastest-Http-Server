@@ -9,7 +9,7 @@
 #include <set>
 #include <unistd.h>
 #include <netinet/in.h>
-#include "../Error.hpp"
+#include "../Utils/HttpError.hpp"
 
 #define COLOR_RED "\033[31m"
 #define COLOR_BOLD "\033[1m"

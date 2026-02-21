@@ -16,7 +16,7 @@
 #include "../response/clsResponse.hpp"
 #include "../cgi/clsParseOutCGI.hpp"
 #include "../cgi/clsCGI.hpp"
-#include "../response/RequestHandler.hpp"
+#include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsMainProcess
 {

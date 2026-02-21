@@ -13,7 +13,7 @@
 # ifndef LIBRARYS_HPP
 # define LIBRARYS_HPP
 
-enum eMod{GETM, ERROR,POSTM ,UPLOAD, REDIRECTION, DELETEM, CHUNK, CGI};
+enum eSatat {UPLOAD, REDIRECTION, CHUNK, CGI};
 
 #include "../../Utils/HelperString.hpp"
 
