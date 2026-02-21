@@ -62,6 +62,11 @@ void RequestHandler::setFilePathBody(const std::string& filePathBody) {
     _filePathBody = filePathBody;
 }
 
+void RequestHandler::setAllowMethod(bool allowMethod)
+{
+    _allowMethod = allowMethod;
+}
+
 void RequestHandler::setError(HttpError	&error)
 {
     _error = error;

@@ -61,14 +61,14 @@ clsClient::~clsClient()
 }
 
 
-void clsClient::ProcessRequest()
-{
+// void clsClient::ProcessRequest()
+// {
 
-}
+// }
 
 
 // i should create the logic of this and improve it
-void clsClient::_SendRespond(clsResponse &_Responder)
+void clsClient::_SendRespond(const clsResponse &_Responder)
 {
     string respond;
     ssize_t s;
@@ -84,6 +84,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
     {
         _state = SEND_BODY;
         respond = _Responder.GetBody();
+        std::cout << respond << std::endl;
         s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
         _DataLeft = &respond[s_send];
     }
@@ -117,7 +118,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
         _state = BEGIN;
 }
 
-void clsClient::ProcessRespond()
+void clsClient::ProcessRespond(const RequestHandler &DataRequest)
 {
     if (_state == REQUEST_MODE)
     {
@@ -127,15 +128,10 @@ void clsClient::ProcessRespond()
         ssize_t s;
         string fileName = "index.html";
 
-        _Responder.SetFileFromDisk(fileName);
-        _Responder.SetMod(GET);
-        _Responder.SetStatus(200);
-        _Responder.SetType("text/html");
-
-        
-         _Responder.MakeResponse();
+        this->_ResponderProecss.MainProcess(DataRequest);
+        Header = _ResponderProecss.GetclsResponse().GetHeaderFeild();
          // start from here
-        if (_Responder.GetFileName().empty())
+        if (_ResponderProecss.GetclsResponse().GetFileName().empty())
             _BodyPlace = RAM;
         else
             _BodyPlace = DISK_FILE;
@@ -143,6 +139,7 @@ void clsClient::ProcessRespond()
         _fdRespond = 0;
 
         s = send(_socket, &Header[0], Header.size(), MSG_DONTWAIT);
+        std::cout << Header << std::endl;
         if (s >= 0 && s < Header.size())
             this->_DataLeft = &Header[s];
         // if s == -1 is it possible ?/

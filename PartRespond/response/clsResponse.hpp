@@ -52,9 +52,9 @@ class clsResponse
     public:
         void Reset();
         clsResponse();
-        const std::string &GetBody();
-        const std::string &GetFileName();
-        const std::string &GetHeaderFeild();
+        const std::string &GetBody() const;
+        const std::string &GetFileName() const;
+        const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
         void SetRequestHandler(const RequestHandler &DataRequest);
         void SetFileFromDisk(const std::string &FileFromDisk);
@@ -62,7 +62,7 @@ class clsResponse
         void SetType(const std::string &Type);
         bool GetIsConnection();
         void MakeResponse();
-        const std::string &ChunkData(const std::string &Str);
+        const std::string ChunkData(const std::string &Str) const;
 
         ~clsResponse();
 };

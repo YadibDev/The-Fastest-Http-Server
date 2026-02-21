@@ -41,8 +41,8 @@ private:
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const int _socket;
 
-    void _SendRespond(clsResponse &_Responder);
-    void _ReadRequest();
+    void _SendRespond(const clsResponse &_Responder);
+    // void _ReadRequest();
 public:
     clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
     clsClient(const clsClient &other);
@@ -64,8 +64,8 @@ public:
     void ResetAll();   // will reset all things
 
     // the flow of request and respnd
-    void ProcessRequest(); // will be
-    void ProcessRespond();
+    // void ProcessRequest(); // will be
+    void ProcessRespond(const RequestHandler &DataRequest);
     void ProcessBoth();
 };
 

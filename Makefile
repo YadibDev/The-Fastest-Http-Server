@@ -9,9 +9,8 @@ UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/Help
 		Utils/Lexer.cpp
 
 
-RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp \
-				PartRespond/cgi/clsCGI.cpp PartRespond/cgi/clsParseOutCGI.cpp
-				
+RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp 
+
 CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
 				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
 

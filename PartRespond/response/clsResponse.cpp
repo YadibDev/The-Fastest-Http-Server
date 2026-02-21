@@ -208,7 +208,7 @@ void clsResponse::StoredInFileOrStr()
     close(FD);
 }
 
-const std::string &clsResponse::ChunkData(const std::string &Str)
+const std::string clsResponse::ChunkData(const std::string &Str) const
 {
     std::string NewStr;
 
@@ -241,12 +241,12 @@ void clsResponse::StoredDefaultType()
         _TypeContent[".txt"]  = "text/plain";
     }
  }
- const std::string &clsResponse::GetBody()
+ const std::string &clsResponse::GetBody() const
 {
     return _Body;
 }
 
-const std::string &clsResponse::GetFileName()
+const std::string &clsResponse::GetFileName() const
 {
     return _FileName;
 }
@@ -285,7 +285,7 @@ void clsResponse::Reset()
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
-const std::string &clsResponse::GetHeaderFeild()
+const std::string &clsResponse::GetHeaderFeild() const
 {
     return _HeaderFeild;
 }

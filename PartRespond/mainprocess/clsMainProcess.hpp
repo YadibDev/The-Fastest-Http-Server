@@ -14,8 +14,8 @@
 # define CLS_MAIN_PROCESS_HPP
 
 #include "../response/clsResponse.hpp"
-#include "../cgi/clsParseOutCGI.hpp"
-#include "../cgi/clsCGI.hpp"
+// #include "../cgi/clsParseOutCGI.hpp"
+// #include "../cgi/clsCGI.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsMainProcess
