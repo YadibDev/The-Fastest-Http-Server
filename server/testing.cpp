@@ -1,7 +1,7 @@
 
 
-// #include "ServerSock.hpp"
-// #include "EpollHandler.hpp"
+// #include "clsServerSock.hpp"
+// #include "clsEpollHandler.hpp"
 // #include <ctime>
 // int main()
 // {
@@ -12,7 +12,6 @@
 // #include <cstdio>  // for perror
 // #include <vector>  // ensure vector is available
 
-
 //     try
 //     {
 //         randomPorts[0].push_back(8080);
@@ -21,8 +20,8 @@
 //         randomIp[1].push_back(2130706433);
 
 //         int size = 2;
-//         EpollHandler eventHandler;
-//         std::vector<ServerSock> Servers(2, ServerSock());
+//         clsEpollHandler eventHandler;
+//         std::vector<clsServerSock> Servers(2, clsServerSock());
 //         for (int i = 0; i < size; i++)
 //         {
 //             Servers[i].buildSockets(randomPorts[i], randomIp[i]);

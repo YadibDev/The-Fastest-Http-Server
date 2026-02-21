@@ -1,4 +1,4 @@
-#include "ServerSock.hpp"
+#include "clsServerSock.hpp"
 
 enum StatusError
 {
@@ -7,12 +7,12 @@ enum StatusError
     NOT_SOCKET_SERVER,
 };
 
-ServerSock::ServerSock() : _totalInterfaces(0) , _totalSocks(0)
+clsServerSock::clsServerSock() : _totalInterfaces(0), _totalSocks(0)
 {
 }
 
 // free all data and closing all the fds of socket
-ServerSock::~ServerSock()
+clsServerSock::~clsServerSock()
 {
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
@@ -24,18 +24,18 @@ ServerSock::~ServerSock()
     }
 
     std::cout << "-------------------------\n";
-    std::cout << "--- ServerSock closed ---\n";
+    std::cout << "--- clsServerSock closed ---\n";
     std::cout << "-------------------------" << std::endl;
 }
 
-void ServerSock::removeSocket(int fd)
+void clsServerSock::removeSocket(int fd)
 {
     this->_Sockets.erase(fd);
     close(fd);
 }
 
 // initilaizing the sturct with the port and ip of the passive socket
-void ServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
+void clsServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
 {
     memset(&temp, 0, sizeof(temp));
 
@@ -45,7 +45,7 @@ void ServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
 }
 
 // build single socket with socket and bind and listen system calls
-int ServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
+int clsServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
 {
     int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if (fdSock == -1)
@@ -60,7 +60,6 @@ int ServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
     if (listen(fdSock, MAX_QUEUE) == -1)
         throw std::runtime_error("listen system call fail");
 
-
     this->_allIps.push_back(ipV4);
     this->_allPorts.push_back(port);
     _totalInterfaces++;
@@ -68,7 +67,7 @@ int ServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
 }
 
 // builds sockets that exist in vector
-void ServerSock::buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ip)
+void clsServerSock::buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ip)
 {
     vector<unsigned short>::const_iterator it = ports.begin();
     vector<unsigned short>::const_iterator end = ports.end();
@@ -103,23 +102,23 @@ void ServerSock::buildSockets(const vector<unsigned short> &ports, const vector<
 }
 
 // check is the socket exist in the server or not
-bool ServerSock::_isServerSocket(int fd)
+bool clsServerSock::_isServerSocket(int fd)
 {
     set<int>::iterator end = _Sockets.end();
 
     return (_Sockets.find(fd) != end);
 }
 
-bool ServerSock::isServerIp(unsigned int ip, unsigned int port)
+bool clsServerSock::isServerIp(unsigned int ip, unsigned int port)
 {
     for (size_t i = 0; i < _totalInterfaces; i++)
         if (ip == this->_allIps[i] && port == _allPorts[i])
             return true;
-    
+
     return false;
 }
 #include <stdio.h>
-int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
+int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
@@ -134,10 +133,6 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
-        std::cout << fd << std::endl;
-        char arr[100] = "ahmed";
-        perror(arr);
-        std::cout << arr << std::endl;
         _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }
@@ -145,11 +140,8 @@ int ServerSock::tryAcceptNewClient(int sockServer, sockaddr_in * addr)
     return fd;
 }
 
-
 // simple getter
-const set<int> &ServerSock::getServerSockets()
+const set<int> &clsServerSock::getServerSockets()
 {
     return this->_Sockets;
 }
-
-

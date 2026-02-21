@@ -7,27 +7,26 @@
 #include <set>
 #include <unistd.h>
 #include <netinet/in.h>
-#include "ServerSock.hpp"
+#include "clsServerSock.hpp"
 
 using namespace std;
- 
-class EpollHandler
-{ 
+
+class clsEpollHandler
+{
 
 private:
     int _EpollFd;
-    struct epoll_event tempEvent;    
+    struct epoll_event tempEvent;
 
-public: 
-    EpollHandler(); 
-    ~EpollHandler();
+public:
+    clsEpollHandler();
+    ~clsEpollHandler();
 
-    bool addServerSockets(ServerSock &SocketsServer, int ability = EPOLLIN);
+    bool addServerSockets(clsServerSock &SocketsServer, int ability = EPOLLIN);
     bool addClient(int fd, int ability = EPOLLIN);
 
     void changeAbility(int fd, int newAbility);
     int tryPollNewClients(struct epoll_event *ClientBuffer, size_t size, int timeout);
-
 };
 
 #endif

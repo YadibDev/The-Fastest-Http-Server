@@ -5,14 +5,14 @@ A socket is a low-level communication interface that enables a web server and a 
 sf
 i will design here this classes
 
-ServerSock:
-  here i will create all the socket that we will use in our server and each socket listen
-  to specific port and ip
-  and also it will have three or more method
-  
-  isServerSocket:
-  like is the fd exist in the object
-  getServerSockets:
-  a simple getter
-  buildSockets:
-  this method build all sockets one by one
+clsServerSock:
+here i will create all the socket that we will use in our server and each socket listen
+to specific port and ip
+and also it will have three or more method
+
+isServerSocket:
+like is the fd exist in the object
+getServerSockets:
+a simple getter
+buildSockets:
+this method build all sockets one by one

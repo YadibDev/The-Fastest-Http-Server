@@ -2,11 +2,11 @@ CPP = c++
 CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
-SERVER_FILES = server/EpollHandler.cpp  server/ServerSock.cpp  server/testing.cpp main.cpp \
-				linker/Monitor.cpp linker/Client.cpp
+SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
+				linker/clsLinker.cpp linker/clsClient.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp \
-		Utils/Lexer.cpp
+		Utils/Lexer.cpp Utils/HelperFunctions.cpp
 
 RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp
 

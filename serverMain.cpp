@@ -8,53 +8,55 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include "server/EpollHandler.hpp"
-#include "server/ServerSock.hpp"
-#include "linker/Monitor.hpp"
+#include "server/clsEpollHandler.hpp"
+#include "server/clsServerSock.hpp"
+#include "linker/clsLinker.hpp"
 #include <vector>
 #include "PartRespond/mainprocess/Webserv.hpp"
 
 using namespace std;
 
-struct block
-{
-    // config file source
-    ServerSock Server;
-    Monitor Manager;
-};
+// struct block
+// {
+//     // config file source
+//     ServerSock Server;
+//     Linker Manager;
+// };
 
 int main()
 {
+
+    clsEpollHandler epoll;
+    epoll_event ClientBuffer[100];
+
     vector<unsigned short> allPort;
     vector<unsigned int> allIps;
-    allPort.push_back(8081);
+    allPort.push_back(8080);
     allIps.push_back(0);
 
-    EpollHandler epoll;
 
-    vector<block> allServers;
-
-    struct block firstServer;
-    allServers.push_back(firstServer);
+    clsServerSock server;
+    clsLinker ClientsLinker;
 
 
     server.buildSockets(allPort, allIps);
-
     epoll.addServerSockets(server);
 
-    epoll_event ClientBuffer[100];
+    string respond = "";
+
     int n = 0;
     while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
     {
         for (int i = 0; i < n; i++)
         {
-            size_t ofset = 0;
+ 
             int fd = ClientBuffer[i].data.fd;
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
+            int newClient;
             if ((ClientBuffer[i].events | EPOLLIN) == EPOLLIN)
             {
-                int newClient = server.tryAcceptNewClient(fd, &addr);
+                newClient = server.tryAcceptNewClient(fd, &addr);
                 if (newClient == -1)
                 {
                     if (newClient == -1)
@@ -64,10 +66,13 @@ int main()
                 else if (newClient > 0)
                 {
                     // flow of accept client jdid
+                    cout << newClient << endl;
+                    ClientsLinker.insertClient(newClient, addr);
                     epoll.addClient(newClient);
                 }
                 else
                 {
+                    newClient = fd;
                     string buffer;
                     buffer.resize(4096);
                     int size = recv(fd, &buffer[0], 4095, MSG_DONTWAIT);
@@ -79,34 +84,22 @@ int main()
                     buffer[size] = '\0';
                     std::cout << "read size" << size << std::endl;
                     std::cout << buffer << endl;
+                    ClientsLinker.GetClientAt(newClient).SetState(REQUEST_MODE);
+                    ClientsLinker.GetClientAt(newClient).ProcessRespond();
+                    if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
+                        epoll.changeAbility(newClient, EPOLLOUT);
 
-                    clsResponse Response;
-
-                    Response.SetFileFromDisk("index.html");
-                    Response.SetMod(GET);
-                    Response.SetStatus(200);
-                    Response.SetType("text/html");
-                    respond = "";
-
-                    respond = Response.MakeResponse();
-                    respond += Response.GetBody();
-                    ofset = send(fd, respond.c_str(), respond.size(), MSG_DONTWAIT);
-                    if (ofset < respond.size())
-                        epoll.changeAbility(fd, EPOLLOUT);
-                    close(fd);
                     // Response.~clsResponse();
                 }
             }
-            // else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
-            // {
-            //     int ofset = 0;
-            //     ofset = send(ClientBuffer[i].data.fd, &respond[ofset], respond.size() - ofset, MSG_DONTWAIT);
-            //     if (ofset >= respond.size())
-            //     {
-            //         epoll.changeAbility(ClientBuffer[i].data.fd, EPOLLIN);
-            //         ofset = 0;
-            //     }
-            // }
+            else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
+            {
+                newClient = fd;
+
+                ClientsLinker.GetClientAt(newClient).ProcessRespond();
+                    if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
+                        epoll.changeAbility(newClient, EPOLLIN);
+            }
         }
     }
 }

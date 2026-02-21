@@ -324,3 +324,12 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 		Result += MaxHex[i--];
 	return (Result);
 }
+
+unsigned long long HelperFunctions::getCurrentTimeInMs()
+{
+    struct timeval Time;
+
+    gettimeofday(&Time, NULL);
+
+    return (Time.tv_sec * 1000) + (Time.tv_usec / 1000);
+}

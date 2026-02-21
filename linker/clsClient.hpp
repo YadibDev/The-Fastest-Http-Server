@@ -5,31 +5,48 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
+#include "../PartRespond/mainprocess/Webserv.hpp"
 
+using namespace std;
 
 enum clinetState
 {
     BEGIN,
     REQUEST_MODE,
-    RESPOND_MODE
+    RESPOND_MODE,
+    SEND_BODY,
+    LAST_CHUNKED,
 };
 
-class Client
+enum whereIsBody
+{
+    NONE,
+    RAM,
+    DISK_FILE
+};
+
+class clsClient
 {
 private:
     // request object it will be here
-    // respond objec it will be here
+    size_t _BodyOfset;
+    string _DataLeft;
+    size_t _HeaderOfset;
+    clsResponse _Responder;
     clinetState _state;
-    const sockaddr_in _addr;  // ip and port of the client
-    size_t _LastConnection; // update connection in ms
+    int _fdRespond;
+    whereIsBody _BodyPlace;
+    const sockaddr_in _addr;       // ip and port of the client
+    size_t _LastConnection;        // update connection in ms
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const int _socket;
 
+    void _SendRespond();
 public:
-    Client(const sockaddr_in &addr, int fd); // initialize_state_by_begin
-    Client(const Client &other);
-    
-    ~Client();
+    clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
+    clsClient(const clsClient &other);
+
+    ~clsClient();
 
     // geters
     const clinetState &GetState() const;
@@ -38,12 +55,12 @@ public:
     size_t GetTimeConnection() const;
     size_t GetLastConnection() const;
 
-    //seter
+    // seter
     void SetState(clinetState state);
 
     // methods
     void UpdateTime(); // update last connection
-    void ResetAll(); // will reset all things
+    void ResetAll();   // will reset all things
 
     // the flow of request and respnd
     void ProcessRequest(); // will be
