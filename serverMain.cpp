@@ -31,13 +31,11 @@ int main()
 
     vector<unsigned short> allPort;
     vector<unsigned int> allIps;
-    allPort.push_back(8080);
+    allPort.push_back(8082);
     allIps.push_back(0);
-
 
     clsServerSock server;
     clsLinker ClientsLinker;
-
 
     server.buildSockets(allPort, allIps);
     epoll.addServerSockets(server);
@@ -49,7 +47,7 @@ int main()
     {
         for (int i = 0; i < n; i++)
         {
- 
+
             int fd = ClientBuffer[i].data.fd;
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
@@ -81,13 +79,23 @@ int main()
                         close(fd);
                         continue;
                     }
+                    std::cout << "before" << size << std::endl;
                     buffer[size] = '\0';
                     std::cout << "read size" << size << std::endl;
                     std::cout << buffer << endl;
                     ClientsLinker.GetClientAt(newClient).SetState(REQUEST_MODE);
-                    ClientsLinker.GetClientAt(newClient).ProcessRespond();
+                    std::cout << "RESPOND 1 start" << endl;
+                    try
+                    {
+                        ClientsLinker.GetClientAt(newClient).ProcessRespond();
+                    }
+                    catch (std::exception &e)
+                    {
+                        cout << e.what() << endl;
+                    }
                     if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
                         epoll.changeAbility(newClient, EPOLLOUT);
+                    std::cout << "RESPOND 1 end" << endl;
 
                     // Response.~clsResponse();
                 }
@@ -95,10 +103,20 @@ int main()
             else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
             {
                 newClient = fd;
+                std::cout << "RESPOND 2 start" << endl;
 
-                ClientsLinker.GetClientAt(newClient).ProcessRespond();
-                    if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
-                        epoll.changeAbility(newClient, EPOLLIN);
+                try
+                {
+                    ClientsLinker.GetClientAt(newClient).ProcessRespond();
+                }
+                catch (std::exception &e)
+                {
+                    cout << e.what() << endl;
+                }
+                if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
+                    epoll.changeAbility(newClient, EPOLLIN);
+                std::cout << "RESPOND 2 end" << endl;
+                
             }
         }
     }
