@@ -70,8 +70,7 @@ void clsClient::_SendRespond()
     if (_DataLeft.empty() == false)
     {
         s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
-        // if s == -1 is it possible ? what should i do
-
+        // if s_send == -1 is it possible ? what should i do
         _DataLeft = &_DataLeft[s_send];
     }
     else if (_BodyPlace == RAM)
@@ -84,7 +83,6 @@ void clsClient::_SendRespond()
     else if (_BodyPlace == DISK_FILE)
     {
         _state = SEND_BODY;
-        string end = "";
         respond.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
         {
@@ -93,22 +91,18 @@ void clsClient::_SendRespond()
             //     ; // we should handle this edge case
         }
 
-        s = read(_fdRespond, &respond[0], CHUNK_LIMIT); // it may return -1
+        s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
         if (s < CHUNK_LIMIT)
         {
-            _state = LAST_CHUNKED;
-            if (s > 0)
-                end = _Responder.ChunkData("");
-            close(_fdRespond);
-            if (s == -1) // is is a solution
-                s = 0;
+            if (s == 0)
+            {
+                _state = LAST_CHUNKED;
+                close(_fdRespond);
+            }
         }
-
         respond.resize(s);
-
-        respond = _Responder.ChunkData(respond) + end;
+        respond = _Responder.ChunkData(respond);
         s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-
         _DataLeft = &respond[s_send];
     }
 
