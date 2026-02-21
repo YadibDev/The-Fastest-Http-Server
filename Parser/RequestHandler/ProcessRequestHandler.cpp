@@ -75,14 +75,57 @@ std::string ProcessRequestHandler::selectMethod(eMethods method) {
     }
 }
 
+
+
+bool    checkPath(const std::string &physicalPath)
+{
+    struct stat buffer;
+    
+    if (!stat(physicalPath.c_str(), &buffer))
+    {
+        if (!access(physicalPath.c_str(), R_OK))
+            return (true);
+    }
+    return (false);
+}
+
+std::string ProcessRequestHandler::getIndex(const clsLocation* bestLocation, HttpError &error)
+{
+    const std::vector<std::string> &vindex = bestLocation->getIndex();
+    
+    std::string root = bestLocation->getRoot();
+
+    for (size_t i = 0; i < vindex.size(); i++)
+    {
+        std::string physicalPath = root + "/" + vindex[i];
+        if (checkPath(physicalPath))
+            return (physicalPath);
+    }
+    error.setStatus(403, "Forbidden");
+    return "";
+}
+
+std::string ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, const std::string &uri, HttpError &error)
+{
+    std::string PhysicalPath = "";
+
+    if (uri.size() >= 1 && uri[uri.size() - 1] == '/')
+        return getIndex(bestLocation, error);
+    PhysicalPath = bestLocation->getRoot() + uri;
+    if (checkPath(PhysicalPath))
+        return PhysicalPath;
+    error.setStatus(403, "Forbidden");
+    return "";
+}
+
 void ProcessRequestHandler::processRequest(const clsRequest& request, const clsServerConfig& serverConfigs, RequestHandler& handler)
 {
     const clsLocation* bestLocation = findBestLocation(serverConfigs.getLocationExact(), serverConfigs.getLocationPrefix(), request._startLine.getPath());
-
+    HttpError error;
 
     if (bestLocation)
     {
-        handler.setPhysicalPath(bestLocation->getRoot() + request._startLine.getPath());
+        handler.setPhysicalPath(creatPhysicalPath(bestLocation, request._startLine.getPath(), error));
         handler.setAutoIndex(bestLocation->getAutoIndex());
         handler.setAllowMethod(request._startLine.getMethod() == (bestLocation->getAllowMethods() & request._startLine.getMethod()));
         handler.setQuery(request._startLine.getQuery());
@@ -93,6 +136,7 @@ void ProcessRequestHandler::processRequest(const clsRequest& request, const clsS
         handler.setPathCgi(getPathCgi(request._startLine.getPath(), bestLocation->getCgiPass()));
         handler.setReturn(bestLocation->getReturn());
         handler.setUploadStore(bestLocation->getUploadStore());
+        handler.setError(error);
     }
     
 }

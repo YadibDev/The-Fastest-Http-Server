@@ -18,6 +18,7 @@ private:
 	std::string _upload_store;
 	std::string _body;
 	std::string _filePathBody;
+	HttpError	_error;
 
 public:
 	RequestHandler();
@@ -40,6 +41,7 @@ public:
 	void setUploadStore(const std::string& uploadStore);
 	void setBody(const std::string& body);
 	void setFilePathBody(const std::string& filePathBody);
+	void setError(HttpError	&error);
 
 	const std::string& getPhysicalPath() const;
 	bool getAutoIndex() const;
@@ -55,6 +57,7 @@ public:
 	const std::string& getBody() const;
 	const std::string& getFilePathBody() const;
 	const stReturnData& getReturnData() const;
+	const HttpError &getError() const;
 
 };
 

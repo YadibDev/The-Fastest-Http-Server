@@ -54,7 +54,7 @@ public:
 	bool								parseLocation();
 	
 	std::string							getRoot() const;
-	std::vector<std::string>			getIndex() const;
+	const std::vector<std::string>			&getIndex() const;
 	bool								getAutoIndex() const;
 	short								getAllowMethods() const;
 	unsigned long long					getClientMaxBodySize() const;

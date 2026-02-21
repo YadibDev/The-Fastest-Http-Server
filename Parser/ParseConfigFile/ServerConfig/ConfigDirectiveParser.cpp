@@ -74,8 +74,9 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 	return bytes;
 }
 
-std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx) {
+std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx, std::string &defaultIndex) {
 	std::vector<std::string> indices;
+	indices.push_back(defaultIndex);
 	ctx.parser.advance();
 
 	while (ctx.parser.peek().type == TOKEN_WORD) {
@@ -161,7 +162,7 @@ std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 		return (ctx.error.setStatus(400, "Expected path after 'upload_path'"), "");
 
 	std::string path = ctx.parser.peek().value;
-	if (!isValidPath(ctx, path, true))
+	if (HelperFunctions::isValidPath(path, true) != 200)
 		return (ctx.error.setStatus(400, "Invalid upload path -> " + path), "");
 	
 	ctx.parser.advance();
@@ -188,7 +189,7 @@ void ConfigDirectiveParser::ParseCGI(s_parse_context& ctx, std::map<std::string,
 	}
 	const std::string binPath = ctx.parser.peek().value;
 
-	if (!isValidPath(ctx, binPath, false)) return;
+	if (HelperFunctions::isValidPath(binPath, false) != 200) return;
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
@@ -272,19 +273,7 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 
 // Private Helpers
-bool ConfigDirectiveParser::isValidPath(s_parse_context& ctx, const std::string& path, bool expectDir) {
-	struct stat info;
-	if (stat(path.c_str(), &info) != 0)
-		return (ctx.error.setStatus(400, "Path Error: Not found -> " + path), false);
 
-	if (expectDir && !S_ISDIR(info.st_mode))
-		return (ctx.error.setStatus(400, "Path Error: Expected directory -> " + path), false);
-
-	if (!expectDir && S_ISDIR(info.st_mode))
-		return (ctx.error.setStatus(400, "Path Error: Expected file -> " + path), false);
-
-	return true;
-}
 
 unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char unit, HttpError& error) {
 	unsigned long long multiplier = 1;

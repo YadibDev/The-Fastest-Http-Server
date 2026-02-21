@@ -1,6 +1,11 @@
 #include "ServerConfig.hpp"
 
-clsServerConfig::clsServerConfig(s_parse_context	&ctxs) : _max_body_size(1048576), ctx(ctxs) {}
+clsServerConfig::clsServerConfig(s_parse_context	&ctxs) : ctx(ctxs)
+{
+	_max_body_size = 1048576; // convert 1M to byte Default: client_max_body_size 1m;
+	_root = "default";
+	_index.push_back("index.html");
+}
 
 clsServerConfig::~clsServerConfig() {}
 
@@ -47,7 +52,7 @@ bool	clsServerConfig::ParseRoot()
 
 bool	clsServerConfig::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx);
+	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
 	if (ctx.error.isError())
 		return (false);
 	return (true);

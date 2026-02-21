@@ -49,7 +49,7 @@ int main() {
     std::vector<clsServerConfig> servers = configFile.getServers();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
 
-    std::string Requestest = "DELETE /cgi-bin/test.py?test=1 HTTP/1.1\r\nHost: example.com\r\n\r\n";
+    std::string Requestest = "DELETE /test/ HTTP/1.1\r\nHost: example.com\r\n\r\n";
     clsRequest request;
 
     request.parse(Requestest);

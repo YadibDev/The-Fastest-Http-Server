@@ -9,7 +9,7 @@ bool	clsLocation::ParseRoot()
 
 bool	clsLocation::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx);
+	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
 	return !ctx.error.isError();
 }
 
@@ -149,7 +149,7 @@ std::string clsLocation::getRoot() const {
 	return _root;
 }
 
-std::vector<std::string> clsLocation::getIndex() const {
+const std::vector<std::string> &clsLocation::getIndex() const {
 	return _index;
 }
 

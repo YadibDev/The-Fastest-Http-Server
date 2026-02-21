@@ -63,6 +63,12 @@ void RequestHandler::setFilePathBody(const std::string& filePathBody) {
     _filePathBody = filePathBody;
 }
 
+void RequestHandler::setError(HttpError	&error)
+{
+    _error = error;
+}
+
+
 const std::string& RequestHandler::getPhysicalPath() const {
     return _physicalPath;
 }
@@ -132,3 +138,7 @@ const stReturnData& RequestHandler::getReturnData() const {
     return _return;
 }
 
+const HttpError& RequestHandler::getError() const
+{
+    return _error;
+}

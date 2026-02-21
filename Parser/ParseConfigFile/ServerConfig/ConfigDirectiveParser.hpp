@@ -40,7 +40,7 @@ public:
 	static bool 							parseLocationPath(s_parse_context& ctx, stlocation& loc);
 	static std::string						ParseRoot(s_parse_context& ctx);
 	static unsigned long long				ParseClientMaxBodySize(s_parse_context& ctx);
-	static std::vector<std::string>			ParseIndex(s_parse_context& ctx);
+	static std::vector<std::string>			ParseIndex(s_parse_context& ctx, std::string &defaultIndex);
 	static bool								ParseAutoIndex(s_parse_context& ctx);
 	static sockaddr_in						ParseListen(s_parse_context& ctx);
 	static stReturnData						ParseReturn(s_parse_context& ctx);
@@ -53,7 +53,6 @@ public:
 	static void								skipWhitespace(s_parse_context& ctx);
 
 private:
-	static bool								isValidPath(s_parse_context& ctx, const std::string& path, bool expectDir);
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);
 	static long long						extractNumericPart(const std::string& str, short &length);
 	static sockaddr_in						setSockaddr_in(const std::string& input);

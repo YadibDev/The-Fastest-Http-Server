@@ -165,6 +165,21 @@ bool HelperFunctions::isBoundary(const std::string &str, const std::string &boun
     return false;
 }
 
+short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
+{
+	struct stat info;
+	if (stat(path.c_str(), &info) != 0)
+		return (403);
+
+	if (expectDir && !S_ISDIR(info.st_mode))
+		return (403);
+
+	if (!expectDir && S_ISDIR(info.st_mode))
+		return (403);
+
+	return 200;
+}
+
 
 
 
