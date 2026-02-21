@@ -52,7 +52,7 @@ void ParseHeader::storeHeader(std::string &headerField, std::string &fieldValue,
 	values = HelperFunctions::splitCommaSeparated(fieldValue);
 
 	for (size_t i = 0; i < values.size(); i++)
-		headerMap[headerField].push_back(values[i]);
+		headerMap[HelperFunctions::ConvertStringToLower(headerField)].push_back(values[i]);
 
 	fieldValue.clear();
 	headerField.clear();
