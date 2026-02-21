@@ -111,7 +111,8 @@ std::string ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLoca
 
     if (uri.size() >= 1 && uri[uri.size() - 1] == '/')
         return getIndex(bestLocation, error);
-    PhysicalPath = bestLocation->getRoot() + uri;
+    std::string URI = uri.substr(bestLocation->getLocationData().uri.size());
+    PhysicalPath = bestLocation->getRoot() + URI;
     if (checkPath(PhysicalPath))
         return PhysicalPath;
     error.setStatus(403, "Forbidden");

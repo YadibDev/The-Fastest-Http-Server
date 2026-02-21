@@ -57,8 +57,8 @@ void clsResponse::InitialHeaders()
     Date();
     CachControl();
     Server();
-    std::map<std::string, std::vector<std::string> >  Headers = _DataRequest.getHeaders();
-    if (Headers.count("connection"))
+    std::vector<std::string>  Headers = _DataRequest.getHeaderValues("connection");
+    if (0)
     {
         if (Headers["connection"][0] == "close")
             ConnectionClose();

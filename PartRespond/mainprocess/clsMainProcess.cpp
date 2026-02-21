@@ -17,7 +17,7 @@ clsMainProcess::~clsMainProcess(){}
 
 void clsMainProcess::_PartRedirection()
 {
-    _Response.SetStatus(_DataRequest.return_status);
+    _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(REDIRECTION);
     _Response.MakeResponse();
 }
@@ -78,7 +78,7 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
     bool check = false;
     _DataRequest = DataRequest;
-    if (_DataRequest.return_url != "")
+    if (_DataRequest.getReturn().value != "")
         _PartRedirection();
     else if (check != 0)
         _PartPermission();
