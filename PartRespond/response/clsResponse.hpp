@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 22:07:09 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 17:05:51 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class clsResponse
         std::map<std::string, std::string> _TypeContent;
 
         void StoredDefaultType();
-        std::string GetTypeData(std::string Type);
-        std::string ErrorRespnseHandling();
+        const std::string &GetTypeData(const std::string &Type);
+        const std::string &ErrorRespnseHandling();
         void InitialHeaders();
         void Status();
         void ContentLength();
@@ -49,21 +49,20 @@ class clsResponse
         void Date();
         void CachControl();
         void Server();
-        void Reset();
     public:
+        void Reset();
         clsResponse();
-        
-        std::string GetBody();
-        std::string GetFileName();
-        std::string GetHeaderFeild();
+        const std::string &GetBody();
+        const std::string &GetFileName();
+        const std::string &GetHeaderFeild();
         void SetStatus(short Status);
-        void SetRequestHandler(RequestHandler DataRequest);
-        void SetFileFromDisk(std::string FileFromDisk);
+        void SetRequestHandler(const RequestHandler &DataRequest);
+        void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(short Mode);
-        void SetType(std::string Type);
+        void SetType(const std::string &Type);
         bool GetIsConnection();
         void MakeResponse();
-        std::string ChunkData(const std::string &Str);
+        const std::string &ChunkData(const std::string &Str);
 
         ~clsResponse();
 };
