@@ -6,10 +6,13 @@
 #include <arpa/inet.h>
 #include <iomanip>
 
-void printMethods(short methods) {
-    if (methods & 1) std::cout << "GET ";
-    if (methods & 2) std::cout << "POST ";
-    if (methods & 4) std::cout << "DELETE ";
+void printMethods(short methods, eMethods method) {
+    if ((methods & method) == GET)
+        std::cout << "GET ";
+    if ((methods & method) == POST)
+        std::cout << "POST ";
+    if ((methods & method) == DELETE)
+        std::cout << "DELETE ";
 }
 
 int main() {
@@ -46,7 +49,7 @@ int main() {
     std::vector<clsServerConfig> servers = configFile.getServers();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
 
-    std::string Requestest = "POST /uploads/test.txt HTTP/1.1\r\nHost: example.com\r\n\r\n";
+    std::string Requestest = "DELETE /cgi-bin/test.py?test=1 HTTP/1.1\r\nHost: example.com\r\n\r\n";
     clsRequest request;
 
     request.parse(Requestest);
@@ -57,9 +60,13 @@ int main() {
     std::cout << "Physical Path: " << handler.getPhysicalPath() << std::endl;
     std::cout << "Autoindex: " << (handler.getAutoIndex() ? "Enabled" : "Disabled") << std::endl;
     std::cout << "Allowed Methods: ";
-    printMethods(handler.getAllowMethod());
+    if (handler.getAllowMethod())
+        std::cout << "Allowed";
+    else
+        std::cout << "Denied";
     std::cout << std::endl;
     std::cout << "Query: " << handler.getQuery() << std::endl;
+    std::cout << "Version: " << handler.getVersion() << std::endl;
     std::cout << "Method: " << handler.getMethod() << std::endl;
     std::cout << "Path CGI: " << handler.getPathCgi() << std::endl;
     std::cout << "Upload Store: " << handler.getUploadStore() << std::endl;

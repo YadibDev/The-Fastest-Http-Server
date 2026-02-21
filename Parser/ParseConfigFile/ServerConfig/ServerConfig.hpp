@@ -20,7 +20,7 @@ private:
 	std::string						_root;
 	std::vector<std::string>			_index;
 	std::map<short, stErrorPagedata>	_error_pages;
-
+	bool 								_autoindex;
 	size_t							_max_body_size;
 	std::vector<clsLocation>		_LocationExact;
 	std::vector<clsLocation>		_LocationPrefix;
@@ -33,6 +33,7 @@ private:
 	bool				ParseLocation();
 	bool				ParseRoot();
 	bool				ParseIndex();
+	bool				ParseAutoIndex();
 
 	enBlocksDirective	getServerDirectiveType(const std::string& key);
 	bool				ParseServerDirective();
@@ -48,10 +49,11 @@ public:
 	// std::vector<std::string>		getServerNames() const;
 	std::map<short, stErrorPagedata>	getErrorPages() const;
 	size_t								getMaxBodySize() const;
-	std::vector<clsLocation>			getLocationExact() const;
-	std::vector<clsLocation>			getLocationPrefix() const;
+	const std::vector<clsLocation> &			getLocationExact() const;
+	const std::vector<clsLocation> &			getLocationPrefix() const;
 	std::string							getRoot() const;
 	std::vector<std::string>			getIndex() const;
+	bool								getAutoIndex() const;
 
 	HttpError getError() const;
 };

@@ -34,7 +34,7 @@ const clsLocation* findBestLocation(
         {
             const std::string& loc = prefixVec[i].getLocationData().uri;
 
-            if (uri.compare(0, loc.size(), loc) == 0)
+            if (!uri.compare(0, loc.size(), loc))
             {
                 if (loc.size() > maxLen)
                 {
@@ -48,20 +48,49 @@ const clsLocation* findBestLocation(
     return best;
 }
 
+const std::string ProcessRequestHandler::getPathCgi(const std::string &uri, const std::map<std::string, std::string> &cgi_pass)
+{
+    const std::string empty = "";
+    size_t extension = uri.find_last_of('.');
+    if (extension == std::string::npos)
+        return empty;
+    std::string extensionStr = uri.substr(extension);
+    std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extensionStr);
+
+    if (it != cgi_pass.end())
+        return it->second;
+    return empty;
+}
+
+std::string ProcessRequestHandler::selectMethod(eMethods method) {
+    switch (method) {
+        case GET:
+            return "GET";
+        case POST:
+            return "POST";
+        case DELETE:
+            return "DELETE";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 void ProcessRequestHandler::processRequest(const clsRequest& request, const clsServerConfig& serverConfigs, RequestHandler& handler)
 {
     const clsLocation* bestLocation = findBestLocation(serverConfigs.getLocationExact(), serverConfigs.getLocationPrefix(), request._startLine.getPath());
+
 
     if (bestLocation)
     {
         handler.setPhysicalPath(bestLocation->getRoot() + request._startLine.getPath());
         handler.setAutoIndex(bestLocation->getAutoIndex());
-        handler.setAllowMethod((bestLocation->getAllowMethods() & (1 << request._startLine.getMethod())) != 0);
+        handler.setAllowMethod(request._startLine.getMethod() == (bestLocation->getAllowMethods() & request._startLine.getMethod()));
         handler.setQuery(request._startLine.getQuery());
-        handler.setMethod(static_cast<eMethods>(request._startLine.getMethod()));
+        handler.setVersion(request._startLine.getVersion());
+        handler.setMethod(selectMethod(request._startLine.getMethod()));
         handler.setHeaders(request._headerParser.getHeaderValues());
         handler.setErrorPages(bestLocation->getErrorPages());
-        handler.setPathCgi(bestLocation->getCgiPass().count(request._startLine.getPath()) > 0 ? bestLocation->getCgiPass().at(request._startLine.getPath()) : "");
+        handler.setPathCgi(getPathCgi(request._startLine.getPath(), bestLocation->getCgiPass()));
         handler.setReturn(bestLocation->getReturn());
         handler.setUploadStore(bestLocation->getUploadStore());
     }

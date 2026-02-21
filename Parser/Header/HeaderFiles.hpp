@@ -51,7 +51,7 @@ struct stReturnData {
 	short       code;
 	std::string value;
 
-	stReturnData() : code(0), value("") {}    
+	stReturnData() : code(-1), value("") {}    
 };
 
 struct stErrorPagedata {

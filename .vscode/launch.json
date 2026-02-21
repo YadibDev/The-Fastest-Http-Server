@@ -4,7 +4,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/ParseRequest/test_request",
+            "program": "${workspaceFolder}/webserv",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

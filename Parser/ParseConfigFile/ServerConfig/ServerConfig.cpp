@@ -53,9 +53,17 @@ bool	clsServerConfig::ParseIndex()
 	return (true);
 }
 
+bool	clsServerConfig::ParseAutoIndex()
+{
+	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
+	if (ctx.error.isError())
+		return (false);
+	return (true);
+}
+
 bool	clsServerConfig::ParseLocation()
 {
-	clsLocation loc(ctx);
+	clsLocation loc(ctx, _root, _index, _max_body_size, _autoindex);
 	loc.parseLocation();
 	if (!loc.getError().isError())
 	{
@@ -85,6 +93,7 @@ enBlocksDirective	clsServerConfig::getServerDirectiveType(const std::string& key
 		directives["root"]                  = L_DIR_ROOT;
 		directives["index"]                 = L_DIR_INDEX;
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
+		directives["autoindex"]            = L_DIR_AUTOINDEX;
 		directives["error_page"]           = L_DIR_ERROR_PAGE;
 		directives["location"]             = L_DIR_LOCATION;
 	}
@@ -112,6 +121,7 @@ bool    clsServerConfig::ParseServerDirective()
 		case L_DIR_ROOT:					return	ParseRoot();
 		case L_DIR_INDEX:					return	ParseIndex();
 		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
+		case L_DIR_AUTOINDEX:				return	ParseAutoIndex();
 		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
 		case L_DIR_LOCATION:				return	ParseLocation();
 		default:							return	(false);
@@ -158,11 +168,11 @@ size_t clsServerConfig::getMaxBodySize() const {
 	return _max_body_size;
 }
 
-std::vector<clsLocation> clsServerConfig::getLocationExact() const {
+const std::vector<clsLocation> &clsServerConfig::getLocationExact() const {
 	return _LocationExact;
 }
 
-std::vector<clsLocation> clsServerConfig::getLocationPrefix() const {
+const std::vector<clsLocation> &clsServerConfig::getLocationPrefix() const {
 	return _LocationPrefix;
 }
 

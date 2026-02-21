@@ -107,10 +107,16 @@ bool    clsLocation::ParseLocationDirective()
 	}
 }
 
-clsLocation::clsLocation(s_parse_context& ctxs)
+clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
+		, const std::vector<std::string>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex)
 	: ctx(ctxs)
 {
+	_root = sRoot;
+	_index = sIndex;
+	_client_max_body_size = sClient_max_body_size;
+	_autoindex = sAutoIndex;
 }
+
 
 bool    clsLocation::parseLocation()
 {
@@ -167,7 +173,7 @@ std::string clsLocation::getUploadStore() const {
 	return _upload_store;
 }
 
-std::map<std::string, std::string> clsLocation::getCgiPass() const {
+const std::map<std::string, std::string> &clsLocation::getCgiPass() const {
 	return _cgi_pass;
 }
 

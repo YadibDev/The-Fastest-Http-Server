@@ -4,7 +4,7 @@ RequestHandler::RequestHandler()
     : _physicalPath(""),
       _autoindex(false),
       _allowMethod(0),
-      _method(GET),
+      _method("UNKNOWN"),
       _upload_store("") {
 }
 
@@ -27,7 +27,11 @@ void RequestHandler::setQuery(const std::string& query) {
     _query = query;
 }
 
-void RequestHandler::setMethod(eMethods method) {
+void RequestHandler::setVersion(const std::string& version) {
+    _version = version;
+}
+
+void RequestHandler::setMethod(const std::string &method) {
     _method = method;
 }
 
@@ -75,7 +79,11 @@ const std::string& RequestHandler::getQuery() const {
     return _query;
 }
 
-eMethods RequestHandler::getMethod() const {
+const std::string& RequestHandler::getVersion() const {
+    return _version;
+}
+
+const std::string& RequestHandler::getMethod() const {
     return _method;
 }
 

@@ -47,7 +47,9 @@ private:
 
 public:
 
-	clsLocation(s_parse_context& ctxs);
+	clsLocation();
+	clsLocation(s_parse_context& ctxs, const std::string &sRoot
+				, const std::vector<std::string>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
 
 	bool								parseLocation();
 	
@@ -58,7 +60,7 @@ public:
 	unsigned long long					getClientMaxBodySize() const;
 	stReturnData						getReturn() const;
 	std::string							getUploadStore() const;
-	std::map<std::string, std::string>	getCgiPass() const;
+	const std::map<std::string, std::string>	&getCgiPass() const;
 	std::map<short, stErrorPagedata>	getErrorPages() const;
 
 	stlocation							getLocationData() const;

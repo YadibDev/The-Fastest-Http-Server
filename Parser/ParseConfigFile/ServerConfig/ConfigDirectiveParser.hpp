@@ -7,7 +7,6 @@
 #include "../../Header/HeaderFiles.hpp"
 
 
-
 enum enBlocksDirective
 {
 	L_DIR_LISTEN,
@@ -59,7 +58,6 @@ private:
 	static long long						extractNumericPart(const std::string& str, short &length);
 	static sockaddr_in						setSockaddr_in(const std::string& input);
 	static uint32_t							validateIPWithSystem(const std::string& ip, int family);
-
 };
 
 #endif

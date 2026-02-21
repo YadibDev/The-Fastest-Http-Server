@@ -7,9 +7,10 @@ class RequestHandler {
 private:
 	std::string _physicalPath;
 	bool        _autoindex;
-	bool        _allowMethod;
+	bool 	  	_allowMethod;
 	std::string _query;
-	eMethods    _method;
+	std::string _version;
+	std::string _method;
 	std::map<std::string, std::vector<std::string> > _headers;
 	std::map<short, stErrorPagedata> _error_pages;
 	std::string _pathCgi;
@@ -30,7 +31,8 @@ public:
 	void setAutoIndex(bool autoindex);
 	void setAllowMethod(bool allowMethod);
 	void setQuery(const std::string& query);
-	void setMethod(eMethods method);
+	void setVersion(const std::string& version);
+	void setMethod(const std::string& method);
 	void setHeaders(const std::map<std::string, std::vector<std::string> >& headers);
 	void setErrorPages(const std::map<short, stErrorPagedata>& errorPages);
 	void setPathCgi(const std::string& pathCgi);
@@ -43,7 +45,8 @@ public:
 	bool getAutoIndex() const;
 	bool getAllowMethod() const;
 	const std::string& getQuery() const;
-	eMethods getMethod() const;
+	const std::string& getVersion() const;
+	const std::string& getMethod() const;
 	std::vector<std::string> getHeaderValues(const std::string& key) const;
 	stErrorPagedata getErrorPage(short code) const;
 	const std::string& getPathCgi() const;
