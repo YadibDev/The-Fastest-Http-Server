@@ -6,17 +6,21 @@ SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/test
 				linker/clsLinker.cpp linker/clsClient.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp    Utils/HelperString.cpp  Utils/HttpError.cpp \
-		Utils/Lexer.cpp Utils/HelperFunctions.cpp
+		Utils/Lexer.cpp
 
-RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp  PartRespond/response/clsErrorPage.cpp \
-				PartRespond/response/RequestHandler.cpp
+RESPOND_FILES = Respond/Respond.cpp Respond/RespondAutoIndex.cpp Respond/RespondCGI.cpp Respond/RespondErrorPage.cpp \
+				Respond/RespondFile.cpp Respond/RespondRedirection.cpp 
 
-CONFIG_FILES = ParseConfigFile/ConfigFile/ParseConfigueFile.cpp ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp \
-				ParseConfigFile/ServerConfig/ServerConfig.cpp ParseConfigFile/LocationConfig/LocationConfig.cpp
+RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp \
+				
 
-REQUEST_FILES = ParseRequest/URI.cpp ParseRequest/URIParser.cpp
+CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
+				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
 
-ALL_FILES += $(SERVER_FILES) $(RESPOND_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES)
+REQUEST_FILES = Parser/ParseRequest/Request/clsStartLine.cpp Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/Request.cpp Parser/ParseRequest/URI/URI.cpp \
+				Parser/ParseRequest/URI/URIParser.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp
+
+ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

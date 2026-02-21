@@ -126,7 +126,8 @@ void clsClient::ProcessRespond()
         _Responder.SetType("text/html");
 
         
-        Header = _Responder.MakeResponse();
+         _Responder.MakeResponse();
+         // start from here
         if (_Responder.GetFileName().empty())
             _BodyPlace = RAM;
         else

@@ -145,6 +145,43 @@ bool HelperFunctions::strIsSpace(const std::string &str) {
     return true;
 }
 
+bool HelperFunctions::isBoundary(const std::string &str, const std::string &boundary, std::string &remander)
+{
+    std::string combined = remander + str;
+    if (combined.size() < boundary.size())
+    {
+        remander = combined;
+        return false;
+    }
+    size_t pos = combined.find(boundary);
+    if (pos != std::string::npos) {
+        remander = combined.substr(pos + boundary.size());
+        return true;
+    }
+    if (combined.size() >= boundary.size())
+        remander = combined.substr(combined.size() - boundary.size() - 1);
+    else
+        remander = combined;
+    return false;
+}
+
+short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
+{
+	struct stat info;
+	if (stat(path.c_str(), &info) != 0)
+		return (403);
+
+	if (expectDir && !S_ISDIR(info.st_mode))
+		return (403);
+
+	if (!expectDir && S_ISDIR(info.st_mode))
+		return (403);
+
+	return 200;
+}
+
+
+
 
 
 // Achraf

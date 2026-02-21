@@ -1,13 +1,18 @@
-#include "ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "Parser/ParseRequest/Request/Request.hpp"
+#include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include <iostream>
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <iomanip>
 
-void printMethods(short methods) {
-    if (methods & 1) std::cout << "GET ";
-    if (methods & 2) std::cout << "POST ";
-    if (methods & 4) std::cout << "DELETE ";
+void printMethods(short methods, eMethods method) {
+    if ((methods & method) == GET)
+        std::cout << "GET ";
+    if ((methods & method) == POST)
+        std::cout << "POST ";
+    if ((methods & method) == DELETE)
+        std::cout << "DELETE ";
 }
 
 int main() {
@@ -44,54 +49,27 @@ int main() {
     std::vector<clsServerConfig> servers = configFile.getServers();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
 
-    for (size_t i = 0; i < servers.size(); ++i) {
-        std::cout << "========== [ SERVER " << i + 1 << " ] ==========" << std::endl;
-        
-        std::vector<sockaddr_in> listens = servers[i].getListens();
-        for (size_t j = 0; j < listens.size(); ++j) {
-            char ip[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &(listens[j].sin_addr), ip, INET_ADDRSTRLEN);
-            std::cout << "  - Listening on: " << ip << ":" << ntohs(listens[j].sin_port) << std::endl;
-        }
+    std::string Requestest = "DELETE /test/ HTTP/1.1\r\nHost: example.com\r\n\r\n";
+    clsRequest request;
 
-        std::cout << "  - Root: " << servers[i].getRoot() << std::endl;
-        std::cout << "  - Max Body Size: " << servers[i].getMaxBodySize() << std::endl;
+    request.parse(Requestest);
 
-        std::map<short, stErrorPagedata> errPages = servers[i].getErrorPages();
-        if (!errPages.empty()) {
-            std::cout << "  - Error Pages: ";
-            std::map<short, stErrorPagedata>::const_iterator it;
-            for (it = errPages.begin(); it != errPages.end(); ++it) {
-                std::cout << "[" << it->first << " -> " << it->second.uri << "] ";
-            }
-            std::cout << std::endl;
-        }
+    RequestHandler handler;
+    ProcessRequestHandler::processRequest(request, servers[0], handler);
 
-        std::vector<clsLocation> prefixLocs = servers[i].getLocationPrefix();
-        std::cout << "  - Prefix Locations (" << prefixLocs.size() << "):" << std::endl;
-        for (size_t k = 0; k < prefixLocs.size(); ++k) {
-            std::cout << "      * Path: " << prefixLocs[k].getLocationData().uri << std::endl;
-            std::cout << "        Methods: "; printMethods(prefixLocs[k].getAllowMethods());
-            std::cout << "\n        Autoindex: " << (prefixLocs[k].getAutoIndex() ? "ON" : "OFF") << std::endl;
-            if (!prefixLocs[k].getRoot().empty())
-                std::cout << "        Root: " << prefixLocs[k].getRoot() << std::endl;
-        }
-
-        std::vector<clsLocation> exactLocs = servers[i].getLocationExact();
-        if (!exactLocs.empty()) {
-            std::cout << "  - Exact Locations (" << exactLocs.size() << "):" << std::endl;
-            for (size_t k = 0; k < exactLocs.size(); ++k) {
-                std::cout << "      * Path: " << exactLocs[k].getLocationData().uri << std::endl;
-                std::cout << "        Upload Store: " << exactLocs[k].getUploadStore() << std::endl;
-                std::cout << "        Methods: "; printMethods(exactLocs[k].getAllowMethods());
-                std::cout << "\n        Autoindex: " << (exactLocs[k].getAutoIndex() ? "ON" : "OFF") << std::endl;
-                if (!exactLocs[k].getRoot().empty())
-                    std::cout << "        Root: " << exactLocs[k].getRoot() << std::endl;
-                
-            }
-        }
-        std::cout << std::endl;
-    }
-
+    std::cout << "Physical Path: " << handler.getPhysicalPath() << std::endl;
+    std::cout << "Autoindex: " << (handler.getAutoIndex() ? "Enabled" : "Disabled") << std::endl;
+    std::cout << "Allowed Methods: ";
+    if (handler.getAllowMethod())
+        std::cout << "Allowed";
+    else
+        std::cout << "Denied";
+    std::cout << std::endl;
+    std::cout << "Query: " << handler.getQuery() << std::endl;
+    std::cout << "Version: " << handler.getVersion() << std::endl;
+    std::cout << "Method: " << handler.getMethod() << std::endl;
+    std::cout << "Path CGI: " << handler.getPathCgi() << std::endl;
+    std::cout << "Upload Store: " << handler.getUploadStore() << std::endl;
+    std::cout << "Return Data: " << handler.getReturnData().code << " " << handler.getReturnData().value << std::endl;
     return 0;
 }
