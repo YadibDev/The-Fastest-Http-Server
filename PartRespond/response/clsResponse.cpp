@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 19:40:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/20 22:12:25 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,24 @@ clsResponse::clsResponse()
     _Body = "";
     _Type = "";
     _IsConnection = false;
+    _Erno = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
-std::string clsResponse::MakeResponse()
+void clsResponse::MakeResponse()
 {
     if (!_Mod.count(ERROR))
+    {
+        _FileFromDisk = _DataRequest.getPhysicalPath();
+        _Type = GetTypeData(GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
+    }
     if (!_Mod.count(ERROR))
         InitialHeaders();
     if (_Mod.count(ERROR))
-        return ErrorRespnseHandling();
+        _HeaderFeild = ErrorRespnseHandling();
      _HeaderFeild += "\r\n";
-    return _HeaderFeild;
 }
 
 void clsResponse::InitialHeaders()
@@ -52,13 +56,43 @@ void clsResponse::InitialHeaders()
     Date();
     CachControl();
     Server();
-    // if the client want close conection we called function Close connection
-    ConnectionKeepAlive();
+    std::map<std::string, std::vector<std::string> >  Headers = _DataRequest.getHeaders();
+    if (Headers.count("connection"))
+    {
+        if (Headers["connection"][0] == "close")
+            ConnectionClose();
+        else
+            ConnectionKeepAlive();
+    }
+    else
+        ConnectionKeepAlive();
 }
 
 std::string clsResponse::ErrorRespnseHandling()
 {
-    // search in class request handler for 
+    std::map <int, stErrorPagedata> ErrorPageConf = _DataRequest.getErrorPages();
+    short PrevStatus = _Status;
+    if (ErrorPageConf.count(_Status))
+    {
+        if (ErrorPageConf[_Status].Status != -1)
+            _Status = ErrorPageConf[_Status].Status;
+        _FileFromDisk = ErrorPageConf[_Status].Path;
+        StoredInFileOrStr();
+        if (!_Erno)
+        {
+            _ErrorPage.SetMod(_Mod);
+            _ErrorPage.SetBodySize(_BodySize);
+            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf[_Status].Path)));
+            return _ErrorPage.ResponseError(_Status);
+        }
+        else
+        {
+            _ErrorPage.SetBodySize(0);
+            _ErrorPage.SetType(GetTypeData(".html"));
+            _Body = _ErrorPage.GetBody(PrevStatus);
+            return _ErrorPage.ResponseError(PrevStatus);
+        }
+    }
     _ErrorPage.SetType(GetTypeData(".html"));
     _Body = _ErrorPage.GetBody(_Status);
     return _ErrorPage.ResponseError(_Status);
@@ -95,16 +129,13 @@ void clsResponse::ConnectionKeepAlive()
 }
 void clsResponse::Transfer_Encoding()
 {
-    std::stringstream Headers;
-    Headers << "Transfer-Encoding: chunked\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
 void clsResponse::Redirction()
 {
     std::stringstream Headers;
-    // get data from config file
-    Headers << "Location: "<<"..."<<"\r\n";
+    Headers << "Location: "<<_DataRequest.return_url<<"\r\n";
     _HeaderFeild += Headers.str();
 }
 void clsResponse::Date()
@@ -123,7 +154,7 @@ void clsResponse::CachControl()
 void clsResponse::Server()
 {
     std::stringstream Headers;
-    Headers << "Server: Name Server\r\n";
+    Headers << "Server: HTTP/1.1\r\n";
     _HeaderFeild += Headers.str();
 }
 
@@ -131,15 +162,22 @@ void clsResponse::StoredInFileOrStr()
 {
     std::string Data;
     if (_FileFromDisk == "")
-        return ;                                         
+        return ;                                     
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
         _Mod[ERROR] = ERROR;
         _Status = 500;
+        _Erno = true;
         return ;
     }
-    ReadData(FD, Data, 100);
+    if (ReadData(FD, Data, 100) == -1)
+    {
+        _Mod[ERROR] = ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
     while(!Data.empty())
     {
         _BodySize += Data.size();
@@ -152,7 +190,14 @@ void clsResponse::StoredInFileOrStr()
             return ;
         }
         _Body += Data;
-        ReadData(FD, Data, 100);
+       if (ReadData(FD, Data, 100) == -1)
+        {
+            _BodySize = 0;
+            _Mod[ERROR] = ERROR;
+            _Status = 500;
+            _Erno = true;
+            return ;
+        }
     }
     close(FD);
 }
@@ -229,6 +274,14 @@ void clsResponse::Reset()
     _IsConnection = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
+}
+std::string clsResponse::GetHeaderFeild()
+{
+    return _HeaderFeild;
+}
+void clsResponse::SetRequestHandler(RequestHandler DataRequest)
+{
+    _DataRequest = DataRequest;
 }
 
 clsResponse::~clsResponse()

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/17 14:52:52 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/18 19:16:46 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 {
     _Type = "";
     _Status = 0;
+    _BodySize = 0;
     StoredBodys();
     StoredMessage();
 }
@@ -68,11 +69,14 @@ void clsErrorPage::SetType(std::string Type)
  {
     Status();
     ContentType();
-    ContentLength();
+    if (!_Mod.count(CHUNK))
+        ContentLength();
     Server();
     Date();
     if (_Status == 405)
        Allow();
+    if (_Mod.count(CHUNK))
+        Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
         RetryAfter();
     ConnectionClose();
@@ -84,7 +88,8 @@ void clsErrorPage::SetType(std::string Type)
  {
     if (Status >= 0)
         _Status = Status;
-    _BodySize = GetBody(Status).size();
+    if (!_BodySize)
+        _BodySize = GetBody(Status).size();
     return (HeadersErrorResponse());
  }
  
@@ -135,9 +140,26 @@ void clsErrorPage::Allow()
 {
     _HeaderFeild += "Allow: GET, POST, DELETE\r\n";
 }
+
+void clsErrorPage::Transfer_Encoding()
+{
+   _HeaderFeild += "Transfer-Encoding: chunked\r\n";
+}
+
+void clsErrorPage::SetMod(const std::map<short, short> &Mod)
+{
+    _Mod = Mod;
+}
+
+void clsErrorPage::SetBodySize(int BodySize)
+{
+    _BodySize = BodySize;
+}
+
 clsErrorPage::~clsErrorPage()
 {
     _Type = "";
     _HeaderFeild = "";
+    _BodySize = 0;
     _Status = 0;
 }
