@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 18:09:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 21:33:59 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void clsMainProcess::_PartRedirection()
 {
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(REDIRECTION);
+    _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
@@ -26,13 +27,14 @@ void clsMainProcess::_PartPermission()
 {
     _Response.SetStatus(403);
     _Response.SetMod(ERROR);
+    _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartCGI()
 {
     _Response.SetStatus(200);
-    
+    //Cgi hear 
 }
 
 void clsMainProcess::_PartDeleteMethod()
@@ -46,6 +48,7 @@ void clsMainProcess::_PartDeleteMethod()
         _Response.MakeResponse();
     }
     // // delete file or folder any things
+    _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 } 
 
@@ -53,6 +56,7 @@ void clsMainProcess::_PartPOSMethod()
 {
     _Response.SetStatus(200);
     _Response.SetMod(UPLOAD);
+    _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
@@ -64,17 +68,27 @@ void clsMainProcess::_PartGETMethod()
     _Response.MakeResponse();
 }
 
+void clsMainProcess::_PartErrorRequest()
+{
+    _Response.SetMod(ERROR);
+    _Response.SetStatus(_DataRequest.getError().getCodeStatus());
+    _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
+}
+
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
     bool check = false;
     _DataRequest = DataRequest;
-    if (_DataRequest.getReturn().value != "")
+    if (_DataRequest.getError().isError())
+        _PartErrorRequest();
+    else if (_DataRequest.getReturn().value != "")
         _PartRedirection();
     else if (!_DataRequest.MethodAllowed())
         _PartPermission();
     else if ((_DataRequest.getMethod() == "GET"))
         _PartGETMethod();
-    else if (check != 0)
+    else if (_DataRequest.getPathCgi() != "")
         _PartCGI();
     else if ((_DataRequest.getMethod() == "DELETE"))
         _PartDeleteMethod();
@@ -83,7 +97,7 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         
 }
 
-clsResponse clsMainProcess::GetclsResponse()
+const clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
 }

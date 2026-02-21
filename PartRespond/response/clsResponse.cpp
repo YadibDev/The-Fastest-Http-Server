@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 17:57:53 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 21:09:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ clsResponse::clsResponse()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
-    _IsConnection = false;
+    _IsConnection = true;
     _Erno = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
@@ -61,7 +61,10 @@ void clsResponse::InitialHeaders()
     if (!Headers.empty())
     {
         if (Headers[0] == "close")
+        {
+            _IsConnection = false;
             ConnectionClose();
+        }
         else
             ConnectionKeepAlive();
     }
@@ -274,6 +277,10 @@ void clsResponse::Reset()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
+    if (!_HeaderFeild.empty())
+        _HeaderFeild.clear();
+    if (!_Mod.empty())
+        _Mod.clear();
     _IsConnection = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
