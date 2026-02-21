@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 17:06:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 21:09:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ clsResponse::clsResponse()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
-    _IsConnection = false;
+    _IsConnection = true;
     _Erno = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
@@ -58,10 +58,13 @@ void clsResponse::InitialHeaders()
     CachControl();
     Server();
     std::vector<std::string>  Headers = _DataRequest.getHeaderValues("connection");
-    if (0)
+    if (!Headers.empty())
     {
-        if (Headers["connection"][0] == "close")
+        if (Headers[0] == "close")
+        {
+            _IsConnection = false;
             ConnectionClose();
+        }
         else
             ConnectionKeepAlive();
     }
@@ -71,19 +74,19 @@ void clsResponse::InitialHeaders()
 
 const std::string &clsResponse::ErrorRespnseHandling()
 {
-    std::map <int, stErrorPagedata> ErrorPageConf = _DataRequest.getErrorPages();
+    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
-    if (ErrorPageConf.count(_Status))
+    if (ErrorPageConf.response)
     {
-        if (ErrorPageConf[_Status].Status != -1)
-            _Status = ErrorPageConf[_Status].Status;
-        _FileFromDisk = ErrorPageConf[_Status].Path;
+        if (ErrorPageConf.response != -1)
+            _Status = ErrorPageConf.response;
+        _FileFromDisk = ErrorPageConf.uri;
         StoredInFileOrStr();
         if (!_Erno)
         {
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf[_Status].Path)));
+            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf.uri)));
             return _ErrorPage.ResponseError(_Status);
         }
         else
@@ -136,7 +139,7 @@ void clsResponse::Transfer_Encoding()
 void clsResponse::Redirction()
 {
     std::stringstream Headers;
-    Headers << "Location: "<<_DataRequest.return_url<<"\r\n";
+    Headers << "Location: "<<_DataRequest.getReturn().value<<"\r\n";
     _HeaderFeild += Headers.str();
 }
 void clsResponse::Date()
@@ -274,6 +277,10 @@ void clsResponse::Reset()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
+    if (!_HeaderFeild.empty())
+        _HeaderFeild.clear();
+    if (!_Mod.empty())
+        _Mod.clear();
     _IsConnection = false;
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();

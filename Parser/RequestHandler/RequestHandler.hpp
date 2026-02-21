@@ -7,7 +7,7 @@ class RequestHandler {
 private:
 	std::string _physicalPath;
 	bool        _autoindex;
-	bool 	  	_allowMethod;
+	bool		_allowMethod;
 	std::string _query;
 	std::string _version;
 	std::string _method;
@@ -25,7 +25,7 @@ public:
 	~RequestHandler();
 
 
-	bool	MethodAllowed();
+	bool	MethodAllowed() const;
 
 
 	void setPhysicalPath(const std::string& path);
