@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 22:12:25 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 17:06:33 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ clsResponse::clsResponse()
 
 void clsResponse::MakeResponse()
 {
+    _HeaderFeild = "";
     if (!_Mod.count(ERROR))
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
@@ -39,7 +40,7 @@ void clsResponse::MakeResponse()
         InitialHeaders();
     if (_Mod.count(ERROR))
         _HeaderFeild = ErrorRespnseHandling();
-     _HeaderFeild += "\r\n";
+    _HeaderFeild += "\r\n";
 }
 
 void clsResponse::InitialHeaders()
@@ -68,7 +69,7 @@ void clsResponse::InitialHeaders()
         ConnectionKeepAlive();
 }
 
-std::string clsResponse::ErrorRespnseHandling()
+const std::string &clsResponse::ErrorRespnseHandling()
 {
     std::map <int, stErrorPagedata> ErrorPageConf = _DataRequest.getErrorPages();
     short PrevStatus = _Status;
@@ -161,6 +162,8 @@ void clsResponse::Server()
 void clsResponse::StoredInFileOrStr()
 {
     std::string Data;
+    _Body = "";
+    _BodySize = 0;
     if (_FileFromDisk == "")
         return ;                                     
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
@@ -202,12 +205,12 @@ void clsResponse::StoredInFileOrStr()
     close(FD);
 }
 
-std::string clsResponse::ChunkData(const std::string &Str)
+const std::string &clsResponse::ChunkData(const std::string &Str)
 {
     std::string NewStr;
 
     if (Str == "")
-        return ("0\r\n");
+        return ("0\r\n\r\n");
     NewStr += Convert_Hex("0123456789abcdef",Str.size());
     NewStr += "\r\n";
     NewStr += Str;
@@ -215,7 +218,7 @@ std::string clsResponse::ChunkData(const std::string &Str)
     return (NewStr);
 }
 
-std::string clsResponse::GetTypeData(std::string Type)
+const std::string &clsResponse::GetTypeData(const std::string &Type)
 {
     if (_TypeContent.count(Type))
             return  _TypeContent[Type];
@@ -235,12 +238,12 @@ void clsResponse::StoredDefaultType()
         _TypeContent[".txt"]  = "text/plain";
     }
  }
-std::string clsResponse::GetBody()
+ const std::string &clsResponse::GetBody()
 {
     return _Body;
 }
 
-std::string clsResponse::GetFileName()
+const std::string &clsResponse::GetFileName()
 {
     return _FileName;
 }
@@ -254,11 +257,11 @@ void clsResponse::SetMod(short Mod)
 {
     _Mod[Mod] = Mod;
 }
-void clsResponse::SetType(std::string Type)
+void clsResponse::SetType(const std::string &Type)
 {
     _Type = Type;
 }
-void clsResponse::SetFileFromDisk(std::string FileFromDisk)
+void clsResponse::SetFileFromDisk(const std::string &FileFromDisk)
 {
     _FileFromDisk = FileFromDisk ;
 }
@@ -275,11 +278,11 @@ void clsResponse::Reset()
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
-std::string clsResponse::GetHeaderFeild()
+const std::string &clsResponse::GetHeaderFeild()
 {
     return _HeaderFeild;
 }
-void clsResponse::SetRequestHandler(RequestHandler DataRequest)
+void clsResponse::SetRequestHandler(const RequestHandler &DataRequest)
 {
     _DataRequest = DataRequest;
 }
