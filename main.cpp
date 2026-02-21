@@ -41,12 +41,13 @@ int main() {
 
     clsParseConfigueFile configFile(Parse);
 
-    if (!configFile.ParseConfigue()) {
+    if (configFile.getError().isError()) {
         std::cout << "\033[1;31mParsing Error: " << configFile.getError().getMsgError() << "\033[0m" << std::endl;
         return 1;
     }
 
     std::vector<clsServerConfig> servers = configFile.getServers();
+    servers[0].getError().isError();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
 
     std::string Requestest = "DELETE /test/index.html HTTP/1.1\r\nHost: example.com\r\n\r\n";

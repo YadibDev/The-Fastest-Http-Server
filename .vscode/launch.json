@@ -4,11 +4,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-<<<<<<< HEAD
-            "program": "webserv",
-=======
             "program": "${workspaceFolder}/webserv",
->>>>>>> Request
             "args": [],
             "cwd": "${workspaceFolder}"
         }

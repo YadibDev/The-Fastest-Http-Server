@@ -60,8 +60,15 @@ clsClient::~clsClient()
 {
 }
 
-// i should create the logic of this
-void clsClient::_SendRespond()
+
+void clsClient::ProcessRequest()
+{
+
+}
+
+
+// i should create the logic of this and improve it
+void clsClient::_SendRespond(clsResponse &_Responder)
 {
     string respond;
     ssize_t s;
@@ -140,5 +147,5 @@ void clsClient::ProcessRespond()
             this->_DataLeft = &Header[s];
         // if s == -1 is it possible ?/
     }
-    _SendRespond();
+    _SendRespond(_ResponderProecss.GetclsResponse()); //
 }

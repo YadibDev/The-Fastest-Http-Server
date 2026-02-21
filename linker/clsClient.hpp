@@ -32,7 +32,7 @@ private:
     size_t _BodyOfset;
     string _DataLeft;
     size_t _HeaderOfset;
-    clsResponse _Responder;
+    clsMainProcess _ResponderProecss;
     clinetState _state;
     int _fdRespond;
     whereIsBody _BodyPlace;
@@ -41,7 +41,8 @@ private:
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const int _socket;
 
-    void _SendRespond();
+    void _SendRespond(clsResponse &_Responder);
+    void _ReadRequest();
 public:
     clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
     clsClient(const clsClient &other);
