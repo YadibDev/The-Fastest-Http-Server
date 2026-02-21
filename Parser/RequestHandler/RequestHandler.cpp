@@ -3,12 +3,15 @@
 RequestHandler::RequestHandler()
     : _physicalPath(""),
       _autoindex(false),
-      _allowMethod(0),
       _method("UNKNOWN"),
       _upload_store("") {
 }
 
 RequestHandler::~RequestHandler() {
+}
+
+bool RequestHandler::MethodAllowed() const {
+    return _allowMethod;
 }
 
 void RequestHandler::setPhysicalPath(const std::string& path) {
@@ -17,10 +20,6 @@ void RequestHandler::setPhysicalPath(const std::string& path) {
 
 void RequestHandler::setAutoIndex(bool autoindex) {
     _autoindex = autoindex;
-}
-
-void RequestHandler::setAllowMethod(bool allowMethod) {
-    _allowMethod = allowMethod;
 }
 
 void RequestHandler::setQuery(const std::string& query) {
@@ -75,10 +74,6 @@ const std::string& RequestHandler::getPhysicalPath() const {
 
 bool RequestHandler::getAutoIndex() const {
     return _autoindex;
-}
-
-bool RequestHandler::getAllowMethod() const {
-    return _allowMethod;
 }
 
 const std::string& RequestHandler::getQuery() const {

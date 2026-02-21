@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 21:41:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/21 18:09:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void clsMainProcess::_PartDeleteMethod()
 {
     _Response.SetMod(DELETE);
     _Response.SetStatus(200);
-    if (access(_DataRequest.getPhysicalPath().c_str(), F_OK))
+    if (access(_DataRequest.getPhysicalPath().c_str(), R_OK))
     {
         _Response.SetMod(ERROR);
         _Response.SetStatus(404);
@@ -58,20 +58,10 @@ void clsMainProcess::_PartPOSMethod()
 
 void clsMainProcess::_PartGETMethod()
 {
-    if (access(_DataRequest.getPhysicalPath().c_str(), F_OK))
-    {
-        _Response.SetMod(ERROR);
-        _Response.SetStatus(404);
-        _Response.SetRequestHandler(_DataRequest);
-        _Response.MakeResponse();
-    }
-    else
-    {
-        _Response.SetMod(GET);
-        _Response.SetStatus(200);
-        _Response.SetRequestHandler(_DataRequest);
-        _Response.MakeResponse();
-    }
+    _Response.SetMod(GET);
+    _Response.SetStatus(200);
+    _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
@@ -80,7 +70,7 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
     _DataRequest = DataRequest;
     if (_DataRequest.getReturn().value != "")
         _PartRedirection();
-    else if (check != 0)
+    else if (!_DataRequest.MethodAllowed())
         _PartPermission();
     else if ((_DataRequest.getMethod() == "GET"))
         _PartGETMethod();
