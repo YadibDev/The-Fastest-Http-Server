@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 17:05:51 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/22 15:23:52 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class clsResponse
         std::map<std::string, std::string> _TypeContent;
 
         void StoredDefaultType();
-        const std::string &GetTypeData(const std::string &Type);
-        const std::string &ErrorRespnseHandling();
+        const std::string GetTypeData(const std::string &Type);
+        const std::string ErrorRespnseHandling();
         void InitialHeaders();
         void Status();
         void ContentLength();
@@ -60,7 +60,7 @@ class clsResponse
         void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(short Mode);
         void SetType(const std::string &Type);
-        bool GetIsConnection();
+        bool GetIsConnection() const {return _IsConnection;};
         void MakeResponse();
         const std::string ChunkData(const std::string &Str) const;
 

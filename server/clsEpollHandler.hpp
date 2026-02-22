@@ -22,7 +22,7 @@ public:
     clsEpollHandler();
     ~clsEpollHandler();
 
-    bool addServerSockets(clsServerSock &SocketsServer, int ability = EPOLLIN);
+    bool addServerSockets(clsServerSock &SocketsServer, int ability = EPOLLIN | EPOLLRDHUP);
     bool addClient(int fd, int ability = EPOLLIN);
 
     void changeAbility(int fd, int newAbility);

@@ -1,3 +1,6 @@
+#ifndef ProcessRequestHandler_HPP
+#define ProcessRequestHandler_HPP
+
 #include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "../ParseRequest/Request/Request.hpp"
 #include "RequestHandler.hpp"
@@ -14,3 +17,5 @@ class ProcessRequestHandler
         ProcessRequestHandler();
         static void processRequest(const clsRequest& request, const clsServerConfig& serverConfig, RequestHandler& handler);
 };
+
+#endif

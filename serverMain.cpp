@@ -31,12 +31,13 @@ int main()
 
     std::string Data;
     int fd = open("configs/default.conf", O_RDONLY);
-    if (fd == -1) {
+    if (fd == -1)
+    {
         std::cerr << "Error: Could not open config file." << std::endl;
         return 1;
     }
 
-    ssize_t Size = 10000; 
+    ssize_t Size = 10000;
     HelperFunctions::ReadData(fd, Data, Size);
     close(fd);
 
@@ -49,7 +50,7 @@ int main()
     cfg.addWithSpace(" \t");
 
     GenericLexer<TokenType> Lexer(Data, cfg);
-    std::vector< Token<TokenType> > Tokens = Lexer.tokenize();
+    std::vector<Token<TokenType> > Tokens = Lexer.tokenize();
     clsParse<TokenType> Parse(Tokens, TOKEN_EOF);
 
     clsParseConfigueFile configFile(Parse);
@@ -59,20 +60,15 @@ int main()
         std::cout << "SEGFAULT HNA 58 main server\n";
         return 1;
     }
-    clsServerConfig Block =  configFile.getServers()[0];
+    clsServerConfig Block = configFile.getServers()[0];
 
     clsEpollHandler epoll;
     epoll_event ClientBuffer[100];
 
-    vector<unsigned short> allPort;
-    vector<unsigned int> allIps;
-    allPort.push_back(8081);
-    allIps.push_back(0);
-
     clsServerSock server;
     clsLinker ClientsLinker;
 
-    server.buildSockets(allPort, allIps);
+    server.buildSockets(Block.getListens());
     epoll.addServerSockets(server);
 
     string respond = "";
@@ -87,7 +83,13 @@ int main()
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
             int newClient;
-            if ((ClientBuffer[i].events | EPOLLIN) == EPOLLIN)
+            if ((ClientBuffer[i].events & EPOLLRDHUP) == EPOLLRDHUP)
+            {
+                std::cout << "Hello world" << std::endl;
+                std::cout << "Hello world" << std::endl;
+                std::cout << "Hello world" << std::endl;
+            }
+            else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
             {
                 newClient = server.tryAcceptNewClient(fd, &addr);
                 if (newClient == -1)
@@ -106,46 +108,34 @@ int main()
                 else
                 {
                     newClient = fd;
-                    string buffer;
-                    buffer.resize(4096);
-                    int size = recv(fd, &buffer[0], 4095, MSG_DONTWAIT);
-                    buffer.resize(size);
-                    clsRequest request;
-                    RequestHandler reqHandler;
-                    request.parse(buffer);
 
-                    std::cout << request.isCompleted() << std::endl;
+                    clsClient &client = ClientsLinker.GetClientAt(newClient);
 
-
-                    ProcessRequestHandler::processRequest(request, Block, reqHandler);
-
-                    std::cout << reqHandler.getError().getMsgError() << std::endl;
-                    ClientsLinker.GetClientAt(newClient).SetState(REQUEST_MODE);
-                    std::cout << "RESPOND 1 start" << endl;
-                    try
+                    client.ProcessRequest();
+                    if (client.GetState() == CONNECTION_CLOSED)
                     {
-                        ClientsLinker.GetClientAt(newClient).ProcessRespond(reqHandler);
+                        ClientsLinker.removeClient(newClient);
+                        continue;
                     }
-                    catch (std::exception &e)
+                    if (client.GetState() == START_RESPOND)
                     {
-                        cout << e.what() << endl;
+                        std::cout << "***********Done \n\n"
+                                  << std::endl;
+                        client.ProcessRespond(Block);
+                        if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
+                            epoll.changeAbility(newClient, EPOLLOUT);
                     }
-                    if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
-                        epoll.changeAbility(newClient, EPOLLOUT);
-                    std::cout << "RESPOND 1 end" << endl;
-
-                    // Response.~clsResponse();
                 }
             }
-            else if ((ClientBuffer[i].events | EPOLLOUT) == EPOLLOUT)
+            else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
             {
                 newClient = fd;
                 std::cout << "RESPOND 2 start" << endl;
-                    RequestHandler reqHandler;
+                RequestHandler reqHandler;
 
                 try
                 {
-                    ClientsLinker.GetClientAt(newClient).ProcessRespond(reqHandler);
+                    ClientsLinker.GetClientAt(newClient).ProcessRespond(Block);
                 }
                 catch (std::exception &e)
                 {
@@ -153,9 +143,14 @@ int main()
                 }
                 if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
                     epoll.changeAbility(newClient, EPOLLIN);
+                else if (ClientsLinker.GetClientAt(newClient).GetState() == CONNECTION_CLOSED)
+                {
+                    ClientsLinker.removeClient(newClient);
+                    continue;
+                }
                 std::cout << "RESPOND 2 end" << endl;
-                
             }
+        
         }
     }
 }

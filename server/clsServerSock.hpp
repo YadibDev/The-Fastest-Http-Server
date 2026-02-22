@@ -29,8 +29,8 @@ private:
     HttpError _statusError;
     struct sockaddr_in temp;
 
-    int _buildSingleSocket(unsigned short, unsigned int);
-    void _initializeSockaffr(unsigned short, unsigned int);
+    int _buildSingleSocket(sockaddr_in &temp);
+    // void _initializeSockaffr(unsigned short, unsigned int);
     bool _isServerSocket(int);
 
 public:
@@ -38,7 +38,7 @@ public:
     ~clsServerSock();
 
     bool isServerIp(unsigned int ip, unsigned int port);
-    void buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ip);
+    void buildSockets(std::vector<sockaddr_in> listens);
     void removeSocket(int);
     int tryAcceptNewClient(int sockServer, sockaddr_in *addr);
     const set<int> &getServerSockets();

@@ -34,24 +34,26 @@ void clsServerSock::removeSocket(int fd)
     close(fd);
 }
 
-// initilaizing the sturct with the port and ip of the passive socket
-void clsServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
-{
-    memset(&temp, 0, sizeof(temp));
+// // initilaizing the sturct with the port and ip of the passive socket
+// void clsServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
+// {
+//     memset(&temp, 0, sizeof(temp));
 
-    temp.sin_port = htons(port);
-    temp.sin_addr.s_addr = htonl(ipV4);
-    temp.sin_family = AF_INET;
-}
+//     temp.sin_port = htons(port);
+//     temp.sin_addr.s_addr = htonl(ipV4);
+//     temp.sin_family = AF_INET;
+// }
 
 // build single socket with socket and bind and listen system calls
-int clsServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
+int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
 {
+    unsigned short port = temp.sin_port;
+    unsigned int ipV4 = temp.sin_addr.s_addr;
+
     int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if (fdSock == -1)
         throw std::runtime_error("socket system call fail");
 
-    _initializeSockaffr(port, ipV4);
     const sockaddr *addr = reinterpret_cast<const sockaddr *>(&temp);
 
     if (bind(fdSock, addr, sizeof(sockaddr_in)) == -1)
@@ -67,29 +69,24 @@ int clsServerSock::_buildSingleSocket(unsigned short port, unsigned int ipV4)
 }
 
 // builds sockets that exist in vector
-void clsServerSock::buildSockets(const vector<unsigned short> &ports, const vector<unsigned int> &ip)
+void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
 {
-    vector<unsigned short>::const_iterator it = ports.begin();
-    vector<unsigned short>::const_iterator end = ports.end();
-    vector<unsigned int>::const_iterator itIp = ip.begin();
-    vector<unsigned int>::const_iterator endIp = ip.end();
 
     int fd;
-    while (it != end && itIp != endIp)
+    for (int i = 0; i < listens.size(); i++)
     {
         try
         {
-            fd = _buildSingleSocket(*it, *itIp);
+            fd = _buildSingleSocket(listens[i]);
             _Sockets.insert(fd);
             _totalSocks++;
         }
         catch (const std::exception &e)
         {
             std::cout << COLOR_BOLD << COLOR_RED;
-            std::cout << "Error : " << e.what() << ' ' << *itIp << ':' << *it << std::endl;
+            std::cout << "Error : " << e.what() << ' ' << listens[i].sin_addr.s_addr << ':' << listens[i].sin_port << std::endl;
             std::cout << COLOR_RESET;
         }
-        ++it, ++itIp;
     }
 
     if (_totalSocks == 0)

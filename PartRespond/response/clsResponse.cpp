@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 21:09:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/22 14:42:38 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void clsResponse::InitialHeaders()
         ConnectionKeepAlive();
 }
 
-const std::string &clsResponse::ErrorRespnseHandling()
+const std::string clsResponse::ErrorRespnseHandling()
 {
     stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
@@ -221,7 +221,7 @@ const std::string clsResponse::ChunkData(const std::string &Str) const
     return (NewStr);
 }
 
-const std::string &clsResponse::GetTypeData(const std::string &Type)
+const std::string clsResponse::GetTypeData(const std::string &Type)
 {
     if (_TypeContent.count(Type))
             return  _TypeContent[Type];
