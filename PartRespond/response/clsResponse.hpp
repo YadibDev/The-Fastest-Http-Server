@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/22 15:23:52 by yadib            ###   ########.fr       */
+/*   Updated: 2026/02/22 15:35:46 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class clsResponse
         void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(short Mode);
         void SetType(const std::string &Type);
-        bool GetIsConnection() const {return _IsConnection;};
+        bool GetIsConnection() const;
         void MakeResponse();
         const std::string ChunkData(const std::string &Str) const;
 

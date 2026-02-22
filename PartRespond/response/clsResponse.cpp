@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/22 14:42:38 by yadib            ###   ########.fr       */
+/*   Updated: 2026/02/22 15:36:24 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,6 +285,12 @@ void clsResponse::Reset()
     StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
+
+bool clsResponse::GetIsConnection() const
+{
+    return _IsConnection;
+}
+
 const std::string &clsResponse::GetHeaderFeild() const
 {
     return _HeaderFeild;
