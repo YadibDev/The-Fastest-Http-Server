@@ -52,6 +52,26 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 	return root;
 }
 
+std::string		ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
+{
+	ctx.parser.advance(); 
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
+
+	std::string alias;
+	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, alias);
+	if (ctx.error.isError()) return "";
+
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		return (ctx.error.setStatus(400, "Missing ';' after alias"), "");
+	
+	ctx.parser.advance();
+	skipWhitespace(ctx);
+
+	return alias;
+}
+
 unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context& ctx) {
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_WORD)
@@ -74,19 +94,20 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 	return bytes;
 }
 
-std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx, std::string &defaultIndex) {
+std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx) {
 	std::vector<std::string> indices;
-	indices.push_back(defaultIndex);
+
 	ctx.parser.advance();
 
-	while (ctx.parser.peek().type == TOKEN_WORD) {
+	while (ctx.parser.peek().type == TOKEN_WORD)
+	{
 		indices.push_back(ctx.parser.peek().value);
 		ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after index list"), indices);
-	
+
 	ctx.parser.advance();
 	skipWhitespace(ctx);
 	return indices;
@@ -99,7 +120,7 @@ bool ConfigDirectiveParser::ParseAutoIndex(s_parse_context& ctx) {
 
 	if (val == "on") result = true;
 	else if (val == "off") result = false;
-	else ctx.error.setStatus(400, "Invalid autoindex value: " + val);
+	else ctx.error.setStatus(400, "invalid value \"" + val + "\" in \"autoindex\" directive, it must be \"on\" or \"off");
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
@@ -282,7 +303,7 @@ unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char u
 		case 'm': case 'M': multiplier = 1024ULL * 1024; break;
 		case 'k': case 'K': multiplier = 1024ULL; break;
 		case ' ': multiplier = 1; break;
-		default: error.setStatus(400, "Invalid unitType"); return 0;
+		default: error.setStatus(1, "\"client_max_body_size\" directive invalid value "); return 0;
 	}
 	return (unsigned long long)(value * multiplier);
 }

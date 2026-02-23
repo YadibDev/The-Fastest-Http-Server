@@ -34,6 +34,8 @@ bool clsParseConfigueFile::ParseConfigue()
 {
     s_parse_context	ctx(_Parse, _ERROR);
 
+    ConfigDirectiveParser::skipWhitespace(ctx);
+
     while (_Parse.peek().type != TOKEN_EOF) {
         if (_Parse.peek().type != TOKEN_WORD) {
             ctx.error.setStatus(400, "Syntax Error: Expected block name");

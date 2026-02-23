@@ -89,36 +89,53 @@ bool    checkPath(const std::string &physicalPath)
     return (false);
 }
 
-std::string ProcessRequestHandler::getIndex(const clsLocation* bestLocation, HttpError &error)
+std::string ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, HttpError &error)
 {
     const std::vector<std::string> &vindex = bestLocation->getIndex();
-    
-    std::string root = bestLocation->getRoot();
+    std::string rootOrAlias = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
+    std::string physicalPath = "";
 
     for (size_t i = 0; i < vindex.size(); i++)
     {
-        std::string physicalPath = root + "/" + vindex[i];
+        physicalPath = rootOrAlias + "/" + vindex[i];
         if (checkPath(physicalPath))
-            return (physicalPath);
+            return physicalPath;
     }
+
+    physicalPath = rootOrAlias + "/index.html";
+    if (checkPath(physicalPath))
+        return physicalPath;
+
+    if (bestLocation->getAutoIndex())
+        return rootOrAlias;
+
     error.setStatus(403, "Forbidden");
     return "";
 }
 
 std::string ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, const std::string &uri, HttpError &error)
 {
-    std::string PhysicalPath = "";
+    std::string base = "";
+    
+    if (!uri.empty() && uri[uri.size() - 1] == '/')
+        return handleDirectory(bestLocation, error);
 
-    if (uri.size() >= 1 && uri[uri.size() - 1] == '/')
-        return getIndex(bestLocation, error);
-    std::string URI = uri.substr(bestLocation->getLocationData().uri.size());
-    PhysicalPath = bestLocation->getRoot() + URI;
-    if (checkPath(PhysicalPath))
-        return PhysicalPath;
-    error.setStatus(403, "Forbidden");
+    base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
+
+    std::string physicalPath;
+    if (!bestLocation->getAlias().empty()) {
+        std::string subUri = uri.substr(bestLocation->getLocationData().uri.size());
+        physicalPath = base + ( (!subUri.empty() && subUri[0] != '/') ? "/" + subUri : subUri );
+    }
+    else
+        physicalPath = base + ( (!uri.empty() && uri[0] != '/') ? "/" + uri : uri );
+
+    if (checkPath(physicalPath))
+        return physicalPath;
+
+    error.setStatus(404, "Not Found");
     return "";
 }
-
 void ProcessRequestHandler::processRequest(const clsRequest& request, const clsServerConfig& serverConfigs, RequestHandler& handler)
 {
     const clsLocation* bestLocation = findBestLocation(serverConfigs.getLocationExact(), serverConfigs.getLocationPrefix(), request._startLine.getPath());

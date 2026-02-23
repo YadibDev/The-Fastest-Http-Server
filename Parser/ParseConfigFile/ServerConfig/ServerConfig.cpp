@@ -52,7 +52,7 @@ bool	clsServerConfig::ParseRoot()
 
 bool	clsServerConfig::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
+	_index = ConfigDirectiveParser::ParseIndex(ctx);
 	if (ctx.error.isError())
 		return (false);
 	return (true);

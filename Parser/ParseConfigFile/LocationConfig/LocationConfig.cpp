@@ -7,9 +7,15 @@ bool	clsLocation::ParseRoot()
 	return !ctx.error.isError();
 }
 
+bool	clsLocation::ParseAlias()
+{
+	_alias = ConfigDirectiveParser::parseAlias(ctx);
+	return !ctx.error.isError();
+}
+
 bool	clsLocation::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
+	_index = ConfigDirectiveParser::ParseIndex(ctx);
 	return !ctx.error.isError();
 }
 
@@ -65,6 +71,7 @@ clsLocation::getLocationDirectiveType(const std::string& key)
 	if (directives.empty())
 	{
 		directives["root"]                  = L_DIR_ROOT;
+		directives["alias"]                  = L_DIR_ALIAS;
 		directives["index"]                 = L_DIR_INDEX;
 		directives["autoindex"]             = L_DIR_AUTOINDEX;
 		directives["allow_methods"]        = L_DIR_ACCEPTED_METHODS;
@@ -95,6 +102,7 @@ bool    clsLocation::ParseLocationDirective()
 	switch (dirType)
 	{
 		case L_DIR_ROOT:					return	ParseRoot();
+		case L_DIR_ALIAS:					return	ParseAlias();
 		case L_DIR_INDEX:					return	ParseIndex();
 		case L_DIR_AUTOINDEX:				return	ParseAutoIndex();
 		case L_DIR_ACCEPTED_METHODS:		return	ParseMethods();
@@ -177,8 +185,13 @@ const std::map<std::string, std::string> &clsLocation::getCgiPass() const {
 	return _cgi_pass;
 }
 
-std::map<short, stErrorPagedata> clsLocation::getErrorPages() const {
+const std::map<short, stErrorPagedata> &clsLocation::getErrorPages() const {
 	return _error_pages;
+}
+
+const std::string	&clsLocation::getAlias() const
+{
+	return _alias;
 }
 
 HttpError clsLocation::getError() const {

@@ -17,6 +17,7 @@ clsMainProcess::~clsMainProcess(){}
 
 void clsMainProcess::_PartRedirection()
 {
+    std::cout << _DataRequest.getReturn().code << std::endl;
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(REDIRECTION);
     _Response.SetRequestHandler(_DataRequest);
@@ -78,7 +79,7 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
-    bool check = false;
+    // bool check = false;
     _DataRequest = DataRequest;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();

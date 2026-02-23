@@ -30,7 +30,7 @@ clsResponse::clsResponse()
 void clsResponse::MakeResponse()
 {
     _HeaderFeild = "";
-    if (!_Mod.count(ERROR))
+    if (!_Mod.count(ERROR) && !_Mod.count(REDIRECTION))
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = GetTypeData(GetTypeDataFile(_FileFromDisk));

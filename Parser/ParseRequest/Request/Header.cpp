@@ -49,6 +49,7 @@ bool ParseHeader::getValue(stArguments &args, std::string &fieldValue)
 void ParseHeader::storeHeader(std::string &headerField, std::string &fieldValue, std::map<std::string, std::vector<std::string> > &headerMap)
 {
 	std::vector<std::string> values;
+	std::cout << "Hello \n";
 	values = HelperFunctions::splitCommaSeparated(fieldValue);
 
 	for (size_t i = 0; i < values.size(); i++)

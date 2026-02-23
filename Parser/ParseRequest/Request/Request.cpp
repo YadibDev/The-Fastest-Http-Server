@@ -8,8 +8,10 @@ void clsRequest::parse(const std::string& rawData)
 {
     _Buffer += rawData;
     size_t pos;
-
-    while ((pos = _Buffer.find("\r\n")) != std::string::npos)
+    std::cout << "*******START********\n";
+    std::cout << rawData << std::endl;
+    std::cout << "*******end********\n";
+    while ((pos = _Buffer.find("\n")) != std::string::npos)
     {
         std::string line = _Buffer.substr(0, pos);
         _Buffer.erase(0, pos + 2);
@@ -38,6 +40,7 @@ void clsRequest::parse(const std::string& rawData)
     if (_state == READING_BODY)
     {
         // Body
+        std::cout << "Body completed" << std::endl;
         _state = COMPLETED;
     }
 }
