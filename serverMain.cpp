@@ -16,6 +16,7 @@
 #include "PartRespond/mainprocess/Webserv.hpp"
 #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
+#include <csignal>
 // include "Parser/RequestHandler/RequestHandler.hpp"
 using namespace std;
 
@@ -26,9 +27,14 @@ using namespace std;
 //     Linker Manager;
 // };
 
+void function(int signal)
+{
+    exit(1);
+}
+
 int main()
 {
-
+    signal(SIGINT, function);
     std::string Data;
     int fd = open("configs/default.conf", O_RDONLY);
     if (fd == -1)
@@ -85,9 +91,9 @@ int main()
             int newClient;
             if ((ClientBuffer[i].events & EPOLLRDHUP) == EPOLLRDHUP)
             {
-                std::cout << "Hello world" << std::endl;
-                std::cout << "Hello world" << std::endl;
-                std::cout << "Hello world" << std::endl;
+                ClientsLinker.removeClient(fd);
+                std::cout << "Fd" << fd << std::endl;
+                continue;
             }
             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
             {
@@ -103,7 +109,7 @@ int main()
                     // flow of accept client jdid
                     cout << newClient << endl;
                     ClientsLinker.insertClient(newClient, addr);
-                    epoll.addClient(newClient);
+                    epoll.addClient(newClient, EPOLLIN);
                 }
                 else
                 {

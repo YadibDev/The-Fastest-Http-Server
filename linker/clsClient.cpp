@@ -58,6 +58,7 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
+    close(_socket);
 }
 
 void clsClient::ProcessRequest()
@@ -72,6 +73,7 @@ void clsClient::ProcessRequest()
         return ;
     }
     buffer.resize(size);
+    std::cout << buffer << std::endl;
     if (_state == BEGIN) _Requester._Buffer = "", _state = REQUEST_MODE;
         // i must reset the requester
     
@@ -118,7 +120,12 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         }
         respond.resize(s);
         respond = _Responder.ChunkData(respond);
+        std::cout << "before send chunk" << std::endl;
+        std::cout << "s_send == >" << respond.size() << std::endl;
+        s_send = send(_socket, respond.c_str(), 0, MSG_DONTWAIT);
+        std::cout << s_send << std::endl;
         s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
+        std::cout << "After send chunked" << std::endl;
         _DataLeft = &respond[s_send];
     }
 
@@ -156,8 +163,9 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
             _BodyPlace = DISK_FILE;
 
         _DataLeft = Header + _DataLeft;
+        std::cout << "break start" << std::endl;
         s = send(_socket, &_DataLeft[0], _DataLeft.size(), MSG_DONTWAIT); // can return -1
+        std::cout << "break start" << std::endl;
         this->_DataLeft = &_DataLeft[s];
     }
-    _SendRespond(_ResponderProecss.GetclsResponse()); //
 }

@@ -13,7 +13,7 @@
 # ifndef LIBRARYS_HPP
 # define LIBRARYS_HPP
 
-enum eSatat {UPLOAD, REDIRECTION, CHUNK, CGI};
+enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
 #include "../../Utils/HelperString.hpp"
 

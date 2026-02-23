@@ -34,7 +34,7 @@ void clsMainProcess::_PartPermission()
 void clsMainProcess::_PartCGI()
 {
     _Response.SetStatus(200);
-    //Cgi hear 
+    //Cgi hear
 }
 
 void clsMainProcess::_PartDeleteMethod()
@@ -78,7 +78,6 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
-    bool check = false;
     _DataRequest = DataRequest;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();

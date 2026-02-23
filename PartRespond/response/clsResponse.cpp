@@ -39,7 +39,10 @@ void clsResponse::MakeResponse()
     if (!_Mod.count(ERROR))
         InitialHeaders();
     if (_Mod.count(ERROR))
+    {
         _HeaderFeild = ErrorRespnseHandling();
+        return ;
+    }
     _HeaderFeild += "\r\n";
 }
 
