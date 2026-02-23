@@ -1,6 +1,6 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 4096
+#define CHUNK_LIMIT 1024 * 500
 clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
     _LastConnection = _FirstConnection;
@@ -97,17 +97,8 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         // if s_send == -1 is it possible ? what should i do
         _DataLeft = &_DataLeft[s_send];
     }
-    else if (_BodyPlace == RAM)
-    {
-        _state = SEND_BODY;
-        respond = _Responder.GetBody();
-        std::cout << respond << std::endl;
-        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-        _DataLeft = &respond[s_send];
-    }
     else if (_BodyPlace == DISK_FILE)
     {
-        _state = SEND_BODY;
         respond.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
         {
@@ -131,7 +122,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         _DataLeft = &respond[s_send];
     }
 
-    if (_DataLeft.empty() && ((_BodyPlace == RAM && _state == SEND_BODY) || _state == LAST_CHUNKED))
+    if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
     {
         _state = BEGIN;
         if (_Responder.GetIsConnection() == false)
@@ -144,35 +135,29 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
     if (_state == START_RESPOND)
     {
         // initialized the reponder
+        _state = RESPOND_MODE;
         _fdRespond = 0;
         _DataLeft = "";
-        string Header;
         ssize_t s;
-        string fileName = "index.html";
         const clsResponse & Respond = _ResponderProecss.GetclsResponse();
-        RequestHandler RequestXconfig;
 
         // linke request with config
         ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
 
-        std::cout << "********************\n";
-        std::cout << RequestXconfig.getPhysicalPath() << std::endl;
-        std::cout << RequestXconfig.getError().getMsgError() << std::endl;
-        std::cout << "********************\n";
         this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
 
-        Header = Respond.GetHeaderFeild();
+        const string &Header = Respond.GetHeaderFeild();
         if (Respond.GetFileName().empty())
+        {
+            _DataLeft = Respond.GetBody();
             _BodyPlace = RAM;
+        }
         else
             _BodyPlace = DISK_FILE;
-        _state = RESPOND_MODE;
 
-        // i must add pollhand
-        s = send(_socket, &Header[0], Header.size(), MSG_DONTWAIT);
-        std::cout << Header << std::endl;
-        this->_DataLeft = &Header[s];
-        // if s == -1 is it possible ?/
+        _DataLeft = Header + _DataLeft;
+        s = send(_socket, &_DataLeft[0], _DataLeft.size(), MSG_DONTWAIT); // can return -1
+        this->_DataLeft = &_DataLeft[s];
     }
     _SendRespond(_ResponderProecss.GetclsResponse()); //
 }

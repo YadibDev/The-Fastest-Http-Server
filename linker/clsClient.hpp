@@ -18,7 +18,6 @@ enum clinetState
     REQUEST_MODE,
     START_RESPOND,
     RESPOND_MODE,
-    SEND_BODY,
     LAST_CHUNKED,
     CONNECTION_CLOSED
 };
@@ -37,7 +36,7 @@ private:
     size_t _BodyOfset;
     string _DataLeft;
     size_t _HeaderOfset;
-    
+    RequestHandler RequestXconfig;
     clsMainProcess _ResponderProecss;
     clsRequest _Requester;
 
