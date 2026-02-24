@@ -14,9 +14,8 @@
 
 long long clsCGI::GetCurrentTime() 
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    long Time = time(0);
+    return (Time);
 }
 
 int clsCGI::RunCGI(std::string NameFile, Data OData, int TimeOut)
