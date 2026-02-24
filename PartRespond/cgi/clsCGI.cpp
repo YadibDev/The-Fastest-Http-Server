@@ -12,17 +12,69 @@
 
 #include "clsCGI.hpp"
 
+void clsCGI::_StoredWhiteBlakHeaders()
+{
+    if (_WhiteBlakHeaders.empty())
+    {
+        _WhiteBlakHeaders["Authorization"] = 0;
+        _WhiteBlakHeaders["Proxy-Authorization"] = 0;
+        _WhiteBlakHeaders["Connection"] = 0;
+        _WhiteBlakHeaders["Keep-Alive"] = 0;
+        _WhiteBlakHeaders["Upgrade"] = 0;
+        _WhiteBlakHeaders["Te"] = 0;
+        _WhiteBlakHeaders["Trailer"] = 0;
+        _WhiteBlakHeaders["Transfer-Encoding"] = 0;
+
+        _WhiteBlakHeaders["Auth-Type"] = 1;
+        _WhiteBlakHeaders["Remote-Ident"] = 1;
+        _WhiteBlakHeaders["Remote-User"] = 1;
+        _WhiteBlakHeaders["Content-Length"] = 1;
+        _WhiteBlakHeaders["Content-Type"] = 1;
+        _WhiteBlakHeaders["Gateway-Interface"] = 1;
+        _WhiteBlakHeaders["Path-Info"] = "PATH";
+        _WhiteBlakHeaders["Path-Translated"] = 1;
+        _WhiteBlakHeaders["Query-String"] = 1;
+        _WhiteBlakHeaders["Script-Name"] = 1;
+        _WhiteBlakHeaders["Remote-Addr"] = 1;
+        _WhiteBlakHeaders["Remote-Host"] = 1;
+        _WhiteBlakHeaders["Request-Method"] = 1;
+        _WhiteBlakHeaders["Server-Name"] = 1;
+        _WhiteBlakHeaders["Server-Port"] = 1;
+        _WhiteBlakHeaders["Server-Protocol"] = 1;
+        _WhiteBlakHeaders["Server-Software"] = 1;
+    }
+}
+
+std::string clsCGI::_BuildVarEnv(std::string &HeaderName,const std::vector<std::string>  &Value)
+{
+    size_t Pos = 0;
+    std::string EnvValue;
+
+    if (!_WhiteBlakHeaders.count(HeaderName))
+        EnvValue += "HTTP_";
+    EnvValue += HeaderName;
+    EnvValue = HelperFunctions::ConvertStringToUpper(EnvValue);
+    while ((Pos = EnvValue.find('-')) != std::string::npos)
+        EnvValue = EnvValue.replace(Pos, 1, "_");
+    EnvValue += "=";
+    for (int i = 0; i < Value.size(); i++)
+    {
+        EnvValue += Value[i];
+        if (i != Value.size())
+            EnvValue += ";";
+    }
+    return (EnvValue);
+}
+
 char **clsCGI::MakeEnv()
 {
     size_t Pos = 0;
-    std::string HeaderName ="Content-Type";
+    std::string HeaderName = "Content-Type";
+    std::string EnvValue;
     std::vector<std::string >  Value;
-
-    HeaderName = HelperFunctions::ConvertStringToUpper(HeaderName);
-    while ((Pos = HeaderName.find('-')) != std::string::npos)
-        HeaderName = HeaderName.replace(Pos, 1, "_");
-    
 }
+
+
 
 int clsCGI::RunCGI()
 {

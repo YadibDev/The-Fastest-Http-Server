@@ -256,6 +256,13 @@ std::string HelperFunctions::ConvertStringToLower(std::string &Str) {
     }
     return Str;
 }
+std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
+    for (size_t i = 0; i < Str.size(); i++) {
+        if (std::isalpha(Str[i]))
+            Str[i] = std::toupper(Str[i]);
+    }
+    return Str;
+}
 
 bool HelperFunctions::Ischar(const std::string &Sep, char C) {
     for (size_t i = 0; i < Sep.size(); i++) {
