@@ -26,7 +26,8 @@ class clsCGI
         RequestHandler _DataRequest;
         std::map<std::string, bool> _WhiteBlakHeaders;
         void _StoredWhiteBlakHeaders();
-        std::string _BuildVarEnv(std::string &HeaderName,const std::vector<std::string>  &Value);
+        const std::string  &_ConcatonateValue(const std::vector <std::string> &Value);
+        std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
     public:
         clsCGI();
         long long GetCurrentTime();

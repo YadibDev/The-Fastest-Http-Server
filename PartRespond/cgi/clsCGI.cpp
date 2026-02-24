@@ -12,6 +12,19 @@
 
 #include "clsCGI.hpp"
 
+const std::string  &clsCGI::_ConcatonateValue(const std::vector <std::string> &Value)
+{
+    std::string EnvValue;
+    for (size_t i = 0; i < Value.size(); i++)
+    {
+        EnvValue += Value[i];
+        std::cout << i<< std::endl;
+        if (i != Value.size() - 1)
+            EnvValue += ";";
+    }
+    return (EnvValue);
+}
+
 void clsCGI::_StoredWhiteBlakHeaders()
 {
     if (_WhiteBlakHeaders.empty())
@@ -45,7 +58,7 @@ void clsCGI::_StoredWhiteBlakHeaders()
     }
 }
 
-std::string clsCGI::_BuildVarEnv(std::string &HeaderName,const std::vector<std::string>  &Value)
+std::string clsCGI::_BuildVarEnv(const std::string &HeaderName,const std::string  &Value)
 {
     size_t Pos = 0;
     std::string EnvValue;
@@ -57,21 +70,24 @@ std::string clsCGI::_BuildVarEnv(std::string &HeaderName,const std::vector<std::
     while ((Pos = EnvValue.find('-')) != std::string::npos)
         EnvValue = EnvValue.replace(Pos, 1, "_");
     EnvValue += "=";
-    for (int i = 0; i < Value.size(); i++)
-    {
-        EnvValue += Value[i];
-        if (i != Value.size())
-            EnvValue += ";";
-    }
+    EnvValue += Value;
     return (EnvValue);
 }
 
 char **clsCGI::MakeEnv()
 {
-    size_t Pos = 0;
-    std::string HeaderName = "Content-Type";
-    std::string EnvValue;
-    std::vector<std::string >  Value;
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    std::map<std::string, std::vector<std::string> > Header;
+
+    for (it = Header.begin(); it != Header.end(); it++)
+    {
+        if (_WhiteBlakHeaders.count(it->first))
+        {
+            if (!_WhiteBlakHeaders[it->first])
+                continue;
+        }
+        
+    }
 }
 
 
