@@ -6,24 +6,11 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/10 18:45:35 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/24 19:41:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
-
-const std::string  &clsCGI::_ConcatonateValue(const std::vector <std::string> &Value)
-{
-    std::string EnvValue;
-    for (size_t i = 0; i < Value.size(); i++)
-    {
-        EnvValue += Value[i];
-        std::cout << i<< std::endl;
-        if (i != Value.size() - 1)
-            EnvValue += ";";
-    }
-    return (EnvValue);
-}
 
 void clsCGI::_StoredWhiteBlakHeaders()
 {
@@ -58,6 +45,19 @@ void clsCGI::_StoredWhiteBlakHeaders()
     }
 }
 
+const std::string  &clsCGI::_ConcatonateValue(const std::vector <std::string> &Value)
+{
+    std::string EnvValue;
+    for (size_t i = 0; i < Value.size(); i++)
+    {
+        EnvValue += Value[i];
+        std::cout << i<< std::endl;
+        if (i != Value.size() - 1)
+            EnvValue += ";";
+    }
+    return (EnvValue);
+}
+
 std::string clsCGI::_BuildVarEnv(const std::string &HeaderName,const std::string  &Value)
 {
     size_t Pos = 0;
@@ -78,16 +78,24 @@ char **clsCGI::MakeEnv()
 {
     std::map<std::string, std::vector<std::string> >::iterator it;
     std::map<std::string, std::vector<std::string> > Header;
+    char **ENV = NULL;
+    std::vector<std::string> Variables;
 
     for (it = Header.begin(); it != Header.end(); it++)
     {
         if (_WhiteBlakHeaders.count(it->first))
-        {
             if (!_WhiteBlakHeaders[it->first])
                 continue;
-        }
-        
+        Variables.push_back(_BuildVarEnv(it->first, _ConcatonateValue(it->second)));
     }
+    ENV = new char*[Variables.size() + 1];
+    if (!ENV)
+        return (NULL);
+    for (size_t i = 0; i < Variables.size(); i++)
+    {
+        ENV[i] = strdup(Variables[i].c_str());
+    }
+    return ENV;
 }
 
 
