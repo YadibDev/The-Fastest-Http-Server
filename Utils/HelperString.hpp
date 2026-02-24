@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <string>
 #include <ctime>
 

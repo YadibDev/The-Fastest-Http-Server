@@ -12,13 +12,19 @@
 
 #include "clsCGI.hpp"
 
-long long clsCGI::GetCurrentTime() 
+char **clsCGI::MakeEnv()
 {
-    long Time = time(0);
-    return (Time);
+    size_t Pos = 0;
+    std::string HeaderName ="Content-Type";
+    std::vector<std::string >  Value;
+
+    HeaderName = HelperFunctions::ConvertStringToUpper(HeaderName);
+    while ((Pos = HeaderName.find('-')) != std::string::npos)
+        HeaderName = HeaderName.replace(Pos, 1, "_");
+    
 }
 
-int clsCGI::RunCGI(std::string NameFile, Data OData, int TimeOut)
+int clsCGI::RunCGI()
 {
     int status;
     int exit_code;
@@ -26,7 +32,7 @@ int clsCGI::RunCGI(std::string NameFile, Data OData, int TimeOut)
     int pip[2] = {-1,-1};
     if (pipe(pip) == -1)
         return -500;
-    Fd = open(NameFile.c_str(), O_RDONLY, 644);
+    Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY, 644);
     if (Fd < 0)
         return -500;
     _StartTime = GetCurrentTime();
@@ -39,9 +45,7 @@ int clsCGI::RunCGI(std::string NameFile, Data OData, int TimeOut)
         if (dup2(pip[1], 1) == -1)
             return (close(Fd), -1);
         close(pip[1]);
-        if (chdir(Data.GetFolder()) < 0)
-            return (-1);
-        execve(Data.GetPath(),Data.GetArgs(), Data.GetEnv());
+        // execve(_DataRequest.getPathCgi().c_str(),_DataRequest., Data.GetEnv());
         return -1;
     }
     else

@@ -14,6 +14,7 @@
 # define CLS_CGI_HPP
 
 #include "../mainprocess/librarys.hpp"
+#include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsCGI
 {
@@ -22,11 +23,12 @@ class clsCGI
         bool _IsRunCGI;
         long long _StartTime;
         int _FD;
+        RequestHandler _DataRequest;
         
     public:
         long long GetCurrentTime();
-        char **MakeEnv(class RequestHandler);
-        // int RunCGI(std::string NameFile, Data OData, int TimeOut);
+        char **MakeEnv();
+        int RunCGI();
 };
 
 #endif
