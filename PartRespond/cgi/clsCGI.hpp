@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 21:24:08 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/24 22:02:08 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class clsCGI
         char **_MakeEnv();
     public:
         clsCGI();
+        bool GetIsRunCGI();
         int RunCGI();
         ~clsCGI();
 };

@@ -6,11 +6,17 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 21:59:44 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/24 22:05:23 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
+
+clsCGI::clsCGI()
+{
+    _StoredWhiteBlakHeaders();
+    _IsRunCGI = false;
+}
 
 void clsCGI::_StoredWhiteBlakHeaders()
 {
@@ -216,7 +222,17 @@ int clsCGI::RunCGI()
             close(Fd);
             return (-500);
         }
+        _IsRunCGI = true;
+        HelperFunctions::free_matrex(&ARG);
+        HelperFunctions::free_matrex(&ENV);
         return (pip[0]);
     }
     return 0;
 }
+
+bool clsCGI::GetIsRunCGI()
+{
+    return (_IsRunCGI);
+}
+clsCGI::~clsCGI(){}
+
