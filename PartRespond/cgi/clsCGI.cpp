@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 21:54:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/24 21:59:44 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,8 +215,8 @@ int clsCGI::RunCGI()
             HelperFunctions::free_matrex(&ENV);
             close(Fd);
             return (-500);
-            return (pip[0]);
         }
+        return (pip[0]);
     }
     return 0;
 }
