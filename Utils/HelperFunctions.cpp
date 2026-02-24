@@ -369,11 +369,58 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-unsigned long long HelperFunctions::getCurrentTimeInMs()
+unsigned long long HelperFunctions::getCurrentTimeInS()
 {
-    struct timeval Time;
+    long Time;
+    Time = time(0);
+    return (Time);
+}
+size_t	HelperFunctions::_ft_strlen(const char *s)
+{
+	size_t	i;
 
-    gettimeofday(&Time, NULL);
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
 
-    return (Time.tv_sec * 1000) + (Time.tv_usec / 1000);
+char	*HelperFunctions::ft_strdup(const char *src)
+{
+	int		l;
+	int		i;
+	char	*dest_dup;
+
+	if (!src)
+		return (NULL);
+	i = 0;
+	l = _ft_strlen(src);
+	dest_dup = new char[(l + 1)];
+	if (!dest_dup)
+		return (NULL);
+	while (src[i])
+	{
+		dest_dup[i] = src[i];
+		i++;
+	}
+	dest_dup[i] = '\0';
+	return (dest_dup);
+}
+
+void	HelperFunctions::free_matrex(char ***matrex)
+{
+	int	i;
+
+	i = 0;
+	if (!*matrex)
+		return ;
+	while ((*matrex)[i])
+	{
+		delete[] ((*matrex)[i]);
+		i++;
+	}
+	delete[] (*matrex);
+	*matrex = NULL;
 }
