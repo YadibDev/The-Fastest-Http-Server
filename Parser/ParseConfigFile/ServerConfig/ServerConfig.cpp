@@ -139,7 +139,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '{' at the beginning of server block"), false);
 
 	ctx.parser.advance();
-	ConfigDirectiveParser::skipWhitespace(ctx);
+	ConfigDirectiveParser::skipWhitespace(ctx.parser);
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE &&
 		   ctx.parser.peek().type != TOKEN_EOF)
@@ -153,7 +153,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '}' at the end of server block"), false);
 
 	ctx.parser.advance();
-	ConfigDirectiveParser::skipWhitespace(ctx);
+	ConfigDirectiveParser::skipWhitespace(ctx.parser);
 
 	return true;
 }

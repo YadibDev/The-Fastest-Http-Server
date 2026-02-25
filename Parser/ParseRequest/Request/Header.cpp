@@ -49,7 +49,6 @@ bool ParseHeader::getValue(stArguments &args, std::string &fieldValue)
 void ParseHeader::storeHeader(std::string &headerField, std::string &fieldValue, std::map<std::string, std::vector<std::string> > &headerMap)
 {
 	std::vector<std::string> values;
-	std::cout << "Hello \n";
 	values = HelperFunctions::splitCommaSeparated(fieldValue);
 
 	for (size_t i = 0; i < values.size(); i++)
@@ -59,20 +58,23 @@ void ParseHeader::storeHeader(std::string &headerField, std::string &fieldValue,
 	headerField.clear();
 }
 
+
 bool ParseHeader::parseSingleHeader(const std::string& line, HttpError& error)
 {
     size_t colonPos = line.find(':');
-    if (colonPos == std::string::npos)
-        return (error.setStatus(400, "Invalid Header Field: Missing colon"), false);
+    if (colonPos == std::string::npos || colonPos == 0)
+        return (error.setStatus(400, "Bad Request: Malformed Header"), false);
 
-    std::string headerField = line.substr(0, colonPos);
-    if (!checkHeaderField(headerField))
-        return (error.setStatus(400, "Invalid Header Field Name"), false);
+    std::string fieldName = HelperFunctions::ConvertStringToLower(line.substr(0, colonPos));
+    
+    if (isSingleton(fieldName)) {
+        if (hasAlreadyBeenSet(fieldName))
+            return (error.setStatus(400, "Bad Request: Duplicate Singleton Header"), false);
+        setFlag(fieldName);
+    }
 
-    std::string fieldValue = line.substr(colonPos + 1);
-    fieldValue = HelperFunctions::normalizeLWS(fieldValue);
-
-    storeHeader(headerField, fieldValue, headerMap);
+    std::string fieldValue = HelperFunctions::normalizeLWS(line.substr(colonPos + 1));
+    storeHeader(fieldName, fieldValue, headerMap);
 
     return true;
 }

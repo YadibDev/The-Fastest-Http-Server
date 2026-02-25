@@ -22,15 +22,14 @@ private:
 	bool        _parseVersion(const std::string &version);
 	void        _parsURI(const std::string &URI_str);
 	std::string getPart(const std::string &str, size_t &indx);
-	void        _parseStartLine(std::string startLine);
-
+	
 	// helper functions are provided by HelperFunctions; not class members
-
-public:
+	
+	public:
 	clsStartLine();
-	clsStartLine(const std::string &startLine);
 	
 	// Getters
+	void        		parseStartLine(std::string startLine);
 	bool				isAbsoluteURI() const;
 	Methods::eMethods	getMethod()     const;
 	const std::string&	getHost()       const;

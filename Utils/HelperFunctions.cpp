@@ -177,7 +177,7 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	if (!expectDir && S_ISDIR(info.st_mode))
 		return (403);
 
-	return 200;
+	return (200);
 }
 
 

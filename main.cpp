@@ -41,7 +41,7 @@ int main() {
 
     clsParseConfigueFile configFile(Parse);
 
-    if (configFile.ParseConfigue()) {
+    if (!configFile.ParseConfigue()) {
         std::cout << "\033[1;31mParsing Error: " << configFile.getError().getMsgError() << "\033[0m" << std::endl;
         return 1;
     }
@@ -50,6 +50,7 @@ int main() {
     if (configFile.getError().isError())
     {
         std::cout << configFile.getError().getMsgError() << std::endl;
+        std::cout << "status error :" << configFile.getError().isError() << std::endl;
         return 1;
     }
     std::cout << "HI\n";

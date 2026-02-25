@@ -1,13 +1,12 @@
 {
     "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Launch",
-            "program": "${workspaceFolder}/webserv",
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        }
-
+    {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Launch",
+        "program": "/mnt/c/Users/mosab/The-Fastest-Http-Server/webserv",
+        "args": [],
+        "cwd": "${workspaceFolder}"
+    }
     ]
 }

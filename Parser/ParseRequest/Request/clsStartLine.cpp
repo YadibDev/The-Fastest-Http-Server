@@ -3,11 +3,6 @@
 
 clsStartLine::clsStartLine() : _isAbsoluteURI(false), _method(Methods::GET), _scheme(), _host(), _port(), _path(), _query(), _version() {}
 
-clsStartLine::clsStartLine(const std::string &startLine)
-{
-	_parseStartLine(startLine);
-}
-
 bool clsStartLine::_parseMethod(const std::string &methodStr) {
 
 	if (methodStr.empty())
@@ -86,7 +81,7 @@ bool clsStartLine::_parseVersion(const std::string &version) {
 	return false;
 }
 
-void clsStartLine::_parseStartLine(std::string startLine) {
+void clsStartLine::parseStartLine(std::string startLine) {
 	if (startLine.empty()) {
 		_error.setStatus(400, "Bad Request");
 		return;

@@ -51,7 +51,7 @@ public:
 	static std::string						parseAlias(s_parse_context& ctx);
 
 
-	static void								skipWhitespace(s_parse_context& ctx);
+	static void								skipWhitespace(clsParse<TokenType>& parser);
 
 private:
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);
