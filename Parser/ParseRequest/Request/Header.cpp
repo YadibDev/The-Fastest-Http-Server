@@ -6,7 +6,7 @@
 // implementation of the class declared in Header.hpp
 
 ParseHeader::ParseHeader(std::map<std::string, std::vector<std::string> >& headers)
-	: state(READING_HEADERS), headerMap(headers) {}
+	: state(RequestStatus::READING_HEADERS), headerMap(headers) {}
 
 bool ParseHeader::checkHeaderField(std::string &HeaderField)
 {

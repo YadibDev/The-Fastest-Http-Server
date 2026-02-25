@@ -4,12 +4,11 @@
 
 #include "../ServerConfig/ConfigDirectiveParser.hpp"
 
-
 class clsLocation
 {
 private:
 
-	
+	short								_flags;
 	s_parse_context						&ctx;
 	stlocation							_locationData;
 	std::string							_root;

@@ -12,7 +12,7 @@ public:
 	std::map<std::string, std::vector<std::string> > &getHeaderValues() const;
 	
 	private:
-	RequestState state;
+	RequestStatus::e_state state;
 	std::map<std::string, std::vector<std::string> > &headerMap;
 
 	void	storeHeader(std::string &headerField, std::string &fieldValue, std::map<std::string, std::vector<std::string> > &headerMap);

@@ -1,47 +1,55 @@
 #include "Request.hpp"
 
 clsRequest::clsRequest()
-    : _state(READING_LINE), _startOfHeader(true), _headerParser(_headers) {}
+    : _state(RequestStatus::READING_LINE), _startOfHeader(true), _headerParser(_headers) {}
 
 
 void clsRequest::parse(const std::string& rawData)
 {
     _Buffer += rawData;
     size_t pos;
-    std::cout << "*******START********\n";
-    std::cout << rawData << std::endl;
-    std::cout << "*******end********\n";
+
     while ((pos = _Buffer.find("\n")) != std::string::npos)
     {
         std::string line = _Buffer.substr(0, pos);
         _Buffer.erase(0, pos + 2);
 
-        if (_state == READING_LINE)
+        if (_state == RequestStatus::READING_LINE)
         {
             clsStartLine startLine(line);
             _startLine = startLine;
-            _state = READING_HEADERS;
+            if (_startLine.getError().isError())
+            {
+                _error = _startLine.getError();
+                _state = RequestStatus::COMPLETED;
+            }
+            _state = RequestStatus::READING_HEADERS;
         }
-        else if (_state == READING_HEADERS)
+        else if (_state == RequestStatus::READING_HEADERS)
         {
             if (line.empty())
             {
-                _state = READING_BODY;
+                _state = RequestStatus::READING_BODY;
                 break;
             }
-            if (!_headerParser.parseSingleHeader(line, _arguments._Error))
+            if (!_headerParser.parseSingleHeader(line, _error))
                 return;
         }
         
-        if (_state == READING_BODY)
+        if (_state == RequestStatus::READING_BODY)
             break;
     }
 
-    if (_state == READING_BODY)
+    if (_state == RequestStatus::READING_BODY)
     {
         // Body
         std::cout << "Body completed" << std::endl;
-        _state = COMPLETED;
+        _state = RequestStatus::COMPLETED;
     }
 }
-bool clsRequest::isCompleted() const { return _state == COMPLETED; }
+bool clsRequest::isCompleted() const { return _state == RequestStatus::COMPLETED; }
+
+const HttpError& clsRequest::getError() const
+{
+    return _error;
+}

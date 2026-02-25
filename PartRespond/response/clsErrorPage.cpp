@@ -122,7 +122,7 @@ void clsErrorPage::ContentType()
 void clsErrorPage::Date()
 {
     _HeaderFeild += "Date: ";
-    _HeaderFeild += DateTime();
+    _HeaderFeild += HelperFunctions::DateTime();
     _HeaderFeild += "\r\n";     
 }
 

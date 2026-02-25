@@ -62,13 +62,13 @@ const std::string ProcessRequestHandler::getPathCgi(const std::string &uri, cons
     return empty;
 }
 
-std::string ProcessRequestHandler::selectMethod(eMethods method) {
+std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
     switch (method) {
-        case GET:
+        case Methods::GET:
             return "GET";
-        case POST:
+        case Methods::POST:
             return "POST";
-        case DELETE:
+        case Methods::DELETE:
             return "DELETE";
         default:
             return "UNKNOWN";

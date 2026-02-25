@@ -1,16 +1,58 @@
 #include "LocationConfig.hpp"
 
 
-bool	clsLocation::ParseRoot()
+bool    clsLocation::ParseRoot()
 {
-	_root = ConfigDirectiveParser::ParseRoot(ctx);
-	return !ctx.error.isError();
+    if (_flags & Directives::D_ROOT)
+        return !(ctx.error.setStatus(1, "Directives: root already set"), false);
+    if (_flags & Directives::D_ALIAS)
+        return !(ctx.error.setStatus(1, "Directives: cannot have both root and alias"), false);
+    
+    _flags |= Directives::D_ROOT;
+    _root = ConfigDirectiveParser::ParseRoot(ctx);
+    return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseAlias()
+bool    clsLocation::ParseAlias()
 {
-	_alias = ConfigDirectiveParser::parseAlias(ctx);
-	return !ctx.error.isError();
+    if (_flags & Directives::D_ALIAS)
+        return !(ctx.error.setStatus(1, "Directives: alias already set"), false);
+    if (_flags & Directives::D_ROOT)
+        return !(ctx.error.setStatus(1, "Directives: cannot have both root and alias"), false);
+
+    _flags |= Directives::D_ALIAS;
+    _alias = ConfigDirectiveParser::parseAlias(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseClientMaxBodySize()
+{
+    if (_flags & Directives::D_MAX_BODY)
+        return !(ctx.error.setStatus(1, "Directives: client_max_body_size already set"), false);
+
+    _flags |= Directives::D_MAX_BODY;
+    _client_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseAutoIndex()
+{
+    if (_flags & Directives::D_AUTOINDEX)
+        return !(ctx.error.setStatus(1, "Directives: autoindex already set"), false);
+
+    _flags |= Directives::D_AUTOINDEX;
+    _autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseReturn()
+{
+    if (_flags & Directives::D_RETURN)
+        return !(ctx.error.setStatus(1, "Directives: return already set"), false);
+
+    _flags |= Directives::D_RETURN;
+    _return = ConfigDirectiveParser::ParseReturn(ctx);
+    return !ctx.error.isError();
 }
 
 bool	clsLocation::ParseIndex()
@@ -19,34 +61,24 @@ bool	clsLocation::ParseIndex()
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseAutoIndex()
+bool    clsLocation::ParseMethods()
 {
-	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
-	return !ctx.error.isError();
+    if (_flags & Directives::D_METHODS)
+        return !(ctx.error.setStatus(1, "Directives: allow_methods already set"), false);
+
+    _flags |= Directives::D_METHODS;
+    _allow_methods = ConfigDirectiveParser::parseMethods(ctx);
+    return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseMethods()
+bool    clsLocation::ParseUploadStore()
 {
-	_allow_methods = ConfigDirectiveParser::parseMethods(ctx);
-	return !ctx.error.isError();
-}
+    if (_flags & Directives::D_UPLOAD_STORE)
+        return !(ctx.error.setStatus(1, "Directives: upload_store already set"), false);
 
-bool	clsLocation::ParseClientMaxBodySize()
-{
-	_client_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
-	return !ctx.error.isError();
-}
-
-bool	clsLocation::ParseReturn()
-{
-	_return = ConfigDirectiveParser::ParseReturn(ctx);
-	return !ctx.error.isError();
-}
-
-bool	clsLocation::ParseUploadStore()
-{
-	_upload_store = ConfigDirectiveParser::ParseUploadStore(ctx);
-	return !ctx.error.isError();
+    _flags |= Directives::D_UPLOAD_STORE;
+    _upload_store = ConfigDirectiveParser::ParseUploadStore(ctx);
+    return !ctx.error.isError();
 }
 
 bool	clsLocation::ParseCgiPass()
@@ -123,6 +155,7 @@ clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
 	_index = sIndex;
 	_client_max_body_size = sClient_max_body_size;
 	_autoindex = sAutoIndex;
+	_flags = Directives::D_NONE;
 }
 
 

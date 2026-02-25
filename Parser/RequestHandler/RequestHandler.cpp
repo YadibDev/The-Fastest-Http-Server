@@ -142,3 +142,8 @@ const HttpError& RequestHandler::getError() const
 {
     return _error;
 }
+
+bool RequestHandler::getAllowMethod() const
+{
+    return _allowMethod;
+}

@@ -27,7 +27,7 @@ void clsMainProcess::_PartRedirection()
 void clsMainProcess::_PartPermission()
 {
     _Response.SetStatus(403);
-    _Response.SetMod(ERROR);
+    _Response.SetMod(RequestStatus::ERROR);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
@@ -40,11 +40,11 @@ void clsMainProcess::_PartCGI()
 
 void clsMainProcess::_PartDeleteMethod()
 {
-    _Response.SetMod(DELETE);
+    _Response.SetMod(Methods::DELETE);
     _Response.SetStatus(200);
     if (access(_DataRequest.getPhysicalPath().c_str(), R_OK))
     {
-        _Response.SetMod(ERROR);
+        _Response.SetMod(RequestStatus::ERROR);
         _Response.SetStatus(404);
         _Response.MakeResponse();
     }
@@ -63,7 +63,7 @@ void clsMainProcess::_PartPOSMethod()
 
 void clsMainProcess::_PartGETMethod()
 {
-    _Response.SetMod(GET);
+    _Response.SetMod(Methods::GET);
     _Response.SetStatus(200);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
@@ -71,7 +71,7 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-    _Response.SetMod(ERROR);
+    _Response.SetMod(RequestStatus::ERROR);
     _Response.SetStatus(_DataRequest.getError().getCodeStatus());
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();

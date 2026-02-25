@@ -1,64 +1,94 @@
 #include "clsStartLine.hpp"
 #include <sstream>
 
-clsStartLine::clsStartLine() : _isAbsoluteURI(false), _method(GET), _scheme(), _host(), _port(), _path(), _query(), _version(), statuCode(200) {}
+clsStartLine::clsStartLine() : _isAbsoluteURI(false), _method(Methods::GET), _scheme(), _host(), _port(), _path(), _query(), _version() {}
 
-clsStartLine::clsStartLine(const std::string &startLine) {
-	statuCode = 200;
+clsStartLine::clsStartLine(const std::string &startLine)
+{
 	_parseStartLine(startLine);
 }
 
 bool clsStartLine::_parseMethod(const std::string &methodStr) {
+
+	if (methodStr.empty())
+	{
+		_error.setStatus(400, "Bad Request");
+		return false;
+	}
+
 	if (methodStr == "GET") 
-		_method = GET;
+		_method = Methods::GET;
 	else if (methodStr == "POST")
-		_method = POST;
+		_method = Methods::POST;
 	else if (methodStr == "DELETE")
-		_method = DELETE;
+		_method = Methods::DELETE;
 	else {
-		statuCode = 501;
+		_error.setStatus(501, "Not Implemented");
 		return false;
 	}
 	return true;
 }
 
 void clsStartLine::_parsURI(const std::string &URI_str) {
-	URI	_uri(URI_str);
+    const size_t MAX_URI_LENGTH = 8192; 
 
-	_scheme = _uri.getScheme();
-	_host   = _uri.getHost();
-	{
-		std::ostringstream oss;
-		oss << _uri.getPort();
-		_port = oss.str();
-	}
-	_path   = _uri.getPath();
-	_query  = _uri.getQuery();
+    if (URI_str.empty())
+    {
+        _error.setStatus(400, "Bad Request");
+        return ;
+    }
+
+    if (URI_str.length() > MAX_URI_LENGTH)
+    {
+        _error.setStatus(414, "Request-URI Too Long");
+        return ;
+    }
+
+    URI _uri(URI_str);
+
+    _scheme = _uri.getScheme();
+    _host   = _uri.getHost();
+    {
+        std::ostringstream oss;
+        oss << _uri.getPort();
+        _port = oss.str();
+    }
+    _path   = _uri.getPath();
+    _query  = _uri.getQuery();
 }
 
 std::string clsStartLine::getPart(const std::string &str, size_t &indx) {
-	HelperFunctions::skipWhitespace(str, indx);
+	
 	size_t nextSpace = str.find_first_of(" \t", indx);
 	size_t len = (nextSpace == std::string::npos) ? str.size() - indx : (nextSpace - indx);
 	std::string part = str.substr(indx, len);
 	indx += len;
+	HelperFunctions::skipWhitespace(str, indx);
 	return part;
 }
 
 bool clsStartLine::_parseVersion(const std::string &version) {
-	if (version.length() != 8)
+
+	if (version.empty())
+	{
+		_error.setStatus(400, "Bad Request");
 		return false;
-	if (version == "HTTP/1.1" || version == "HTTP/1.0") {
+	}
+
+	if (version.length() != 8)
+		return (_error.setStatus(505, "HTTP Version Not Supported"), false);
+	if (version == "HTTP/1.1" || version == "HTTP/1.0")
+	{
 		_version = version;
 		return true;
 	}
-	statuCode = 505; // HTTP Version Not Supported
+	_error.setStatus(505, "HTTP Version Not Supported");
 	return false;
 }
 
 void clsStartLine::_parseStartLine(std::string startLine) {
 	if (startLine.empty()) {
-		statuCode = 400;
+		_error.setStatus(400, "Bad Request");
 		return;
 	}
 	startLine = HelperFunctions::trim(startLine);
@@ -69,10 +99,10 @@ void clsStartLine::_parseStartLine(std::string startLine) {
 }
 
 // Getters
-bool               clsStartLine::isAbsoluteURI() const { return _isAbsoluteURI; }
-eMethods           clsStartLine::getMethod() const { return _method; }
-const std::string& clsStartLine::getHost()       const { return _host; }
-const std::string& clsStartLine::getPath()       const { return _path; }
-const std::string& clsStartLine::getQuery()      const { return _query; }
-const std::string& clsStartLine::getVersion()    const { return _version; }
-short              clsStartLine::getStatusCode() const { return statuCode; }
+bool				clsStartLine::isAbsoluteURI() const { return _isAbsoluteURI; }
+Methods::eMethods	clsStartLine::getMethod() const { return _method; }
+const std::string&	clsStartLine::getHost()       const { return _host; }
+const std::string&	clsStartLine::getPath()       const { return _path; }
+const std::string&	clsStartLine::getQuery()      const { return _query; }
+const std::string&	clsStartLine::getVersion()    const { return _version; }
+const HttpError&	clsStartLine::getError()	const { return _error; }

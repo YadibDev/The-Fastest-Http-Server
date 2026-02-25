@@ -52,6 +52,8 @@ public:
     static std::string GTMHTTP(tm *GMT);
     static std::string DateTime();
     static std::string Convert_Hex(const std::string &Str, int Num);
+    static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
+    static std::string GetTypeDataFile(const std::string &Str);
 
 private:
     HelperFunctions() {}

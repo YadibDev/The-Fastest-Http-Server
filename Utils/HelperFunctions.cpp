@@ -370,3 +370,56 @@ unsigned long long HelperFunctions::getCurrentTimeInMs()
 
     return (Time.tv_sec * 1000) + (Time.tv_usec / 1000);
 }
+
+
+void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName)
+{
+    std::vector<std::string> Split1;
+    std::string Line;
+    std::string Buffer;
+    std::string Key;
+    std::string Value;
+    int FD = open(FileName.c_str(), O_RDONLY, 644);
+    if (FD < 0)
+        return ;
+    Line = GetNextLine(FD, Buffer, 100);
+    while (!Line.empty())
+    {
+        Line = TrimStr(Line, "\t ");
+        Split1 = Split(Line, ':', 0);
+        if (Split1.empty() || Split1.size() != 2)
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key = Split1[0];
+        Value = Split1[1];
+        if (Key[0] != '.')
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key = Key.substr(1, Key.size());
+        if (Key == "")
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key =Split1[0];
+        StoredType[Key] = Value;
+        Line = GetNextLine(FD, Buffer, 100);
+    }
+    close(FD);
+}
+
+
+std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
+{
+    size_t Pos;
+    if ((Pos = Str.find('.')) == std::string::npos)
+        return "";
+    return (Str.substr(Pos, Str.size()));
+}

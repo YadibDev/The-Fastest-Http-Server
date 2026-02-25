@@ -139,8 +139,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '{' at the beginning of server block"), false);
 
 	ctx.parser.advance();
-	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
-		ctx.parser.advance();
+	ConfigDirectiveParser::skipWhitespace(ctx);
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE &&
 		   ctx.parser.peek().type != TOKEN_EOF)

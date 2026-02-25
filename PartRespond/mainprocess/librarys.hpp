@@ -15,7 +15,7 @@
 
 enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
-#include "../../Utils/HelperString.hpp"
+#include "../../Utils/HelperFunctions.hpp"
 
 #endif
 

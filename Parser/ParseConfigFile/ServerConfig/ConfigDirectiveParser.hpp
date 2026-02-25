@@ -34,7 +34,6 @@ struct s_parse_context {
 };
 
 
-
 class ConfigDirectiveParser {
 public:
 

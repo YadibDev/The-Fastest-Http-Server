@@ -6,18 +6,18 @@
 #include <arpa/inet.h>
 #include <iomanip>
 
-void printMethods(short methods, eMethods method) {
-    if ((methods & method) == GET)
+void printMethods(short methods, Methods::eMethods method) {
+    if ((methods & method) == Methods::GET)
         std::cout << "GET ";
-    if ((methods & method) == POST)
+    if ((methods & method) == Methods::POST)
         std::cout << "POST ";
-    if ((methods & method) == DELETE)
+    if ((methods & method) == Methods::DELETE)
         std::cout << "DELETE ";
 }
 
 int main() {
     std::string Data;
-    int fd = open("config-files/default.conf", O_RDONLY);
+    int fd = open("configs/default.conf", O_RDONLY);
     if (fd == -1) {
         std::cerr << "Error: Could not open config file." << std::endl;
         return 1;
@@ -41,19 +41,34 @@ int main() {
 
     clsParseConfigueFile configFile(Parse);
 
-    if (configFile.getError().isError()) {
+    if (configFile.ParseConfigue()) {
         std::cout << "\033[1;31mParsing Error: " << configFile.getError().getMsgError() << "\033[0m" << std::endl;
         return 1;
     }
 
     std::vector<clsServerConfig> servers = configFile.getServers();
+    if (configFile.getError().isError())
+    {
+        std::cout << configFile.getError().getMsgError() << std::endl;
+        return 1;
+    }
+    std::cout << "HI\n";
+
     servers[0].getError().isError();
     std::cout << "\033[1;32mTotal Servers Parsed: " << servers.size() << "\033[0m\n" << std::endl;
+
 
     std::string Requestest = "DELETE /test/index.html HTTP/1.1\r\nHost: example.com\r\n\r\n";
     clsRequest request;
 
+
     request.parse(Requestest);
+
+    if (request.getError().isError())
+    {
+        std::cout << request.getError().getMsgError() << std::endl;
+        return 0;
+    }
 
     RequestHandler handler;
     ProcessRequestHandler::processRequest(request, servers[0], handler);

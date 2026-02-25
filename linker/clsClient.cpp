@@ -76,6 +76,11 @@ void clsClient::ProcessRequest()
         // i must reset the requester
     
     _Requester.parse(buffer);
+    if (_Requester.getError().isError())
+    {
+        std::cout << _Requester.getError().getMsgError() << std::endl;
+        return ;
+    }
 
     if (_Requester.isCompleted()) // is in error case also like this    
     {
