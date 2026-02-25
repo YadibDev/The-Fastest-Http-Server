@@ -17,4 +17,4 @@ const std::string& URI::getHost()      const { return _host; }
 int                URI::getPort()      const { return _port; }
 const std::string& URI::getPath()      const { return _path; }
 const std::string& URI::getQuery()     const { return _query; }
-const std::string& URI::getFragment()  const { return _fragment; }
+const std::string& URI::getFragment()  const { return _fragment;}

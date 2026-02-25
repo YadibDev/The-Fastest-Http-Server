@@ -1,8 +1,10 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 1024 * 500
+#define CHUNK_LIMIT 1024 * 524
 clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
+    _fdRespond = 0;
+    _DataLeft = "";
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
@@ -58,7 +60,8 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
-    close(_socket);
+    if (_fdRespond > 0)
+        close(_fdRespond);
 }
 
 void clsClient::ProcessRequest()
@@ -70,19 +73,20 @@ void clsClient::ProcessRequest()
     if (size == 0)
     {
         _state = CONNECTION_CLOSED;
-        return ;
+        return;
     }
     buffer.resize(size);
-    std::cout << buffer << std::endl;
-    if (_state == BEGIN) _Requester._Buffer = "", _state = REQUEST_MODE;
-        // i must reset the requester
-    
+
+    if (_state == BEGIN)
+        _Requester._Buffer = "", _state = REQUEST_MODE;
+    // i must reset the requester
+
     _Requester.parse(buffer);
 
-    if (_Requester.isCompleted()) // is in error case also like this    
+    if (_Requester.isCompleted()) // is in error case also like this
     {
         this->_state = START_RESPOND;
-        return ;
+        return;
     }
 }
 
@@ -93,79 +97,98 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     ssize_t s;
     ssize_t s_send;
 
-    if (_DataLeft.empty() == false)
+    try
     {
-        s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
-        // if s_send == -1 is it possible ? what should i do
-        _DataLeft = &_DataLeft[s_send];
-    }
-    else if (_BodyPlace == DISK_FILE)
-    {
-        respond.resize(CHUNK_LIMIT);
-        if (_fdRespond == 0)
-        {
-            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-            // if (_fdRespond == -1)
-            //     ; // we should handle this edge case
-        }
 
-        s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
-        if (s < CHUNK_LIMIT)
+        if (_DataLeft.empty() == false)
         {
-            if (s == 0)
+            s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
+            if (s_send != -1)
+                _DataLeft = &_DataLeft[s_send];
+        }
+        else if (_BodyPlace == DISK_FILE)
+        {
+            respond.resize(CHUNK_LIMIT);
+            if (_fdRespond == 0)
             {
-                _state = LAST_CHUNKED;
-                close(_fdRespond);
+                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
             }
-        }
-        respond.resize(s);
-        respond = _Responder.ChunkData(respond);
-        std::cout << "before send chunk" << std::endl;
-        std::cout << "s_send == >" << respond.size() << std::endl;
-        s_send = send(_socket, respond.c_str(), 0, MSG_DONTWAIT);
-        std::cout << s_send << std::endl;
-        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-        std::cout << "After send chunked" << std::endl;
-        _DataLeft = &respond[s_send];
-    }
 
-    if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
-    {
-        _state = BEGIN;
-        if (_Responder.GetIsConnection() == false)
-            _state = CONNECTION_CLOSED;
+            s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
+            if (s < CHUNK_LIMIT)
+            {
+                if (s == 0)
+                {
+                    _state = LAST_CHUNKED;
+                    close(_fdRespond);
+                }
+            }
+            respond.resize(s);
+
+            respond = _Responder.ChunkData(respond);
+            s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
+            if (s_send != -1)
+                _DataLeft = &respond[s_send];
+        }
+
+        if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+        {
+            _state = BEGIN;
+            if (_Responder.GetIsConnection() == false)
+                _state = CONNECTION_CLOSED;
+            if (_fdRespond > 0)
+                close(_fdRespond);
+            _fdRespond = 0;
+            _DataLeft = "";
+        }
     }
+    catch(std::exception &e)
+        {
+            std::cout << "second inside send respond err\n";
+            std::cout << e.what() << std::endl;
+        }
 }
 
 void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
 {
+    const clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
-        // initialized the reponder
-        _state = RESPOND_MODE;
-        _fdRespond = 0;
-        _DataLeft = "";
-        ssize_t s;
-        const clsResponse & Respond = _ResponderProecss.GetclsResponse();
-
-        // linke request with config
-        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
-
-        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
-
-        const string &Header = Respond.GetHeaderFeild();
-        if (Respond.GetFileName().empty())
+        try
         {
-            _DataLeft = Respond.GetBody();
-            _BodyPlace = RAM;
-        }
-        else
-            _BodyPlace = DISK_FILE;
 
-        _DataLeft = Header + _DataLeft;
-        std::cout << "break start" << std::endl;
-        s = send(_socket, &_DataLeft[0], _DataLeft.size(), MSG_DONTWAIT); // can return -1
-        std::cout << "break start" << std::endl;
-        this->_DataLeft = &_DataLeft[s];
+            debug = 0;
+            // initialized the reponder
+            _state = RESPOND_MODE;
+            ssize_t s;
+            
+            // linke request with config
+            ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
+            
+            this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
+            
+            const string &Header = Respond.GetHeaderFeild();
+            if (Respond.GetFileName().empty())
+            {
+                _DataLeft = Respond.GetBody();
+                _BodyPlace = RAM;
+            }
+            else
+            _BodyPlace = DISK_FILE;
+            
+            _DataLeft = Header + _DataLeft;
+            s = send(_socket, &_DataLeft[0], _DataLeft.size(), MSG_DONTWAIT); // can return -1
+            if (s != -1)
+            _DataLeft = &_DataLeft[s];
+        }
+        catch(std::exception &e)
+        {
+            std::cout << "first err\n";
+            std::cout << e.what() << std::endl;
+        }
     }
+    debug++;
+    _SendRespond(Respond);
+    std::cout << "\n**********the total loups though respond client fd " << _socket << std::endl;
+    std::cout << "is " << debug << std::endl;
 }

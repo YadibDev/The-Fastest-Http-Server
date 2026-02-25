@@ -29,6 +29,7 @@ clsClient &clsLinker::GetClientAt(int fd)
 void clsLinker::removeClient(int fd)
 {
     this->_clientsDB.erase(fd);
+    close(fd);
 }
 
 void clsLinker::insertClient(int fd, const sockaddr_in &addr)

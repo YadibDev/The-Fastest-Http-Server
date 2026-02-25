@@ -89,9 +89,15 @@ int main()
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
             int newClient;
-            if ((ClientBuffer[i].events & EPOLLRDHUP) == EPOLLRDHUP)
+            if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
             {
                 ClientsLinker.removeClient(fd);
+                if (ClientBuffer[i].events & EPOLLRDHUP)
+                    std::cout << "EPOLLRDHUP"  << std::endl;
+                else if (ClientBuffer[i].events & EPOLLERR)
+                    std::cout << "EPOLLERR"  << std::endl;
+                else    
+                    std::cout << "EPOLLHUP"  << std::endl;
                 std::cout << "Fd" << fd << std::endl;
                 continue;
             }
@@ -106,8 +112,7 @@ int main()
                 }
                 else if (newClient > 0)
                 {
-                    // flow of accept client jdid
-                    cout << newClient << endl;
+                    // flow of accept new client
                     ClientsLinker.insertClient(newClient, addr);
                     epoll.addClient(newClient, EPOLLIN);
                 }
@@ -125,8 +130,6 @@ int main()
                     }
                     if (client.GetState() == START_RESPOND)
                     {
-                        std::cout << "***********Done \n\n"
-                                  << std::endl;
                         client.ProcessRespond(Block);
                         if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
                             epoll.changeAbility(newClient, EPOLLOUT);
@@ -136,25 +139,18 @@ int main()
             else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
             {
                 newClient = fd;
-                std::cout << "RESPOND 2 start" << endl;
-                RequestHandler reqHandler;
 
-                try
-                {
-                    ClientsLinker.GetClientAt(newClient).ProcessRespond(Block);
-                }
-                catch (std::exception &e)
-                {
-                    cout << e.what() << endl;
-                }
-                if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
+                clsClient & client = ClientsLinker.GetClientAt(newClient);
+
+                client.ProcessRespond(Block);
+                if (client.GetState() == BEGIN)
                     epoll.changeAbility(newClient, EPOLLIN);
-                else if (ClientsLinker.GetClientAt(newClient).GetState() == CONNECTION_CLOSED)
+                else if (client.GetState() == CONNECTION_CLOSED)
                 {
                     ClientsLinker.removeClient(newClient);
                     continue;
                 }
-                std::cout << "RESPOND 2 end" << endl;
+
             }
         
         }

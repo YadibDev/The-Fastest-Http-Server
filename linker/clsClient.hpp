@@ -32,8 +32,9 @@ enum whereIsBody
 class clsClient
 {
 private:
-    // request object it will be here
+// request object it will be here
     size_t _BodyOfset;
+    size_t debug;
     string _DataLeft;
     size_t _HeaderOfset;
     RequestHandler RequestXconfig;
