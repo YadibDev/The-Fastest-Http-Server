@@ -371,3 +371,10 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
 
     return HttpError();
 }
+
+const short	URIParser::getMaxUriLength()
+{
+    const short MAX_URI_LENGTH = 8192;
+
+	return MAX_URI_LENGTH;
+}

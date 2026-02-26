@@ -25,7 +25,6 @@ bool clsStartLine::_parseMethod(const std::string &methodStr) {
 }
 
 void clsStartLine::_parsURI(const std::string &URI_str) {
-    const size_t MAX_URI_LENGTH = 8192; 
 
     if (URI_str.empty())
     {
@@ -33,7 +32,7 @@ void clsStartLine::_parsURI(const std::string &URI_str) {
         return ;
     }
 
-    if (URI_str.length() > MAX_URI_LENGTH)
+    if (URI_str.length() > URIParser::getMaxUriLength())
     {
         _error.setStatus(414, "Request-URI Too Long");
         return ;
@@ -81,7 +80,7 @@ bool clsStartLine::_parseVersion(const std::string &version) {
 	return false;
 }
 
-void clsStartLine::parseStartLine(std::string startLine) {
+void clsStartLine::parseStartLine(std::string &startLine) {
 	if (startLine.empty()) {
 		_error.setStatus(400, "Bad Request");
 		return;

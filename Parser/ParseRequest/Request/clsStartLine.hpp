@@ -29,7 +29,7 @@ private:
 	clsStartLine();
 	
 	// Getters
-	void        		parseStartLine(std::string startLine);
+	void        		parseStartLine(std::string &startLine);
 	bool				isAbsoluteURI() const;
 	Methods::eMethods	getMethod()     const;
 	const std::string&	getHost()       const;

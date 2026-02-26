@@ -4,10 +4,19 @@ clsRequest::clsRequest()
     : _state(RequestStatus::READING_LINE), _startOfHeader(true), _headerParser(_headers) {}
 
 
+// bool    clsRequest::checkSizeOfBuffer()
+// {
+//     return (RequestStatus::READING_LINE && URIParser::getMaxUriLength() + 15 < _Buffer.size()); // handle this for DDOS attack
+// }
+
 void clsRequest::parse(const std::string& rawData)
 {
     _Buffer += rawData;
     size_t pos;
+
+
+    
+
 
     while ((pos = _Buffer.find("\r\n")) != std::string::npos)
     {

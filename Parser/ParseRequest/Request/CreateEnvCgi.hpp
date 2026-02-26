@@ -16,7 +16,7 @@ private:
     static void        _addHeaderEnvVars(char** envp, size_t& idx, const clsHeader& header);
     static std::string _formatCgiKey(std::string key);
     
-    static const char* _knownHeaderNames[H_KNOWN_COUNT];
+    static const char* _knownHeaderNames[clsHeader::H_KNOWN_COUNT];
 
 public:
     static char** createEnv(const clsHeader& header, const std::string& path, 

@@ -103,7 +103,7 @@ bool clsHeader::parseHeader(const std::string& line, HttpError& error) {
 
     std::string key = _parseKey(line, colonPos);
     std::string value = _parseValue(line, colonPos);
-    e_header_id id = _getHeaderID(key);
+    header_id::e_header_id id = _getHeaderID(key);
 
     if (id != -1) {
         if (_is_singleton(id)) {
@@ -118,24 +118,13 @@ bool clsHeader::parseHeader(const std::string& line, HttpError& error) {
     return true;
 }
 
-e_header_id clsHeader::_getHeaderID(const std::string& key) const {
-    if (key == "host")               return H_HOST;
-    if (key == "content-length")     return H_CONTENT_LENGTH;
-    if (key == "content-type")       return H_CONTENT_TYPE;
-    if (key == "transfer-encoding") return H_TRANSFER_ENCODING;
-    if (key == "connection")         return H_CONNECTION;
-    if (key == "expect")             return H_EXPECT;
-    if (key == "user-agent")         return H_USER_AGENT;
-    if (key == "cookie")             return H_COOKIE;
-    return static_cast<e_header_id>(-1);
-}
 
-bool clsHeader::_is_singleton(e_header_id id) const {
+bool clsHeader::_is_singleton(header_id::e_header_id id) const {
     switch (id) {
-        case H_HOST:
-        case H_CONTENT_LENGTH:
-        case H_CONTENT_TYPE:
-        case H_EXPECT:
+        case header_id::H_HOST:
+        case header_id::H_CONTENT_LENGTH:
+        case header_id::H_CONTENT_TYPE:
+        case header_id::H_EXPECT:
             return true;
         default:
             return false;
@@ -157,34 +146,40 @@ std::string clsHeader::_parseValue(const std::string& line, size_t colonPos) con
     return value.substr(first, (last - first + 1));
 }
 
-void clsHeader::_set_unknownHeader(const std::string& key, const std::string& value) {
+void clsHeader::_set_unknownHeader(const std::string& key, const std::string& value)
+{
     _unknownHeaders[key] = value;
 }
 
-e_header_id clsHeader::_getHeaderID(const std::string& key) const {
+const std::string& clsHeader::getHeader(header_id::e_header_id id) const
+{
+    return _known_headers[id];
+}
+
+header_id::e_header_id clsHeader::_getHeaderID(const std::string& key) const {
     size_t len = key.length();
 
     switch (len) {
         case 4:
-            if (key == "host") return H_HOST;
+            if (key == "host") return header_id::H_HOST;
             break;
         case 6:
-            if (key[0] == 'e' && key == "expect") return H_EXPECT;
-            if (key[0] == 'c' && key == "cookie") return H_COOKIE;
+            if (key[0] == 'e' && key == "expect") return header_id::header_id::H_EXPECT;
+            if (key[0] == 'c' && key == "cookie") return header_id::header_id::H_COOKIE;
             break;
         case 10:
-            if (key == "connection") return H_CONNECTION;
+            if (key == "connection") return header_id::H_CONNECTION;
             break;
         case 12:
-            if (key[0] == 'c' && key == "content-type") return H_CONTENT_TYPE;
-            if (key[0] == 'u' && key == "user-agent") return H_USER_AGENT;
+            if (key[0] == 'c' && key == "content-type") return header_id::H_CONTENT_TYPE;
+            if (key[0] == 'u' && key == "user-agent") return header_id::H_USER_AGENT;
             break;
         case 14:
-            if (key == "content-length") return H_CONTENT_LENGTH;
+            if (key == "content-length") return header_id::H_CONTENT_LENGTH;
             break;
         case 17:
-            if (key == "transfer-encoding") return H_TRANSFER_ENCODING;
+            if (key == "transfer-encoding") return header_id::H_TRANSFER_ENCODING;
             break;
     }
-    return static_cast<e_header_id>(-1);
+    return static_cast<header_id::e_header_id>(-1);
 }
