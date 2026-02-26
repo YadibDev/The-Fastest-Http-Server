@@ -91,13 +91,13 @@ int main()
             int newClient;
             if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
             {
-                ClientsLinker.removeClient(fd);
                 if (ClientBuffer[i].events & EPOLLRDHUP)
                     std::cout << "EPOLLRDHUP"  << std::endl;
                 else if (ClientBuffer[i].events & EPOLLERR)
                     std::cout << "EPOLLERR"  << std::endl;
                 else    
                     std::cout << "EPOLLHUP"  << std::endl;
+                ClientsLinker.removeClient(fd);
                 std::cout << "Fd" << fd << std::endl;
                 continue;
             }
@@ -130,9 +130,7 @@ int main()
                     }
                     if (client.GetState() == START_RESPOND)
                     {
-                        client.ProcessRespond(Block);
-                        if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
-                            epoll.changeAbility(newClient, EPOLLOUT);
+                        epoll.changeAbility(newClient, EPOLLOUT);
                     }
                 }
             }

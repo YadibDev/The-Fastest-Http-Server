@@ -11,6 +11,8 @@ clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConne
 
 clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
+    _DataLeft = "";
+    _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 }
@@ -75,6 +77,8 @@ void clsClient::ProcessRequest()
         _state = CONNECTION_CLOSED;
         return;
     }
+    if (size == -1)
+        return ;
     buffer.resize(size);
 
     if (_state == BEGIN)

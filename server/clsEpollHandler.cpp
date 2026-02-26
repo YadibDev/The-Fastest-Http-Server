@@ -67,7 +67,7 @@ void clsEpollHandler::changeAbility(int fd, int newAbility)
 {
     memset(&tempEvent, 0, sizeof(tempEvent));
     tempEvent.data.fd = fd;
-    tempEvent.events = newAbility;
+    tempEvent.events = (newAbility | EPOLLRDHUP);
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_MOD, fd, &tempEvent) == -1)
         clog << COLOR_BOLD << COLOR_RED << fd << " ==> fail to change mode EPOLL_CTL_MOD" << std::endl;
