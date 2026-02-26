@@ -104,6 +104,18 @@ std::string ConvertStringToLower(std::string &Str)
     return Str;
 }
 
+std::string ConvertStringToUpper(std::string &Str)
+{
+    size_t i = 0;
+    while (i < Str.size())
+    {
+        if (std::isalpha(Str[i]))
+            Str[i] = std::toupper(Str[i]);
+        i++;
+    }
+    return Str;
+}
+
 bool Ischar(const std::string &Sep, char C)
 {
     size_t i = 0;
