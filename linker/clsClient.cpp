@@ -78,7 +78,7 @@ void clsClient::ProcessRequest()
         return;
     }
     if (size == -1)
-        return ;
+        return;
     buffer.resize(size);
 
     if (_state == BEGIN)
@@ -101,56 +101,52 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     ssize_t s;
     ssize_t s_send;
 
-    try
+    if (_DataLeft.empty() == false && _BodyPlace != DISK_FILE)
     {
-
-        if (_DataLeft.empty() == false)
-        {
-            s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
-            if (s_send != -1)
-                _DataLeft = &_DataLeft[s_send];
-        }
-        else if (_BodyPlace == DISK_FILE)
-        {
-            respond.resize(CHUNK_LIMIT);
-            if (_fdRespond == 0)
-            {
-                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-            }
-
-            s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
-            if (s < CHUNK_LIMIT)
-            {
-                if (s == 0)
-                {
-                    _state = LAST_CHUNKED;
-                    close(_fdRespond);
-                }
-            }
-            respond.resize(s);
-
-            respond = _Responder.ChunkData(respond);
-            s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-            if (s_send != -1)
-                _DataLeft = &respond[s_send];
-        }
-
-        if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
-        {
-            _state = BEGIN;
-            if (_Responder.GetIsConnection() == false)
-                _state = CONNECTION_CLOSED;
-            if (_fdRespond > 0)
-                close(_fdRespond);
-            _fdRespond = 0;
-            _DataLeft = "";
-        }
+        s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
+        if (s_send != -1)
+            _DataLeft = &_DataLeft[s_send];
     }
-    catch(std::exception &e)
+    else if (_BodyPlace == DISK_FILE)
+    {
+        respond.resize(CHUNK_LIMIT);
+        if (_fdRespond == 0)
         {
-            std::cout << "second inside send respond err\n";
-            std::cout << e.what() << std::endl;
+            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
         }
+
+        s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
+        if (s < CHUNK_LIMIT)
+        {
+            if (s == 0)
+            {
+                _state = LAST_CHUNKED;
+                close(_fdRespond);
+            }
+        }
+        respond.resize(s);
+
+        respond = _DataLeft + _Responder.ChunkData(respond);
+        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
+        if (s_send != -1)
+            _DataLeft = &respond[s_send];
+    }
+
+    if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+    {
+        _state = BEGIN;
+        std::cout << "enter above here" << std::endl;
+        std::cout << _Responder.GetIsConnection() << std::endl;
+        if (_Responder.GetIsConnection() == false)
+        {
+            std::cout << "enter here" << std::endl;
+            _state = CONNECTION_CLOSED;
+        }
+        if (_fdRespond > 0)
+            close(_fdRespond);
+        _fdRespond = 0;
+        _DataLeft = "";
+    }
 }
 
 void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
@@ -158,38 +154,25 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
     const clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
-        try
-        {
+        debug = 0;
+        _state = RESPOND_MODE;
+        ssize_t s;
 
-            debug = 0;
-            // initialized the reponder
-            _state = RESPOND_MODE;
-            ssize_t s;
-            
-            // linke request with config
-            ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
-            
-            this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
-            
-            const string &Header = Respond.GetHeaderFeild();
-            if (Respond.GetFileName().empty())
-            {
-                _DataLeft = Respond.GetBody();
-                _BodyPlace = RAM;
-            }
-            else
-            _BodyPlace = DISK_FILE;
-            
-            _DataLeft = Header + _DataLeft;
-            s = send(_socket, &_DataLeft[0], _DataLeft.size(), MSG_DONTWAIT); // can return -1
-            if (s != -1)
-            _DataLeft = &_DataLeft[s];
-        }
-        catch(std::exception &e)
+        // linke request with config
+        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
+
+        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
+
+        const string &Header = Respond.GetHeaderFeild();
+        if (Respond.GetFileName().empty())
         {
-            std::cout << "first err\n";
-            std::cout << e.what() << std::endl;
+            _DataLeft = Respond.GetBody();
+            _BodyPlace = RAM;
         }
+        else
+            _BodyPlace = DISK_FILE;
+
+        _DataLeft = Header + _DataLeft;
     }
     debug++;
     _SendRespond(Respond);

@@ -145,6 +145,7 @@ int main()
                     epoll.changeAbility(newClient, EPOLLIN);
                 else if (client.GetState() == CONNECTION_CLOSED)
                 {
+                    std::cout << "Removed\n";
                     ClientsLinker.removeClient(newClient);
                     continue;
                 }

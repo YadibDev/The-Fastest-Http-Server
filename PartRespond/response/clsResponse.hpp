@@ -22,7 +22,7 @@ class clsResponse
     private:
         std::map <short, short> _Mod;
         short _Status;
-        short _BodySize;
+        short _BodySize;    
         bool _IsConnection;
         bool _Erno;
         std::string _Body;
