@@ -149,12 +149,13 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
 
 void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
 {
-    const clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
         debug = 0;
         _state = RESPOND_MODE;
         ssize_t s;
+
 
         // linke request with config
         ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);

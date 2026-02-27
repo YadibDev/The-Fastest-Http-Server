@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 21:11:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/27 01:52:26 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void clsMainProcess::_PartRedirection()
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(REDIRECTION);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartPermission()
@@ -27,6 +28,7 @@ void clsMainProcess::_PartPermission()
     _Response.SetStatus(403);
     _Response.SetMod(ERROR);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartCGI()
@@ -47,6 +49,7 @@ void clsMainProcess::_PartDeleteMethod()
     }
     // // delete file or folder any things
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 } 
 
 void clsMainProcess::_PartPOSMethod()
@@ -54,6 +57,7 @@ void clsMainProcess::_PartPOSMethod()
     _Response.SetStatus(200);
     _Response.SetMod(UPLOAD);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartGETMethod()
@@ -61,6 +65,7 @@ void clsMainProcess::_PartGETMethod()
     _Response.SetMod(GET);
     _Response.SetStatus(200);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartErrorRequest()
@@ -68,6 +73,7 @@ void clsMainProcess::_PartErrorRequest()
     _Response.SetMod(ERROR);
     _Response.SetStatus(_DataRequest.getError().getCodeStatus());
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
@@ -87,10 +93,10 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == "POST"))
         _PartPOSMethod();
-    _Response.MakeResponse();
+        
 }
 
-const clsResponse &clsMainProcess::GetclsResponse()
+clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
 }

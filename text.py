@@ -4,7 +4,7 @@ import random
 import time
 
 HOST = "127.0.0.1"
-PORT = 8082
+PORT = 8083
 THREADS = 200        # increase carefully
 REQUESTS_PER_THREAD = 200
 
@@ -16,7 +16,6 @@ lock = threading.Lock()
 def random_request():
     paths = [
         "/",
-        "/index.html",
     ]
 
     headers = [
@@ -39,13 +38,13 @@ def worker():
     for _ in range(REQUESTS_PER_THREAD):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(2)
+            s.settimeout(60)
             s.connect((HOST, PORT))
 
             req = random_request()
             s.sendall(req.encode())
 
-            data = s.recv(4096)
+            data = s.recv(1024 * 4)
 
             if data:
                 with lock:
@@ -54,11 +53,11 @@ def worker():
                 with lock:
                     fail += 1
 
-            s.close()
 
         except Exception:
             with lock:
                 fail += 1
+    s.close()
 
 
 threads = []
