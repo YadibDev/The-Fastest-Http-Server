@@ -6,6 +6,9 @@
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
 #include "../PartRespond/mainprocess/Webserv.hpp"
+#include "../Parser/ParseRequest/Request/Request.hpp"
+#include "../Parser/RequestHandler/RequestHandler.hpp"
+#include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 
 using namespace std;
 
@@ -13,9 +16,11 @@ enum clinetState
 {
     BEGIN,
     REQUEST_MODE,
+    START_RESPOND,
     RESPOND_MODE,
     SEND_BODY,
     LAST_CHUNKED,
+    CONNECTION_CLOSED
 };
 
 enum whereIsBody
@@ -32,7 +37,10 @@ private:
     size_t _BodyOfset;
     string _DataLeft;
     size_t _HeaderOfset;
-    clsResponse _Responder;
+    
+    clsMainProcess _ResponderProecss;
+    clsRequest _Requester;
+
     clinetState _state;
     int _fdRespond;
     whereIsBody _BodyPlace;
@@ -41,7 +49,8 @@ private:
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const int _socket;
 
-    void _SendRespond();
+    void _SendRespond(const clsResponse &_Responder);
+    // void _ReadRequest();
 public:
     clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
     clsClient(const clsClient &other);
@@ -64,8 +73,8 @@ public:
 
     // the flow of request and respnd
     void ProcessRequest(); // will be
-    void ProcessRespond();
-    void ProcessBoth();
+    void ProcessRespond(const clsServerConfig &serverConfig);
+    // void ProcessBoth();
 };
 
 #endif

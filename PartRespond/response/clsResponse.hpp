@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/22 15:31:46 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/27 17:14:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class clsResponse
         std::map<std::string, std::string> _TypeContent;
 
         void StoredDefaultType();
-        const std::string &GetTypeData(const std::string &Type);
-        const std::string &ErrorRespnseHandling();
+        const std::string GetTypeData(const std::string &Type);
+        const std::string ErrorRespnseHandling();
         void InitialHeaders();
         void Status();
         void ContentLength();
@@ -52,9 +52,9 @@ class clsResponse
     public:
         void Reset();
         clsResponse();
-        const std::string &GetBody();
-        const std::string &GetFileName();
-        const std::string &GetHeaderFeild();
+        const std::string &GetBody() const;
+        const std::string &GetFileName() const;
+        const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
         void SetRequestHandler(const RequestHandler &DataRequest);
         void SetFileFromDisk(const std::string &FileFromDisk);
@@ -62,7 +62,7 @@ class clsResponse
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
-        const std::string &ChunkData(const std::string &Str);
+        const ChunkData(const std::string &Str, bool lastChunked) const;
 
         ~clsResponse();
 };

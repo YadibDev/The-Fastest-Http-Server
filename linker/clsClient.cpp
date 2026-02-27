@@ -60,8 +60,37 @@ clsClient::~clsClient()
 {
 }
 
-// i should create the logic of this
-void clsClient::_SendRespond()
+void clsClient::ProcessRequest()
+{
+    string buffer;
+
+    buffer.resize(4096);
+    int size = recv(this->_socket, &buffer[0], 4096, MSG_DONTWAIT);
+    if (size == 0)
+    {
+        _state = CONNECTION_CLOSED;
+        return ;
+    }
+    buffer.resize(size);
+    if (_state == BEGIN) _Requester._Buffer = "", _state = REQUEST_MODE;
+        // i must reset the requester
+    
+    _Requester.parse(buffer);
+    if (_Requester.getError().isError())
+    {
+        std::cout << _Requester.getError().getMsgError() << std::endl;
+        return ;
+    }
+
+    if (_Requester.isCompleted()) // is in error case also like this    
+    {
+        this->_state = START_RESPOND;
+        return ;
+    }
+}
+
+// i should create the logic of this and improve it
+void clsClient::_SendRespond(const clsResponse &_Responder)
 {
     string respond;
     ssize_t s;
@@ -77,6 +106,7 @@ void clsClient::_SendRespond()
     {
         _state = SEND_BODY;
         respond = _Responder.GetBody();
+        std::cout << respond << std::endl;
         s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
         _DataLeft = &respond[s_send];
     }
@@ -107,38 +137,47 @@ void clsClient::_SendRespond()
     }
 
     if (_DataLeft.empty() && ((_BodyPlace == RAM && _state == SEND_BODY) || _state == LAST_CHUNKED))
+    {
         _state = BEGIN;
+        if (_Responder.GetIsConnection() == false)
+            _state = CONNECTION_CLOSED;
+    }
 }
 
-void clsClient::ProcessRespond()
+void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
 {
-    if (_state == REQUEST_MODE)
+    if (_state == START_RESPOND)
     {
         // initialized the reponder
+        _fdRespond = 0;
         _DataLeft = "";
         string Header;
         ssize_t s;
         string fileName = "index.html";
+        const clsResponse & Respond = _ResponderProecss.GetclsResponse();
+        RequestHandler RequestXconfig;
 
-        _Responder.SetFileFromDisk(fileName);
-        _Responder.SetMod(GET);
-        _Responder.SetStatus(200);
-        _Responder.SetType("text/html");
+        // linke request with config
+        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
 
-        
-         _Responder.MakeResponse();
-         // start from here
-        if (_Responder.GetFileName().empty())
+        std::cout << "********************\n";
+        std::cout << RequestXconfig.getPhysicalPath() << std::endl;
+        std::cout << RequestXconfig.getError().getMsgError() << std::endl;
+        std::cout << "********************\n";
+        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
+
+        Header = Respond.GetHeaderFeild();
+        if (Respond.GetFileName().empty())
             _BodyPlace = RAM;
         else
             _BodyPlace = DISK_FILE;
         _state = RESPOND_MODE;
-        _fdRespond = 0;
 
+        // i must add pollhand
         s = send(_socket, &Header[0], Header.size(), MSG_DONTWAIT);
-        if (s >= 0 && s < Header.size())
-            this->_DataLeft = &Header[s];
+        std::cout << Header << std::endl;
+        this->_DataLeft = &Header[s];
         // if s == -1 is it possible ?/
     }
-    _SendRespond();
+    _SendRespond(_ResponderProecss.GetclsResponse()); //
 }

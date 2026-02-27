@@ -23,7 +23,7 @@ bool    clsParseConfigueFile::BlockServer(s_parse_context	&ctx)
     clsServerConfig server(ctx);
     if (!server.parseBlockServer())
     {
-        ctx.error = server.getError();
+        _ERROR = ctx.error;
         return false;
     }
     addServer(server);
@@ -33,6 +33,8 @@ bool    clsParseConfigueFile::BlockServer(s_parse_context	&ctx)
 bool clsParseConfigueFile::ParseConfigue()
 {
     s_parse_context	ctx(_Parse, _ERROR);
+
+    ConfigDirectiveParser::skipWhitespace(_Parse);
 
     while (_Parse.peek().type != TOKEN_EOF) {
         if (_Parse.peek().type != TOKEN_WORD) {
@@ -52,7 +54,7 @@ bool clsParseConfigueFile::ParseConfigue()
             
         }
         else
-            return (ctx.error.setStatus(400, "Unknown block: " + blockName), false);
+            return (_ERROR.setStatus(400, "Unknown block: " + blockName), false);
     }
     return true;
 }

@@ -4,15 +4,15 @@
 
 #include "../ServerConfig/ConfigDirectiveParser.hpp"
 
-
 class clsLocation
 {
 private:
 
-	
+	short								_flags;
 	s_parse_context						&ctx;
 	stlocation							_locationData;
 	std::string							_root;
+	std::string							_alias;
 	std::vector<std::string>			_index;
 	bool								_autoindex;
 	short								_allow_methods;
@@ -24,6 +24,8 @@ private:
 
 
 	bool	ParseRoot();
+
+	bool	ParseAlias();
 
 	bool	ParseIndex();
 
@@ -54,6 +56,7 @@ public:
 	bool								parseLocation();
 	
 	std::string							getRoot() const;
+	const std::string							&getAlias() const;
 	const std::vector<std::string>			&getIndex() const;
 	bool								getAutoIndex() const;
 	short								getAllowMethods() const;
@@ -61,7 +64,7 @@ public:
 	stReturnData						getReturn() const;
 	std::string							getUploadStore() const;
 	const std::map<std::string, std::string>	&getCgiPass() const;
-	std::map<short, stErrorPagedata>	getErrorPages() const;
+	const std::map<short, stErrorPagedata>	&getErrorPages() const;
 
 	stlocation							getLocationData() const;
 	HttpError							getError() const;

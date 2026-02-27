@@ -13,7 +13,7 @@ const std::string& HttpError::getMsgError() const {
 }
 
 bool HttpError::isError() const { 
-    return (_codeStatus >= 400); 
+    return (_codeStatus);
 }
 
 void HttpError::setStatus(int code, std::string msg) {

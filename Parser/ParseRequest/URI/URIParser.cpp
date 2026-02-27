@@ -57,7 +57,7 @@ HttpError	URIParser::isValidIPv6(const std::string& IPv6) {
 	if (!pieceCount)
 		return HttpError(400, "Invalid IPv6 piece count");
 
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::isValidIPv4(const std::string& IPv4) {
@@ -95,7 +95,7 @@ HttpError	URIParser::isValidIPv4(const std::string& IPv4) {
 	}
 	if (octets != 3 || digitCount == 0)
 		return HttpError(400, "Invalid IPv4 format (must be x.x.x.x)");
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractScheme(const std::string& uri, std::string& outScheme) {
@@ -118,7 +118,7 @@ HttpError	URIParser::extractScheme(const std::string& uri, std::string& outSchem
 		scheme[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 	}
 	outScheme = scheme;
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractAuthority(const std::string& uri, const std::string& scheme, std::string& outAuthority) {
@@ -133,20 +133,20 @@ HttpError	URIParser::extractAuthority(const std::string& uri, const std::string&
 	if (authorityEnd == std::string::npos)
 		authorityEnd = uri.length();
 	outAuthority = uri.substr(authorityStart, authorityEnd - authorityStart);
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractUserInfo(const std::string& authority, std::string& outUserInfo) {
 	outUserInfo = "";
 
 	if (authority.empty())
-		return HttpError(200);
+		return HttpError();
 	size_t atPos = authority.find('@');
 	if (atPos == std::string::npos)
-		return HttpError(200);
+		return HttpError();
 	std::string encodedUserInfo = authority.substr(0, atPos);
 	outUserInfo = decode(encodedUserInfo);
-	return HttpError(200);
+	return HttpError();
 }
 
 bool		URIParser::isRegChar(unsigned char c) {
@@ -179,7 +179,7 @@ HttpError	URIParser::isValidRegName(const std::string& name) {
 		}
 		return HttpError(400, "Host name contains forbidden characters");
 	}
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractHost(const std::string& authority, std::string& outHost) {
@@ -194,7 +194,7 @@ HttpError	URIParser::extractHost(const std::string& authority, std::string& outH
 		if (endBracket == std::string::npos) 
 			return HttpError(400, "Missing closing bracket for IPv6");
 		outHost = authority.substr(start + 1, endBracket - start - 1);
-		return HttpError(200);
+		return HttpError();
 	}
 	size_t colonPos = authority.find_last_of(':');
 	size_t hostEnd = (colonPos != std::string::npos && colonPos > start) ? colonPos : authority.size();
@@ -202,10 +202,10 @@ HttpError	URIParser::extractHost(const std::string& authority, std::string& outH
 	outHost = authority.substr(start, hostEnd - start);
 	
 	if (outHost.empty())
-		return HttpError(200, "Defualt Host");
+		return HttpError();
 
 	if (std::isdigit(static_cast<unsigned char>(outHost[0])))
-		return HttpError(200);
+		return HttpError();
 
 	return isValidRegName(outHost);
 }
@@ -224,11 +224,11 @@ HttpError	URIParser::extractPort(const std::string& authority, unsigned short &o
 	}
 	if (colonPos == std::string::npos) {
 		outPort = DEFUALT_PORT;
-		return HttpError(200); 
+		return HttpError(); 
 	}
 	std::string portStr = authority.substr(colonPos + 1);
 	if (portStr.empty())
-		return HttpError(200);
+		return HttpError();
 
 	for (size_t i = 0; i < portStr.length(); i++) {
 		if (!std::isdigit(portStr[i])) 
@@ -238,7 +238,7 @@ HttpError	URIParser::extractPort(const std::string& authority, unsigned short &o
 	if (portNum > 65535) 
 		return HttpError(400, "Port out of range (max 65535)");
 	outPort = static_cast<int>(portNum);
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractPath(const std::string& uri, const std::string& authority, std::string& outPath) {
@@ -256,7 +256,7 @@ HttpError	URIParser::extractPath(const std::string& uri, const std::string& auth
 		endPos = uri.length();
 	std::string rawPath = uri.substr(pathStart, endPos - pathStart);
 	outPath = decode(rawPath);
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractQuery(const std::string& uri, std::string& outQuery) {
@@ -264,7 +264,7 @@ HttpError	URIParser::extractQuery(const std::string& uri, std::string& outQuery)
 	
 	size_t queryStart = uri.find('?');
 	if (queryStart == std::string::npos)
-		return HttpError(200);
+		return HttpError();
 
 	size_t fragmentStart = uri.find('#', queryStart + 1);
 	std::string rawQuery;
@@ -274,7 +274,7 @@ HttpError	URIParser::extractQuery(const std::string& uri, std::string& outQuery)
 	else
 		rawQuery = uri.substr(queryStart + 1, fragmentStart - (queryStart + 1));
 	outQuery = decode(rawQuery);
-	return HttpError(200);
+	return HttpError();
 }
 
 HttpError	URIParser::extractFragment(const std::string& uri, std::string& outFragment) {
@@ -283,11 +283,11 @@ HttpError	URIParser::extractFragment(const std::string& uri, std::string& outFra
 	size_t hashPos = uri.find('#');
 	
 	if (hashPos == std::string::npos || hashPos + 1 >= uri.length())
-		return HttpError(200);
+		return HttpError();
 	std::string rawFragment = uri.substr(hashPos + 1);
 	outFragment = decode(rawFragment);
 
-	return HttpError(200);
+	return HttpError();
 }
 
 #include <string>
@@ -338,7 +338,7 @@ void resolve_segment(const std::string& segment, std::string& outUri) {
 HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) {
     if (uri.empty()) {
         outUri = "/";
-        return HttpError(200);
+        return HttpError();
     }
 
     outUri.clear();
@@ -369,5 +369,12 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
     if (len > 1 && uri[len - 1] == '/' && outUri[outUri.size() - 1] != '/')
         outUri += '/';
 
-    return HttpError(200);
+    return HttpError();
+}
+
+const short	URIParser::getMaxUriLength()
+{
+    const short MAX_URI_LENGTH = 8192;
+
+	return MAX_URI_LENGTH;
 }

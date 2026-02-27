@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 21:11:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/26 16:42:14 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,19 @@ clsMainProcess::~clsMainProcess(){}
 
 void clsMainProcess::_PartRedirection()
 {
+    std::cout << _DataRequest.getReturn().code << std::endl;
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(REDIRECTION);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartPermission()
 {
     _Response.SetStatus(403);
-    _Response.SetMod(ERROR);
+    _Response.SetMod(RequestStatus::ERROR);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartCGI()
@@ -37,16 +40,17 @@ void clsMainProcess::_PartCGI()
 
 void clsMainProcess::_PartDeleteMethod()
 {
-    _Response.SetMod(DELETE);
+    _Response.SetMod(Methods::DELETE);
     _Response.SetStatus(200);
     if (access(_DataRequest.getPhysicalPath().c_str(), R_OK))
     {
-        _Response.SetMod(ERROR);
+        _Response.SetMod(RequestStatus::ERROR);
         _Response.SetStatus(404);
         _Response.MakeResponse();
     }
     // // delete file or folder any things
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 } 
 
 void clsMainProcess::_PartPOSMethod()
@@ -54,24 +58,28 @@ void clsMainProcess::_PartPOSMethod()
     _Response.SetStatus(200);
     _Response.SetMod(UPLOAD);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartGETMethod()
 {
-    _Response.SetMod(GET);
+    _Response.SetMod(Methods::GET);
     _Response.SetStatus(200);
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartErrorRequest()
 {
-    _Response.SetMod(ERROR);
+    _Response.SetMod(RequestStatus::ERROR);
     _Response.SetStatus(_DataRequest.getError().getCodeStatus());
     _Response.SetRequestHandler(_DataRequest);
+    _Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
 {
+    // bool check = false;
     _DataRequest = DataRequest;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();
@@ -87,7 +95,7 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == "POST"))
         _PartPOSMethod();
-    _Response.MakeResponse();
+        
 }
 
 const clsResponse &clsMainProcess::GetclsResponse()

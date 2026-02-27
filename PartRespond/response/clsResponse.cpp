@@ -6,12 +6,12 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/22 15:31:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/27 17:14:04 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
-#include "../../Utils/HelperString.hpp"
+#include "../../Utils/HelperFunctions.hpp"
 
 clsResponse::clsResponse()
 {
@@ -23,23 +23,26 @@ clsResponse::clsResponse()
     _Type = "";
     _IsConnection = true;
     _Erno = false;
-    StoredType(_TypeContent, "response/file.type");
+    HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
 void clsResponse::MakeResponse()
 {
     _HeaderFeild = "";
-    if (!_Mod.count(ERROR))
+    if (!_Mod.count(RequestStatus::ERROR) && !_Mod.count(REDIRECTION))
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-        _Type = GetTypeData(GetTypeDataFile(_FileFromDisk));
+        _Type = GetTypeData(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
     }
-    if (!_Mod.count(ERROR))
+    if (!_Mod.count(RequestStatus::ERROR))
         InitialHeaders();
-    if (_Mod.count(ERROR))
+    if (_Mod.count(RequestStatus::ERROR))
+    {
         _HeaderFeild = ErrorRespnseHandling();
+        return ;
+    }
     _HeaderFeild += "\r\n";
 }
 
@@ -72,7 +75,7 @@ void clsResponse::InitialHeaders()
         ConnectionKeepAlive();
 }
 
-const std::string &clsResponse::ErrorRespnseHandling()
+const std::string clsResponse::ErrorRespnseHandling()
 {
     stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
@@ -86,7 +89,7 @@ const std::string &clsResponse::ErrorRespnseHandling()
         {
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf.uri)));
+            _ErrorPage.SetType(GetTypeData(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
             return _ErrorPage.ResponseError(_Status);
         }
         else
@@ -145,7 +148,7 @@ void clsResponse::Redirction()
 void clsResponse::Date()
 {
     std::stringstream Headers;
-    Headers << "Date: "<< DateTime() <<"\r\n";     
+    Headers << "Date: "<< HelperFunctions::DateTime() <<"\r\n";     
     _HeaderFeild += Headers.str();
 }
 void clsResponse::CachControl()
@@ -172,14 +175,14 @@ void clsResponse::StoredInFileOrStr()
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
-        _Mod[ERROR] = ERROR;
+        _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
     }
-    if (ReadData(FD, Data, 100) == -1)
+    if (HelperFunctions::ReadData(FD, Data, 100) == -1)
     {
-        _Mod[ERROR] = ERROR;
+        _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
@@ -196,10 +199,10 @@ void clsResponse::StoredInFileOrStr()
             return ;
         }
         _Body += Data;
-       if (ReadData(FD, Data, 100) == -1)
+       if (HelperFunctions::ReadData(FD, Data, 100) == -1)
         {
             _BodySize = 0;
-            _Mod[ERROR] = ERROR;
+            _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
             _Status = 500;
             _Erno = true;
             return ;
@@ -208,20 +211,22 @@ void clsResponse::StoredInFileOrStr()
     close(FD);
 }
 
-const std::string &clsResponse::ChunkData(const std::string &Str)
+const std::string clsResponse::ChunkData(const std::string &Str, bool lastChunked) const
 {
     std::string NewStr;
 
     if (Str == "")
         return ("0\r\n\r\n");
-    NewStr += Convert_Hex("0123456789abcdef",Str.size());
+    NewStr += HelperFunctions::Convert_Hex("0123456789abcdef",Str.size());
     NewStr += "\r\n";
     NewStr += Str;
     NewStr += "\r\n";
+    if (lastChunked)
+        NewStr += "0\r\n\r\n";
     return (NewStr);
 }
 
-const std::string &clsResponse::GetTypeData(const std::string &Type)
+const std::string clsResponse::GetTypeData(const std::string &Type)
 {
     if (_TypeContent.count(Type))
             return  _TypeContent[Type];
@@ -241,12 +246,12 @@ void clsResponse::StoredDefaultType()
         _TypeContent[".txt"]  = "text/plain";
     }
  }
- const std::string &clsResponse::GetBody()
+ const std::string &clsResponse::GetBody() const
 {
     return _Body;
 }
 
-const std::string &clsResponse::GetFileName()
+const std::string &clsResponse::GetFileName() const
 {
     return _FileName;
 }
@@ -282,7 +287,7 @@ void clsResponse::Reset()
     if (!_Mod.empty())
         _Mod.clear();
     _IsConnection = false;
-    StoredType(_TypeContent, "response/file.type");
+    HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
@@ -291,7 +296,7 @@ bool clsResponse::GetIsConnection() const
     return _IsConnection;
 }
 
-const std::string &clsResponse::GetHeaderFeild()
+const std::string &clsResponse::GetHeaderFeild() const
 {
     return _HeaderFeild;
 }

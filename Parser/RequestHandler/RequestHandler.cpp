@@ -62,6 +62,11 @@ void RequestHandler::setFilePathBody(const std::string& filePathBody) {
     _filePathBody = filePathBody;
 }
 
+void RequestHandler::setAllowMethod(bool allowMethod)
+{
+    _allowMethod = allowMethod;
+}
+
 void RequestHandler::setError(HttpError	&error)
 {
     _error = error;
@@ -136,4 +141,9 @@ const stReturnData& RequestHandler::getReturnData() const {
 const HttpError& RequestHandler::getError() const
 {
     return _error;
+}
+
+bool RequestHandler::getAllowMethod() const
+{
+    return _allowMethod;
 }
