@@ -13,16 +13,16 @@
 
 class clsRequest {
 private:
-	RequestState                        _state;
 	std::map<std::string, std::vector<std::string> >  _headers;
 	std::vector<char>                   _body;
 	stArguments							_arguments;
 	std::string							_Remainder;
 	bool								_startOfHeader;
-	
-	void	getDataParse(const std::string &RawData);
-	
+
+void	getDataParse(const std::string &RawData);
+
 public:
+	RequestState                        _state;
 	std::string							_Buffer;
 	clsStartLine					 	_startLine;
 	ParseHeader							_headerParser;

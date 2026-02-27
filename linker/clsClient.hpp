@@ -33,9 +33,8 @@ class clsClient
 {
 private:
 // request object it will be here
-    size_t _BodyOfset;
-    size_t debug;
-    string _DataLeft;
+    
+    string respondBuffer;
     size_t _HeaderOfset;
     RequestHandler RequestXconfig;
     clsMainProcess _ResponderProecss;

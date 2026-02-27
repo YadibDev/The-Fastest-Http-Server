@@ -4,14 +4,12 @@
 clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
     _fdRespond = 0;
-    _DataLeft = "";
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
 
 clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
-    _DataLeft = "";
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -70,6 +68,7 @@ void clsClient::ProcessRequest()
 {
     string buffer;
 
+    // when we will add post i may modied the logic
     buffer.resize(4096);
     int size = recv(this->_socket, &buffer[0], 4096, MSG_DONTWAIT);
     if (size == 0)
@@ -81,69 +80,64 @@ void clsClient::ProcessRequest()
         return;
     buffer.resize(size);
 
+    // reset request in every new request from client
     if (_state == BEGIN)
-        _Requester._Buffer = "", _state = REQUEST_MODE;
-    // i must reset the requester
+        _Requester._Buffer = "", _Requester._state = READING_LINE, _state = REQUEST_MODE;
 
     _Requester.parse(buffer);
-
-    if (_Requester.isCompleted()) // is in error case also like this
+    if (_Requester.isCompleted()) // add get error here
     {
         this->_state = START_RESPOND;
         return;
     }
 }
 
-// i should create the logic of this and improve it
 void clsClient::_SendRespond(const clsResponse &_Responder)
 {
-    string respond;
     ssize_t s;
-    ssize_t s_send;
+    ssize_t nBytes;
 
-    if (_DataLeft.empty() == false && _BodyPlace != DISK_FILE)
+    if (_BodyPlace == DISK_FILE)
     {
-        s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
-        if (s_send != -1)
-            _DataLeft = &_DataLeft[s_send];
-    }
-    else if (_BodyPlace == DISK_FILE)
-    {
-        respond.resize(CHUNK_LIMIT);
+        string chunkData;
+
+        chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
-        {
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-        }
-
-        s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
+        s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
         if (s < CHUNK_LIMIT)
         {
-            if (s == 0)
-                _state = LAST_CHUNKED;
+            _state = LAST_CHUNKED;
+            chunkData.resize(s);
+            respondBuffer += _Responder.ChunkData(chunkData);
+            // if last respond we will add the end
+            if (s != 0)
+                respondBuffer += _Responder.ChunkData(""); 
         }
-        respond.resize(s);
-
-        respond = _DataLeft + _Responder.ChunkData(respond);
-        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-        if (s_send != -1)
-            _DataLeft = &respond[s_send];
-        respond = "";
+        else
+        {
+            chunkData.resize(s);
+            respondBuffer += _Responder.ChunkData(chunkData);
+        }
     }
 
-    if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+    // start sending data
+    nBytes = send(_socket, respondBuffer.c_str(), respondBuffer.size(), MSG_DONTWAIT);
+    if (nBytes != -1)
+        respondBuffer = &respondBuffer[nBytes];
+
+    if (respondBuffer.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
     {
         _state = BEGIN;
-        std::cout << "enter above here" << std::endl;
-        std::cout << _Responder.GetIsConnection() << std::endl;
+        respondBuffer = "";
         if (_Responder.GetIsConnection() == false)
-        {
-            std::cout << "enter here" << std::endl;
             _state = CONNECTION_CLOSED;
-        }
         if (_fdRespond > 0)
+        {
             close(_fdRespond);
-        _fdRespond = 0;
-        _DataLeft = "";
+            _fdRespond = 0;
+        }
+        
     }
 }
 
@@ -152,29 +146,22 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
-        debug = 0;
         _state = RESPOND_MODE;
-        ssize_t s;
-
 
         // linke request with config
         ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
 
         this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
 
-        const string &Header = Respond.GetHeaderFeild();
+        respondBuffer += Respond.GetHeaderFeild();
+
         if (Respond.GetFileName().empty())
         {
-            _DataLeft = Respond.GetBody();
+            respondBuffer += Respond.GetBody();
             _BodyPlace = RAM;
         }
         else
             _BodyPlace = DISK_FILE;
-
-        _DataLeft = Header + _DataLeft;
     }
-    debug++;
     _SendRespond(Respond);
-    std::cout << "\n**********the total loups though respond client fd " << _socket << std::endl;
-    std::cout << "is " << debug << std::endl;
 }
