@@ -60,10 +60,10 @@ void clsResponse::InitialHeaders()
     Date();
     CachControl();
     Server();
-    std::vector<std::string>  Headers = _DataRequest.getHeaderValues("connection");
+    std::vector<std::string>  Headers = _DataRequest.getHeaderValues("Connection");
     if (!Headers.empty())
     {
-        if (Headers[0] == "close")
+        if (Headers[0] == "Close")
         {
             _IsConnection = false;
             ConnectionClose();
@@ -79,6 +79,7 @@ const std::string clsResponse::ErrorRespnseHandling()
 {
     stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
+    _IsConnection = false;
     if (ErrorPageConf.response)
     {
         if (ErrorPageConf.response != -1)

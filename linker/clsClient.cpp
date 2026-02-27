@@ -1,6 +1,6 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 1024 * 524
+#define CHUNK_LIMIT 2 * 1024 * 1024
 clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
     _fdRespond = 0;
@@ -119,10 +119,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         if (s < CHUNK_LIMIT)
         {
             if (s == 0)
-            {
                 _state = LAST_CHUNKED;
-                close(_fdRespond);
-            }
         }
         respond.resize(s);
 
@@ -130,6 +127,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
         if (s_send != -1)
             _DataLeft = &respond[s_send];
+        respond = "";
     }
 
     if (_DataLeft.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))

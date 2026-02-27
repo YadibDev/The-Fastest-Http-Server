@@ -19,6 +19,7 @@ class HelperFunctions
     static size_t	_ft_strlen(const char *s);
 public:
     static unsigned long long getCurrentTimeInS();
+    static unsigned long long getCurrentTimeInMs();
     static std::string trim(const std::string &str);
     static void skipWhitespace(const std::string &str, size_t &pos);
     static bool isCRLF(const std::string &str);

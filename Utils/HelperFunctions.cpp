@@ -14,6 +14,11 @@ std::string HelperFunctions::trim(const std::string& str) {
 	return str.substr(first, (last - first + 1));
 }
 
+unsigned long long HelperFunctions::getCurrentTimeInMs()
+{
+    return getCurrentTimeInS() * 1000;
+}
+
 void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
 		pos++;
