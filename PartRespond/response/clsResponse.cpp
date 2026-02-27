@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/27 15:24:02 by yadib            ###   ########.fr       */
+/*   Updated: 2026/02/27 15:39:04 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ void clsResponse::StoredDefaultType()
         _TypeContent[".jpeg"] = "image/jpeg";
         _TypeContent[".png"]  = "image/png";
         _TypeContent[".txt"]  = "text/plain";
+        _TypeContent[".mp4"]  = "video/mp4";
     }
  }
  const std::string &clsResponse::GetBody() const
