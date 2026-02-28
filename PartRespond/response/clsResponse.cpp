@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/27 17:14:04 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/28 22:23:11 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ void clsResponse::InitialHeaders()
     CachControl();
     Server();
     std::vector<std::string>  Headers = _DataRequest.getHeaderValues("connection");
+
+    // this handel by enums and git value from array
+    
     if (!Headers.empty())
     {
         if (Headers[0] == "close")
@@ -160,9 +163,7 @@ void clsResponse::CachControl()
 
 void clsResponse::Server()
 {
-    std::stringstream Headers;
-    Headers << "Server: HTTP/1.1\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Server: HTTP/1.1\r\n";
 }
 
 void clsResponse::StoredInFileOrStr()
@@ -180,7 +181,7 @@ void clsResponse::StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (HelperFunctions::ReadData(FD, Data, 100) == -1)
+    if (HelperFunctions::ReadData(FD, Data, 2000) == -1)
     {
         _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
         _Status = 500;
@@ -211,19 +212,19 @@ void clsResponse::StoredInFileOrStr()
     close(FD);
 }
 
-const std::string clsResponse::ChunkData(const std::string &Str, bool lastChunked) const
+void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const
 {
-    std::string NewStr;
-
     if (Str == "")
-        return ("0\r\n\r\n");
+    {
+        NewStr += ("0\r\n\r\n");
+        return ;
+    }
     NewStr += HelperFunctions::Convert_Hex("0123456789abcdef",Str.size());
     NewStr += "\r\n";
     NewStr += Str;
     NewStr += "\r\n";
     if (lastChunked)
         NewStr += "0\r\n\r\n";
-    return (NewStr);
 }
 
 const std::string clsResponse::GetTypeData(const std::string &Type)

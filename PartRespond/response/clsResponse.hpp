@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/27 17:14:20 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/28 22:21:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,14 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
+
+
+
 class clsResponse
 {
     private:
         std::map <short, short> _Mod;
+        stMod::eMod Mod[10];
         short _Status;
         short _BodySize;
         bool _IsConnection;
@@ -62,7 +66,7 @@ class clsResponse
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
-        const ChunkData(const std::string &Str, bool lastChunked) const;
+        void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
 
         ~clsResponse();
 };
