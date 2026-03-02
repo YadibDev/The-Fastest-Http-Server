@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/10 17:38:24 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 03:38:05 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ bool clsParseOutCGI::CheckValidValueHeader(std::string &HeaderValue)
     int i = 0;
     while (i < HeaderValue.length())
     {
-        if (HeaderValue[i] == '\r' || HeaderValue[i] == '\n'
-            || HeaderValue[i] == '\0')
+        if (HeaderValue[i] == '\r' || HeaderValue[i] == '\0')
             return (false);
         i++;
     }
@@ -75,10 +74,10 @@ bool clsParseOutCGI::ParseStatus(const std::string &StatusLineValue)
     std::vector <std::string> DataStaus;
     if (StatusLineValue.empty())
         return (false);
-    DataStaus = Split(StatusLineValue, ' ', -1);
+    HelperFunctions::Split(DataStaus, StatusLineValue, ' ', -1);
     if (DataStaus.empty())
         return (false);
-    if (!IsStringDigit(DataStaus[0]))
+    if (!HelperFunctions::IsStringDigit(DataStaus[0]))
         return (false);
     if (DataStaus[0].size() != 3)
         return (false);
@@ -93,12 +92,12 @@ bool clsParseOutCGI::ValidHeaders(std::string &Str, std::vector <std::string> &D
     if ((Pos = Str.find(':')) == std::string::npos)
         return (false);
     Key = Str.substr(0, Pos);
-    Value = TrimStr(Str.substr(Pos + 1, Str.length()), " \t");
+    Value = HelperFunctions::TrimStr(Str.substr(Pos + 1, Str.length()), " \t");
 
     if (!CheckValidNameHeader(Key))
         return (false);
 
-    Key = ConvertStringToLower(Key);
+    Key = HelperFunctions::ConvertStringToLower(Key);
     if (Value.empty())
     {
         if (_SpecialHeaders.empty())
@@ -112,7 +111,7 @@ bool clsParseOutCGI::ValidHeaders(std::string &Str, std::vector <std::string> &D
         if (!ParseStatus(Value))
             return (false);
     if (Key == "content-length")
-        if (!IsStringDigit(Value))
+        if (!HelperFunctions::IsStringDigit(Value))
             return (false);
         
     Data.push_back(Key);
@@ -124,16 +123,10 @@ bool clsParseOutCGI::StoredCleanHeaders(std::string &Str)
 {
     std::vector<std::string> Data;
     size_t Pos;
-    if ((Pos = FindCRLF(Str, "\r\n\r\n")) != std::string::npos )
-    {
-        Str = Str.substr(0, Pos);
-        _FoundBody = true;
-    }
-    else if ((Pos = FindCRLF(Str, "\r\n")) != std::string::npos)
+    if ((Pos = HelperFunctions::FindCRLF(Str, "\r\n")) != std::string::npos)
         Str = Str.substr(0, Pos);
     else
         return (false);
-
     if (!ValidHeaders(Str, Data))
         return (false);
     if (!_HeadersField.count(Data[0]))
@@ -149,37 +142,59 @@ std::string clsParseOutCGI::Connection(bool Isclose)
         return ("Connection: keep-alive");
     return ("Connection: Close");
 }
-
-std::string clsParseOutCGI::HeaderResponseCGI()
+void clsParseOutCGI::StatusNormal()
 {
-    std::stringstream Headers;
-    std::map <std::string, std::string>::iterator HEAD;
-    if (!_HeadersField.count("location"))
+    if (_HeadersField.count("status"))
     {
-        if (_HeadersField.count("status"))
-            Headers << "HTTP/1.1 "<<_HeadersField["status"]<<"\r\n"; 
-        else
-            Headers << "HTTP/1.1 "<<"200 OK"<<"\r\n"; 
-    }
+        _HeadersFieldFinal +=  "HTTP/1.1 ";
+        _HeadersFieldFinal +=_HeadersField["status"];
+        _HeadersFieldFinal += "\r\n";}
+    else
+        _HeadersFieldFinal+=  "HTTP/1.1 200 OK \r\n"; 
+}
+void clsParseOutCGI::StatusRedirection()
+{
+    if (_HeadersField.count("status"))
+    {
+        _HeadersFieldFinal +=  "HTTP/1.1 ";
+        _HeadersFieldFinal +=_HeadersField["status"];
+        _HeadersFieldFinal += "\r\n";
+    } 
     else
     {
-        if (_HeadersField.count("status"))
-            Headers << "HTTP/1.1 "<<_HeadersField["status"]<<"\r\n"; 
-        else
-            Headers << "HTTP/1.1 "<<  "302 "<<ErrorPage.GetStatusMessage(302)<<"\r\n"; 
+        _HeadersFieldFinal += "HTTP/1.1 ";
+        _HeadersFieldFinal += "302 "; 
+        _HeadersFieldFinal += _ErrorPage.GetStatusMessage(302);
+        _HeadersFieldFinal +="\r\n";
     }
-    for(HEAD = _HeadersField.begin(); HEAD != _HeadersField.end(); HEAD++)
-    {
-        if (HEAD->first != "status")
-            Headers << HEAD->first << ":" <<  HEAD->second << "\r\n";
-    }
-    Headers << Connection(true)<< "\r\n";
-    Headers << "Server: Webserv/1.0\r\n";
-    Headers << "\r\n";
-    return (Headers.str());
 }
 
-std::string clsParseOutCGI::BuilResponsedredirection()
+void clsParseOutCGI::HeaderResponseCGI()
+{
+    std::map <std::string, std::string>::iterator HEAD;
+
+    if (_Mod[stMod::REDIRECTION] != stMod::REDIRECTION)
+        StatusNormal();
+    else
+        StatusRedirection();
+    for(HEAD = _HeadersField.begin(); HEAD != _HeadersField.end(); HEAD++)
+    {
+        if (HEAD->first != "status" && HEAD->first != "location"
+                && HEAD->first != "date" && HEAD->first != "server")
+        {
+            _HeadersFieldFinal += HEAD->first ;
+            _HeadersFieldFinal +=":" ;
+            _HeadersFieldFinal += HEAD->second ; 
+            _HeadersFieldFinal += "\r\n";
+        }
+    }
+    if (_Mod[stMod::CHUNK] == stMod::CHUNK)
+        Transfer_Encoding();
+    Date();
+    Server();
+}
+
+void clsParseOutCGI::BuilResponsedredirection()
 {
     short CountValidHeader = 0;
     if (_HeadersField.count("content-type"))
@@ -189,30 +204,102 @@ std::string clsParseOutCGI::BuilResponsedredirection()
     if (_BytesBody > 0)
         CountValidHeader++;
     if (LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 3)
-        return HeaderResponseCGI();
+        HeaderResponseCGI();
     else if (!CountValidHeader && LocationIsClientOrLocal(_HeadersField["location"]))
-        return HeaderResponseCGI();
+        HeaderResponseCGI();
     else if(!CountValidHeader)
-        ;// problem access file in config
+    {
+        //geting phisical path from config
+        //access file in config
+        //read file in config
+    }
     else
-        return ErrorPage.ResponseError(500);
+    {
+         //geting page error from RequestHandler from config
+        _ErrorPage.SetType("text/html");
+        _Body = _ErrorPage.GetBody(500);
+        _HeadersFieldFinal = _ErrorPage.ResponseError(500);
+    }
 }
+
+
+
 
 void clsParseOutCGI::ReceivingData(std::string &Data)
 {
     _SizeFile  += Data.size();
-    if (!_FoundBody)
+    bool InBody = false;
+    _RemaindData = Data;
+    _Body.resize(2000);
+    std::string Line;
+    HelperFunctions::GetCleanLine(_RemaindData, Line);
+    while(!Line.empty())
     {
-        if (!StoredCleanHeaders(Data))
+        if (Line != "\r\n" && !InBody)
         {
-            _Status = 500;
-            _Mod = ERROR;
-            return ;
+            if (!StoredCleanHeaders(Data))
+            {
+                _Status = 500;
+                _Mod[stMod::ERROR] = stMod::ERROR;
+                close(_Pipe_Fd);
+                return ;
+            }
         }
+        else
+        {
+            _BytesBody  += Data.size();
+            InBody = true;
+            if (_BytesBody > 2000)
+            {
+                _Body.clear();
+                _Mod[stMod::CHUNK] = stMod::CHUNK;
+                // open file and write all data after this if
+                break;
+            }
+            _Body += Line;
+        }
+        HelperFunctions::GetCleanLine(_RemaindData, Line);
+    }
+    // add other while for stored file
+    if (_HeadersField.count("location"))
+    {
+        _Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
+        BuilResponsedredirection();
     }
     else
-    {
-        _BytesBody  += Data.size();
-        // stored body in file or string
-    }
+        HeaderResponseCGI();
 }
+
+void clsParseOutCGI::Transfer_Encoding()
+{
+    _HeadersFieldFinal += "Transfer-Encoding: chunked\r\n";
+}
+
+
+void clsParseOutCGI::Date()
+{
+    _HeadersFieldFinal += "Date: ";
+    _HeadersFieldFinal += HelperFunctions::DateTime();
+    _HeadersFieldFinal += "\r\n";
+}
+void clsParseOutCGI::CachControl()
+{
+    _HeadersFieldFinal +=  "Cache-Control: no-store\r\n";
+}
+
+void clsParseOutCGI::Server()
+{
+    _HeadersFieldFinal += "Server: HTTP/1.1\r\n";
+}
+
+const std::string &clsParseOutCGI::GetHeadersFieldFinal() const
+{
+    return _HeadersFieldFinal;
+}
+
+void clsParseOutCGI::SetPipe_Fd(int Pipe_Fd)
+{
+    _Pipe_Fd = Pipe_Fd;
+}
+
+clsParseOutCGI::~clsParseOutCGI(){}

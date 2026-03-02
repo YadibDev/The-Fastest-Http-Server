@@ -286,23 +286,31 @@ int HelperFunctions::SkeeSep(const std::string &Str, char Sep) {
     return i;
 }
 
-std::vector<std::string> HelperFunctions::Split(std::string Str, char Sep, int TimesSplit) {
-    std::vector<std::string> Strings;
-    size_t Pos = 0;
+void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit)
+{
+    unsigned long Pos = 0;
+    std::string  SepString = "";
+    const char *PtrStr = NULL;
     int i = 0;
-    if (Str.empty()) return Strings;
-    
-    Str = Str.substr(SkeeSep(Str, Sep));
-    while ((Pos = Str.find(Sep)) != std::string::npos) {
-        if (TimesSplit > 0 && i == TimesSplit - 1)
-            break;
-        Strings.push_back(Str.substr(0, Pos));
-        size_t nextPos = Pos + SkeeSep(Str.substr(Pos), Sep);
-        Str = Str.substr(nextPos);
-        i++;
+   
+    if ((Pos = Str.find(Sep)) == std::string::npos)
+        Strings.push_back(Str);
+    else
+    {
+        Str = Str.substr(SkeeSep(Str, Sep));
+        while ((Pos = Str.find(Sep)) != std::string::npos)
+        {
+            if (i == TimesSplit - 1 && TimesSplit > 0)
+                break;
+            else if (TimesSplit > 0)
+                i++;
+            Strings.push_back(Str.substr(0,Pos));
+            Pos += SkeeSep(Str.substr(Pos),Sep);
+            Str = Str.substr(Pos);
+        }
+        if (!Str.empty())
+            Strings.push_back(Str);
     }
-    if (!Str.empty()) Strings.push_back(Str);
-    return Strings;
 }
 
 int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
@@ -313,27 +321,51 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
     return SizeByte;
 }
 
-std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size) {
+std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size)
+{
     std::string Buffer;
     std::string CleanLine;
     size_t Pos = 0;
     ssize_t SizeByte = 0;
 
-    while ((Pos = BigData.find('\n')) == std::string::npos) {
+    while ((Pos = BigData.find('\n')) == std::string::npos)
+    {
         SizeByte = ReadData(FD, Buffer, Size);
-        if (SizeByte < 0) return "";
-        if (SizeByte == 0) break;
+        if (SizeByte < 0)
+            return "";
+        if (SizeByte == 0)
+            break;
         BigData += Buffer;
     }
-    if (Pos != std::string::npos) {
+    if (Pos != std::string::npos)
+    {
         Pos += 1;
         CleanLine = BigData.substr(0, Pos);
         BigData = BigData.substr(Pos);
-    } else {
+    }
+    else
+    {
         CleanLine = BigData;
         BigData.clear();
     }
     return CleanLine;
+}
+
+void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
+{
+    size_t Pos = 0;
+    Pos = BigData.find('\n');
+    if (Pos != std::string::npos)
+    {
+        Pos += 1;
+        CleanLine = BigData.substr(0, Pos);
+        BigData = BigData.substr(Pos);
+    }
+    else
+    {
+        CleanLine = BigData;
+        BigData.clear();
+    }
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT) {
@@ -368,6 +400,38 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 		Result += MaxHex[i--];
 	return (Result);
 }
+
+// std::vector<std::string> Split(std::string Str, char Sep , int TimesSplit)
+// {
+//     std::vector<std::string> Strings;
+//     unsigned long Pos = 0;
+//     std::string  SepString = "";
+//     int i = 0;
+//     if (Str.empty())
+//         return (Strings);
+//     if ((Pos = Str.find(Sep)) == std::string::npos)
+//     {
+//         Strings.push_back(Str);
+//         return Strings;
+//     }
+//     else
+//     {
+//         Str = Str.substr(SkeeSep(Str, Sep), Str.length());
+//         while ((Pos = Str.find(Sep)) != std::string::npos)
+//         {
+//             if (i == TimesSplit - 1 && TimesSplit > 0)
+//                 break;
+//             else if (TimesSplit > 0)
+//                 i++;
+//             Strings.push_back(Str.substr(0,Pos));
+//             Pos += SkeeSep(Str.substr(Pos , Str.length()),Sep);
+//             Str = Str.substr(Pos , Str.length());
+//         }
+//         if (!Str.empty())
+//             Strings.push_back(Str);
+//     }
+//     return Strings;
+// }
 
 unsigned long long HelperFunctions::getCurrentTimeInS()
 {
@@ -440,7 +504,7 @@ void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType,
     while (!Line.empty())
     {
         Line = TrimStr(Line, "\t ");
-        Split1 = Split(Line, ':', 0);
+        Split(Split1 , Line, ':', 0);
         if (Split1.empty() || Split1.size() != 2)
         {
             StoredType.clear();

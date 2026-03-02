@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/28 22:23:11 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 03:21:56 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,21 +144,19 @@ void clsResponse::Transfer_Encoding()
 
 void clsResponse::Redirction()
 {
-    std::stringstream Headers;
-    Headers << "Location: "<<_DataRequest.getReturn().value<<"\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild +=  "Location: ";
+    _HeaderFeild += _DataRequest.getReturn().value ;
+    _HeaderFeild += "\r\n";
 }
 void clsResponse::Date()
 {
-    std::stringstream Headers;
-    Headers << "Date: "<< HelperFunctions::DateTime() <<"\r\n";     
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Date: ";
+    _HeaderFeild +=HelperFunctions::DateTime();
+    _HeaderFeild += "\r\n";
 }
 void clsResponse::CachControl()
 {
-    std::stringstream Headers;
-    Headers << "Cache-Control: no-store\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
 void clsResponse::Server()

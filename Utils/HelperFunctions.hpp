@@ -48,7 +48,7 @@ public:
     static bool Ischar(const std::string &Sep, char C);
     static int SkeeSep(const std::string &Str, const std::string &Sep);
     static int SkeeSep(const std::string &Str, char Sep);
-    static std::vector<std::string> Split(std::string Str, char Sep, int TimesSplit);
+    static void Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit);
     static int ReadData(int FD, std::string &Data, ssize_t Size);
     static std::string GetNextLine(int FD, std::string &BigData, ssize_t Size);
     static std::string GTMHTTP(tm *GMT);
@@ -58,6 +58,7 @@ public:
     static void	free_matrex(char ***matrex);
     static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
     static std::string GetTypeDataFile(const std::string &Str);
+    static void GetCleanLine(std::string &BigData, std::string &CleanLine);
 
 private:
     HelperFunctions() {}

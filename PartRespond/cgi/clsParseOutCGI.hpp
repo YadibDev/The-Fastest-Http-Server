@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/15 09:39:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 03:35:13 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,30 @@
 # define CLS_PARSE_OUT_CGI_HPP
 
 #include "../mainprocess/librarys.hpp"
-
+#include "../../Parser/RequestHandler/RequestHandler.hpp"
 #include "../response/clsErrorPage.hpp"
 
 class clsParseOutCGI
 {
         std::string _Data;
-        short _Mod;
+        stMod::eMod _Mod[10];
         bool _FoundBody;
         int _Status;
         int _BytesBody;
         int _SizeFile;
         std::string _Body;
-        clsErrorPage ErrorPage;
+        std::string _RemaindData;
+        clsErrorPage _ErrorPage;
         std::map <std::string, std::string> _HeadersField;
+        std::string _HeadersFieldFinal;
         std::map <std::string, std::string> _SpecialHeaders;
         std::vector <std::string> _BlackListHeaders;
-        int _FD;
+        std::string _NameFileBody;
+        int _Pipe_Fd;
     public:
         clsParseOutCGI();
+        void SetPipe_Fd(int Pipe_Fd);
+        const std::string &GetHeadersFieldFinal() const;
         bool CheckValidNameHeader(std::string &Headrs);
         void ReceivingData(std::string &Data);
         bool LocationIsClientOrLocal(std::string &Location);
@@ -45,7 +50,14 @@ class clsParseOutCGI
         bool StoredCleanHeaders(std::string &Str);
         bool ParseContentType(const std::string &ValueContentType);
         std::string Connection(bool Isclose);
-        std::string BuilResponsedredirection();
-        std::string HeaderResponseCGI();
+        void BuilResponsedredirection();
+        void HeaderResponseCGI();
+        void Transfer_Encoding();
+        void Date();
+        void CachControl();
+        void Server();
+        void StatusNormal();
+        void StatusRedirection();
+        ~clsParseOutCGI();
 };
 #endif
