@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 03:21:56 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 22:07:12 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ clsResponse::clsResponse()
     _Type = "";
     _IsConnection = true;
     _Erno = false;
+    _HeaderFeild.resize(8192);
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
     HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
@@ -30,15 +32,15 @@ clsResponse::clsResponse()
 void clsResponse::MakeResponse()
 {
     _HeaderFeild = "";
-    if (!_Mod.count(RequestStatus::ERROR) && !_Mod.count(REDIRECTION))
+    if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = GetTypeData(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
     }
-    if (!_Mod.count(RequestStatus::ERROR))
+    if (_Mod[stMod::ERROR] != stMod::ERROR)
         InitialHeaders();
-    if (_Mod.count(RequestStatus::ERROR))
+    else
     {
         _HeaderFeild = ErrorRespnseHandling();
         return ;
@@ -49,13 +51,13 @@ void clsResponse::MakeResponse()
 void clsResponse::InitialHeaders()
 {
     Status();
-    if (!_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         ContentLength();
     if (_BodySize)
         ContentType();
-    if (_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         Transfer_Encoding();
-    if (_Mod.count(REDIRECTION))
+    if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
         Redirction();
     Date();
     CachControl();
@@ -115,16 +117,22 @@ void clsResponse::ConnectionClose()
 
 void clsResponse::Status()
 {
-    std::stringstream Headers;
-    Headers << "HTTP/1.1 "<< _Status << " " <<  _ErrorPage.GetStatusMessage(_Status) <<"\r\n";
-    _HeaderFeild += Headers.str();
+    char *Number = HelperFunctions::ft_itoa(_Status);
+    _HeaderFeild += "HTTP/1.1 ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +=  " ";
+    _HeaderFeild += _ErrorPage.GetStatusMessage(_Status) ;
+    _HeaderFeild += "\r\n";
+    delete[] Number;
 }
 
 void clsResponse::ContentLength()
 {
-    std::stringstream Headers;
-    Headers << "Content-Length: "<< _BodySize<<"\r\n";
-    _HeaderFeild += Headers.str();
+    char *Number = HelperFunctions::ft_itoa(_BodySize);
+    _HeaderFeild += "Content-Length: ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +="\r\n";
+    delete[] Number;
 }
 void clsResponse::ContentType()
 {
@@ -151,7 +159,7 @@ void clsResponse::Redirction()
 void clsResponse::Date()
 {
     _HeaderFeild += "Date: ";
-    _HeaderFeild +=HelperFunctions::DateTime();
+    _HeaderFeild += HelperFunctions::DateTime();
     _HeaderFeild += "\r\n";
 }
 void clsResponse::CachControl()
@@ -167,45 +175,34 @@ void clsResponse::Server()
 void clsResponse::StoredInFileOrStr()
 {
     std::string Data;
+    struct stat MetaData;
     _Body = "";
-    _BodySize = 0;
     if (_FileFromDisk == "")
-        return ;                                     
+        return ;
+    stat(_FileFromDisk.c_str(), &MetaData);
+    MetaData.st_size;
+    _BodySize = MetaData.st_size;
+    if (_BodySize > 2000)
+    {
+        _Mod[stMod::CHUNK] = stMod::CHUNK;
+        _Body.clear();
+        _FileName = _FileFromDisk;
+        return ;
+    }                                
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
-        _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
     }
-    if (HelperFunctions::ReadData(FD, Data, 2000) == -1)
+    if (HelperFunctions::ReadData(FD, _Body, 2000) == -1)
     {
-        _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
-    }
-    while(!Data.empty())
-    {
-        _BodySize += Data.size();
-        if (_BodySize > 2000)
-        {
-            _Mod[CHUNK] = CHUNK;
-            _Body.clear();
-            _FileName = _FileFromDisk;
-            close(FD);
-            return ;
-        }
-        _Body += Data;
-       if (HelperFunctions::ReadData(FD, Data, 100) == -1)
-        {
-            _BodySize = 0;
-            _Mod[RequestStatus::ERROR] = RequestStatus::ERROR;
-            _Status = 500;
-            _Erno = true;
-            return ;
-        }
     }
     close(FD);
 }
@@ -231,6 +228,12 @@ const std::string clsResponse::GetTypeData(const std::string &Type)
             return  _TypeContent[Type];
     return "application/octet-stream";
 }
+
+void GetType(char *Type)
+{
+    
+}
+
 void clsResponse::StoredDefaultType()
 {
     if (_TypeContent.empty())
@@ -260,7 +263,7 @@ void clsResponse::SetStatus(short Status)
     _Status = Status;
 }
 
-void clsResponse::SetMod(short Mod)
+void clsResponse::SetMod(stMod::eMod Mod)
 {
     _Mod[Mod] = Mod;
 }
@@ -281,10 +284,7 @@ void clsResponse::Reset()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
-    if (!_HeaderFeild.empty())
-        _HeaderFeild.clear();
-    if (!_Mod.empty())
-        _Mod.clear();
+    _HeaderFeild = "";
     _IsConnection = false;
     HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
@@ -306,10 +306,7 @@ void clsResponse::SetRequestHandler(const RequestHandler &DataRequest)
 
 clsResponse::~clsResponse()
 {
-    if (!_HeaderFeild.empty())
-        _HeaderFeild.clear();
-    if (!_Mod.empty())
-        _Mod.clear();
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
     _Status = 0;
     _BodySize = 0;
     _FileName = "";

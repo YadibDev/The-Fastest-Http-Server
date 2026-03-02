@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 03:35:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 16:46:02 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ class clsParseOutCGI
         void Server();
         void StatusNormal();
         void StatusRedirection();
+        void ContentLength();
         ~clsParseOutCGI();
 };
 #endif

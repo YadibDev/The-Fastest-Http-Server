@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 03:38:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 17:04:40 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ bool clsParseOutCGI::ValidHeaders(std::string &Str, std::vector <std::string> &D
 
 bool clsParseOutCGI::StoredCleanHeaders(std::string &Str)
 {
-    std::vector<std::string> Data;
+    std::vector<std::string> Data(2);
     size_t Pos;
     if ((Pos = HelperFunctions::FindCRLF(Str, "\r\n")) != std::string::npos)
         Str = Str.substr(0, Pos);
@@ -139,8 +139,8 @@ bool clsParseOutCGI::StoredCleanHeaders(std::string &Str)
 std::string clsParseOutCGI::Connection(bool Isclose)
 {
     if (Isclose)
-        return ("Connection: keep-alive");
-    return ("Connection: Close");
+        _HeadersFieldFinal += "Connection: keep-alive";
+    _HeadersFieldFinal += "Connection: Close";
 }
 void clsParseOutCGI::StatusNormal()
 {
@@ -150,7 +150,7 @@ void clsParseOutCGI::StatusNormal()
         _HeadersFieldFinal +=_HeadersField["status"];
         _HeadersFieldFinal += "\r\n";}
     else
-        _HeadersFieldFinal+=  "HTTP/1.1 200 OK \r\n"; 
+        _HeadersFieldFinal+=  "HTTP/1.1 200 OK\r\n"; 
 }
 void clsParseOutCGI::StatusRedirection()
 {
@@ -180,7 +180,8 @@ void clsParseOutCGI::HeaderResponseCGI()
     for(HEAD = _HeadersField.begin(); HEAD != _HeadersField.end(); HEAD++)
     {
         if (HEAD->first != "status" && HEAD->first != "location"
-                && HEAD->first != "date" && HEAD->first != "server")
+                && HEAD->first != "date" && HEAD->first != "server" 
+                && HEAD->first != "content-length")
         {
             _HeadersFieldFinal += HEAD->first ;
             _HeadersFieldFinal +=":" ;
@@ -190,6 +191,9 @@ void clsParseOutCGI::HeaderResponseCGI()
     }
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         Transfer_Encoding();
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK && _BytesBody)
+        ContentLength();
+        
     Date();
     Server();
 }
@@ -215,7 +219,7 @@ void clsParseOutCGI::BuilResponsedredirection()
     }
     else
     {
-         //geting page error from RequestHandler from config
+        //geting page error from RequestHandler from config
         _ErrorPage.SetType("text/html");
         _Body = _ErrorPage.GetBody(500);
         _HeadersFieldFinal = _ErrorPage.ResponseError(500);
@@ -227,7 +231,6 @@ void clsParseOutCGI::BuilResponsedredirection()
 
 void clsParseOutCGI::ReceivingData(std::string &Data)
 {
-    _SizeFile  += Data.size();
     bool InBody = false;
     _RemaindData = Data;
     _Body.resize(2000);
@@ -253,7 +256,7 @@ void clsParseOutCGI::ReceivingData(std::string &Data)
             {
                 _Body.clear();
                 _Mod[stMod::CHUNK] = stMod::CHUNK;
-                // open file and write all data after this if
+                // open file and write all data after this if in file
                 break;
             }
             _Body += Line;
@@ -290,6 +293,15 @@ void clsParseOutCGI::CachControl()
 void clsParseOutCGI::Server()
 {
     _HeadersFieldFinal += "Server: HTTP/1.1\r\n";
+}
+
+void clsParseOutCGI::ContentLength()
+{
+    char *Number = HelperFunctions::ft_itoa(_BytesBody);
+    _HeadersFieldFinal += "Content-Length: ";
+    _HeadersFieldFinal += Number ;
+    _HeadersFieldFinal +="\r\n";
+    delete[] Number;
 }
 
 const std::string &clsParseOutCGI::GetHeadersFieldFinal() const

@@ -401,38 +401,6 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-// std::vector<std::string> Split(std::string Str, char Sep , int TimesSplit)
-// {
-//     std::vector<std::string> Strings;
-//     unsigned long Pos = 0;
-//     std::string  SepString = "";
-//     int i = 0;
-//     if (Str.empty())
-//         return (Strings);
-//     if ((Pos = Str.find(Sep)) == std::string::npos)
-//     {
-//         Strings.push_back(Str);
-//         return Strings;
-//     }
-//     else
-//     {
-//         Str = Str.substr(SkeeSep(Str, Sep), Str.length());
-//         while ((Pos = Str.find(Sep)) != std::string::npos)
-//         {
-//             if (i == TimesSplit - 1 && TimesSplit > 0)
-//                 break;
-//             else if (TimesSplit > 0)
-//                 i++;
-//             Strings.push_back(Str.substr(0,Pos));
-//             Pos += SkeeSep(Str.substr(Pos , Str.length()),Sep);
-//             Str = Str.substr(Pos , Str.length());
-//         }
-//         if (!Str.empty())
-//             Strings.push_back(Str);
-//     }
-//     return Strings;
-// }
-
 unsigned long long HelperFunctions::getCurrentTimeInS()
 {
     long Time;
@@ -533,6 +501,73 @@ void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType,
     close(FD);
 }
 
+int	HelperFunctions::len_int(int nb)
+{
+	long	num;
+	int		i;
+
+	i = 0;
+	num = nb;
+	if (num == 0)
+		return (1);
+	if (num < 0)
+	{
+		i++;
+	}
+	while (num)
+	{
+		num = (num / 10);
+		i++;
+	}
+	return (i);
+}
+
+char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
+{
+	long	num;
+	int		len;
+
+	len = len_int(n);
+	num = n;
+	if (num < 0)
+	{
+		int_char[0] = '-';
+		num *= -1;
+	}
+	while (len > 1)
+	{
+		int_char[len - 1] = ((num % 10) + '0');
+		num = (num / 10);
+		len--;
+	}
+	int_char[len_int(n)] = '\0';
+	return ((int_char));
+}
+
+char	*HelperFunctions::ft_itoa(int n)
+{
+	long	num;
+	char	*int_char;
+	int		len;
+	int		prev_len;
+
+	len = len_int(n);
+    prev_len = len;
+	num = n;
+	int_char = new char(len + 1);
+	if (!int_char)
+		return (NULL);
+	if (num < 0)
+		return (ft_itoa_negative(n, int_char));
+	while (len)
+	{
+		int_char[len - 1] = ((num % 10) + '0');
+		num = (num / 10);
+		len--;
+	}
+	int_char[prev_len] = '\0';
+	return ((int_char));
+}
 
 std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
@@ -540,4 +575,19 @@ std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
     if ((Pos = Str.find('.')) == std::string::npos)
         return "";
     return (Str.substr(Pos, Str.size()));
+}
+
+void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
+{
+	char	*k;
+	char	c1;
+
+	k = (char *)str;
+	c1 = (char)c;
+	while (n--)
+	{
+		*k = c1;
+		k++;
+	}
+	return (str);
 }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/28 22:21:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 21:29:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@
 class clsResponse
 {
     private:
-        std::map <short, short> _Mod;
-        stMod::eMod Mod[10];
+        stMod::eMod _Mod[10];
         short _Status;
         short _BodySize;
         bool _IsConnection;
@@ -62,7 +61,7 @@ class clsResponse
         void SetStatus(short Status);
         void SetRequestHandler(const RequestHandler &DataRequest);
         void SetFileFromDisk(const std::string &FileFromDisk);
-        void SetMod(short Mode);
+        void SetMod(stMod::eMod Mod);
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();

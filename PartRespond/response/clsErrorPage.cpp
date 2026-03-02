@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/18 19:16:46 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 21:40:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
     _Type = "";
     _Status = 0;
     _BodySize = 0;
+    _HeaderFeild.resize(4000);
     StoredBodys();
     StoredMessage();
 }
@@ -69,13 +70,13 @@ void clsErrorPage::SetType(std::string Type)
  {
     Status();
     ContentType();
-    if (!_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         ContentLength();
     Server();
     Date();
     if (_Status == 405)
        Allow();
-    if (_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
         RetryAfter();
@@ -100,20 +101,25 @@ void clsErrorPage::ConnectionClose()
 
 void clsErrorPage::Status()
 {
-    std::stringstream Headers;
-    Headers << "HTTP/1.1 "<< _Status << " " <<  GetStatusMessage(_Status) <<"\r\n";
-    _HeaderFeild += Headers.str();
+     char *Number = HelperFunctions::ft_itoa(_Status);
+    _HeaderFeild += "HTTP/1.1 ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +=  " ";
+    _HeaderFeild += GetStatusMessage(_Status) ;
+    _HeaderFeild += "\r\n";
+    delete[] Number;
 }
 
 void clsErrorPage::ContentLength()
 {
-    std::stringstream Headers;
-    Headers << "Content-Length: "<< _BodySize<<"\r\n";
-    _HeaderFeild += Headers.str();
+     char *Number = HelperFunctions::ft_itoa(_BodySize);
+    _HeaderFeild += "Content-Length: ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +="\r\n";
+    delete[] Number;
 }
 void clsErrorPage::ContentType()
 {
-    std::stringstream Headers;
     _HeaderFeild += "Content-Type: ";
     _HeaderFeild += _Type;
     _HeaderFeild +="\r\n";
@@ -132,9 +138,11 @@ void clsErrorPage::Server()
 }
 void clsErrorPage::RetryAfter()
 {
-    std::stringstream Headers;
-    Headers << "Retey-After: "<< 120 << "\r\n";
-    _HeaderFeild += Headers.str();
+    char *Number = HelperFunctions::ft_itoa(120);
+     _HeaderFeild += "Retey-After: ";
+    _HeaderFeild += Number;
+    _HeaderFeild += "\r\n";
+    delete[] Number;   
 }
 void clsErrorPage::Allow()
 {
@@ -146,9 +154,10 @@ void clsErrorPage::Transfer_Encoding()
    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
-void clsErrorPage::SetMod(const std::map<short, short> &Mod)
+void clsErrorPage::SetMod(const stMod::eMod *Mod)
 {
-    _Mod = Mod;
+    for (int i = 0; i < 10; i++)
+        _Mod[i] = Mod[i];
 }
 
 void clsErrorPage::SetBodySize(int BodySize)
