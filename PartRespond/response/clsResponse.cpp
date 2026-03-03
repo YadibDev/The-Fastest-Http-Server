@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 22:07:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/03 16:35:03 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,15 +174,20 @@ void clsResponse::Server()
 
 void clsResponse::StoredInFileOrStr()
 {
-    std::string Data;
     struct stat MetaData;
     _Body = "";
     if (_FileFromDisk == "")
         return ;
-    stat(_FileFromDisk.c_str(), &MetaData);
+    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
     MetaData.st_size;
     _BodySize = MetaData.st_size;
-    if (_BodySize > 2000)
+    if (_BodySize > 40000)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         _Body.clear();
@@ -197,7 +202,7 @@ void clsResponse::StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (HelperFunctions::ReadData(FD, _Body, 2000) == -1)
+    if (HelperFunctions::ReadData(FD, _Body, 40000) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
