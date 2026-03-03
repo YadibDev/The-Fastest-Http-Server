@@ -63,8 +63,11 @@ public:
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);
     static void	*ft_memset(void *str, int c, size_t n);
+    static std::string GetType(const std::string &Type);
+    static void StoredDefaultType();
 
 private:
+    static std::map<std::string, std::string> _TypeContent;
     HelperFunctions() {}
 };
 

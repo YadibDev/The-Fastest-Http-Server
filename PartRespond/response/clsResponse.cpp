@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/03 16:35:03 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/03 21:15:50 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ clsResponse::clsResponse()
     _Erno = false;
     _HeaderFeild.resize(8192);
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
-    HelperFunctions::StoredType(_TypeContent, "response/file.type");
-    StoredDefaultType();
 }
 
 void clsResponse::MakeResponse()
@@ -100,7 +98,7 @@ const std::string clsResponse::ErrorRespnseHandling()
         else
         {
             _ErrorPage.SetBodySize(0);
-            _ErrorPage.SetType(GetTypeData(".html"));
+            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
             _Body = _ErrorPage.GetBody(PrevStatus);
             return _ErrorPage.ResponseError(PrevStatus);
         }
@@ -185,7 +183,6 @@ void clsResponse::StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    MetaData.st_size;
     _BodySize = MetaData.st_size;
     if (_BodySize > 40000)
     {
@@ -227,32 +224,12 @@ void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool la
         NewStr += "0\r\n\r\n";
 }
 
-const std::string clsResponse::GetTypeData(const std::string &Type)
-{
-    if (_TypeContent.count(Type))
-            return  _TypeContent[Type];
-    return "application/octet-stream";
-}
 
 void GetType(char *Type)
 {
     
 }
 
-void clsResponse::StoredDefaultType()
-{
-    if (_TypeContent.empty())
-    {
-        _TypeContent[".html"] = "text/html";
-        _TypeContent[".htm"]  = "text/html";
-        _TypeContent[".css"]  = "text/css";
-        _TypeContent[".js"]   = "text/javascript";
-        _TypeContent[".jpg"]  = "image/jpeg";
-        _TypeContent[".jpeg"] = "image/jpeg";
-        _TypeContent[".png"]  = "image/png";
-        _TypeContent[".txt"]  = "text/plain";
-    }
- }
  const std::string &clsResponse::GetBody() const
 {
     return _Body;

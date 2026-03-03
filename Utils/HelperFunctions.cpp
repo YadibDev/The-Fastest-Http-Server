@@ -591,3 +591,26 @@ void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
 	}
 	return (str);
 }
+
+void HelperFunctions::StoredDefaultType()
+{
+    if (_TypeContent.empty())
+    {
+        _TypeContent[".html"] = "text/html";
+        _TypeContent[".htm"]  = "text/html";
+        _TypeContent[".css"]  = "text/css";
+        _TypeContent[".js"]   = "text/javascript";
+        _TypeContent[".jpg"]  = "image/jpeg";
+        _TypeContent[".jpeg"] = "image/jpeg";
+        _TypeContent[".png"]  = "image/png";
+        _TypeContent[".txt"]  = "text/plain";
+    }
+ }
+
+std::string HelperFunctions::GetType(const std::string &Type)
+{
+    if (_TypeContent.count(Type))
+            return  _TypeContent[Type];
+    return "application/octet-stream";
+}
+
