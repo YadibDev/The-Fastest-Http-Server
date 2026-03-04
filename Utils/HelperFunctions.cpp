@@ -607,10 +607,52 @@ void HelperFunctions::StoredDefaultType()
     }
  }
 
-std::string HelperFunctions::GetType(const std::string &Type)
+const std::string &HelperFunctions::GetType(const std::string &Type)
 {
     if (_TypeContent.count(Type))
-            return  _TypeContent[Type];
+        return  _TypeContent[Type];
     return "application/octet-stream";
 }
+
+void HelperFunctions::StoredBodys()
+ {
+    _Body[200] = "Body200";
+    _Body[201] = "Body201";
+    _Body[204] = "Body204";
+    _Body[301] = "Body301";
+    _Body[302] = "Body302";
+    _Body[400] = "Body400";
+    _Body[403] = "Body403";
+    _Body[404] = "Body404";
+    _Body[500] = "Body500";
+    _Body[501] = "Body501";
+ 
+ }
+ void HelperFunctions::StoredMessage()
+ {
+    _Message[200] = "OK";
+    _Message[201] = "Created";
+    _Message[204] = "No Content";
+    _Message[301] = "Moved Permanently";
+    _Message[302] = "found";
+    _Message[400] = "Bad Request";
+    _Message[403] = "Forbidden";
+    _Message[404] = "Not Found";
+    _Message[500] = "Internal Server Error";
+    _Message[501] = "Not Implemented";
+ }
+
+ const std::string &HelperFunctions::GetStatusMessage(int Status) 
+{
+    if (_Message.count(Status))
+        return  _Message[Status];
+    return ("Unknown Status");
+}
+
+const std::string &HelperFunctions::GetBody(int Status)
+ {
+     if (_Body.count(Status))
+        return  _Body[Status];
+     return ("Unknown Status");
+ }
 

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 21:40:36 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/04 21:33:50 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,56 +18,15 @@
     _Status = 0;
     _BodySize = 0;
     _HeaderFeild.resize(4000);
-    StoredBodys();
-    StoredMessage();
 }
 
-void clsErrorPage::StoredBodys()
- {
-     _Body[200] = "Body200";
-     _Body[201] = "Body201";
-     _Body[204] = "Body204";
-     _Body[301] = "Body301";
-     _Body[302] = "Body302";
-     _Body[400] = "Body400";
-     _Body[403] = "Body403";
-     _Body[404] = "Body404";
-     _Body[500] = "Body500";
-     _Body[501] = "Body501";
- }
- 
- void clsErrorPage::StoredMessage()
- {
-     _Message[200] = "OK";
-     _Message[201] = "Created";
-     _Message[204] = "No Content";
-     _Message[301] = "Moved Permanently";
-     _Message[302] = "found";
-     _Message[400] = "Bad Request";
-     _Message[403] = "Forbidden";
-     _Message[404] = "Not Found";
-     _Message[500] = "Internal Server Error";
-     _Message[501] = "Not Implemented";
- }
-
-std::string clsErrorPage::GetStatusMessage(int Status) 
-{
-    if (_Message.count(Status))
-        return  _Message[Status];
-    return ("Unknown Status");
-}
 void clsErrorPage::SetType(std::string Type) 
 {
     _Type = Type;
 }
- std::string clsErrorPage::GetBody(int Status)
- {
-     if (_Body.count(Status))
-         return  _Body[Status];
-     return ("Unknown Status");
- }
- std::string clsErrorPage::HeadersErrorResponse()
- {
+
+std::string &clsErrorPage::HeadersErrorResponse()
+{
     Status();
     ContentType();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
@@ -83,16 +42,16 @@ void clsErrorPage::SetType(std::string Type)
     ConnectionClose();
     _HeaderFeild += "\r\n";
     return (_HeaderFeild);
- }
+}
  
- std::string clsErrorPage::ResponseError(int Status)
- {
-    if (Status >= 0)
+std::string &clsErrorPage::ResponseError(int Status)
+{
+   if (Status >= 0)
         _Status = Status;
-    if (!_BodySize)
-        _BodySize = GetBody(Status).size();
-    return (HeadersErrorResponse());
- }
+   if (!_BodySize)
+        _BodySize = HelperFunctions::GetBody(Status).size();
+   return (HeadersErrorResponse());
+}
  
 void clsErrorPage::ConnectionClose()
 {
@@ -105,7 +64,7 @@ void clsErrorPage::Status()
     _HeaderFeild += "HTTP/1.1 ";
     _HeaderFeild += Number ;
     _HeaderFeild +=  " ";
-    _HeaderFeild += GetStatusMessage(_Status) ;
+    _HeaderFeild += HelperFunctions::GetStatusMessage(_Status) ;
     _HeaderFeild += "\r\n";
     delete[] Number;
 }

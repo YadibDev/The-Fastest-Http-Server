@@ -63,11 +63,17 @@ public:
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);
     static void	*ft_memset(void *str, int c, size_t n);
-    static std::string GetType(const std::string &Type);
+    static const std::string &GetType(const std::string &Type);
     static void StoredDefaultType();
+    static void StoredBodys();
+    static void StoredMessage();
+    static const std::string &GetStatusMessage(int Status);
+    static const std::string &GetBody(int Status);
 
 private:
     static std::map<std::string, std::string> _TypeContent;
+    static std::map<int, std::string> _Message;
+    static std::map<int, std::string> _Body;
     HelperFunctions() {}
 };
 
