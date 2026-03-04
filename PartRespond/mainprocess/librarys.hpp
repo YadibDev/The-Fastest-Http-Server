@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:01:35 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/20 17:39:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 21:56:10 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 
 enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
-#include "../../Utils/HelperString.hpp"
+struct stMod
+{
+    enum eMod {UPLOAD , GET, POST, DELETE, REDIRECTION, CHUNK, CGI, ERROR, EMPTY = -1};
+};
+
+#include "../../Utils/HelperFunctions.hpp"
 
 #endif
 

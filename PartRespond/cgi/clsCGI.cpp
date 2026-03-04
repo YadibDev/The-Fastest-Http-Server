@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 22:05:23 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/26 16:33:42 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,33 +22,37 @@ void clsCGI::_StoredWhiteBlakHeaders()
 {
     if (_WhiteBlakHeaders.empty())
     {
-        _WhiteBlakHeaders["Authorization"] = 0;
-        _WhiteBlakHeaders["Proxy-Authorization"] = 0;
-        _WhiteBlakHeaders["Connection"] = 0;
-        _WhiteBlakHeaders["Keep-Alive"] = 0;
-        _WhiteBlakHeaders["Upgrade"] = 0;
-        _WhiteBlakHeaders["Te"] = 0;
-        _WhiteBlakHeaders["Trailer"] = 0;
-        _WhiteBlakHeaders["Transfer-Encoding"] = 0;
-
-        _WhiteBlakHeaders["Auth-Type"] = 1;
-        _WhiteBlakHeaders["Remote-Ident"] = 1;
-        _WhiteBlakHeaders["Remote-User"] = 1;
-        _WhiteBlakHeaders["Content-Length"] = 1;
-        _WhiteBlakHeaders["Content-Type"] = 1;
-        _WhiteBlakHeaders["Gateway-Interface"] = 1;
-        _WhiteBlakHeaders["Path-Info"] = 1;
-        _WhiteBlakHeaders["Path-Translated"] = 1;
-        _WhiteBlakHeaders["Query-String"] = 1;
-        _WhiteBlakHeaders["Script-Name"] = 1;
-        _WhiteBlakHeaders["Remote-Addr"] = 1;
-        _WhiteBlakHeaders["Remote-Host"] = 1;
-        _WhiteBlakHeaders["Request-Method"] = 1;
-        _WhiteBlakHeaders["Server-Name"] = 1;
-        _WhiteBlakHeaders["Server-Port"] = 1;
-        _WhiteBlakHeaders["Server-Protocol"] = 1;
-        _WhiteBlakHeaders["Server-Software"] = 1;
+        _WhiteBlakHeaders["authorization"] = 0;
+        _WhiteBlakHeaders["proxy-Authorization"] = 0;
+        _WhiteBlakHeaders["connection"] = 0;
+        _WhiteBlakHeaders["keep-alive"] = 0;
+        _WhiteBlakHeaders["upgrade"] = 0;
+        _WhiteBlakHeaders["te"] = 0;
+        _WhiteBlakHeaders["trailer"] = 0;
+        _WhiteBlakHeaders["transfer-Encoding"] = 0;
     }
+}
+
+void clsCGI::_BuildBasicVar(std::vector <std::string> &Var)
+{
+    std::map<std::string, std::vector<std::string> > Header;
+    if (Header.count("authorization"))
+        Var.push_back(_BuildVarEnv("AUTH_TYPE", _ConcatonateValue(Header["Authorization"])));
+    if (Header.count("content-length"))
+        Var.push_back(_BuildVarEnv("CONTENT_LENGTH", _ConcatonateValue(Header["content-length"])));
+    if (Header.count("content-type"))
+        Var.push_back(_BuildVarEnv("CONTENT_TYPE", _ConcatonateValue(Header["content-type"])));
+    Var.push_back(_BuildVarEnv("GATEWAY_INTERFACE", "CGI/1.1"));
+    Var.push_back(_BuildVarEnv("SERVER_SOFTWARE", "FastServer"));
+    Var.push_back(_BuildVarEnv("SERVER_PROTOCOL", "HTTP/1.1"));
+    Var.push_back(_BuildVarEnv("SERVER_NAME", "Server/1337"));
+    Var.push_back(_BuildVarEnv("REQUEST_METHOD", _DataRequest.getMethod()));
+    Var.push_back(_BuildVarEnv("QUERY_STRING", _DataRequest.getQuery()));
+    Var.push_back(_BuildVarEnv("REMOTE_IDENT", ""));
+    Var.push_back(_BuildVarEnv("REMOTE_HOST", ""));
+    // Var.push_back(_BuildVarEnv("PATH_INFO", _DataRequest.));
+    // Var.push_back(_BuildVarEnv("SERVER_PORT", _DataRequest.()));
+    // Var.push_back(_BuildVarEnv("REMOTE_ADDR", give this from socket IP));
 }
 
 const std::string  &clsCGI::_ConcatonateValue(const std::vector <std::string> &Value)
@@ -87,6 +91,7 @@ char **clsCGI::_MakeEnv()
     char **ENV = NULL;
     std::vector<std::string> Variables;
 
+    _BuildBasicVar(Variables);
     for (it = Header.begin(); it != Header.end(); it++)
     {
         if (_WhiteBlakHeaders.count(it->first))
@@ -233,6 +238,11 @@ int clsCGI::RunCGI()
 bool clsCGI::GetIsRunCGI()
 {
     return (_IsRunCGI);
+}
+
+void clsCGI::SetIsRunCGI(bool IsRunCGI)
+{
+   _IsRunCGI = IsRunCGI;
 }
 clsCGI::~clsCGI(){}
 

@@ -40,7 +40,7 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 
 	std::string root;
 	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
-	if (ctx.error.isError()) return "";
+	// if (ctx.error.isError()) return "";
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)

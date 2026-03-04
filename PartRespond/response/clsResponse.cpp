@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
 /*   Updated: 2026/02/27 15:39:04 by yadib            ###   ########.fr       */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
-#include "../../Utils/HelperString.hpp"
+#include "../../Utils/HelperFunctions.hpp"
 
 clsResponse::clsResponse()
 {
@@ -23,22 +23,24 @@ clsResponse::clsResponse()
     _Type = "";
     _IsConnection = true;
     _Erno = false;
-    StoredType(_TypeContent, "response/file.type");
+    _HeaderFeild.resize(8192);
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
+    HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
 void clsResponse::MakeResponse()
 {
     _HeaderFeild = "";
-    if (!_Mod.count(ERROR))
+    if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-        _Type = GetTypeData(GetTypeDataFile(_FileFromDisk));
+        _Type = GetTypeData(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
     }
-    if (!_Mod.count(ERROR))
+    if (_Mod[stMod::ERROR] != stMod::ERROR)
         InitialHeaders();
-    if (_Mod.count(ERROR))
+    else
     {
         _HeaderFeild = ErrorRespnseHandling();
         return ;
@@ -49,13 +51,13 @@ void clsResponse::MakeResponse()
 void clsResponse::InitialHeaders()
 {
     Status();
-    if (!_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         ContentLength();
     if (_BodySize)
         ContentType();
-    if (_Mod.count(CHUNK))
+    if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         Transfer_Encoding();
-    if (_Mod.count(REDIRECTION))
+    if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
         Redirction();
     Date();
     CachControl();
@@ -90,7 +92,7 @@ const std::string clsResponse::ErrorRespnseHandling()
         {
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(GetTypeData(GetTypeDataFile(ErrorPageConf.uri)));
+            _ErrorPage.SetType(GetTypeData(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
             return _ErrorPage.ResponseError(_Status);
         }
         else
@@ -113,16 +115,22 @@ void clsResponse::ConnectionClose()
 
 void clsResponse::Status()
 {
-    std::stringstream Headers;
-    Headers << "HTTP/1.1 "<< _Status << " " <<  _ErrorPage.GetStatusMessage(_Status) <<"\r\n";
-    _HeaderFeild += Headers.str();
+    char *Number = HelperFunctions::ft_itoa(_Status);
+    _HeaderFeild += "HTTP/1.1 ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +=  " ";
+    _HeaderFeild += _ErrorPage.GetStatusMessage(_Status) ;
+    _HeaderFeild += "\r\n";
+    delete[] Number;
 }
 
 void clsResponse::ContentLength()
 {
-    std::stringstream Headers;
-    Headers << "Content-Length: "<< _BodySize<<"\r\n";
-    _HeaderFeild += Headers.str();
+    char *Number = HelperFunctions::ft_itoa(_BodySize);
+    _HeaderFeild += "Content-Length: ";
+    _HeaderFeild += Number ;
+    _HeaderFeild +="\r\n";
+    delete[] Number;
 }
 void clsResponse::ContentType()
 {
@@ -142,87 +150,77 @@ void clsResponse::Transfer_Encoding()
 
 void clsResponse::Redirction()
 {
-    std::stringstream Headers;
-    Headers << "Location: "<<_DataRequest.getReturn().value<<"\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild +=  "Location: ";
+    _HeaderFeild += _DataRequest.getReturn().value ;
+    _HeaderFeild += "\r\n";
 }
 void clsResponse::Date()
 {
-    std::stringstream Headers;
-    Headers << "Date: "<< DateTime() <<"\r\n";     
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Date: ";
+    _HeaderFeild += HelperFunctions::DateTime();
+    _HeaderFeild += "\r\n";
 }
 void clsResponse::CachControl()
 {
-    std::stringstream Headers;
-    Headers << "Cache-Control: no-store\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
 void clsResponse::Server()
 {
-    std::stringstream Headers;
-    Headers << "Server: HTTP/1.1\r\n";
-    _HeaderFeild += Headers.str();
+    _HeaderFeild += "Server: HTTP/1.1\r\n";
 }
 
 void clsResponse::StoredInFileOrStr()
 {
-    std::string Data;
+    struct stat MetaData;
     _Body = "";
-    _BodySize = 0;
     if (_FileFromDisk == "")
-        return ;                                     
+        return ;
+    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
+    _BodySize = MetaData.st_size;
+    if (_BodySize > 40000)
+    {
+        _Mod[stMod::CHUNK] = stMod::CHUNK;
+        _FileName = _FileFromDisk;
+        return ;
+    }                                
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
-        _Mod[ERROR] = ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
     }
-    if (ReadData(FD, Data, 100) == -1)
+    if (HelperFunctions::ReadData(FD, _Body, 40000) == -1)
     {
-        _Mod[ERROR] = ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
         return ;
-    }
-    while(!Data.empty())
-    {
-        _BodySize += Data.size();
-        if (_BodySize > 2000)
-        {
-            _Mod[CHUNK] = CHUNK;
-            _Body.clear();
-            _FileName = _FileFromDisk;
-            close(FD);
-            return ;
-        }
-        _Body += Data;
-       if (ReadData(FD, Data, 100) == -1)
-        {
-            _BodySize = 0;
-            _Mod[ERROR] = ERROR;
-            _Status = 500;
-            _Erno = true;
-            return ;
-        }
     }
     close(FD);
 }
 
-const std::string clsResponse::ChunkData(const std::string &Str) const
+void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const
 {
-    std::string NewStr;
-
     if (Str == "")
-        return ("0\r\n\r\n");
-    NewStr += Convert_Hex("0123456789abcdef",Str.size());
+    {
+        NewStr += ("0\r\n\r\n");
+        return ;
+    }
+    NewStr += HelperFunctions::Convert_Hex("0123456789abcdef",Str.size());
     NewStr += "\r\n";
     NewStr += Str;
     NewStr += "\r\n";
-    return (NewStr);
+    if (lastChunked)
+        NewStr += "0\r\n\r\n";
 }
 
 const std::string clsResponse::GetTypeData(const std::string &Type)
@@ -231,6 +229,12 @@ const std::string clsResponse::GetTypeData(const std::string &Type)
             return  _TypeContent[Type];
     return "application/octet-stream";
 }
+
+void GetType(char *Type)
+{
+    
+}
+
 void clsResponse::StoredDefaultType()
 {
     if (_TypeContent.empty())
@@ -261,7 +265,7 @@ void clsResponse::SetStatus(short Status)
     _Status = Status;
 }
 
-void clsResponse::SetMod(short Mod)
+void clsResponse::SetMod(stMod::eMod Mod)
 {
     _Mod[Mod] = Mod;
 }
@@ -282,12 +286,9 @@ void clsResponse::Reset()
     _FileFromDisk = "";
     _Body = "";
     _Type = "";
-    if (!_HeaderFeild.empty())
-        _HeaderFeild.clear();
-    if (!_Mod.empty())
-        _Mod.clear();
+    _HeaderFeild = "";
     _IsConnection = false;
-    StoredType(_TypeContent, "response/file.type");
+    HelperFunctions::StoredType(_TypeContent, "response/file.type");
     StoredDefaultType();
 }
 
@@ -307,10 +308,7 @@ void clsResponse::SetRequestHandler(const RequestHandler &DataRequest)
 
 clsResponse::~clsResponse()
 {
-    if (!_HeaderFeild.empty())
-        _HeaderFeild.clear();
-    if (!_Mod.empty())
-        _Mod.clear();
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
     _Status = 0;
     _BodySize = 0;
     _FileName = "";

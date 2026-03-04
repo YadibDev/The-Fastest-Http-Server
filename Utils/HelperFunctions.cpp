@@ -182,7 +182,7 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	if (!expectDir && S_ISDIR(info.st_mode))
 		return (403);
 
-	return 200;
+	return (200);
 }
 
 
@@ -291,23 +291,31 @@ int HelperFunctions::SkeeSep(const std::string &Str, char Sep) {
     return i;
 }
 
-std::vector<std::string> HelperFunctions::Split(std::string Str, char Sep, int TimesSplit) {
-    std::vector<std::string> Strings;
-    size_t Pos = 0;
+void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit)
+{
+    unsigned long Pos = 0;
+    std::string  SepString = "";
+    const char *PtrStr = NULL;
     int i = 0;
-    if (Str.empty()) return Strings;
-    
-    Str = Str.substr(SkeeSep(Str, Sep));
-    while ((Pos = Str.find(Sep)) != std::string::npos) {
-        if (TimesSplit > 0 && i == TimesSplit - 1)
-            break;
-        Strings.push_back(Str.substr(0, Pos));
-        size_t nextPos = Pos + SkeeSep(Str.substr(Pos), Sep);
-        Str = Str.substr(nextPos);
-        i++;
+   
+    if ((Pos = Str.find(Sep)) == std::string::npos)
+        Strings.push_back(Str);
+    else
+    {
+        Str = Str.substr(SkeeSep(Str, Sep));
+        while ((Pos = Str.find(Sep)) != std::string::npos)
+        {
+            if (i == TimesSplit - 1 && TimesSplit > 0)
+                break;
+            else if (TimesSplit > 0)
+                i++;
+            Strings.push_back(Str.substr(0,Pos));
+            Pos += SkeeSep(Str.substr(Pos),Sep);
+            Str = Str.substr(Pos);
+        }
+        if (!Str.empty())
+            Strings.push_back(Str);
     }
-    if (!Str.empty()) Strings.push_back(Str);
-    return Strings;
 }
 
 int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
@@ -318,27 +326,51 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
     return SizeByte;
 }
 
-std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size) {
+std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size)
+{
     std::string Buffer;
     std::string CleanLine;
     size_t Pos = 0;
     ssize_t SizeByte = 0;
 
-    while ((Pos = BigData.find('\n')) == std::string::npos) {
+    while ((Pos = BigData.find('\n')) == std::string::npos)
+    {
         SizeByte = ReadData(FD, Buffer, Size);
-        if (SizeByte < 0) return "";
-        if (SizeByte == 0) break;
+        if (SizeByte < 0)
+            return "";
+        if (SizeByte == 0)
+            break;
         BigData += Buffer;
     }
-    if (Pos != std::string::npos) {
+    if (Pos != std::string::npos)
+    {
         Pos += 1;
         CleanLine = BigData.substr(0, Pos);
         BigData = BigData.substr(Pos);
-    } else {
+    }
+    else
+    {
         CleanLine = BigData;
         BigData.clear();
     }
     return CleanLine;
+}
+
+void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
+{
+    size_t Pos = 0;
+    Pos = BigData.find('\n');
+    if (Pos != std::string::npos)
+    {
+        Pos += 1;
+        CleanLine = BigData.substr(0, Pos);
+        BigData = BigData.substr(Pos);
+    }
+    else
+    {
+        CleanLine = BigData;
+        BigData.clear();
+    }
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT) {
@@ -428,4 +460,139 @@ void	HelperFunctions::free_matrex(char ***matrex)
 	}
 	delete[] (*matrex);
 	*matrex = NULL;
+}
+
+
+void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName)
+{
+    std::vector<std::string> Split1;
+    std::string Line;
+    std::string Buffer;
+    std::string Key;
+    std::string Value;
+    int FD = open(FileName.c_str(), O_RDONLY, 644);
+    if (FD < 0)
+        return ;
+    Line = GetNextLine(FD, Buffer, 100);
+    while (!Line.empty())
+    {
+        Line = TrimStr(Line, "\t ");
+        Split(Split1 , Line, ':', 0);
+        if (Split1.empty() || Split1.size() != 2)
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key = Split1[0];
+        Value = Split1[1];
+        if (Key[0] != '.')
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key = Key.substr(1, Key.size());
+        if (Key == "")
+        {
+            StoredType.clear();
+            close(FD);
+            return ;
+        }
+        Key =Split1[0];
+        StoredType[Key] = Value;
+        Line = GetNextLine(FD, Buffer, 100);
+    }
+    close(FD);
+}
+
+int	HelperFunctions::len_int(int nb)
+{
+	long	num;
+	int		i;
+
+	i = 0;
+	num = nb;
+	if (num == 0)
+		return (1);
+	if (num < 0)
+	{
+		i++;
+	}
+	while (num)
+	{
+		num = (num / 10);
+		i++;
+	}
+	return (i);
+}
+
+char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
+{
+	long	num;
+	int		len;
+
+	len = len_int(n);
+	num = n;
+	if (num < 0)
+	{
+		int_char[0] = '-';
+		num *= -1;
+	}
+	while (len > 1)
+	{
+		int_char[len - 1] = ((num % 10) + '0');
+		num = (num / 10);
+		len--;
+	}
+	int_char[len_int(n)] = '\0';
+	return ((int_char));
+}
+
+char	*HelperFunctions::ft_itoa(int n)
+{
+	long	num;
+	char	*int_char;
+	int		len;
+	int		prev_len;
+
+	len = len_int(n);
+    prev_len = len;
+	num = n;
+	int_char = new char(len + 1);
+	if (!int_char)
+		return (NULL);
+	if (num < 0)
+		return (ft_itoa_negative(n, int_char));
+	while (len)
+	{
+		int_char[len - 1] = ((num % 10) + '0');
+		num = (num / 10);
+		len--;
+	}
+	int_char[prev_len] = '\0';
+	return ((int_char));
+}
+
+std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
+{
+    size_t Pos;
+    if ((Pos = Str.find('.')) == std::string::npos)
+        return "";
+    return (Str.substr(Pos, Str.size()));
+}
+
+void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
+{
+	char	*k;
+	char	c1;
+
+	k = (char *)str;
+	c1 = (char)c;
+	while (n--)
+	{
+		*k = c1;
+		k++;
+	}
+	return (str);
 }

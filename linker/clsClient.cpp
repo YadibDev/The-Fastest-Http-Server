@@ -105,19 +105,19 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         if (_fdRespond == 0)
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
         s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
+        // i woill work here for 
         if (s < CHUNK_LIMIT)
         {
             _state = LAST_CHUNKED;
             chunkData.resize(s);
-            respondBuffer += _Responder.ChunkData(chunkData);
             // if last respond we will add the end
-            if (s != 0)
-                respondBuffer += _Responder.ChunkData(""); 
+            _Responder.ChunkData(respondBuffer, chunkData, true);
+
         }
         else
         {
             chunkData.resize(s);
-            respondBuffer += _Responder.ChunkData(chunkData);
+            _Responder.ChunkData(respondBuffer, chunkData, false);
         }
     }
 

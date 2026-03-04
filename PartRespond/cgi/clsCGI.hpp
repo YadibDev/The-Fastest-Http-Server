@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/24 22:02:08 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:37:23 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ class clsCGI
         void _StoredWhiteBlakHeaders();
         const std::string  &_ConcatonateValue(const std::vector <std::string> &Value);
         std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
+        void _BuildBasicVar(std::vector <std::string> &Var);
         char **_StoredArgs();
         char **_MakeEnv();
     public:
         clsCGI();
         bool GetIsRunCGI();
         int RunCGI();
+        void SetIsRunCGI(bool IsRunCGI);
         ~clsCGI();
 };
 

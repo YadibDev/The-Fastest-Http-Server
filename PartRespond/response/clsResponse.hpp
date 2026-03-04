@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/22 15:35:46 by yadib            ###   ########.fr       */
+/*   Updated: 2026/03/02 21:29:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
+
+
+
 class clsResponse
 {
     private:
-        std::map <short, short> _Mod;
+        stMod::eMod _Mod[10];
         short _Status;
-        short _BodySize;    
+        size_t _BodySize;    
         bool _IsConnection;
         bool _Erno;
         std::string _Body;
@@ -58,11 +61,11 @@ class clsResponse
         void SetStatus(short Status);
         void SetRequestHandler(const RequestHandler &DataRequest);
         void SetFileFromDisk(const std::string &FileFromDisk);
-        void SetMod(short Mode);
+        void SetMod(stMod::eMod Mod);
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
-        const std::string ChunkData(const std::string &Str) const;
+        void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
 
         ~clsResponse();
 };

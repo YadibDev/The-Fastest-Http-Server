@@ -140,7 +140,7 @@ bool    clsLocation::parseLocation()
 	ctx.parser.advance();
 	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
 		ctx.parser.advance();
-	return (ctx.error.setStatus(200, ""), true);
+	return (ctx.error.setStatus(0, ""), true);
 }
 
 
