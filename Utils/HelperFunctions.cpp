@@ -457,50 +457,6 @@ void	HelperFunctions::free_matrex(char ***matrex)
 	*matrex = NULL;
 }
 
-
-void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName)
-{
-    std::vector<std::string> Split1;
-    std::string Line;
-    std::string Buffer;
-    std::string Key;
-    std::string Value;
-    int FD = open(FileName.c_str(), O_RDONLY, 644);
-    if (FD < 0)
-        return ;
-    Line = GetNextLine(FD, Buffer, 100);
-    while (!Line.empty())
-    {
-        Line = TrimStr(Line, "\t ");
-        Split(Split1 , Line, ':', 0);
-        if (Split1.empty() || Split1.size() != 2)
-        {
-            StoredType.clear();
-            close(FD);
-            return ;
-        }
-        Key = Split1[0];
-        Value = Split1[1];
-        if (Key[0] != '.')
-        {
-            StoredType.clear();
-            close(FD);
-            return ;
-        }
-        Key = Key.substr(1, Key.size());
-        if (Key == "")
-        {
-            StoredType.clear();
-            close(FD);
-            return ;
-        }
-        Key =Split1[0];
-        StoredType[Key] = Value;
-        Line = GetNextLine(FD, Buffer, 100);
-    }
-    close(FD);
-}
-
 int	HelperFunctions::len_int(int nb)
 {
 	long	num;
@@ -650,9 +606,21 @@ void HelperFunctions::StoredBodys()
 }
 
 const std::string &HelperFunctions::GetBody(int Status)
- {
-     if (_Body.count(Status))
+{
+    if (_Body.count(Status))
         return  _Body[Status];
-     return ("Unknown Status");
- }
+    return ("Unknown Status");
+}
 
+void HelperFunctions::JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength)
+{
+    int i = 0;
+
+    while (Newstr[i])
+    {
+        OldStr[*UpdateLength] = Newstr[i];
+        i++;
+        (*UpdateLength)++;
+    }
+    OldStr[(*UpdateLength)] = '\0';
+}

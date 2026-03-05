@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/04 21:49:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/05 21:35:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,33 +17,33 @@ clsResponse::clsResponse()
 {
     _Status = 0;
     _BodySize = 0;
-    _FileName = NULL;
-    _FileFromDisk = NULL;
-    _Body = "";
-    _Type = NULL;
+    _FileName = "";
+    _FileFromDisk = "";
+    _Body = NULL;
+    _Type = "";
     _IsConnection = true;
     _Erno = false;
-    _HeaderFeild.resize(8192);
+    _SizeHeaders = 0;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
 }
 
 void clsResponse::MakeResponse()
 {
-    _HeaderFeild = "";
+    _HeaderFeild = NULL;
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
-        *_FileFromDisk = _DataRequest.getPhysicalPath();
-        *_Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(*_FileFromDisk));
+        _FileFromDisk = _DataRequest.getPhysicalPath().c_str();
+        _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         StoredInFileOrStr();
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         InitialHeaders();
     else
     {
-        _HeaderFeild = ErrorRespnseHandling();
+        HelperFunctions::JoinBuffer(_HeaderFeild,ErrorRespnseHandling().c_str(),&_SizeHeaders);
         return ;
     }
-    _HeaderFeild += "\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"\r\n",&_SizeHeaders);
 }
 
 void clsResponse::InitialHeaders()
@@ -80,103 +80,104 @@ void clsResponse::InitialHeaders()
 
 const std::string clsResponse::ErrorRespnseHandling()
 {
-    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    short PrevStatus = _Status;
-    if (ErrorPageConf.response)
-    {
-        if (ErrorPageConf.response != -1)
-            _Status = ErrorPageConf.response;
-        _FileFromDisk = &ErrorPageConf.uri;
-        StoredInFileOrStr();
-        if (!_Erno)
-        {
-            _ErrorPage.SetMod(_Mod);
-            _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-            return _ErrorPage.ResponseError(_Status);
-        }
-        else
-        {
-            _ErrorPage.SetBodySize(0);
-            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-            _Body = HelperFunctions::GetBody(PrevStatus);
-            return _ErrorPage.ResponseError(PrevStatus);
-        }
-    }
+    // stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    // short PrevStatus = _Status;
+    // if (ErrorPageConf.response)
+    // {
+    //     if (ErrorPageConf.response != -1)
+    //         _Status = ErrorPageConf.response;
+    //     _FileFromDisk = ErrorPageConf.uri;
+    //     StoredInFileOrStr();
+    //     if (!_Erno)
+    //     {
+    //         _ErrorPage.SetMod(_Mod);
+    //         _ErrorPage.SetBodySize(_BodySize);
+    //         _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
+    //         return _ErrorPage.ResponseError(_Status);
+    //     }
+    //     else
+    //     {
+    //         _ErrorPage.SetBodySize(0);
+    //         _ErrorPage.SetType(HelperFunctions::GetType(".html"));
+    //         _Body = HelperFunctions::GetBody(PrevStatus);
+    //         return _ErrorPage.ResponseError(PrevStatus);
+    //     }
+    // }
     _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    _Body = HelperFunctions::GetBody(_Status);
+    HelperFunctions::JoinBuffer(_Body, HelperFunctions::GetBody(_Status).c_str(),&_BodySize);
     return _ErrorPage.ResponseError(_Status);
 }
 
 void clsResponse::ConnectionClose()
 {
-    _HeaderFeild += "Connection: Close\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"Connection: Close\r\n",&_SizeHeaders);
 }
 
 void clsResponse::Status()
 {
     char *Number = HelperFunctions::ft_itoa(_Status);
-    _HeaderFeild += "HTTP/1.1 ";
-    _HeaderFeild += Number;
-    _HeaderFeild +=  " ";
-    _HeaderFeild += HelperFunctions::GetStatusMessage(_Status);
-    _HeaderFeild += "\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild, "HTTP/1.1 ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, Number,&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild,  " ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild,  HelperFunctions::GetStatusMessage(_Status).c_str(),&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild,"\r\n",&_SizeHeaders);
     delete[] Number;
 }
 
 void clsResponse::ContentLength()
 {
     char *Number = HelperFunctions::ft_itoa(_BodySize);
-    _HeaderFeild += "Content-Length: ";
-    _HeaderFeild += Number ;
-    _HeaderFeild +="\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild, "Content-Length: ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, Number,&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
     delete[] Number;
 }
 void clsResponse::ContentType()
 {
-    _HeaderFeild += "Content-Type: ";
-    _HeaderFeild += *_Type;
-    _HeaderFeild +=" ; charset=UTF-8\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild, "Content-Type: ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, _Type.c_str(),&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, " ; charset=UTF-8\r\n",&_SizeHeaders);
+
 }
 
 void clsResponse::ConnectionKeepAlive()
 {
-    _HeaderFeild += "Connection: keep-alive\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"Connection: keep-alive\r\n",&_SizeHeaders);
 }
 void clsResponse::Transfer_Encoding()
 {
-    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"Transfer-Encoding: chunked\r\n",&_SizeHeaders);
 }
 
 void clsResponse::Redirction()
 {
-    _HeaderFeild +=  "Location: ";
-    _HeaderFeild += _DataRequest.getReturn().value ;
-    _HeaderFeild += "\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild, "Location: ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, "value location",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
 }
 void clsResponse::Date()
 {
-    _HeaderFeild += "Date: ";
-    _HeaderFeild += HelperFunctions::DateTime();
-    _HeaderFeild += "\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild, "Date: ",&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, HelperFunctions::DateTime().c_str(),&_SizeHeaders);
+    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
 }
 void clsResponse::CachControl()
 {
-    _HeaderFeild += "Cache-Control: no-store\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"Cache-Control: no-store\r\n",&_SizeHeaders);
 }
 
 void clsResponse::Server()
 {
-    _HeaderFeild += "Server: HTTP/1.1\r\n";
+    HelperFunctions::JoinBuffer(_HeaderFeild,"Server: HTTP/1.1\r\n",&_SizeHeaders);
 }
 
 void clsResponse::StoredInFileOrStr()
 {
     struct stat MetaData;
-    _Body = "";
-    if (!_FileFromDisk)
+    _Body = NULL;
+    if (_FileFromDisk.empty())
         return ;
-    if (stat(_FileFromDisk->c_str(), &MetaData) == -1)
+    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -187,11 +188,10 @@ void clsResponse::StoredInFileOrStr()
     if (_BodySize > 40000)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
-        _Body.clear();
         _FileName = _FileFromDisk;
         return ;
     }                                
-    int FD = open(_FileFromDisk->c_str(), O_RDONLY, 644);
+    int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -199,7 +199,7 @@ void clsResponse::StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (HelperFunctions::ReadData(FD, _Body, 40000) == -1)
+    if (read(FD,_Body,40000) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -226,12 +226,12 @@ void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool la
 
  const std::string &clsResponse::GetBody() const
 {
-    return _Body;
+    return 0;
 }
 
 const std::string &clsResponse::GetFileName() const
 {
-    return *_FileName;
+    return 0;
 }
 
 void clsResponse::SetStatus(short Status)
@@ -245,22 +245,19 @@ void clsResponse::SetMod(stMod::eMod Mod)
 }
 void clsResponse::SetType(const std::string &Type)
 {
-    *_Type = Type;
+    _Type = Type;
 }
 void clsResponse::SetFileFromDisk(const std::string &FileFromDisk)
 {
-    *_FileFromDisk = FileFromDisk ;
+    _FileFromDisk = FileFromDisk ;
 }
 
 void clsResponse::Reset()
 {
     _Status = 0;
     _BodySize = 0;
-    _FileName = NULL;
-    _FileFromDisk = NULL;
-    _Body = "";
-    _Type = NULL;
-    _HeaderFeild = "";
+    _FileName = "";
+    _FileFromDisk = "";
     _IsConnection = false;
 }
 
@@ -271,7 +268,7 @@ bool clsResponse::GetIsConnection() const
 
 const std::string &clsResponse::GetHeaderFeild() const
 {
-    return _HeaderFeild;
+    return std::string(_HeaderFeild);
 }
 void clsResponse::SetRequestHandler(const RequestHandler &DataRequest)
 {

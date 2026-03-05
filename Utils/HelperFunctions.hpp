@@ -69,6 +69,7 @@ public:
     static void StoredMessage();
     static const std::string &GetStatusMessage(int Status);
     static const std::string &GetBody(int Status);
+    static void JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength);
 
 private:
     static std::map<std::string, std::string> _TypeContent;

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 17:04:40 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/05 16:01:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void clsParseOutCGI::StatusRedirection()
     {
         _HeadersFieldFinal += "HTTP/1.1 ";
         _HeadersFieldFinal += "302 "; 
-        _HeadersFieldFinal += _ErrorPage.GetStatusMessage(302);
+        _HeadersFieldFinal += HelperFunctions::GetStatusMessage(302);
         _HeadersFieldFinal +="\r\n";
     }
 }
@@ -221,7 +221,7 @@ void clsParseOutCGI::BuilResponsedredirection()
     {
         //geting page error from RequestHandler from config
         _ErrorPage.SetType("text/html");
-        _Body = _ErrorPage.GetBody(500);
+        _Body = HelperFunctions::GetBody(500);
         _HeadersFieldFinal = _ErrorPage.ResponseError(500);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/04 21:46:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/05 21:33:32 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,22 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
-
-
-
 class clsResponse
 {
     private:
         stMod::eMod _Mod[10];
         short _Status;
-        short _BodySize;
+        int _BodySize;
+        int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
-        std::string _Body;
-        std::string *_Type;
+        char *_Body;
+        std::string _Type;
         clsErrorPage _ErrorPage;
-        std::string _HeaderFeild;
-        std::string  *_FileName;
-        std::string  *_FileFromDisk;
+        char *_HeaderFeild;
+        std::string _FileName;
+        std::string _FileFromDisk;
         RequestHandler _DataRequest;
-        std::map<std::string, std::string> _TypeContent;
 
         const std::string GetTypeData(const std::string &Type);
         const std::string ErrorRespnseHandling();
