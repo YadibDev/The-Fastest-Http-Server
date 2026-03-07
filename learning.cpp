@@ -39,24 +39,35 @@ whichBoundary checkBoundary(std::string &bound, std::string &data)
             if find boundary or end boundary create file
                 if error free all data related to this and remove files and send bad request
 */
+
+#include <cstdio>
+#include <cstdlib>
+#include <unistd.h>
 int main()
 {
-    std::string boundary = "--"
-                           "----MyBoundary123";
-    std::string request =
-        "------MyBoundary123\r\n"
-        "Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\n"
-        "Content-Type: text/plain\r\n"
-        "\r\n"
-        "Hello from multipart file!\n"
-        "This is line 2.\r\n"
-        "------MyBoundary123--\r\n";
-    whichBoundary boundResult = checkBoundary(boundary, request);
-
-    if (boundResult == nothing)
-        std::cout << "NOthing\n";
-    else if (boundResult == endBoundary)
-        std::cout << "end boundary\n";
-    else if (boundResult == startBoundary)
-        std::cout << "start boundary\n";
+    char arr[100] = "tmp/arrXXXXXX";
+    mkstemp(arr);
+    
+    std::cout << arr << std::endl;
 }
+// int main()
+// {
+//     std::string boundary = "--"
+//                            "----MyBoundary123";
+//     std::string request =
+//         "------MyBoundary123\r\n"
+//         "Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\n"
+//         "Content-Type: text/plain\r\n"
+//         "\r\n"
+//         "Hello from multipart file!\n"
+//         "This is line 2.\r\n"
+//         "------MyBoundary123--\r\n";
+//     whichBoundary boundResult = checkBoundary(boundary, request);
+
+//     if (boundResult == nothing)
+//         std::cout << "NOthing\n";
+//     else if (boundResult == endBoundary)
+//         std::cout << "end boundary\n";
+//     else if (boundResult == startBoundary)
+//         std::cout << "start boundary\n";
+// }
