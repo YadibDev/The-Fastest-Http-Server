@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/05 21:35:36 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/07 21:42:22 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ clsResponse::clsResponse()
     _FileName = "";
     _FileFromDisk = "";
     _Body = NULL;
+    _HeaderFeild = NULL;
     _Type = "";
     _IsConnection = true;
     _Erno = false;
@@ -29,7 +30,6 @@ clsResponse::clsResponse()
 
 void clsResponse::MakeResponse()
 {
-    _HeaderFeild = NULL;
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath().c_str();
@@ -40,7 +40,7 @@ void clsResponse::MakeResponse()
         InitialHeaders();
     else
     {
-        HelperFunctions::JoinBuffer(_HeaderFeild,ErrorRespnseHandling().c_str(),&_SizeHeaders);
+        ErrorRespnseHandling();
         return ;
     }
     HelperFunctions::JoinBuffer(_HeaderFeild,"\r\n",&_SizeHeaders);
@@ -78,34 +78,36 @@ void clsResponse::InitialHeaders()
         ConnectionKeepAlive();
 }
 
-const std::string clsResponse::ErrorRespnseHandling()
+void clsResponse::ErrorRespnseHandling()
 {
-    // stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    // short PrevStatus = _Status;
-    // if (ErrorPageConf.response)
-    // {
-    //     if (ErrorPageConf.response != -1)
-    //         _Status = ErrorPageConf.response;
-    //     _FileFromDisk = ErrorPageConf.uri;
-    //     StoredInFileOrStr();
-    //     if (!_Erno)
-    //     {
-    //         _ErrorPage.SetMod(_Mod);
-    //         _ErrorPage.SetBodySize(_BodySize);
-    //         _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-    //         return _ErrorPage.ResponseError(_Status);
-    //     }
-    //     else
-    //     {
-    //         _ErrorPage.SetBodySize(0);
-    //         _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    //         _Body = HelperFunctions::GetBody(PrevStatus);
-    //         return _ErrorPage.ResponseError(PrevStatus);
-    //     }
-    // }
+    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    short PrevStatus = _Status;
+    if (ErrorPageConf.response)
+    {
+        if (ErrorPageConf.response != -1)
+            _Status = ErrorPageConf.response;
+        _FileFromDisk = ErrorPageConf.uri;
+        StoredInFileOrStr();
+        if (!_Erno)
+        {
+            _ErrorPage.SetMod(_Mod);
+            _ErrorPage.SetBodySize(_BodySize);
+            _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
+            HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
+            return ;
+        }
+        else
+        {
+            _ErrorPage.SetBodySize(0);
+            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
+            HelperFunctions::JoinBuffer(_Body, HelperFunctions::GetBody(PrevStatus).c_str(),&_BodySize);
+            HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
+            return ;
+        }
+    }
     _ErrorPage.SetType(HelperFunctions::GetType(".html"));
     HelperFunctions::JoinBuffer(_Body, HelperFunctions::GetBody(_Status).c_str(),&_BodySize);
-    return _ErrorPage.ResponseError(_Status);
+    HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
 }
 
 void clsResponse::ConnectionClose()
@@ -190,7 +192,7 @@ void clsResponse::StoredInFileOrStr()
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         _FileName = _FileFromDisk;
         return ;
-    }                                
+    }
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/05 21:33:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/07 21:41:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class clsResponse
         RequestHandler _DataRequest;
 
         const std::string GetTypeData(const std::string &Type);
-        const std::string ErrorRespnseHandling();
+        void ErrorRespnseHandling();
         void InitialHeaders();
         void Status();
         void ContentLength();

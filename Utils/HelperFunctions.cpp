@@ -180,10 +180,6 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	return (200);
 }
 
-
-
-
-
 // Achraf
 
 bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word, bool Switch) {
@@ -249,7 +245,8 @@ std::string HelperFunctions::TrimStr(std::string Str, const std::string &Sep) {
     return Str.substr(Start, End - Start + 1);
 }
 
-std::string HelperFunctions::ConvertStringToLower(std::string &Str) {
+std::string HelperFunctions::ConvertStringToLower(std::string &Str)
+{
     for (size_t i = 0; i < Str.size(); i++) {
         if (std::isalpha(Str[i]))
             Str[i] = std::tolower(Str[i]);
@@ -272,14 +269,16 @@ bool HelperFunctions::Ischar(const std::string &Sep, char C) {
     return false;
 }
 
-int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep) {
+int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep) 
+{
     int i = 0;
     while (i < (int)Str.size() && Ischar(Sep, Str[i]))
         i++;
     return i;
 }
 
-int HelperFunctions::SkeeSep(const std::string &Str, char Sep) {
+int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
+{
     size_t i = 0;
     while (i < Str.size() && Sep == Str[i])
         i++;
@@ -429,7 +428,7 @@ char	*HelperFunctions::ft_strdup(const char *src)
 		return (NULL);
 	i = 0;
 	l = _ft_strlen(src);
-	dest_dup = new char[(l + 1)];
+	dest_dup = new(std::nothrow) char[(l + 1)];
 	if (!dest_dup)
 		return (NULL);
 	while (src[i])
@@ -510,7 +509,7 @@ char	*HelperFunctions::ft_itoa(int n)
 	len = len_int(n);
     prev_len = len;
 	num = n;
-	int_char = new char(len + 1);
+	int_char = new(std::nothrow) char(len + 1);
 	if (!int_char)
 		return (NULL);
 	if (num < 0)
