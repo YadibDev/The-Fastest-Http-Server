@@ -287,16 +287,14 @@ int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
 
 void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit)
 {
-    unsigned long Pos = 0;
-    std::string  SepString = "";
-    const char *PtrStr = NULL;
+    size_t Pos = 0;
     int i = 0;
    
     if ((Pos = Str.find(Sep)) == std::string::npos)
         Strings.push_back(Str);
     else
     {
-        Str = Str.substr(SkeeSep(Str, Sep));
+        Str.erase(0, SkeeSep(Str, Sep));
         while ((Pos = Str.find(Sep)) != std::string::npos)
         {
             if (i == TimesSplit - 1 && TimesSplit > 0)
@@ -304,8 +302,8 @@ void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str,
             else if (TimesSplit > 0)
                 i++;
             Strings.push_back(Str.substr(0,Pos));
-            Pos += SkeeSep(Str.substr(Pos),Sep);
-            Str = Str.substr(Pos);
+            Str.erase(0, Pos);
+            Str.erase(0, SkeeSep(Str ,Sep));
         }
         if (!Str.empty())
             Strings.push_back(Str);
@@ -622,4 +620,30 @@ void HelperFunctions::JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLe
         (*UpdateLength)++;
     }
     OldStr[(*UpdateLength)] = '\0';
+}
+
+bool HelperFunctions::ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End)
+{
+    const unsigned char ASCII_SWAP[128] =
+    {
+        0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,
+        16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,
+        32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+        48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+        64,  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+        'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 91,  92,  93,  94,  95,
+        96,  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+        'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 123, 124, 125, 126, 127
+    };
+    short i = Start;
+    while (i < Str1.length() && i < End && i < Str2.length())
+    {
+        if (std::isalpha(Str1[i]))
+            if (ASCII_SWAP[(unsigned char)Str1[i]] != ASCII_SWAP[(unsigned char)Str2[i]])
+                return false;
+        else if (Str1[i] != Str2[i])
+            return false;
+        i++;
+    }
+    return true;
 }

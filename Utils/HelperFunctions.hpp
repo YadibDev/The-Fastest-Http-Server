@@ -70,6 +70,7 @@ public:
     static const std::string &GetStatusMessage(int Status);
     static const std::string &GetBody(int Status);
     static void JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength);
+    static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
 
 private:
     static std::map<std::string, std::string> _TypeContent;

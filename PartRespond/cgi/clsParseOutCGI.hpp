@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/02 16:46:02 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/08 19:38:29 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,15 @@ class clsParseOutCGI
         clsParseOutCGI();
         void SetPipe_Fd(int Pipe_Fd);
         const std::string &GetHeadersFieldFinal() const;
-        bool CheckValidNameHeader(std::string &Headrs);
+        bool CheckValidNameHeader(std::string &HeaderName, short Start, short End);
         void ReceivingData(std::string &Data);
         bool LocationIsClientOrLocal(std::string &Location);
 	    bool ParseStatus(const std::string &StatusLineValue);
 	    bool MakeHeadersResponse(std::string &StatusLine);
         bool IsSpecialChar(char C);
-        bool CheckValidValueHeader(std::string &HeaderValue);
+        bool CheckValidValueHeader(std::string &HeaderValue, short Start, short End);
 	    void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
-        bool ValidHeaders(std::string &Str, std::vector <std::string> &Data);
-        bool StoredCleanHeaders(std::string &Str);
+        bool ValidHeaders(std::string &Str);
         bool ParseContentType(const std::string &ValueContentType);
         std::string Connection(bool Isclose);
         void BuilResponsedredirection();
