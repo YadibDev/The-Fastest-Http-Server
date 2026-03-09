@@ -43,7 +43,7 @@ public:
     static bool IsStringDigit(const std::string &StringDigit);
     static bool Iswhaitspace(char C);
     static std::string TrimStr(std::string Str, const std::string &Sep);
-    static std::string ConvertStringToLower(std::string &Str);
+    static void HelperFunctions::ConvertStringToLower(std::string &Str);
     static std::string ConvertStringToUpper(std::string &Str);
     static bool Ischar(const std::string &Sep, char C);
     static int SkeeSep(const std::string &Str, const std::string &Sep);

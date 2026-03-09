@@ -202,13 +202,16 @@ bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word
     return (!lenghtWord || (Switch && lenghtWord == i));
 }
 
-size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF) {
+size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF)
+{
     size_t i = (Str.size()) ? Str.size() - 1 : 0;
     size_t j = (CRLF.size()) ? CRLF.size() - 1 : 0;
     if (Str.empty())
         return std::string::npos;
-    while (true) {
-        if (!Iswhaitspace(Str[i])) {
+    while (true)
+    {
+        if (!Iswhaitspace(Str[i])) 
+        {
             if (CRLF[j] != Str[i])
                 break;
         }
@@ -245,13 +248,12 @@ std::string HelperFunctions::TrimStr(std::string Str, const std::string &Sep) {
     return Str.substr(Start, End - Start + 1);
 }
 
-std::string HelperFunctions::ConvertStringToLower(std::string &Str)
+void HelperFunctions::ConvertStringToLower(std::string &Str)
 {
     for (size_t i = 0; i < Str.size(); i++) {
         if (std::isalpha(Str[i]))
             Str[i] = std::tolower(Str[i]);
     }
-    return Str;
 }
 std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
     for (size_t i = 0; i < Str.size(); i++) {
@@ -356,16 +358,14 @@ void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
     {
         Pos += 1;
         CleanLine = BigData.substr(0, Pos);
-        BigData = BigData.substr(Pos);
+        BigData.erase(0, Pos);
     }
     else
-    {
         CleanLine = BigData;
-        BigData.clear();
-    }
 }
 
-std::string HelperFunctions::GTMHTTP(tm* GMT) {
+std::string HelperFunctions::GTMHTTP(tm* GMT)
+{
     const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     std::stringstream ss;

@@ -33,6 +33,7 @@ enum whereIsBody
 class clsClient
 {
 private:
+    
     // request object it will be here
     size_t _BodyOfset;
     string _DataLeft;

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/26 16:33:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/09 18:09:39 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ int clsCGI::RunCGI()
     int pipBody[2] = {-1,-1};
     if (!(ENV = _MakeEnv()))
         return (-500);
+    // use file in all cases
     if (!(ARG = _StoredArgs()))
     {
         HelperFunctions::free_matrex(&ENV);

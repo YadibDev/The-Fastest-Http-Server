@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/08 19:38:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/09 19:31:37 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ class clsParseOutCGI
         bool _FoundBody;
         int _Status;
         int _BytesBody;
-        int _SizeFile;
+        int _CountHeader;
         std::string _Body;
+        std::string _FileName;
         std::string _RemaindData;
         clsErrorPage _ErrorPage;
         std::map <std::string, std::string> _HeadersField;
@@ -48,7 +49,7 @@ class clsParseOutCGI
 	    void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
         bool ValidHeaders(std::string &Str);
         bool ParseContentType(const std::string &ValueContentType);
-        std::string Connection(bool Isclose);
+        void Connection(bool Isclose);
         void BuilResponsedredirection();
         void HeaderResponseCGI();
         void Transfer_Encoding();
@@ -58,6 +59,8 @@ class clsParseOutCGI
         void StatusNormal();
         void StatusRedirection();
         void ContentLength();
+        void ReceivingHeaders();
+        void ReceivingBody();
         ~clsParseOutCGI();
 };
 #endif
