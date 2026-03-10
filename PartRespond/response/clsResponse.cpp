@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/07 21:42:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/10 15:14:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ void clsResponse::StoredInFileOrStr()
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
+        close(FD);
         return ;
     }
     close(FD);

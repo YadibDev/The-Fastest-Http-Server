@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/09 19:31:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/10 17:10:18 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,28 @@ class clsParseOutCGI
         bool _FoundBody;
         int _Status;
         int _BytesBody;
-        int _CountHeader;
         std::string _Body;
         std::string _FileName;
         std::string _RemaindData;
         clsErrorPage _ErrorPage;
+        RequestHandler _DataRequest;
+        short _MaxSizeHeaders;
         std::map <std::string, std::string> _HeadersField;
+        std::vector <std::string> _HeadersFieldDuplicate;
         std::string _HeadersFieldFinal;
         std::map <std::string, std::string> _SpecialHeaders;
-        std::vector <std::string> _BlackListHeaders;
         std::string _NameFileBody;
+        bool _Erno;
         int _Pipe_Fd;
     public:
         clsParseOutCGI();
         void SetPipe_Fd(int Pipe_Fd);
+        void StoredInFileOrStr();
+        bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
         const std::string &GetHeadersFieldFinal() const;
         bool CheckValidNameHeader(std::string &HeaderName, short Start, short End);
         void ReceivingData(std::string &Data);
+        void ErrorRespnseHandling();
         bool LocationIsClientOrLocal(std::string &Location);
 	    bool ParseStatus(const std::string &StatusLineValue);
 	    bool MakeHeadersResponse(std::string &StatusLine);

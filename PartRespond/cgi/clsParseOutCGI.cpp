@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/09 22:00:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/10 17:18:38 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 clsParseOutCGI::clsParseOutCGI()
 {
     _BytesBody = 0;
-    _CountHeader = 0;
     _FoundBody = false;
-    StoredBlackListHeaders(_BlackListHeaders);
+    _MaxSizeHeaders = 0;
     _Body.resize(40000);
     _RemaindData.resize(4000);
 }
@@ -53,18 +52,10 @@ bool clsParseOutCGI::CheckValidValueHeader(std::string &HeaderValue, short Satrt
             return (false);
         i++;
     }
-    if (i == 0)
-        return (false);
     return (true);
 }
 
-void clsParseOutCGI::StoredBlackListHeaders(std::vector <std::string> &BalckListHeader)
-{
-    BalckListHeader.push_back("content-length");
-    BalckListHeader.push_back("transfer-encoding");
-    BalckListHeader.push_back("connection");
-    BalckListHeader.push_back("x-cgi-");
-}
+
 
 bool clsParseOutCGI::LocationIsClientOrLocal(std::string &Location)
 {
@@ -87,10 +78,42 @@ bool clsParseOutCGI::ParseStatus(const std::string &StatusLineValue)
         return (false);
     return (true);
 }
+bool clsParseOutCGI::StoredHeadersField(std::string &Name, std::string &Value, std::string &Str)
+{
+    int Skeep = HelperFunctions::SkeeSep(Value, " \t");
+    if (_HeadersField.count(Name))
+    {
+        if (Name == "location" || Name == "status" || Name == "content-type" )
+            return false;
+        else if (Name == "set-cookie")
+        {
+            _MaxSizeHeaders += Str.length();
+            if (_MaxSizeHeaders > 4000) 
+                return false;
+            _HeadersFieldDuplicate.push_back(Str);
+        }
+        else if (Skeep != (int)Value.length() && !Skeep)
+        {
+            _MaxSizeHeaders += Str.length();
+            if (_MaxSizeHeaders > 4000) 
+                return false;
+            _HeadersField[Name] += ",";
+            _HeadersField[Name] += Value;
+        }
+    }
+    else if (Skeep != (int)Value.length() && !Skeep)   
+    {
+        _MaxSizeHeaders += Str.length();
+        if (_MaxSizeHeaders > 4000) 
+            return false;
+        _HeadersField[Name] = Value;
+    }
+    return true;
+}
 
 bool clsParseOutCGI::ValidHeaders(std::string &Str)
 {
-    std::string Key = "";
+    std::string Name = "", Value;
     size_t Pos = 0;
     if ((Pos = HelperFunctions::FindCRLF(Str, "\r\n")) != std::string::npos)
         Str.erase(Pos);
@@ -104,17 +127,11 @@ bool clsParseOutCGI::ValidHeaders(std::string &Str)
 
     if (!CheckValidValueHeader(Str, Pos + 1, Str.length()))
         return (false);
-    if (HelperFunctions::ComparHead(Str, "status", 0, Pos))
-        if (!ParseStatus(Str.substr(Pos + 1, Str.length())))
-            return (false);
-    else if (HelperFunctions::ComparHead(Str, "location", 0, Pos))
-        if (0);
-    Key = Str.substr(0, Pos);
-    HelperFunctions::ConvertStringToLower(Key);
-    if (!_HeadersField.count(Key))
-        _HeadersField[Key] = Str.substr(Pos + 1, Str.length());
-    else
-        return (false);
+    Name =  Str.substr(0, Pos);
+    Value =  Str.substr(Pos + 1, Str.size());
+    HelperFunctions::ConvertStringToLower(Name);
+    if (!StoredHeadersField(Name, Value, Str))
+        return false;
     return true;
 }
 
@@ -155,7 +172,6 @@ void clsParseOutCGI::StatusRedirection()
 void clsParseOutCGI::HeaderResponseCGI()
 {
     std::map <std::string, std::string>::iterator HEAD;
-
     if (_Mod[stMod::REDIRECTION] != stMod::REDIRECTION)
         StatusNormal();
     else
@@ -172,6 +188,8 @@ void clsParseOutCGI::HeaderResponseCGI()
             _HeadersFieldFinal += "\r\n";
         }
     }
+    for (size_t i = 0;i < _HeadersFieldDuplicate.size(); i++)
+        _HeadersFieldFinal += _HeadersFieldDuplicate[i];
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         Transfer_Encoding();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK && _BytesBody)
@@ -188,14 +206,19 @@ void clsParseOutCGI::BuilResponsedredirection()
         CountValidHeader++;
     if (_HeadersField.count("status"))
         CountValidHeader++;
-    if (_BytesBody > 0)
-        CountValidHeader++;
-    if (LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 3)
+    if (LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 2 && _BytesBody)
         HeaderResponseCGI();
-    else if (!CountValidHeader && LocationIsClientOrLocal(_HeadersField["location"]))
+    else if (!CountValidHeader && LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
         HeaderResponseCGI();
-    else if(!CountValidHeader && !_BytesBody)
+    else if(_HeadersField.size() == 1 && !_BytesBody)
     {
+        if (access(NULL, F_OK) == -1)
+        {
+            _Mod[stMod::ERROR] = stMod::ERROR;
+            _Status = 404;
+            return ;
+        }
+        StoredInFileOrStr();
         //geting phisical path from config
         //access file in config
         //read file in config
@@ -203,9 +226,8 @@ void clsParseOutCGI::BuilResponsedredirection()
     else
     {
         //geting page error from RequestHandler from config
-        _ErrorPage.SetType("text/html");
-        _Body = HelperFunctions::GetBody(502);
-        _HeadersFieldFinal = _ErrorPage.ResponseError(502);
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 502;
     }
 }
 
@@ -221,7 +243,10 @@ void clsParseOutCGI::ReceivingHeaders()
         {
             if (!ValidHeaders(Line))
             {
-                _Status = 502;
+                if (_MaxSizeHeaders > 4000)
+                    _Status = 508;
+                else
+                    _Status = 502;
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 close(_Pipe_Fd);
                 return ;
@@ -262,6 +287,74 @@ void clsParseOutCGI::ReceivingBody()
     
 }
 
+void clsParseOutCGI::StoredInFileOrStr()
+{
+    struct stat MetaData;
+    _Body = "";
+    if (stat(_FileName.c_str(), &MetaData) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
+    _BytesBody = MetaData.st_size;
+    if (_BytesBody > 40000)
+    {
+        _Mod[stMod::CHUNK] = stMod::CHUNK;
+        return ;
+    }
+    int FD = open(_FileName.c_str(), O_RDONLY, 644);
+    if (FD < 0)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
+    if (read(FD,&_Body[0],40000) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        close(FD);
+        return ;
+    }
+    close(FD);
+}
+
+void clsParseOutCGI::ErrorRespnseHandling()
+{
+    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    short PrevStatus = _Status;
+    if (ErrorPageConf.response)
+    {
+        if (ErrorPageConf.response != -1)
+            _Status = ErrorPageConf.response;
+            _FileName = ErrorPageConf.uri;
+        StoredInFileOrStr();
+        if (!_Erno)
+        {
+            _ErrorPage.SetMod(_Mod);
+            _ErrorPage.SetBodySize(_BytesBody);
+            _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
+            _HeadersFieldFinal += _ErrorPage.ResponseError(PrevStatus);
+            return ;
+        }
+        else
+        {
+            _ErrorPage.SetBodySize(0);
+            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
+            _Body += HelperFunctions::GetBody(PrevStatus);
+            _HeadersFieldFinal +=  _ErrorPage.ResponseError(PrevStatus);
+            return ;
+        }
+    }
+    _ErrorPage.SetType(HelperFunctions::GetType(".html"));
+    _Body += HelperFunctions::GetBody(_Status);
+    _HeadersFieldFinal +=  _ErrorPage.ResponseError(_Status);
+}
+
 void clsParseOutCGI::ReceivingData(std::string &Data)
 {
     _RemaindData += Data;
@@ -284,11 +377,11 @@ void clsParseOutCGI::ReceivingData(std::string &Data)
         HeaderResponseCGI();
 }
 
+
 void clsParseOutCGI::Transfer_Encoding()
 {
     _HeadersFieldFinal += "Transfer-Encoding: chunked\r\n";
 }
-
 
 void clsParseOutCGI::Date()
 {
