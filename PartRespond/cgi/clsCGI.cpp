@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/09 18:09:39 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/11 22:23:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,105 +134,88 @@ char **clsCGI::_StoredArgs()
     return (ARG);
 }
 
-int clsCGI::RunCGI()
+bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
 {
-    int status;
-    int exit_code;
-    char **ENV = NULL;
-    char **ARG = NULL;
-    int Fd = -2;
-    int pip[2] = {-1,-1};
-    int pipBody[2] = {-1,-1};
-    if (!(ENV = _MakeEnv()))
-        return (-500);
-    // use file in all cases
-    if (!(ARG = _StoredArgs()))
+    int Fd;
+    close(pip[0]);
+    Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY, 644);
+    if (Fd < 0)
     {
-        HelperFunctions::free_matrex(&ENV);
-        return (-500);
-    }
-    if (_DataRequest.getBody() != "")
-    {
-        if (pipe(pipBody) == -1)
-        {
-            HelperFunctions::free_matrex(&ENV);
-            return (-500);
-        }
-        write(pipBody[1], &_DataRequest.getBody()[0], _DataRequest.getBody().size());
-    }
-    if (pipe(pip) == -1)
-    {
-        HelperFunctions::free_matrex(&ENV);
-        return (-500);
-    }
-    if (_DataRequest.getFilePathBody() != "")
-        Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY, 644);
-    if (Fd != -2 && Fd < 0)
-    {
-        close(pip[0]);
         close(pip[1]);
         HelperFunctions::free_matrex(&ENV);
         return (-500);
     }
+    if (dup2(Fd, 0) == -1)
+        return (close(Fd), close(pip[1]), true);
+    if (dup2(pip[1], 1) == -1)
+        return (close(Fd), close(pip[1]), true);
+    close(pip[1]);
+    close(Fd);
+    execve(_DataRequest.getPathCgi().c_str(), ARG, ENV);
+    return true;
+}
+
+int clsCGI::_ParentProcesse(char **ENV, char **ARG, int pip[2])
+{
+    int status;
+    int exit_code;
+    close(pip[1]);
+    exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
+    if (exit_code < 0)
+    {
+        HelperFunctions::free_matrex(&ENV);
+        close(pip[0]);
+        return (-1);
+    }
+    else if (WEXITSTATUS(status) == 1)
+    {
+        HelperFunctions::free_matrex(&ARG);
+        close(pip[0]);
+        return (-1);
+    }
+    else if (exit_code > 0)
+    {
+        HelperFunctions::free_matrex(&ARG);
+        return (-1);
+    }
+    _IsRunCGI = true;
+    HelperFunctions::free_matrex(&ARG);
+    return (pip[0]);
+}
+bool clsCGI::_InintialVar(char **ENV, char **ARG, int pip[2])
+{
+    if (!(ENV = _MakeEnv()))
+        return (true);
+    if (!(ARG = _StoredArgs()))
+        return (true);
+    if (pipe(pip) == -1)
+        return (true);
     _StartTime = HelperFunctions::getCurrentTimeInS();
+    return (false);
+}
+int clsCGI::RunCGI()
+{
+    char **ENV = NULL;
+    char **ARG = NULL;
+    int Fd = -1;
+    int pip[2] = {-1,-1};
+    if (_InintialVar(ENV, ARG,pip))
+        return (-1);
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
     {
         close(pip[0]);
         close(pip[1]);
         HelperFunctions::free_matrex(&ENV);
-        return (-500);
+        return (-1);
     }
     if (_PIDCHILD == 0)
     {
-        close(pip[0]);
-        close(pipBody[1]);
-        if (_DataRequest.getFilePathBody() != "")
-            if (dup2(Fd, 0) == -1)
-                return (close(Fd), close(pip[1]), -1);
-        else if (_DataRequest.getBody() != "")
-            if (dup2(pipBody[0], 0) == -1)
-                return (close(pipBody[0]), close(pip[1]), -1);
-        if (dup2(pip[1], 1) == -1)
-            return (close(Fd), close(pip[1]), -1);
-        close(pip[1]);
-        execve(_DataRequest.getPathCgi().c_str(), ARG, ENV);
-        return -1;
+        if (_childeProcesse(ENV, ARG, pip))
+            return (-1);
     }
     else
-    {
-        close(pip[1]);
-        close(pipBody[0]);
-        close(pipBody[1]);
-        exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
-        if (exit_code < 0)
-        {
-            HelperFunctions::free_matrex(&ENV);
-            HelperFunctions::free_matrex(&ARG);
-            close(pip[0]);
-            close(Fd);
-            return (-500);
-        }
-        else if (WEXITSTATUS(status) == 1)
-        {
-            HelperFunctions::free_matrex(&ARG);
-            HelperFunctions::free_matrex(&ENV);
-            close(pip[0]);
-            close(Fd);
-            return (-500);
-        }
-        else if (exit_code > 0)
-        {
-            HelperFunctions::free_matrex(&ARG);
-            HelperFunctions::free_matrex(&ENV);
-            close(Fd);
-            return (-500);
-        }
-        _IsRunCGI = true;
-        HelperFunctions::free_matrex(&ARG);
-        HelperFunctions::free_matrex(&ENV);
-        return (pip[0]);
-    }
+        return (_ParentProcesse(ENV, ARG, pip));
     return 0;
 }
 
