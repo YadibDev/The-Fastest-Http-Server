@@ -1,5 +1,7 @@
 #include "HelperFunctions.hpp"
-
+std::map<int, std::string> HelperFunctions::_Message; 
+std::map<std::string, std::string> HelperFunctions::_TypeContent;
+std::map<int, std::string> HelperFunctions::_Body;;
 std::string HelperFunctions::trim(const std::string& str) {
 	const std::string whitespace = " \t";
 	
@@ -213,7 +215,8 @@ size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF
         if (!Iswhaitspace(Str[i])) 
         {
             if (CRLF[j] != Str[i])
-                break;
+            break;
+            std::cout << j<<"\n";
         }
         if (i == 0 || j == 0)
             break;
@@ -560,7 +563,7 @@ void HelperFunctions::StoredDefaultType()
     }
  }
 
-const std::string &HelperFunctions::GetType(const std::string &Type)
+const std::string HelperFunctions::GetType(const std::string &Type)
 {
     if (_TypeContent.count(Type))
         return  _TypeContent[Type];
@@ -595,18 +598,18 @@ void HelperFunctions::StoredBodys()
     _Message[501] = "Not Implemented";
  }
 
- const std::string &HelperFunctions::GetStatusMessage(int Status) 
+ const std::string HelperFunctions::GetStatusMessage(int Status) 
 {
     if (_Message.count(Status))
         return  _Message[Status];
     return ("Unknown Status");
 }
 
-const std::string &HelperFunctions::GetBody(int Status)
+const std::string HelperFunctions::GetBody(int Status)
 {
     if (_Body.count(Status))
         return  _Body[Status];
-    return ("Unknown Status");
+    return ("Unknown Body");
 }
 
 void HelperFunctions::JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength)
@@ -639,8 +642,10 @@ bool HelperFunctions::ComparHead(const std::string &Str1, const std::string &Str
     while (i < Str1.length() && i < End && i < Str2.length())
     {
         if (std::isalpha(Str1[i]))
+        {
             if (ASCII_SWAP[(unsigned char)Str1[i]] != ASCII_SWAP[(unsigned char)Str2[i]])
                 return false;
+        }
         else if (Str1[i] != Str2[i])
             return false;
         i++;

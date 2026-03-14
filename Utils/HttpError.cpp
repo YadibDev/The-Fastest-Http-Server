@@ -1,6 +1,9 @@
 #include "HttpError.hpp"
 
-HttpError::HttpError() : _codeStatus(0), _msgError("") {}
+HttpError::HttpError() : _codeStatus(0), _msgError("")
+{
+    
+}
 
 HttpError::HttpError(int code, std::string msg) : _codeStatus(code), _msgError(msg) {}
 

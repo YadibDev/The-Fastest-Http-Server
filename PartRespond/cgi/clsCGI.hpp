@@ -6,13 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/11 22:23:52 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/12 16:35:06 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef CLS_CGI_HPP
 # define CLS_CGI_HPP
 
+#include "clsParseOutCGI.hpp"
 #include "../mainprocess/librarys.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
@@ -23,7 +24,8 @@ class clsCGI
         bool _IsRunCGI;
         long long _StartTime;
         int _FD;
-        RequestHandler _DataRequest;
+        // RequestHandler _DataRequest;
+        clsParseOutCGI _ParseOutCGI;
         std::map<std::string, bool> _WhiteBlakHeaders;
         void _StoredWhiteBlakHeaders();
         const std::string  &_ConcatonateValue(const std::vector <std::string> &Value);
@@ -37,6 +39,7 @@ class clsCGI
     public:
         clsCGI();
         bool GetIsRunCGI();
+        clsParseOutCGI &GetclsParseOutCGI();
         int RunCGI();
         void SetIsRunCGI(bool IsRunCGI);
         ~clsCGI();

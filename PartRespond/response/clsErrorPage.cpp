@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/04 21:33:50 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/12 14:27:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void clsErrorPage::Server()
 void clsErrorPage::RetryAfter()
 {
     char *Number = HelperFunctions::ft_itoa(120);
-     _HeaderFeild += "Retey-After: ";
+    _HeaderFeild += "Retey-After: ";
     _HeaderFeild += Number;
     _HeaderFeild += "\r\n";
     delete[] Number;   

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/10 17:10:18 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/12 15:19:09 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class clsParseOutCGI
         int _Status;
         int _BytesBody;
         std::string _Body;
-        std::string _FileName;
+        std::string _FileNameFromDisk;
         std::string _RemaindData;
         clsErrorPage _ErrorPage;
         RequestHandler _DataRequest;
@@ -37,21 +37,14 @@ class clsParseOutCGI
         std::string _NameFileBody;
         bool _Erno;
         int _Pipe_Fd;
-    public:
-        clsParseOutCGI();
-        void SetPipe_Fd(int Pipe_Fd);
-        void StoredInFileOrStr();
-        bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
-        const std::string &GetHeadersFieldFinal() const;
         bool CheckValidNameHeader(std::string &HeaderName, short Start, short End);
-        void ReceivingData(std::string &Data);
         void ErrorRespnseHandling();
         bool LocationIsClientOrLocal(std::string &Location);
-	    bool ParseStatus(const std::string &StatusLineValue);
-	    bool MakeHeadersResponse(std::string &StatusLine);
+        bool ParseStatus(const std::string &StatusLineValue);
+        bool MakeHeadersResponse(std::string &StatusLine);
         bool IsSpecialChar(char C);
         bool CheckValidValueHeader(std::string &HeaderValue, short Start, short End);
-	    void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
+        void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
         bool ValidHeaders(std::string &Str);
         bool ParseContentType(const std::string &ValueContentType);
         void Connection(bool Isclose);
@@ -66,6 +59,15 @@ class clsParseOutCGI
         void ContentLength();
         void ReceivingHeaders();
         void ReceivingBody();
+        bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
+        void StoredInFileOrStr();
+    public:
+        clsParseOutCGI();
+        const std::string &GetBody();
+        const std::string &GetFaleNameBody();
+        const std::string &GetHeadersFieldFinal();
+        void SetPipe_Fd(int Pipe_Fd);
+        void ReceivingData(std::string &Data);
         ~clsParseOutCGI();
 };
 #endif

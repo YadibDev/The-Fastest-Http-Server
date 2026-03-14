@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/10 17:18:38 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/14 18:13:54 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,13 @@ bool clsParseOutCGI::ValidHeaders(std::string &Str)
     std::string Name = "", Value;
     size_t Pos = 0;
     if ((Pos = HelperFunctions::FindCRLF(Str, "\r\n")) != std::string::npos)
+    {
+        
+        std::cout << "-----> Here in ReceivingHeaders <------ " <<Str<< Pos<< std::endl;
         Str.erase(Pos);
+    }
     else
-        return (false);
+    return (false);        
     if ((Pos = Str.find(':')) == std::string::npos)
         return (false);
 
@@ -246,7 +250,7 @@ void clsParseOutCGI::ReceivingHeaders()
                 if (_MaxSizeHeaders > 4000)
                     _Status = 508;
                 else
-                    _Status = 502;
+                    _Status = 502;                
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 close(_Pipe_Fd);
                 return ;
@@ -271,7 +275,7 @@ void clsParseOutCGI::ReceivingBody()
        {
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             // open file for storing
-            _FileName = "";
+            _NameFileBody = "";
             write(1, &_Body[0], _Body.size());
             write(1, &_RemaindData[0], _RemaindData.size());
             _RemaindData.clear();
@@ -279,7 +283,7 @@ void clsParseOutCGI::ReceivingBody()
        else
         _Body += _RemaindData;
     }
-    else
+    else if (_BytesBody > 40000)
     {
         write(1, &_RemaindData[0], _RemaindData.size());
         _RemaindData.clear();
@@ -291,7 +295,7 @@ void clsParseOutCGI::StoredInFileOrStr()
 {
     struct stat MetaData;
     _Body = "";
-    if (stat(_FileName.c_str(), &MetaData) == -1)
+    if (stat(_FileNameFromDisk.c_str(), &MetaData) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -302,9 +306,10 @@ void clsParseOutCGI::StoredInFileOrStr()
     if (_BytesBody > 40000)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
+        _NameFileBody = _FileNameFromDisk;
         return ;
     }
-    int FD = open(_FileName.c_str(), O_RDONLY, 644);
+    int FD = open(_FileNameFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -325,31 +330,31 @@ void clsParseOutCGI::StoredInFileOrStr()
 
 void clsParseOutCGI::ErrorRespnseHandling()
 {
-    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    short PrevStatus = _Status;
-    if (ErrorPageConf.response)
-    {
-        if (ErrorPageConf.response != -1)
-            _Status = ErrorPageConf.response;
-            _FileName = ErrorPageConf.uri;
-        StoredInFileOrStr();
-        if (!_Erno)
-        {
-            _ErrorPage.SetMod(_Mod);
-            _ErrorPage.SetBodySize(_BytesBody);
-            _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-            _HeadersFieldFinal += _ErrorPage.ResponseError(PrevStatus);
-            return ;
-        }
-        else
-        {
-            _ErrorPage.SetBodySize(0);
-            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-            _Body += HelperFunctions::GetBody(PrevStatus);
-            _HeadersFieldFinal +=  _ErrorPage.ResponseError(PrevStatus);
-            return ;
-        }
-    }
+    // stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    // short PrevStatus = _Status;
+    // if (ErrorPageConf.response)
+    // {
+    //     if (ErrorPageConf.response != -1)
+    //         _Status = ErrorPageConf.response;
+    //         _FileNameFromDisk = ErrorPageConf.uri;
+    //     StoredInFileOrStr();
+    //     if (!_Erno)
+    //     {
+    //         _ErrorPage.SetMod(_Mod);
+    //         _ErrorPage.SetBodySize(_BytesBody);
+    //         _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
+    //         _HeadersFieldFinal += _ErrorPage.ResponseError(PrevStatus);
+    //         return ;
+    //     }
+    //     else
+    //     {
+    //         _ErrorPage.SetBodySize(0);
+    //         _ErrorPage.SetType(HelperFunctions::GetType(".html"));
+    //         _Body += HelperFunctions::GetBody(PrevStatus);
+    //         _HeadersFieldFinal +=  _ErrorPage.ResponseError(PrevStatus);
+    //         return ;
+    //     }
+    // }
     _ErrorPage.SetType(HelperFunctions::GetType(".html"));
     _Body += HelperFunctions::GetBody(_Status);
     _HeadersFieldFinal +=  _ErrorPage.ResponseError(_Status);
@@ -358,10 +363,17 @@ void clsParseOutCGI::ErrorRespnseHandling()
 void clsParseOutCGI::ReceivingData(std::string &Data)
 {
     _RemaindData += Data;
-
     ReceivingHeaders();
     ReceivingBody();
-    // add other while for stored file
+    if (_Mod[stMod::ERROR] == stMod::ERROR)
+    {
+        close(_Pipe_Fd);
+        ErrorRespnseHandling();
+        return ;
+    }
+    // if not complete so skeep to finishing processe
+    if (0)
+        return ;
     if (!_HeadersField.count("content-type") && _BytesBody)
     {
         _Status = 502;
@@ -408,7 +420,7 @@ void clsParseOutCGI::ContentLength()
     delete[] Number;
 }
 
-const std::string &clsParseOutCGI::GetHeadersFieldFinal() const
+const std::string &clsParseOutCGI::GetHeadersFieldFinal()
 {
     return _HeadersFieldFinal;
 }
@@ -417,5 +429,13 @@ void clsParseOutCGI::SetPipe_Fd(int Pipe_Fd)
 {
     _Pipe_Fd = Pipe_Fd;
 }
+const std::string &clsParseOutCGI::GetBody()
+{
+    return _Body;
+}
 
+const std::string &clsParseOutCGI::GetFaleNameBody()
+{
+    return _NameFileBody;
+}
 clsParseOutCGI::~clsParseOutCGI(){}

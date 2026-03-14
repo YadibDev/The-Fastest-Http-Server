@@ -43,7 +43,7 @@ public:
     static bool IsStringDigit(const std::string &StringDigit);
     static bool Iswhaitspace(char C);
     static std::string TrimStr(std::string Str, const std::string &Sep);
-    static void HelperFunctions::ConvertStringToLower(std::string &Str);
+    static void ConvertStringToLower(std::string &Str);
     static std::string ConvertStringToUpper(std::string &Str);
     static bool Ischar(const std::string &Sep, char C);
     static int SkeeSep(const std::string &Str, const std::string &Sep);
@@ -63,12 +63,12 @@ public:
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);
     static void	*ft_memset(void *str, int c, size_t n);
-    static const std::string &GetType(const std::string &Type);
+    static const std::string GetType(const std::string &Type);
     static void StoredDefaultType();
     static void StoredBodys();
     static void StoredMessage();
-    static const std::string &GetStatusMessage(int Status);
-    static const std::string &GetBody(int Status);
+    static const std::string GetStatusMessage(int Status);
+    static const std::string GetBody(int Status);
     static void JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength);
     static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
 
