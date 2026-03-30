@@ -55,7 +55,7 @@ void CreateENVCGI::_addBaseEnvVars(char** envp, size_t& idx, const std::string& 
 	envp[idx++] = strdup(("GATEWAY_INTERFACE=CGI/1.1"));
 	envp[idx++] = strdup(("SERVER_PROTOCOL=HTTP/1.1"));
 	envp[idx++] = strdup(("REQUEST_METHOD=" + method).c_str());
-	envp[idx++] = strdup(("PATH_INFO=" + path).c_str());
+
 	envp[idx++] = strdup(("QUERY_STRING=" + query).c_str());
 	envp[idx++] = strdup(("CONTENT_TYPE=" + header.getHeader(header_id::H_CONTENT_TYPE)).c_str());
 	envp[idx++] = strdup(("CONTENT_LENGTH=" + header.getHeader(header_id::H_CONTENT_LENGTH)).c_str());
