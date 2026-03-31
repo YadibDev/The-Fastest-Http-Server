@@ -19,17 +19,48 @@ enum whichBoundary
     endBoundary,
     nothing
 };
+
 enum bodySteps
 {
     SETTING_VARS,
     READING_HEADERS,
     READING_BODY,
-    DONE
+    DONE_GOOD,
+    DONE_WIHTERROR,
+};
+struct chunkVars
+{
+    size_t size;
+    size_t cur;
+    size_t trav;
+    bool readsize;
+    void Reset()
+    {
+        size = 0;
+        cur = 0;
+        trav = 0;
+        readsize = true;
+    }
+};
+
+
+struct stPollRequest
+{
+    char            *request_metadata;
+
+    // s_header_slot    *known_headers;
+    // s_header_slot    *unknown_headers;
+
+    uint8_t            sizeUnknownHeaders; // maybe i will change it to const
+
+    char            *io_chunk;
 };
 
 class clsBody
 {
 private:
+    stPollRequest data;
+    chunkVars chunkHelp;
     bodyPlace _bodyLocation;
     bodySteps _state;
     std::string _fileName;
@@ -39,6 +70,7 @@ private:
     ssize_t     _Length;
     bool _isMultiPart;
     bool _isChunk;
+    void _handleChunk(size_t ofset);
 public:
     // geters
     const std::string &getFileName() const;

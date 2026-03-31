@@ -34,8 +34,10 @@ void clsBody::Reset()
     this->_isMultiPart = false;
     this->_isChunk = false;
     this->_Length = -1;
+    chunkHelp.Reset();
     fd = -1;
 }
+
 bool clsBody::thereIsAline(const std::string &buffer, size_t &start, char c, char after)
 {
     size_t len = buffer.size();
@@ -50,7 +52,7 @@ bool clsBody::thereIsAline(const std::string &buffer, size_t &start, char c, cha
 // working on normal body without chunk
 void clsBody::bodyHandler(const std::string &buffer, clsRequest &req)
 {
-    if (_state == SETTING_VARS || _state == DONE)
+    if (_state == SETTING_VARS || _state == DONE_WIHTERROR || _state == DONE_GOOD)
     {
         this->Reset();
         if (req._headers.count("Content-length"))
@@ -79,27 +81,112 @@ void clsBody::bodyHandler(const std::string &buffer, clsRequest &req)
         // aftter finish chunked add multipart
     }
 }
-void clsBody::normalBody(const char *buffer, ssize_t nBytes)
+
+void clsBody::_handleChunk(size_t ofset)
+{
+    // pointing to data
+    char *arr = data.io_chunk;
+    size_t &cur = chunkHelp.cur;
+    size_t &t = chunkHelp.trav;
+    bool &readSize = chunkHelp.readsize;
+    size_t &size = chunkHelp.size;
+    bool error = false;
+
+    while (cur < ofset && t < ofset)
+    {
+        // read data size
+        if (readSize)
+        {
+            if (arr[t] == '\r')
+            {
+                if (t + 1 < ofset && arr[t + 1] != '\n')
+                    error = true;
+                else if (t + 1 < ofset && arr[t + 1] == '\n')
+                {
+                    t += 2;
+                    char *end;
+                    size = strtol(&arr[cur], &end, 16);
+                    if (end[0] != '\r')
+                        error = true;
+                    else if (size == 0)
+                    {
+                        _state = DONE_GOOD;
+                        return ;
+                    }
+                    readSize = false;
+                    cur = t;
+                }
+            }
+            else
+                t++;
+        }
+        // storing data 
+        else
+        {
+            while (t < ofset && (t - cur) < size)
+            {
+                // if (multipart add algo)
+            // else
+                std::cout << arr[t++];
+            }
+            if (t + 1 < ofset && t - cur == size)
+            {
+                if (arr[t] != '\r' || arr[t + 1] != '\n')
+                    error = true;
+                else
+                {
+                    std::cout << "\n---\n";
+                    t += 2;
+                    cur = t;
+                    readSize = true;
+                }
+            }
+        }
+        if (error)
+        {
+            _state = DONE_WIHTERROR;
+            return ;
+        }
+    }
+}
+
+void clsBody::normalBody(const char *buffer, ssize_t offset)
 {
     if (_bodyLocation == DISK)
     {
-        nBytes = write(this->fd, buffer, nBytes); // i will change this
+        /*
+        if (contentLength)
+            if (not multipart)
+                nBytes = write(this->fd, buffer, nBytes); // i will change this
+            else if (multipart)
+                algoMultipart
+
+        if (chunk)
+            _handleChunk
+        
+        
         if (nBytes == -1)
         {
             this->_isError = true;
-            return;
+            return ;
         }
+        */
     }
     else if (_bodyLocation == RAM)
-        _bodyBuffer.append(buffer, nBytes);
+    {
+        /*
+            if (multipart)
+                algo dyal multipart
+            else
+                check is hit content_length  
+                _state = DONE;
+        */
+    }
 
-    this->_Length -= nBytes;
-    if (this->_Length == 0)
+    if (_state == DONE_GOOD || _state == DONE_WIHTERROR)
     {
         if (fd != -1)
             close (fd);
-        _state = DONE;
+        fd = -1;
     }
-    else if (this->_Length < 0)
-        std::cout << "ERRRRROR body location in ram get more bytes than needed" << std::endl;
 }

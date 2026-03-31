@@ -1,8 +1,16 @@
 #include "clsClient.hpp"
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
+
+
+
 clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
+    this->_dataForReq.io_chunk = this->_theData.io_chunk;
+    this->_dataForReq.known_headers = this->_theData.known_headers;
+    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
+
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -10,6 +18,11 @@ clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConne
 
 clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
+    this->_dataForReq.io_chunk = this->_theData.io_chunk;
+    this->_dataForReq.known_headers = this->_theData.known_headers;
+    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
+
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -64,31 +77,51 @@ clsClient::~clsClient()
         close(_fdRespond);
 }
 
+int clsClient::_ReadDataForReq()
+{
+    int size = 0;
+
+    if (_Requester._state == READING_LINE || _Requester._state == READING_HEADERS)
+    {
+        uint16_t &idx = _theData.read_offset;
+        size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
+        if (size > 0)
+            idx += size;
+    }
+    else if (_Requester._state == READING_BODY)
+    {
+        uint16_t &idx = _theData.read_body;
+        size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
+        if (size > 0)
+            idx += size;
+    }
+
+    if (size == 0)
+        _state = CONNECTION_CLOSED;
+
+    return size;
+}
+
 void clsClient::ProcessRequest()
 {
-    string buffer;
-
-    // when we will add post i may modied the logic
-    buffer.resize(4096);
-    int size = recv(this->_socket, &buffer[0], 4096, MSG_DONTWAIT);
-    if (size == 0)
-    {
-        _state = CONNECTION_CLOSED;
-        return;
-    }
-    if (size == -1)
-        return;
-    buffer.resize(size);
-
     // reset request in every new request from client
     if (_state == BEGIN)
-        _Requester._Buffer = "", _Requester._state = READING_LINE, _state = REQUEST_MODE;
+    {
+        _Requester._state = READING_LINE;
+        _state = REQUEST_MODE;
+        _theData.Reset();
+    }
 
-    _Requester.parse(buffer);
+    int size = _ReadDataForReq(); // reading data for request
+   
+    // if (_Requester._state == READING_BODY)
+        // _Requester.parse(read_body);  // then pase it to parse
+    // else
+        // _Requester.parse(read_offset);  // then pase it to parse
     if (_Requester.isCompleted()) // add get error here
     {
         this->_state = START_RESPOND;
-        return;
+        return ;
     }
 }
 
