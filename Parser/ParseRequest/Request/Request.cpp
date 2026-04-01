@@ -28,7 +28,7 @@ void clsRequest::parse(const std::string& rawData)
                 break;
             }
             if (!_headerParser.parseSingleHeader(line, _arguments._Error))
-                return;
+                return ;
         }
         
         if (_state == READING_BODY)
