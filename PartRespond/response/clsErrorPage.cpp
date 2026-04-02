@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/12 14:27:31 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/01 20:57:12 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void clsErrorPage::ConnectionClose()
 
 void clsErrorPage::Status()
 {
-     char *Number = HelperFunctions::ft_itoa(_Status);
+    char *Number = HelperFunctions::ft_itoa(_Status);
     _HeaderFeild += "HTTP/1.1 ";
     _HeaderFeild += Number ;
     _HeaderFeild +=  " ";

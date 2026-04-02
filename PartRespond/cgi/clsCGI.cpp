@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/13 15:43:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/01 18:47:02 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,75 +14,8 @@
 
 clsCGI::clsCGI()
 {
-    _StoredWhiteBlakHeaders();
     _IsRunCGI = false;
 }
-
-void clsCGI::_StoredWhiteBlakHeaders()
-{
-    if (_WhiteBlakHeaders.empty())
-    {
-        _WhiteBlakHeaders["authorization"] = 0;
-        _WhiteBlakHeaders["proxy-Authorization"] = 0;
-        _WhiteBlakHeaders["connection"] = 0;
-        _WhiteBlakHeaders["keep-alive"] = 0;
-        _WhiteBlakHeaders["upgrade"] = 0;
-        _WhiteBlakHeaders["te"] = 0;
-        _WhiteBlakHeaders["trailer"] = 0;
-        _WhiteBlakHeaders["transfer-Encoding"] = 0;
-    }
-}
-
-// void clsCGI::_BuildBasicVar(std::vector <std::string> &Var)
-// {
-//     std::map<std::string, std::vector<std::string> > Header;
-//     if (Header.count("authorization"))
-//         Var.push_back(_BuildVarEnv("AUTH_TYPE", _ConcatonateValue(Header["Authorization"])));
-//     if (Header.count("content-length"))
-//         Var.push_back(_BuildVarEnv("CONTENT_LENGTH", _ConcatonateValue(Header["content-length"])));
-//     if (Header.count("content-type"))
-//         Var.push_back(_BuildVarEnv("CONTENT_TYPE", _ConcatonateValue(Header["content-type"])));
-//     Var.push_back(_BuildVarEnv("GATEWAY_INTERFACE", "CGI/1.1"));
-//     Var.push_back(_BuildVarEnv("SERVER_SOFTWARE", "FastServer"));
-//     Var.push_back(_BuildVarEnv("SERVER_PROTOCOL", "HTTP/1.1"));
-//     Var.push_back(_BuildVarEnv("SERVER_NAME", "Server/1337"));
-//     Var.push_back(_BuildVarEnv("REQUEST_METHOD", _DataRequest.getMethod()));
-//     Var.push_back(_BuildVarEnv("QUERY_STRING", _DataRequest.getQuery()));
-//     Var.push_back(_BuildVarEnv("REMOTE_IDENT", ""));
-//     Var.push_back(_BuildVarEnv("REMOTE_HOST", ""));
-//     // Var.push_back(_BuildVarEnv("PATH_INFO", _DataRequest.));
-//     // Var.push_back(_BuildVarEnv("SERVER_PORT", _DataRequest.()));
-//     // Var.push_back(_BuildVarEnv("REMOTE_ADDR", give this from socket IP));
-// }
-
-// const std::string  &clsCGI::_ConcatonateValue(const std::vector <std::string> &Value)
-// {
-//     std::string EnvValue;
-//     for (size_t i = 0; i < Value.size(); i++)
-//     {
-//         EnvValue += Value[i];
-//         std::cout << i<< std::endl;
-//         if (i != Value.size() - 1)
-//             EnvValue += ";";
-//     }
-//     return (EnvValue);
-// }
-
-// std::string clsCGI::_BuildVarEnv(const std::string &HeaderName,const std::string  &Value)
-// {
-//     size_t Pos = 0;
-//     std::string EnvValue;
-
-//     if (!_WhiteBlakHeaders.count(HeaderName))
-//         EnvValue += "HTTP_";
-//     EnvValue += HeaderName;
-//     EnvValue = HelperFunctions::ConvertStringToUpper(EnvValue);
-//     while ((Pos = EnvValue.find('-')) != std::string::npos)
-//         EnvValue = EnvValue.replace(Pos, 1, "_");
-//     EnvValue += "=";
-//     EnvValue += Value;
-//     return (EnvValue);
-// }
 
 char **clsCGI::_MakeEnv()
 {
@@ -137,7 +70,7 @@ char **clsCGI::_StoredArgs()
 
 bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
 {
-    int Fd;
+    int Fd = -1;
     close(pip[0]);
     // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
     // if (Fd < 0)
@@ -154,7 +87,7 @@ bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
     
     close(pip[1]);
     close(Fd);
-    execve("/usr/bin/php", ARG, ENV);
+    execve("/usr/bin/php", ARG, NULL);
     return true;
 }
 
@@ -179,17 +112,17 @@ int clsCGI::_ParentProcesse(char **ENV, char **ARG, int pip[2])
     else if (exit_code > 0)
     {
         HelperFunctions::free_matrex(&ARG);
-        return (-1);
+        return (pip[0]);
     }
     _IsRunCGI = true;
     HelperFunctions::free_matrex(&ARG);
     return (pip[0]);
 }
-bool clsCGI::_InintialVar(char **ENV, char **ARG, int pip[2])
+bool clsCGI::_InintialVar(char **ENV, char ***ARG, int pip[2])
 {
     // if (!(ENV = _MakeEnv()))
     //     return (true);
-    if (!(ARG = _StoredArgs()))
+    if (!((*ARG) = _StoredArgs()))
         return (true);
     if (pipe(pip) == -1)
         return (true);
@@ -202,7 +135,7 @@ int clsCGI::RunCGI()
     char **ARG = NULL;
     int Fd = -1;
     int pip[2] = {-1,-1};
-    if (_InintialVar(ENV, ARG,pip))
+    if (_InintialVar(ENV, &ARG, pip))
         return (-1);
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -236,6 +169,11 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 {
     return _ParseOutCGI;
 }
+
+ int clsCGI::GetPid()
+ {
+    return _PIDCHILD;
+ }
 
 clsCGI::~clsCGI(){}
 

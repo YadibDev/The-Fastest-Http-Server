@@ -1,5 +1,6 @@
 CC = c++
-FLAG = -Wall -Wextra -Werror -std=c++98
+
+FLAG = -Wall -Wextra -Werror -std=c++98  -g -fsanitize=address
 Name = CGI
 Headers = clsParseOutCGI.hpp clsCGI.hpp Utils/HelperFunctions.hpp ../response/clsErrorPage.hpp 
 SOURCE = main.cpp clsParseOutCGI.cpp clsCGI.cpp ../../Utils/HelperFunctions.cpp ../response/clsErrorPage.cpp ../../Parser/RequestHandler/RequestHandler.cpp\
@@ -15,4 +16,5 @@ clean:
 	rm -rf $(OBJ)
 fclean: clean
 	rm -rf $(Name)
+re : fclean gotoman
 .PHONY: clean

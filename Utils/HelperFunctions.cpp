@@ -213,11 +213,8 @@ size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF
     while (true)
     {
         if (!Iswhaitspace(Str[i])) 
-        {
             if (CRLF[j] != Str[i])
-            break;
-            std::cout << j<<"\n";
-        }
+                break;
         if (i == 0 || j == 0)
             break;
         if (!Iswhaitspace(Str[i]))
@@ -356,10 +353,9 @@ std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t S
 void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
 {
     size_t Pos = 0;
-    Pos = BigData.find('\n');
-    if (Pos != std::string::npos)
+    if ((Pos = BigData.find('\n')) != std::string::npos)
     {
-        Pos += 1;
+        Pos++;
         CleanLine = BigData.substr(0, Pos);
         BigData.erase(0, Pos);
     }
@@ -510,7 +506,7 @@ char	*HelperFunctions::ft_itoa(int n)
 	len = len_int(n);
     prev_len = len;
 	num = n;
-	int_char = new(std::nothrow) char(len + 1);
+	int_char = new(std::nothrow) char[len + 1];
 	if (!int_char)
 		return (NULL);
 	if (num < 0)
