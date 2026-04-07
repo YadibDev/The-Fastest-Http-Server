@@ -154,6 +154,7 @@ clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
 	_root = sRoot;
 	_index = sIndex;
 	_client_max_body_size = sClient_max_body_size;
+	_allow_methods = -1;
 	_autoindex = sAutoIndex;
 	_flags = Directives::D_NONE;
 }
@@ -186,7 +187,7 @@ bool    clsLocation::parseLocation()
 
 
 
-std::string clsLocation::getRoot() const {
+const std::string &clsLocation::getRoot() const {
 	return _root;
 }
 
@@ -206,11 +207,11 @@ unsigned long long clsLocation::getClientMaxBodySize() const {
 	return _client_max_body_size;
 }
 
-stReturnData clsLocation::getReturn() const {
+const stReturnData &clsLocation::getReturn() const {
 	return _return;
 }
 
-std::string clsLocation::getUploadStore() const {
+const std::string &clsLocation::getUploadStore() const {
 	return _upload_store;
 }
 
@@ -231,7 +232,7 @@ HttpError clsLocation::getError() const {
 	return ctx.error;
 }
 
-stlocation clsLocation::getLocationData() const {
+const stlocation &clsLocation::getLocationData() const {
 	return _locationData;
 }
 

@@ -47,6 +47,23 @@ long HelperFunctions::hexToDec(const std::string& hex)
 	return decimalValue;
 }
 
+long HelperFunctions::hexToDecS_view(char *buf, int len)
+{
+	long decimalValue = 0;
+	
+	for (std::size_t i = 0; i < len; ++i)
+	{
+		int digit = hexCharToDec(buf[i]);
+		
+		if (digit == -1)
+			return -1;
+		
+		decimalValue = (decimalValue << 4) | digit;
+	}
+	
+	return decimalValue;
+}
+
 bool HelperFunctions::is_numeric(const std::string& str) {
 	for (size_t i = 0; i < str.length(); i++)
 		if (!std::isdigit(str[i])) return false;
@@ -180,6 +197,25 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	return (200);
 }
 
+s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
+    s_view result;
+
+    if (!view.Data || view.len == 0 || !set || *set == '\0')
+        return result;
+
+    for (int i = (int)view.len - 1; i >= 0; --i) {
+        char current = view.Data[i];
+        
+        for (const char* s = set; *s != '\0'; ++s) {
+            if (current == *s) {
+                result.Data = view.Data + i;
+                result.len = view.len - i;
+                return result;
+            }
+        }
+    }
+    return result;
+}
 
 
 

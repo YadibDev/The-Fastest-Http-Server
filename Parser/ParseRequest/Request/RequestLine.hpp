@@ -1,15 +1,14 @@
 #ifndef REQUESTLINE_HPP
 #define REQUESTLINE_HPP
 
-#include "UriParser.hpp"
+#include "../URI/NUriParser.hpp"
 
 class RequestLine {
 private:
     enum State { STATE_START, STATE_METHOD, STATE_URI, STATE_VERSION, STATE_CR, STATE_LF, STATE_COMPLETE, STATE_ERROR };
-    enum MethodType { METHOD_NONE, METHOD_GET, METHOD_POST, METHOD_DELETE };
 
     State _state;
-    MethodType _methodType;
+    HttpTables::eMethod _methodType;
     uint16_t _offset;
     bool _uriReady;
     bool _versionReady;
@@ -34,7 +33,7 @@ public:
     void parse(const char *buffer, uint16_t size);
     bool isComplete() const;
     bool isError() const;
-    s_view getMethod() const;
+    HttpTables::eMethod getMethod() const;
     s_view getVersion() const;
     UriParser getRequestURI() const;
     uint16_t getOffset() const;

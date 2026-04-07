@@ -60,7 +60,6 @@ int main() {
 
 
     std::string Requestest = "DELETE /test/index.html HTTP/1.1\r\nHost: example.com\r\n\r\n";
-    clsRequest request;
 
 
     request.parse(Requestest);
@@ -70,9 +69,6 @@ int main() {
         std::cout << request.getError().getMsgError() << std::endl;
         return 0;
     }
-
-    RequestHandler handler;
-    ProcessRequestHandler::processRequest(request, servers[0], handler);
 
     std::cout << "Physical Path: " << handler.getPhysicalPath() << std::endl;
     std::cout << "Autoindex: " << (handler.getAutoIndex() ? "Enabled" : "Disabled") << std::endl;

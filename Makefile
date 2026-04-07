@@ -2,20 +2,24 @@ CPP = c++
 CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
-SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp main.cpp \
+Header = Parser/ParseRequest/Request/Header.hpp Parser/ParseRequest/Request/HeaderTable.hpp Parser/ParseRequest/Request/HttpTypes.hpp Parser/ParseRequest/Request/RequestLine.hpp Parser/ParseRequest/Request/RequestParser.hpp \
+		Parser/ParseRequest/Request/Utils.hpp Parser/ParseRequest/URI/NUriParser.hpp Parser/ParseRequest/URI/URI.hpp Parser/ParseRequest/URI/URIParser.hpp
+
+# SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp main.cpp \
 				linker/clsLinker.cpp linker/clsClient.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpError.cpp \
 		Utils/Lexer.cpp
 
 
-RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp 
+# RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp 
 
 CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
 				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
 
-REQUEST_FILES = Parser/ParseRequest/Request/clsStartLine.cpp Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/Request.cpp Parser/ParseRequest/URI/URI.cpp \
-				Parser/ParseRequest/URI/URIParser.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp
+REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
+				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp \
+				Parser/ParseRequest/Main/main.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp\
 
 ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES)
 
@@ -27,7 +31,7 @@ all : $(NAME)
 $(NAME) : $(OBJ) 
 	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
 
-%.o : %.cpp
+%.o : %.cpp $(Header)
 	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
 
 clean:

@@ -1,11 +1,13 @@
 #include "RequestParser.hpp"
 
-RequestParser::RequestParser(stPollRequest &request)
+RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler)
     : _request(request),
       _state(STATE_REQUEST_LINE),
       _offset(0),
       _requestLine(),
-      _header(request)
+      _header(request),
+      _ServerConfig(ServerConfig),
+      _RequestHandler(RequestHandler)
 {
 }
 
@@ -15,6 +17,16 @@ void    RequestParser::init(uint16_t offset)
     _offset = offset;
     _requestLine.reset(offset);
     _header.init(offset);
+}
+
+void    RequestParser::LProcessRequestHandler()
+{
+    ProcessRequestHandler::processRequest(_requestLine, _ServerConfig, _RequestHandler);
+    if (_RequestHandler->getError().isError())
+    {
+        _state = STATE_ERROR;
+        return ;
+    }
 }
 
 void    RequestParser::ParseRequestLine(uint16_t size)
@@ -29,6 +41,7 @@ void    RequestParser::ParseRequestLine(uint16_t size)
     }
     if (_requestLine.isComplete())
     {
+        LProcessRequestHandler();
         _state = STATE_HEADERS;
         _header.init(_offset);
     }

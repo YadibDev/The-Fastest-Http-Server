@@ -1,233 +1,146 @@
-// #include "clsStartLine.hpp"
-// #include <iostream>
-// #include <iomanip>
-// #include "URIParser.hpp"
-
-// void printStartLineInfo(const clsStartLine &sl)
-// {
-//     std::cout << "--- HTTP Start Line Parsing Results ---" << std::endl;
-
-//     std::cout << std::left << std::setw(15) << "Method:";
-//     if (sl.getMethod() == GET)
-//         std::cout << "GET";
-//     else if (sl.getMethod() == POST)
-//         std::cout << "POST";
-//     else if (sl.getMethod() == DELETE)
-//         std::cout << "DELETE";
-//     std::cout << std::endl;
-
-//     std::cout << std::left << std::setw(15) << "Path:" << sl.getPath() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Query:" << sl.getQuery() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Version:" << sl.getVersion() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Status Code:" << sl.getStatusCode() << std::endl;
-//     std::cout << "---------------------------------------" << std::endl;
-// }
-
-// #include "URI.hpp"
-
-// bool isNumber(const std::string &s)
-// {
-//     if (s.empty())
-//         return false;
-
-//     for (size_t i = 0; i < s.size(); i++)
-//     {
-//         if (isdigit(s[i]) == 0)
-//         {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
-// #include <iostream>
-// #include <string>
-// #include <iomanip>
-
-// #define RESET "\033[0m"
-// #define RED "\033[31m"    // للخطأ
-// #define GREEN "\033[32m"  // للنجاح
-// #define YELLOW "\033[33m" // للعناوين
-// #define BLUE "\033[34m"   // للمدخلات
-// #define CYAN "\033[36m"   // للقيم المستخرجة
-
-// #include <arpa/inet.h>
-// #include <iostream>
-// #include <string>
-// #include <cstring>
-
-// struct s_ListenAddress
-// {
-//     struct sockaddr_storage storage;
-//     int family;
-//     socklen_t len;
-// };
-
-// int getIPTypeSimple(const std::string &ip)
-// {
-//     if (ip.empty())
-//         return 0;
-
-//     bool hasDot = (ip.find('.') != std::string::npos);
-//     bool hasColon = (ip.find(':') != std::string::npos);
-
-//     if (hasColon && !hasDot)
-//         return 6;
-//     if (hasDot && !hasColon)
-//         return 4;
-
-//     return 0;
-// }
-
-// void extractClientMaxBodySize(std::string str, size_t &result)
-// {
-//     if (str.empty())
-//         throw 400;
-
-//     result = 0;
-//     size_t i = 0;
-
-//     while (i < str.size() && isdigit(str[i]))
-//     {
-//         size_t prev = result;
-//         result = (result * 10) + (str[i] - '0');
-//         if (result < prev)
-//             throw 400;
-//         i++;
-//     }
-
-//     if (i < str.size())
-//     {
-//         char unit = toupper(str[i]);
-//         if (unit == 'K')
-//             result *= 1024;
-//         else if (unit == 'M')
-//             result *= 1024 * 1024;
-//         else if (unit == 'G')
-//             result *= 1024 * 1024 * 1024;
-//         else
-//             throw 400;
-
-//         i++;
-//     }
-// }
-
-// // int main()
-// // {
-// //     std::string listen = "";
-// //     unsigned short port = 0;
-// //     std::string ip = "";
-// //     uint32_t IPv4 = 0;
-
-// //     std::cout << YELLOW << "========================================" << RESET << std::endl;
-// //     std::cout << YELLOW << "     Webserv URI/Listen Manual Tester   " << RESET << std::endl;
-// //     std::cout << YELLOW << "========================================" << RESET << std::endl;
-// //     std::cout << "Examples: [::1]:80, 127.0.0.1:443, *, 8080" << std::endl;
-
-// //     while (true)
-// //     {
-// //         std::cout << BLUE << "\n[?] Enter Listen string: " << RESET;
-// //         if (!std::getline(std::cin, listen))
-// //         {
-// //             std::cout << "\nExiting..." << std::endl;
-// //             break;
-// //         }
-
-// //         port = 0;
-// //         ip = "";
-
-// //         try
-// //         {
-// //             std::cout << GREEN << "[+] PARSE SUCCESS" << RESET << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "IP Address : " << RESET << ip << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "    IP Address Binary: " << RESET << IPv4 << std::endl;
-// //             std::cout << std::dec << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "Port       : " << RESET << port << std::endl;
-// //         }
-// //         catch (int error)
-// //         {
-// //             std::cerr << RED << "[!] PARSE FAILED" << RESET << std::endl;
-// //             std::cerr << RED << "    Error Code: " << error << RESET << std::endl;
-// //             std::cerr << RED << "    Reason    : Bad Request / Invalid Format" << RESET << std::endl;
-// //         }
-
-// //         std::cout << YELLOW << "----------------------------------------" << RESET << std::endl;
-// //         listen.clear();
-// //     }
-
-// //     return 0;
-// // }
-
-
-
-
-// #include <iostream>
-// #include <string>
-// #include <vector>
-
-
-// int main() {
-//     std::string result;
-    
-//     std::string tests[] = {
-//         "/index.html",
-//         "/my%20file.html",          
-//         "/A/B/../C",                
-//         "/A/./B",                   
-//         "/%2e%2e/%2e%2e/etc/passwd",
-//         "//A////B",                 
-//         "/direct/file/",            
-//         ""                          
-//     };
-
-//     std::cout << "--- Testing URI Parsing System ---" << std::endl;
-//     std::cout << "----------------------------------" << std::endl;
-
-//     for (int i = 0; i < 8; ++i) {
-//         std::cout << "Input  : [" << tests[i] << "]" << std::endl;
-        
-//         HttpError err = URIParser::normalizePath(tests[i], result);
-        
-//         if (!err.isError()) {
-//             std::cout << "Result : [" << result << "]" << std::endl;
-//         } else {
-//             std::cout << "Status : Error " << err.getCodeStatus() << std::endl;
-//         }
-        
-//         std::cout << "----------------------------------" << std::endl;
-//     }
-
-//     return 0;
-// }
-
-
-
-
-
-
-
 #include <iostream>
-#include <string>
-#include "../Request/Request.hpp"
+#include <fcntl.h>
+#include <cstring>
+#include <vector>
+#include <iomanip>
 
-int main()
-{
-    clsRequest req;
+// Includes الخاصة بالمشروع
+#include "../../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "../Request/RequestParser.hpp"
+#include "../Request/Utils.hpp"
+#include "../../RequestHandler/RequestHandler.hpp"
+#include "../../RequestHandler/ProcessRequestHandler.hpp"
+#include "../Request/HeaderTable.hpp"
 
-    std::string raw = "GET /index.html?name=abc HTTP/1.1\r\nHost: example.com\r\nContent-Length: 0\r\n\r\n";
 
-    req.parse(raw);
 
-    if (!req.isCompleted()) {
-        std::cout << "Request not completed; state may be parsing headers/body." << std::endl;
+const char* getMethodName(HttpTables::eMethod m) {
+    if (m == HttpTables::M_GET) return "GET";
+    if (m == HttpTables::M_POST) return "POST";
+    if (m == HttpTables::M_DELETE) return "DELETE";
+    return "UNKNOWN";
+}
+
+void printHeaderSection(const std::string& title) {
+    std::cout << "\n\033[1;35m--- " << title << " ---\033[0m" << std::endl;
+}
+
+int main() {
+    // 1. قراءة وتحليل ملف الإعدادات (Config)
+    std::string configData;
+    int configFd = open("configs/default.conf", O_RDONLY);
+    if (configFd == -1) {
+        std::cerr << "Error: Could not open configs/default.conf" << std::endl;
+        return 1;
+    }
+    HelperFunctions::ReadData(configFd, configData, 10000);
+    close(configFd);
+
+    LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+    cfg.addWithSpace(" \t"); // تبسيط لإعدادات الـ Lexer
+    
+    cfg.addCommentRule("#", "\n");
+    cfg.addSeparatorToken('{', TOKEN_LBRACE);
+    cfg.addSeparatorToken('}', TOKEN_RBRACE);
+    cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
+    cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
+
+    GenericLexer<TokenType> lexer(configData, cfg);
+    std::vector< Token<TokenType> > tokens = lexer.tokenize();
+    clsParse<TokenType> parse(tokens, TOKEN_EOF);
+    clsParseConfigueFile configFile(parse);
+
+    if (!configFile.ParseConfigue()) {
+        std::cerr << "Config Error: " << configFile.getError().getMsgError() << std::endl;
+        return 1;
+    }
+    std::vector<clsServerConfig> servers = configFile.getServers();
+
+    PollOfClient client;
+    const char *rawRequest =
+        "POST /cgi/script.py/path HTTP/1.1\r\n"
+        "Host: 127.0.0.1\r\n"
+        "X-Custom: value1\r\n"
+        "X-Custom: value2\r\n" // هيدر مكرر لاختبار countOccurrences
+        "Content-Length: 10\r\n"
+        "\r\n"
+        "BodyData!!";
+
+    std::memset(client.request_metadata, 0, sizeof(client.request_metadata));
+    std::memcpy(client.request_metadata, rawRequest, std::strlen(rawRequest));
+
+    stPollRequest req = makeRequest(client);
+    RequestHandler handler(req); 
+    RequestParser parser(req, &servers[0], &handler);
+    parser.init(0);
+
+    for (int i = 0; client.request_metadata[i]; i++) {
+        parser.Parse(i);
+        if (parser.isComplete() || parser.isError()) break;
     }
 
-    // Print some parsed info from start line
-    std::cout << "Host: ";
-    // header storage changed to vector<string>, show headerMap via reflection not available; just print status
-    std::cout << "(see header parser)" << std::endl;
+    if (parser.isError()) {
+        std::cerr << "Parse Error: " << handler.getError().getMsgError() << std::endl;
+        return 1;
+    }
 
-    std::cout << "Completed: " << (req.isCompleted() ? "yes" : "no") << std::endl;
+    if (parser.isComplete()) {
+        HeaderTable& table = handler.getHeader();
 
+        printHeaderSection("Testing getKnownHeader");
+        s_header_slot* hostSlot = table.getKnownHeader(HttpTables::H_HOST);
+        if (hostSlot && hostSlot->val.Data) {
+            std::cout << "Host found: ";
+            print_view(hostSlot->val);
+            std::cout << std::endl;
+        }
+
+        printHeaderSection("Testing getUnknownHeader & isDuplicate");
+        s_header_slot* unknownSlot = table.getUnknownHeader(0);
+        if (unknownSlot && unknownSlot->key.Data) {
+            std::cout << "First Unknown Key: ";
+            print_view(unknownSlot->key);
+            std::cout << " | Value: ";
+            print_view(unknownSlot->val);
+            std::cout << "\nIs Duplicate: " << (table.isDuplicate(0) ? "Yes" : "No") << std::endl;
+        }
+
+        printHeaderSection("Testing countOccurrences");
+            int foundCount = 0;
+            for (uint8_t i = 0; i < 25; ++i) {
+                s_header_slot* slot = table.getUnknownHeader(i);
+
+                if (slot && slot->val.Data != NULL) {
+                    foundCount++;
+                    std::cout << "\033[1;36m[Slot " << (int)i << "]\033[0m" << std::endl;
+
+                    std::cout << "   Key:   "; print_view(slot->key); std::cout << std::endl;
+                    std::cout << "   Value: "; print_view(slot->val); std::cout << std::endl;
+
+                    bool dup = table.isDuplicate(i);
+                    std::cout << "   Status: " << (dup ? "\033[1;31mDuplicate (Linked)\033[0m" : "\033[1;32mOriginal\033[0m") << std::endl;
+
+                    if (slot->next != HttpTables::INVALID_INDEX) {
+                        std::cout << "   Next Link -> Slot [" << (int)slot->next << "]" << std::endl;
+                    }
+                    std::cout << "------------------------------------\n";
+                }
+            }
+
+            if (foundCount == 0) {
+                std::cout << "No unknown headers found. Check your Parser logic!\n";
+            } else {
+                std::cout << "\033[1;32mTotal Unknown Headers in Array: " << foundCount << "\033[0m\n";
+            }
+            } else {
+            std::cerr << "Parser failed to complete the request.\n";
+        }
+        printHeaderSection("Final Handler Decisions");
+        std::cout << "Method:         " << getMethodName(handler.getMethod()) << std::endl;
+        std::cout << "Physical Path:  \033[1;32m" << handler.getPhysicalPath() << "\033[0m" << std::endl;
+        std::cout << "CGI: " << *handler.getPathCgi() << std::endl;
+        std::cout << "PathInfo: "; print_view(handler.getPathInfo()); std::cout << std::endl;
+        std::cout << "PathTranslated: "<< handler.getPathTranslated() << std::endl;
+        std::cout << "Status Code:    " << handler.getReturn().code << std::endl;
     return 0;
 }
