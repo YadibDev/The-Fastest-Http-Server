@@ -90,6 +90,7 @@ int clsClient::_ReadDataForReq()
     }
     else if (_Requester._state == READING_BODY)
     {
+        // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
         size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
         if (size > 0)
@@ -114,10 +115,14 @@ void clsClient::ProcessRequest()
 
     int size = _ReadDataForReq(); // reading data for request
    
+    if (_state == CONNECTION_CLOSED || size == -1)
+        return ;
+
     // if (_Requester._state == READING_BODY)
-        // _Requester.parse(read_body);  // then pase it to parse
+    //     _Requester.parse(_theData.read_body);  // then pase it to parse
     // else
-        // _Requester.parse(read_offset);  // then pase it to parse
+    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
+    
     if (_Requester.isCompleted()) // add get error here
     {
         this->_state = START_RESPOND;

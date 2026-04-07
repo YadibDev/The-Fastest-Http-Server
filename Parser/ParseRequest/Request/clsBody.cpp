@@ -1,24 +1,33 @@
 #include "clsBody.hpp"
 #include "Request.hpp"
 
-#define MAX_BODY_RAM 20000
+#define MAX_BODY_RAM 8100
 // geters
+clsBody::clsBody(stPollRequest &p) : data(p)
+{
+    fd = -1;
+}
+
 const bool &clsBody::getIsError() const
 {
     return _isError;
 }
+
 const std::string &clsBody::getFileName() const
 {
     return _fileName;
 }
-const std::string &clsBody::getBodyInRam() const
+
+const char *clsBody::getBodyInRam() const
 {
-    return _bodyBuffer;
+    return data.io_chunk;
 }
+
 const bodyPlace &clsBody::getBodyLocation() const
 {
     return _bodyLocation;
 }
+
 const bodySteps &clsBody::getState() const
 {
     return _state;
@@ -27,7 +36,6 @@ const bodySteps &clsBody::getState() const
 void clsBody::Reset()
 {
     this->_fileName = "tmp/file_XXXXXX";
-    this->_bodyBuffer = "";
     this->_bodyLocation = NONE;
     this->_isError = false;
     this->_state = SETTING_VARS;
@@ -52,14 +60,26 @@ bool clsBody::thereIsAline(const std::string &buffer, size_t &start, char c, cha
 // working on normal body without chunk
 void clsBody::bodyHandler(const std::string &buffer, clsRequest &req)
 {
+    // i must handle left data in `request meta data` case
     if (_state == SETTING_VARS || _state == DONE_WIHTERROR || _state == DONE_GOOD)
     {
         this->Reset();
-        if (req._headers.count("Content-length"))
+        if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].hash != -1 && data.known_headers[HttpTables::H_TRANSFER_ENCODING].value == "chunked")
+        {
+            _isChunk = true;
+            _bodyLocation = bodyPlace::DISK;
+            fd = mkstemp(&_fileName[0]);
+            if (fd == -1)
+            {
+                this->_isError = true;
+                return;
+            }
+        }
+        else if (data.known_headers[HttpTables::Content-length].hash != -1)
         {
             _isChunk = false;
-            const char *content_leng = req._headers["Content-Length"][0].c_str(); // i will change this
-            _Length = std::atol(content_leng);
+            const char *content_leng = data.known_headers[HttpTables::Content-length].value; //
+            _Length = std::atol(content_leng); // maybe handle overflow and add check if he  is more than the limit in config fie
             if (_Length > MAX_BODY_RAM)
             {
                 _bodyLocation = bodyPlace::DISK;
@@ -73,12 +93,14 @@ void clsBody::bodyHandler(const std::string &buffer, clsRequest &req)
             else
             {
                 _bodyLocation = bodyPlace::RAM;
-                _bodyBuffer.resize(_Length);
             }
             _state = bodySteps::READING_BODY;
         }
-        // add chunked
-        // aftter finish chunked add multipart
+        
+        if (data.known_headers[HttpTables::H_CONTENT_TYPE].hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].value == "multipart")
+            _isMultiPart = true;
+        else
+            _isMultiPart = false;
     }
 }
 
@@ -125,9 +147,10 @@ void clsBody::_handleChunk(size_t ofset)
         {
             while (t < ofset && (t - cur) < size)
             {
-                // if (multipart add algo)
-            // else
-                std::cout << arr[t++];
+            //     if (_isMultiPart)
+            //         algoMultipart
+            //     else if (multipart)
+            //         nBytes = write(this->fd, buffer, nBytes); // i will change this
             }
             if (t + 1 < ofset && t - cur == size)
             {
@@ -154,33 +177,44 @@ void clsBody::normalBody(const char *buffer, ssize_t offset)
 {
     if (_bodyLocation == DISK)
     {
-        /*
-        if (contentLength)
-            if (not multipart)
-                nBytes = write(this->fd, buffer, nBytes); // i will change this
-            else if (multipart)
-                algoMultipart
-
-        if (chunk)
-            _handleChunk
-        
-        
+        // 5asni ndir b7sab dik l3ayba dyal body ba9i f meta request
+        if (_isChunk == false)
+        {
+            if (data.known_headers[H_CONTENT_TYPE].hash != -1)
+            {
+                if (_isMultiPart)
+                {
+                    _multipartLib.Parser(data.io_chunk, offset);
+                    if (_multipartLib.getError())
+                        _state = bodySteps::DONE_WIHTERROR;
+                }
+                else
+                    nBytes = write(this->fd, buffer, nBytes); // i will change this
+            }
+        }
+        else
+            _handleChunk(offset)
         if (nBytes == -1)
         {
             this->_isError = true;
             return ;
         }
-        */
     }
     else if (_bodyLocation == RAM)
     {
-        /*
-            if (multipart)
-                algo dyal multipart
-            else
-                check is hit content_length  
-                _state = DONE;
-        */
+
+            if (offset == _Length)
+            {
+                if (_isMultiPart)
+                {
+                    _multipartLib.Parser(data.io_chunk, offset);
+                    if (_multipartLib.getError())
+                        _state = bodySteps::DONE_WIHTERROR;
+                    else
+                        _state = bodySteps::DONE_GOOD;
+                }
+                _state = bodySteps::DONE_GOOD;
+            }
     }
 
     if (_state == DONE_GOOD || _state == DONE_WIHTERROR)

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-
+#include "clsMultipart.hpp"
 class clsRequest;
 
 enum bodyPlace
@@ -28,6 +28,7 @@ enum bodySteps
     DONE_GOOD,
     DONE_WIHTERROR,
 };
+
 struct chunkVars
 {
     size_t size;
@@ -59,13 +60,14 @@ struct stPollRequest
 class clsBody
 {
 private:
-    stPollRequest data;
+    stPollRequest &data;
+    clsMultiPart _multipartLib;
     chunkVars chunkHelp;
     bodyPlace _bodyLocation;
     bodySteps _state;
     std::string _fileName;
+    
     int fd;
-    std::string _bodyBuffer;
     bool        _isError;
     ssize_t     _Length;
     bool _isMultiPart;
@@ -73,8 +75,9 @@ private:
     void _handleChunk(size_t ofset);
 public:
     // geters
+    clsBody(stPollRequest &p);
     const std::string &getFileName() const;
-    const std::string &getBodyInRam() const;
+    const char *getBodyInRam() const;
     const bodyPlace &getBodyLocation() const; // is in ram or disk
     const bool &getIsError() const;
     const bodySteps &getState() const;
@@ -83,8 +86,7 @@ public:
     void bodyHandler(const std::string &buffer, clsRequest &request);
     void normalBody(const char *, ssize_t nBytes);
     void Reset();
-    // helpers
-    whichBoundary checkBoundary(std::string &bound, std::string &data);
+
 };
 
 #endif
