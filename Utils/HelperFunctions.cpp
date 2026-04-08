@@ -204,26 +204,6 @@ bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word
     return (!lenghtWord || (Switch && lenghtWord == i));
 }
 
-size_t HelperFunctions::FindCRLF(const std::string &Str, const std::string &CRLF)
-{
-    size_t i = (Str.size()) ? Str.size() - 1 : 0;
-    size_t j = (CRLF.size()) ? CRLF.size() - 1 : 0;
-    if (Str.empty())
-        return std::string::npos;
-    while (true)
-    {
-        if (!Iswhaitspace(Str[i])) 
-            if (CRLF[j] != Str[i])
-                break;
-        if (i == 0 || j == 0)
-            break;
-        if (!Iswhaitspace(Str[i]))
-            j--;
-        i--;
-    }
-    return (j == 0) ? i : std::string::npos;
-}
-
 bool HelperFunctions::IsStringDigit(const std::string &StringDigit) {
     if (StringDigit.empty()) return false;
     for (size_t i = 0; i < StringDigit.size(); i++) {
@@ -312,7 +292,8 @@ void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str,
     }
 }
 
-int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
+int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
+{
     Data.resize(Size);
     ssize_t SizeByte = read(FD, &Data[0], Size);
     if (SizeByte < 0) return -1;
@@ -350,17 +331,27 @@ std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t S
     return CleanLine;
 }
 
-void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
+void HelperFunctions::GetCleanLineHeader(std::string &BigData, std::string &CleanLine ,short *MaxSizeHeader, bool *Flag)
 {
-    size_t Pos = 0;
-    if ((Pos = BigData.find('\n')) != std::string::npos)
+    short i = 0;
+
+    while(i < (short)BigData.length() && BigData[i] != '\n')
     {
-        Pos++;
-        CleanLine = BigData.substr(0, Pos);
-        BigData.erase(0, Pos);
+        (*MaxSizeHeader)++;
+        if ((*MaxSizeHeader) > 4000)
+            return ;
+        CleanLine += BigData[i];
+        i++;
+    }
+    if (BigData[i] == '\n')
+    {
+        (*MaxSizeHeader)++;
+        CleanLine += BigData[i];
+        BigData.erase(0, (++i));
+        (*Flag) = true;
     }
     else
-        CleanLine = BigData;
+        BigData.erase(0, (++i));
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT)
@@ -373,7 +364,8 @@ std::string HelperFunctions::GTMHTTP(tm* GMT)
     return ss.str();
 }
 
-std::string HelperFunctions::DateTime() {
+std::string HelperFunctions::DateTime()
+{
     time_t Time = time(0);
     tm* GMT = gmtime(&Time);
     return GTMHTTP(GMT);
@@ -397,7 +389,7 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-unsigned long long HelperFunctions::getCurrentTimeInS()
+unsigned long HelperFunctions::getCurrentTimeInS()
 {
     long Time;
     Time = time(0);

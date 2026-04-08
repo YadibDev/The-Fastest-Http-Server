@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Welcome</h1>
+    <p>This is the <button>response</button> body content</p>
+  </body>
+</html>

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/12 15:19:09 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/08 09:47:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ class clsParseOutCGI
         bool _FoundBody;
         int _Status;
         int _BytesBody;
+        uint8_t _CounterCGI_Field;
+        bool _ProcessIsFinish;
         std::string _Body;
         std::string _FileNameFromDisk;
         std::string _RemaindData;
@@ -31,12 +33,14 @@ class clsParseOutCGI
         RequestHandler _DataRequest;
         short _MaxSizeHeaders;
         std::map <std::string, std::string> _HeadersField;
-        std::vector <std::string> _HeadersFieldDuplicate;
+        std::string _HeadersFieldDuplicate;
         std::string _HeadersFieldFinal;
+        std::string _Line;
         std::map <std::string, std::string> _SpecialHeaders;
         std::string _NameFileBody;
         bool _Erno;
         int _Pipe_Fd;
+        int _Fdout;
         bool CheckValidNameHeader(std::string &HeaderName, short Start, short End);
         void ErrorRespnseHandling();
         bool LocationIsClientOrLocal(std::string &Location);
@@ -57,17 +61,18 @@ class clsParseOutCGI
         void StatusNormal();
         void StatusRedirection();
         void ContentLength();
-        void ReceivingHeaders();
-        void ReceivingBody();
+        void ReceivingHeaders(std::string &Data);
+        void ReceivingBody(std::string &Data);
         bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
         void StoredInFileOrStr();
     public:
         clsParseOutCGI();
         const std::string &GetBody();
-        const std::string &GetFaleNameBody();
+        const std::string &GetFileNameBody();
         const std::string &GetHeadersFieldFinal();
         void SetPipe_Fd(int Pipe_Fd);
         void ReceivingData(std::string &Data);
+        void SetProcessIsFinish(bool ProcessIsFinish);
         ~clsParseOutCGI();
 };
 #endif

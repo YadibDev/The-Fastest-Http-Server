@@ -18,7 +18,7 @@ class HelperFunctions
 {
     static size_t	_ft_strlen(const char *s);
 public:
-    static unsigned long long getCurrentTimeInS();
+    static unsigned long getCurrentTimeInS();
     static std::string trim(const std::string &str);
     static void skipWhitespace(const std::string &str, size_t &pos);
     static bool isCRLF(const std::string &str);
@@ -58,7 +58,7 @@ public:
     static void	free_matrex(char ***matrex);
     static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
     static std::string GetTypeDataFile(const std::string &Str);
-    static void GetCleanLine(std::string &BigData, std::string &CleanLine);
+    static void GetCleanLineHeader(std::string &BigData, std::string &CleanLine , short *MaxHeader, bool *Flag);
     static char	*ft_itoa(int n);
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);

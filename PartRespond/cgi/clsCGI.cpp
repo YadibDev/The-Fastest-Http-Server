@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/01 18:47:02 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/04 15:36:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ bool clsCGI::_InintialVar(char **ENV, char ***ARG, int pip[2])
         return (true);
     if (pipe(pip) == -1)
         return (true);
-    _StartTime = HelperFunctions::getCurrentTimeInS();
     return (false);
 }
 int clsCGI::RunCGI()
@@ -145,6 +144,7 @@ int clsCGI::RunCGI()
         HelperFunctions::free_matrex(&ENV);
         return (-1);
     }
+    _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse(ENV, ARG, pip))
