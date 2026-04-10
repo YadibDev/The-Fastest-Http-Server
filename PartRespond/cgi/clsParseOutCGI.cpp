@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/08 10:53:07 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/09 18:26:00 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,16 @@ clsParseOutCGI::clsParseOutCGI()
     _BytesBody = 0;
     _FoundBody = false;
     _ProcessIsFinish = false;
-    _MaxSizeHeaders = 0;
+    _MaxSizeHeaders = 4000;
+    _CountSizeHeaders = 0;
+    _MaxSizeBody = 40000;
+    _CountFileTemp = 0;
     _Fdout = -1;
     _Body.resize(40000);
     _Body.clear();
     _HeadersFieldDuplicate.resize(40000);
     _HeadersFieldDuplicate.clear();
     _CounterCGI_Field = 0;
-    _RemaindData.resize(4000);
-    _RemaindData.clear();
     _Line.resize(4000);
     _Line.clear();
 }
@@ -237,8 +238,8 @@ void clsParseOutCGI::ReceivingHeaders(std::string &Data)
     if (_FoundBody)
         return ;
     bool Flag = false;
-    HelperFunctions::GetCleanLineHeader(Data, _Line, &_MaxSizeHeaders, &Flag);
-    if (_MaxSizeHeaders > 4000)
+    HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
+    if (_CountSizeHeaders > _MaxSizeHeaders)
     {
         _Status = 413;
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -247,7 +248,7 @@ void clsParseOutCGI::ReceivingHeaders(std::string &Data)
     while(Flag)
     {
         Flag = false;
-        if (_MaxSizeHeaders > 4000)
+        if (_CountSizeHeaders > _MaxSizeHeaders)
         {
             _Status = 413;
             _Mod[stMod::ERROR] = stMod::ERROR;
@@ -268,8 +269,21 @@ void clsParseOutCGI::ReceivingHeaders(std::string &Data)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Data, _Line, &_MaxSizeHeaders, &Flag);
+        HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
     }
+}
+
+void clsParseOutCGI::_CreatFileTemp()
+{
+    char Arr[20] =  "/tmp/CGIout.XXXXXX\0";
+    char *temp = mktemp(Arr);
+    if (!temp)
+    {
+        _Status = 502;
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        return ;
+    }
+     _NameFileBody =  temp;
 }
 
 void clsParseOutCGI::ReceivingBody(std::string &Data)
@@ -289,17 +303,19 @@ void clsParseOutCGI::ReceivingBody(std::string &Data)
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       if (_BytesBody > 40000)
+       if (_BytesBody > _MaxSizeBody)
        {
             _Mod[stMod::CHUNK] = stMod::CHUNK;
-            _NameFileBody = "fileout.txt";
+            _CreatFileTemp();
+            if (_Mod[stMod::ERROR] == stMod::ERROR)
+                return ;
             if ((_Fdout = open(_NameFileBody.c_str(),O_CREAT | O_WRONLY, 0644)) == -1)
             {
-                std::cout << "---> hohowa hohowa line 298 / calss CGIOUtput <----"<< std::endl;
                 _Status = 502;
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 return ;
             }
+            // std::cout << remove(_NameFileBody.c_str()) << std::endl;
             write(_Fdout, &_Body[0], _Body.size());
             write(_Fdout, &Data[0], Data.size());
             Data.clear();
@@ -311,7 +327,7 @@ void clsParseOutCGI::ReceivingBody(std::string &Data)
            Data.clear();
        }
     }
-    else if (_BytesBody > 40000)
+    else if (_BytesBody > _MaxSizeBody)
     {
         write(_Fdout, &Data[0], Data.size());
         Data.clear();
@@ -331,7 +347,7 @@ void clsParseOutCGI::StoredInFileOrStr()
         return ;
     }
     _BytesBody = MetaData.st_size;
-    if (_BytesBody > 40000)
+    if (_BytesBody > _MaxSizeBody)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         _NameFileBody = _FileNameFromDisk;
@@ -414,6 +430,8 @@ void clsParseOutCGI::ReceivingData(std::string &Data)
         ErrorRespnseHandling();
         return ;
     }
+    else
+        close(_Fdout);
     if (_HeadersField.count("location"))
     {
         _Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
@@ -421,7 +439,6 @@ void clsParseOutCGI::ReceivingData(std::string &Data)
     }
     else
         HeaderResponseCGI();
-    _RemaindData.clear();
 }
 
 void clsParseOutCGI::Transfer_Encoding()

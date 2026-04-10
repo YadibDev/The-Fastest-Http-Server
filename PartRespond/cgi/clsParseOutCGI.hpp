@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/08 09:47:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/09 10:26:35 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,16 @@ class clsParseOutCGI
         bool _ProcessIsFinish;
         std::string _Body;
         std::string _FileNameFromDisk;
-        std::string _RemaindData;
         clsErrorPage _ErrorPage;
         RequestHandler _DataRequest;
+        short _CountSizeHeaders;
         short _MaxSizeHeaders;
+        int _MaxSizeBody;
+        short _CountFileTemp;
         std::map <std::string, std::string> _HeadersField;
         std::string _HeadersFieldDuplicate;
         std::string _HeadersFieldFinal;
         std::string _Line;
-        std::map <std::string, std::string> _SpecialHeaders;
         std::string _NameFileBody;
         bool _Erno;
         int _Pipe_Fd;
@@ -65,6 +66,7 @@ class clsParseOutCGI
         void ReceivingBody(std::string &Data);
         bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
         void StoredInFileOrStr();
+        void _CreatFileTemp();
     public:
         clsParseOutCGI();
         const std::string &GetBody();
