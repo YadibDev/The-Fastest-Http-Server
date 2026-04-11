@@ -21,7 +21,6 @@
 //     endBoundary,
 // };
 
-
 // #include <vector>
 
 // // void multipart(int ofset)
@@ -238,7 +237,7 @@
 //                     arr += lenBound;
 //                     if (strncmp(arr, endFinal, 2) == 0)
 //                         return endBoundary;
-//                     else if (strncmp(arr, endNormal, 2) == 0)       
+//                     else if (strncmp(arr, endNormal, 2) == 0)
 //                         return midBoundary;
 //                     else
 //                         return None;
@@ -316,83 +315,131 @@
 //         bool getError() {return this->error;}
 // };
 
-
-
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #include <iostream>
 using namespace std;
+
+#include <set>
+
+std::set<char> forbidden = {
+    '(', ')', '<', '>', '@', ',', ';', ':',
+    '\\', '"', '/', '[', ']', '?', '=', '{', '}'
+};
+
 std::string req =
-"--MyBoundary\r\n"
-"Content-Disposition: form-data; name=\"username\"\r\n"
-"\r\n"
-"yassine\r\n\r\n"
-"--MyBoundary--\r\n";
+    "--MyBoundary\r\n"
+    "Content-Disposition: form-data; name=\"username\"\r\n"
+    "\r\n"
+    "yassine\r\n\r\n"
+    "--MyBoundary--\r\n";
 
-string Header = "a\r\n" "b\r\n" "Content-Disposition: form-data; name=\"username\"\r\n" "Content-type:";
+string Header = "a\r\n"
+                "b\r\n"
+                "Content-Disposition: form-data; name=\"username\"\r\n"
+                "Content-type: \"image/png\"";
 
-bool moveOffsetToDel(int &cur, int &trav)
+void moveOffsetToDel(size_t &trav)
 {
     while (trav < Header.size())
     {
-        if (Header[trav] == ':')
-            return true;
-        else if (Header[trav] == '\n')
-            cur = trav + 1;
+        if (Header[trav] == ';')
+            return ;
+        else if (trav + 1 < Header.size() && Header[trav] == '\r' && Header[trav + 1] == '\n')
+            return ;
         trav++;
     }
-    cout << "ERROR\n";
-    return false;
+}
+
+void skipWhiteSpaces(const char *str, size_t &trav, size_t size)
+{
+    while (trav < size && (str[trav] == ' ' || Header[trav] == '\t'))
+        trav++;
+}
+
+bool StoreValueAfterDelim(string &arr, size_t &trav, size_t &cur)
+{
+    short quotes = 0;
+    bool backSlach = false;
+
+        skipWhiteSpaces(Header.c_str(), trav, Header.size());
+        while (trav < Header.size() && Header[trav] != '\r')
+        {
+            if ((arr.length() != 0 && quotes != 1 && forbidden.count(Header[trav])) || (Header[trav] >= 0 && Header[trav] <= 32) || Header[trav] == 127)
+            {
+                if (Header[trav] == ';')
+                {
+                    trav++;
+                    break;
+                }
+                else if (Header[trav] == ' ' || Header[trav] == '\t')
+                    skipWhiteSpaces(Header.c_str(), trav, Header.size());
+                else
+                    return false;
+            }
+            else
+            {
+                if (backSlach == false && Header[trav] == '"')
+                {
+                    if (arr.length() == 0 || quotes == 1)
+                        quotes++;
+                    else
+                        return false;
+                    trav++;
+                }
+                else
+                {
+                    if (backSlach == false && Header[trav] == '\\')
+                        backSlach = true;
+                    else if (quotes != 2)
+                    {
+                        arr += Header[trav++];
+                        backSlach = false;
+                    }
+                    else
+                        return false;
+                }
+            }
+        }
+        if (quotes == 1)
+            return 1;
+        cur = trav;
+        return true;
+}
+char sanitizeKey(char *arr, size_t start, size_t end)
+{
+    for (int i 
+    return 'S'
+    return 'E';
 }
 
 int main()
 {
-    int cur = 0;
-    int trav = 0;
-    string contentType;
-    if (moveOffsetToDel(cur, trav) == false)
-        return 1;
+    size_t cur = 0;
+    size_t trav = 0;
+    char option = 'k';
+
+    bool contentTypeEx = false;
+    bool fileNameEx = false;
+    bool contentDispoEx = false;
+    bool nameVarEx = false;
+    
+    string contentType = "";
+    string contentDispo = "";
+
+    while (1)
+    {
+        moveOffsetToDel(trav);
+        if (option = 'k')
+
+    }
+    cout << contentType << std::endl;
+    cout << contentDispo << std::endl;
     // "Content-Disposition";
     // "content-type";
-    if (trav - cur == 19)
-    {
-        if (strncmp(&Header[cur], "Content-Disposition", 19) == 0)
-        {
-            trav += 20;
-            cur+= 20;
-            cout << "Content-Disposition" << endl;
-        }
-    }
-    else if (trav - cur == 12)
-    {
-        if (strncmp(&Header[cur], "Content-type", 12) == 0)
-        {
-            trav++;
-            while (trav < Header.size() && Header[trav] != ';' && Header[trav] != '\r')
-                contentType += Header[trav++];
-        }
-    }
-    if (moveOffsetToDel(cur, trav) == false)
-        return 1;
-    // "Content-Disposition";
-    // "content-type";
-    if (trav - cur == 19)
-    {
-        if (strncmp(&Header[cur], "Content-Disposition", 19) == 0)
-        {
-            trav += 20;
-            cur += 20;
-            cout << "Content-Disposition" << endl;
-        }
-    }
-    else if (trav - cur == 12)
-    {
-        if (strncmp(&Header[cur], "Content-type", 12) == 0)
-        {
-            cout << "Content-type" << endl;
-        }
-    }
+
+}
     // clsMultiPart multiParser("--MyBoundary", 12, 0);
 
     // multiParser.Parser(&req[0], 11);
@@ -403,8 +450,6 @@ int main()
     // multiParser.Parser(&req[0], 92);
     // std::cout << "_______\n";
 
-    
-}
 
 // int main(){
 //     cout <<  "{"<< &req[72] << std::endl;

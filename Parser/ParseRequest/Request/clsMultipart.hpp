@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <set>
 
 using namespace std;
 
@@ -25,6 +26,9 @@ enum whichBound
 class clsMultiHeader
 {
     private:
+    #include <set>
+
+        static std::set<char> forbidden;
         char Header[4000];
         int ofset;
         bool isError;
@@ -33,6 +37,7 @@ class clsMultiHeader
         bool contentDispoEx;
         bool nameVarEx;
     public:
+        bool moveOffsetToDel(int &cur, int &trav);
         void addChar(char c);
         void Parsing();
         string getFileName();
@@ -53,13 +58,15 @@ class clsMultiPart
         char boundary[74];
         char endNormal[2];
         char endFinal[2];
-        bool hitEnd; // at start false
+        bool _hitEnd; // at start false
         bool foundFirstBound; // at start false
         bool error = false;
     public:
         void InitializeMulti(char *boundary, short lenBound, size_t start);
         whichBound isBoundary(char *arr, bool edgeCase = false);
-        void Parser(char *arr, size_t offset);
+        void Parser(char *arr, size_t &offset);
         bool getError();
-        size_t getTrav() {return trav;};
+        size_t getTrav() {return trav;}
+        void setTrav(size_t t) { trav = t; };
+        bool hitEnd() { return hitEnd;};
 };

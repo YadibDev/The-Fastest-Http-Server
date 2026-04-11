@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include "clsMultipart.hpp"
+#include "Header.hpp"
+
 class clsRequest;
 
 enum bodyPlace
@@ -35,27 +37,19 @@ struct chunkVars
     size_t cur;
     size_t trav;
     bool readsize;
+    char chunkMulti[8000];
+    size_t multiLength;
     void Reset()
     {
         size = 0;
         cur = 0;
         trav = 0;
         readsize = true;
+        multiLength = 0;
     }
 };
 
 
-struct stPollRequest
-{
-    char            *request_metadata;
-
-    // s_header_slot    *known_headers;
-    // s_header_slot    *unknown_headers;
-
-    uint8_t            sizeUnknownHeaders; // maybe i will change it to const
-
-    char            *io_chunk;
-};
 
 class clsBody
 {
@@ -83,9 +77,11 @@ public:
     const bodySteps &getState() const;
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
-    void bodyHandler(const std::string &buffer, clsRequest &request);
-    void normalBody(const char *, ssize_t nBytes);
+    void bodyHandler(size_t &offset);
+    void normalBody(size_t &offset);
     void Reset();
+    void moveOffsetMulti();
+    void handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_chunk);
 
 };
 

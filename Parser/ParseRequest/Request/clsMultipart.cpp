@@ -2,20 +2,41 @@
 
 // multi header funtions
 
+set<char> clsMultiHeader::forbidden = {
+    '(', ')', '<', '>', '@', ',', ';', ':',
+    '\\', '"', '/', '[', ']', '?', '=', '{', '}'};
+
 void clsMultiHeader::addChar(char c)
 {
     if (ofset == 4000)
     {
         isError = true;
-        return ;
+        return;
     }
     Header[ofset++] = c;
 };
+bool clsMultiHeader::moveOffsetToDel(int &cur, int &trav)
+{
+    while (trav < this->ofset)
+    {
+        if (Header[trav] == ':')
+            return true;
+        else if (Header[trav] == '\n')
+            cur = trav + 1;
+        trav++;
+    }
+    return false;
+}
+
 void clsMultiHeader::Parsing()
 {
-    cout << "Display beta parsing\n";
-    for (int i = 0; i < ofset; i++)
-        cout << Header[i];
+    int cur = 0;
+    int trav = 0;
+
+    while (moveOffsetToDel(cur, trav) == false)
+    {
+
+    }
     cout << "\n----------------\n";
 };
 string clsMultiHeader::getFileName()
@@ -44,7 +65,7 @@ void clsMultiPart::InitializeMulti(char *boundary, short lenBound, size_t start)
     std::memcpy(this->boundary, boundary, lenBound);
     std::memcpy(endNormal, "\r\n", 2);
     std::memcpy(endFinal, "--", 2);
-    hitEnd = false;
+    _hitEnd = false;
     foundFirstBound = false;
     cur = start;
     trav = cur;
@@ -78,7 +99,7 @@ whichBound clsMultiPart::isBoundary(char *arr, bool edgeCase)
             arr += lenBound;
             if (strncmp(arr, endFinal, 2) == 0)
                 return endBoundary;
-            else if (strncmp(arr, endNormal, 2) == 0)       
+            else if (strncmp(arr, endNormal, 2) == 0)
                 return midBoundary;
             else
                 return None;
@@ -87,11 +108,11 @@ whichBound clsMultiPart::isBoundary(char *arr, bool edgeCase)
     return None;
 };
 
-void clsMultiPart::Parser(char *arr, size_t offset)
+void clsMultiPart::Parser(char *arr, size_t &offset)
 {
     while (trav < offset && cur < offset && error == false)
     {
-        if (hitEnd)
+        if (_hitEnd)
             trav++;
         else if (foundFirstBound && arr[trav] != '\r')
         {
@@ -101,20 +122,20 @@ void clsMultiPart::Parser(char *arr, size_t offset)
                 if (multiHeaders.getError() == true)
                 {
                     error = true;
-                    return ;
+                    return;
                 }
             }
             // else if (processIn == BODY);
-                // write into the right file;
-                // tobe continue
-                // i must link headers with real path and and so forth
+            // write into the right file;
+            // tobe continue
+            // i must link headers with real path and and so forth
             trav++;
         }
         else
         {
             if (offset - trav >= lenBound + 2)
             {
-                bool edgeCase = false;
+                static bool edgeCase = false;
                 if (processIn == HEADER && strncmp("\r\n\r\n", &arr[trav], 4) == 0)
                 {
                     edgeCase = true;
@@ -122,17 +143,18 @@ void clsMultiPart::Parser(char *arr, size_t offset)
                     trav += 4;
                 }
                 if ((edgeCase == false && offset - trav < lenBound + 4) || (edgeCase && offset - trav < lenBound + 2))
-                    return ;
+                    return;
                 whichBound boundType = isBoundary(&arr[trav], edgeCase);
                 if (boundType != None)
                 {
-                    if (processIn == BODY);
-                        // reset body data
+                    if (processIn == BODY)
+                        ;
+                    // reset body data
                     if (boundType == endBoundary)
-                        hitEnd = true;
+                        this->_hitEnd = true;
                     else if (boundType == startBoundary)
                     {
-                        edgeCase = true; 
+                        edgeCase = true;
                         foundFirstBound = true;
                     }
                     processIn = HEADER;
@@ -142,20 +164,24 @@ void clsMultiPart::Parser(char *arr, size_t offset)
                 {
                     if (processIn == HEADER)
                         multiHeaders.addChar(arr[trav]);
-                    else;
-                        // handleBody
+                    else
+                        ;
+                    // handleBody
                     trav += 1;
                 }
+                edgeCase = false;
             }
             else
-                return ;
+            {
+                return;
+            }
             if (processIn == END_HEADER)
             {
                 multiHeaders.Parsing();
                 if (multiHeaders.getError())
                 {
                     error = true;
-                    return ;
+                    return;
                 }
                 processIn = BODY;
             }

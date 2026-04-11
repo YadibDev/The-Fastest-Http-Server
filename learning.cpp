@@ -46,7 +46,7 @@ whichBoundary checkBoundary(std::string &bound, std::string &data)
 int main()
 {
     char arr[100] = "tmp/arrXXXXXX";
-    mkstemp(arr);
+    int fd = mkstemp(arr);
     
     std::cout << arr << std::endl;
 }
