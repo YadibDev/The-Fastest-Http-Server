@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/04 15:36:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/11 22:42:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
 {
     int Fd = -1;
     close(pip[0]);
+    ENV = NULL;
     // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
     // if (Fd < 0)
     // {
@@ -120,6 +121,7 @@ int clsCGI::_ParentProcesse(char **ENV, char **ARG, int pip[2])
 }
 bool clsCGI::_InintialVar(char **ENV, char ***ARG, int pip[2])
 {
+    ENV = NULL;
     // if (!(ENV = _MakeEnv()))
     //     return (true);
     if (!((*ARG) = _StoredArgs()))
@@ -132,7 +134,6 @@ int clsCGI::RunCGI()
 {
     char **ENV = NULL;
     char **ARG = NULL;
-    int Fd = -1;
     int pip[2] = {-1,-1};
     if (_InintialVar(ENV, &ARG, pip))
         return (-1);

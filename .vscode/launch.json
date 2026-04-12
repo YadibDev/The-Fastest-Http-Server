@@ -4,7 +4,7 @@
         "type": "lldb",
         "request": "launch",
         "name": "Launch",
-        "program": "/mnt/c/Users/mosab/The-Fastest-Http-Server/webserv",
+        "program": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server/PartRespond/cgi/CGI",
         "args": [],
         "cwd": "${workspaceFolder}"
     }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/01 20:57:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:33:19 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ std::string &clsErrorPage::ResponseError(int Status)
 {
    if (Status >= 0)
         _Status = Status;
-   if (!_BodySize)
-        _BodySize = HelperFunctions::GetBody(Status).size();
+//    if (!_BodySize)
+//         _BodySize = HelperFunctions::GetBody(Status).size();
    return (HeadersErrorResponse());
 }
  

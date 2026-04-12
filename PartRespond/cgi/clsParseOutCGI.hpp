@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/09 10:26:35 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/12 13:22:24 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,30 @@
 # define CLS_PARSE_OUT_CGI_HPP
 
 #include "../mainprocess/librarys.hpp"
-#include "../../Parser/RequestHandler/RequestHandler.hpp"
+// #include "../../Parser/RequestHandler/RequestHandler.hpp"
 #include "../response/clsErrorPage.hpp"
+
+struct stHeadersCGI
+{
+    enum eHeaders{CONTENT_TYPE,LOCATION,STATUS};
+};
 
 class clsParseOutCGI
 {
         std::string _Data;
         stMod::eMod _Mod[10];
+        stHeadersCGI::eHeaders _ExistHeaders[1];
         bool _FoundBody;
         int _Status;
         int _BytesBody;
         uint8_t _CounterCGI_Field;
         bool _ProcessIsFinish;
         std::string _Body;
+        std::string _NameHeader;
+        std::string _ValueHeader;
         std::string _FileNameFromDisk;
         clsErrorPage _ErrorPage;
-        RequestHandler _DataRequest;
+        // RequestHandler _DataRequest; use
         short _CountSizeHeaders;
         short _MaxSizeHeaders;
         int _MaxSizeBody;
@@ -64,7 +72,7 @@ class clsParseOutCGI
         void ContentLength();
         void ReceivingHeaders(std::string &Data);
         void ReceivingBody(std::string &Data);
-        bool StoredHeadersField(std::string &Name, std::string &Value, std::string &Str);
+        bool StoredHeadersField(std::string &Str);
         void StoredInFileOrStr();
         void _CreatFileTemp();
     public:

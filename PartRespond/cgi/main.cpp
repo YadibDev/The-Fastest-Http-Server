@@ -1,13 +1,14 @@
 #include "clsCGI.hpp"
 
-int main(int arg, char**argc, char **env)
+int main()
 {
     clsCGI CGI;
     std::string Str;
     Str.resize(65000);
     int Pos;
-    int fd = CGI.RunCGI();
+    int fd = -1;
     size_t sum = 0;
+    fd = CGI.RunCGI();
     if (fd == -1)
     {
         std::cout << "error CGI" << std::endl;

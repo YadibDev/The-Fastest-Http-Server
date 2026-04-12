@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/01 18:46:27 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/11 22:36:47 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "clsParseOutCGI.hpp"
 #include "../mainprocess/librarys.hpp"
-#include "../../Parser/RequestHandler/RequestHandler.hpp"
+// #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsCGI
 {
