@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/12 16:33:19 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:53:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
     _Status = 0;
     _BodySize = 0;
     _HeaderFeild.resize(4000);
+    _HeaderFeild.clear();
 }
 
 void clsErrorPage::SetType(std::string Type) 
@@ -48,8 +49,8 @@ std::string &clsErrorPage::ResponseError(int Status)
 {
    if (Status >= 0)
         _Status = Status;
-//    if (!_BodySize)
-//         _BodySize = HelperFunctions::GetBody(Status).size();
+   if (!_BodySize)
+        _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(Status));
    return (HeadersErrorResponse());
 }
  

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/07 21:41:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:49:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,16 @@ class clsResponse
     private:
         stMod::eMod _Mod[10];
         short _Status;
+        short _MaxSizeHeader;
+        int _MaxSizeBody;
         int _BodySize;
         int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
-        char *_Body;
+        std::string _Body;
         std::string _Type;
         clsErrorPage _ErrorPage;
-        char *_HeaderFeild;
+        std::string _HeaderFeild;
         std::string _FileName;
         std::string _FileFromDisk;
         RequestHandler _DataRequest;

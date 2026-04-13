@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/12 13:22:24 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/13 10:32:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,31 +50,32 @@ class clsParseOutCGI
         bool _Erno;
         int _Pipe_Fd;
         int _Fdout;
-        bool CheckValidNameHeader(std::string &HeaderName, short Start, short End);
-        void ErrorRespnseHandling();
-        bool LocationIsClientOrLocal(std::string &Location);
-        bool ParseStatus(const std::string &StatusLineValue);
-        bool MakeHeadersResponse(std::string &StatusLine);
-        bool IsSpecialChar(char C);
-        bool CheckValidValueHeader(std::string &HeaderValue, short Start, short End);
-        void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
-        bool ValidHeaders(std::string &Str);
-        bool ParseContentType(const std::string &ValueContentType);
-        void Connection(bool Isclose);
-        void BuilResponsedredirection();
-        void HeaderResponseCGI();
-        void Transfer_Encoding();
-        void Date();
-        void CachControl();
-        void Server();
-        void StatusNormal();
-        void StatusRedirection();
-        void ContentLength();
-        void ReceivingHeaders(std::string &Data);
-        void ReceivingBody(std::string &Data);
-        bool StoredHeadersField(std::string &Str);
-        void StoredInFileOrStr();
+        bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);
+        void _ErrorRespnseHandling();
+        bool _LocationIsClientOrLocal(std::string &Location);
+        bool _ParseStatus(const std::string &StatusLineValue);
+        bool _MakeHeadersResponse(std::string &StatusLine);
+        bool _IsSpecialChar(char C);
+        bool _CheckValidValueHeader(std::string &HeaderValue, short Start, short End);
+        void _StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
+        bool _ValidHeaders(std::string &Str);
+        bool _ParseContentType(const std::string &ValueContentType);
+        void _Connection(bool Isclose);
+        void _BuilResponsedredirection();
+        void _HeaderResponseCGI();
+        void _Transfer_Encoding();
+        void _Date();
+        void _CachControl();
+        void _Server();
+        void _StatusNormal();
+        void _StatusRedirection();
+        void _ContentLength();
+        void _ReceivingHeaders(std::string &Data);
+        void _ReceivingBody(std::string &Data);
+        bool _StoredHeadersField(std::string &Str);
+        void _StoredInFileOrStr();
         void _CreatFileTemp();
+        bool _IsValidHeaderValueChar(unsigned char C);
     public:
         clsParseOutCGI();
         const std::string &GetBody();

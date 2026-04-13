@@ -39,7 +39,7 @@ public:
     // Achraf
     static bool CmpWord(const std::string &BigStr, const std::string &Word, bool Switch);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
-    static bool IsStringDigit(const std::string &StringDigit);
+    static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
     static bool Iswhaitspace(char C);
     static std::string TrimStr(std::string Str, const std::string &Sep);
     static void ConvertStringToLower(std::string &Str, short Size);
@@ -47,7 +47,6 @@ public:
     static bool Ischar(const std::string &Sep, char C);
     static int SkeeSep(const std::string &Str, const std::string &Sep);
     static int SkeeSep(const std::string &Str, char Sep);
-    static void Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit);
     static int ReadData(int FD, std::string &Data, ssize_t Size);
     static std::string GetNextLine(int FD, std::string &BigData, ssize_t Size);
     static std::string GTMHTTP(tm *GMT);
@@ -68,10 +67,11 @@ public:
     static void StoredMessage();
     static const char *GetStatusMessage(int Status);
     static const char * GetBody(int Status);
-    static void JoinBuffer(char *OldStr, const char *Newstr, int *UpdateLength);
     static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
     static void CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos);
     static size_t	ft_strlen(const char *s);
+    static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
+    static int Countword(const std::string &Str, const std::string &Sep);
 
 
 private:

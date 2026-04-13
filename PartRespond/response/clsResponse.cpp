@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/03/10 15:14:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/12 17:05:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,18 @@ clsResponse::clsResponse()
 {
     _Status = 0;
     _BodySize = 0;
+    _MaxSizeHeader = 4000;
+    _MaxSizeBody = 40000;
     _FileName = "";
     _FileFromDisk = "";
-    _Body = NULL;
-    _HeaderFeild = NULL;
     _Type = "";
     _IsConnection = true;
     _Erno = false;
     _SizeHeaders = 0;
+    _HeaderFeild.resize(_MaxSizeHeader);
+    _HeaderFeild.clear();
+    _Body.resize(_MaxSizeBody);
+    _Body.clear();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
 }
 
@@ -43,7 +47,7 @@ void clsResponse::MakeResponse()
         ErrorRespnseHandling();
         return ;
     }
-    HelperFunctions::JoinBuffer(_HeaderFeild,"\r\n",&_SizeHeaders);
+   _HeaderFeild += "\r\n";
 }
 
 void clsResponse::InitialHeaders()
@@ -93,90 +97,91 @@ void clsResponse::ErrorRespnseHandling()
             _ErrorPage.SetMod(_Mod);
             _ErrorPage.SetBodySize(_BodySize);
             _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-            HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
+            _HeaderFeild = _ErrorPage.ResponseError(PrevStatus);
             return ;
         }
         else
         {
             _ErrorPage.SetBodySize(0);
             _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-            HelperFunctions::JoinBuffer(_Body, HelperFunctions::GetBody(PrevStatus).c_str(),&_BodySize);
-            HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
+            _BodySize += HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
+            _HeaderFeild += _ErrorPage.ResponseError(PrevStatus).c_str();
             return ;
         }
     }
     _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    HelperFunctions::JoinBuffer(_Body, HelperFunctions::GetBody(_Status).c_str(),&_BodySize);
-    HelperFunctions::JoinBuffer(_HeaderFeild, _ErrorPage.ResponseError(PrevStatus).c_str(),&_SizeHeaders);
+    _Body += HelperFunctions::GetBody(_Status);
+    _BodySize = _Body.size();
+    _HeaderFeild +=  _ErrorPage.ResponseError(PrevStatus);
 }
 
 void clsResponse::ConnectionClose()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild,"Connection: Close\r\n",&_SizeHeaders);
+   _HeaderFeild += "Connection: Close\r\n";
 }
 
 void clsResponse::Status()
 {
     char *Number = HelperFunctions::ft_itoa(_Status);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "HTTP/1.1 ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, Number,&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild,  " ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild,  HelperFunctions::GetStatusMessage(_Status).c_str(),&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild,"\r\n",&_SizeHeaders);
+    _HeaderFeild += "HTTP/1.1 ";
+    _HeaderFeild +=  Number;
+    _HeaderFeild += " ";
+    _HeaderFeild += HelperFunctions::GetStatusMessage(_Status);
+    _HeaderFeild += "\r\n";
     delete[] Number;
 }
 
 void clsResponse::ContentLength()
 {
     char *Number = HelperFunctions::ft_itoa(_BodySize);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "Content-Length: ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, Number,&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
+    _HeaderFeild +=  "Content-Length: ";
+    _HeaderFeild += Number;
+    _HeaderFeild +=  "\r\n";
     delete[] Number;
 }
 void clsResponse::ContentType()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild, "Content-Type: ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, _Type.c_str(),&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, " ; charset=UTF-8\r\n",&_SizeHeaders);
+    _HeaderFeild += "Content-Type: ";
+    _HeaderFeild += _Type;
+    _HeaderFeild += " ; charset=UTF-8\r\n";
 
 }
 
 void clsResponse::ConnectionKeepAlive()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild,"Connection: keep-alive\r\n",&_SizeHeaders);
+    _HeaderFeild += "Connection: keep-alive\r\n";
 }
 void clsResponse::Transfer_Encoding()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild,"Transfer-Encoding: chunked\r\n",&_SizeHeaders);
+    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
 void clsResponse::Redirction()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild, "Location: ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "value location",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
+   _HeaderFeild += "Location: ";
+   _HeaderFeild += "value location";
+   _HeaderFeild += "\r\n";
 }
 void clsResponse::Date()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild, "Date: ",&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, HelperFunctions::DateTime().c_str(),&_SizeHeaders);
-    HelperFunctions::JoinBuffer(_HeaderFeild, "\r\n",&_SizeHeaders);
+   _HeaderFeild += "Date: ";
+   _HeaderFeild += HelperFunctions::DateTime();
+   _HeaderFeild += "\r\n";
 }
 void clsResponse::CachControl()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild,"Cache-Control: no-store\r\n",&_SizeHeaders);
+    _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
 void clsResponse::Server()
 {
-    HelperFunctions::JoinBuffer(_HeaderFeild,"Server: HTTP/1.1\r\n",&_SizeHeaders);
+  _HeaderFeild += "Server: HTTP/1.1\r\n";
 }
 
 void clsResponse::StoredInFileOrStr()
 {
     struct stat MetaData;
-    _Body = NULL;
+    _Body.clear();
     if (_FileFromDisk.empty())
         return ;
     if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
@@ -201,7 +206,7 @@ void clsResponse::StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (read(FD,_Body,40000) == -1)
+    if (read(FD,&_Body[0],40000) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
