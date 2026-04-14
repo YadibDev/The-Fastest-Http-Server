@@ -1,200 +1,127 @@
-// #include "clsStartLine.hpp"
-// #include <iostream>
-// #include <iomanip>
-// #include "URIParser.hpp"
+#include <iostream>
+#include <fcntl.h>
+#include <cstring>
+#include <vector>
+#include <iomanip>
 
-// void printStartLineInfo(const clsStartLine &sl)
-// {
-//     std::cout << "--- HTTP Start Line Parsing Results ---" << std::endl;
+#include "../../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "../Request/RequestParser.hpp"
+#include "../Request/Utils.hpp"
+#include "../../RequestHandler/RequestHandler.hpp"
+#include "../../RequestHandler/ProcessRequestHandler.hpp"
+#include "../Request/HeaderTable.hpp"
+#include "../URI/NUriParser.hpp"
 
-//     std::cout << std::left << std::setw(15) << "Method:";
-//     if (sl.getMethod() == GET)
-//         std::cout << "GET";
-//     else if (sl.getMethod() == POST)
-//         std::cout << "POST";
-//     else if (sl.getMethod() == DELETE)
-//         std::cout << "DELETE";
+// // دالة مساعدة لطباعة نتائج الـ URI بشكل منظم
+// void printUriPart(const std::string& label, const s_view& view) {
+//     std::cout << "   " << std::left << std::setw(15) << label << ": ";
+//     if (view.Data) {
+//         print_view(view);
+//     } else {
+//         std::cout << "\033[1;30m[NULL]\033[0m";
+//     }
 //     std::cout << std::endl;
-
-//     std::cout << std::left << std::setw(15) << "Path:" << sl.getPath() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Query:" << sl.getQuery() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Version:" << sl.getVersion() << std::endl;
-//     std::cout << std::left << std::setw(15) << "Status Code:" << sl.getStatusCode() << std::endl;
-//     std::cout << "---------------------------------------" << std::endl;
 // }
 
-// #include "URI.hpp"
-
-// bool isNumber(const std::string &s)
-// {
-//     if (s.empty())
-//         return false;
-
-//     for (size_t i = 0; i < s.size(); i++)
-//     {
-//         if (isdigit(s[i]) == 0)
-//         {
-//             return false;
-//         }
-//     }
-//     return true;
+// const char* getMethodName(HttpTables::eMethod m) {
+//     if (m == HttpTables::M_GET) return "GET";
+//     if (m == HttpTables::M_POST) return "POST";
+//     if (m == HttpTables::M_DELETE) return "DELETE";
+//     return "UNKNOWN";
 // }
 
-// #include <iostream>
-// #include <string>
-// #include <iomanip>
-
-// #define RESET "\033[0m"
-// #define RED "\033[31m"    // للخطأ
-// #define GREEN "\033[32m"  // للنجاح
-// #define YELLOW "\033[33m" // للعناوين
-// #define BLUE "\033[34m"   // للمدخلات
-// #define CYAN "\033[36m"   // للقيم المستخرجة
-
-// #include <arpa/inet.h>
-// #include <iostream>
-// #include <string>
-// #include <cstring>
-
-// struct s_ListenAddress
-// {
-//     struct sockaddr_storage storage;
-//     int family;
-//     socklen_t len;
-// };
-
-// int getIPTypeSimple(const std::string &ip)
-// {
-//     if (ip.empty())
-//         return 0;
-
-//     bool hasDot = (ip.find('.') != std::string::npos);
-//     bool hasColon = (ip.find(':') != std::string::npos);
-
-//     if (hasColon && !hasDot)
-//         return 6;
-//     if (hasDot && !hasColon)
-//         return 4;
-
-//     return 0;
+// void printHeaderSection(const std::string& title) {
+//     std::cout << "\n\033[1;35m--- " << title << " ---\033[0m" << std::endl;
 // }
 
-// void extractClientMaxBodySize(std::string str, size_t &result)
+// void    test(const char *input, size_t len, s_view &Output, void (*fun)(const char *ptr, size_t len, s_view &Output), std::string nameTest)
 // {
-//     if (str.empty())
-//         throw 400;
-
-//     result = 0;
-//     size_t i = 0;
-
-//     while (i < str.size() && isdigit(str[i]))
-//     {
-//         size_t prev = result;
-//         result = (result * 10) + (str[i] - '0');
-//         if (result < prev)
-//             throw 400;
-//         i++;
-//     }
-
-//     if (i < str.size())
-//     {
-//         char unit = toupper(str[i]);
-//         if (unit == 'K')
-//             result *= 1024;
-//         else if (unit == 'M')
-//             result *= 1024 * 1024;
-//         else if (unit == 'G')
-//             result *= 1024 * 1024 * 1024;
-//         else
-//             throw 400;
-
-//         i++;
-//     }
+//     fun(input, len, Output);
+//     printUriPart(nameTest, Output);
 // }
-
-// // int main()
-// // {
-// //     std::string listen = "";
-// //     unsigned short port = 0;
-// //     std::string ip = "";
-// //     uint32_t IPv4 = 0;
-
-// //     std::cout << YELLOW << "========================================" << RESET << std::endl;
-// //     std::cout << YELLOW << "     Webserv URI/Listen Manual Tester   " << RESET << std::endl;
-// //     std::cout << YELLOW << "========================================" << RESET << std::endl;
-// //     std::cout << "Examples: [::1]:80, 127.0.0.1:443, *, 8080" << std::endl;
-
-// //     while (true)
-// //     {
-// //         std::cout << BLUE << "\n[?] Enter Listen string: " << RESET;
-// //         if (!std::getline(std::cin, listen))
-// //         {
-// //             std::cout << "\nExiting..." << std::endl;
-// //             break;
-// //         }
-
-// //         port = 0;
-// //         ip = "";
-
-// //         try
-// //         {
-// //             std::cout << GREEN << "[+] PARSE SUCCESS" << RESET << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "IP Address : " << RESET << ip << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "    IP Address Binary: " << RESET << IPv4 << std::endl;
-// //             std::cout << std::dec << std::endl;
-// //             std::cout << CYAN << "    " << std::setw(10) << std::left << "Port       : " << RESET << port << std::endl;
-// //         }
-// //         catch (int error)
-// //         {
-// //             std::cerr << RED << "[!] PARSE FAILED" << RESET << std::endl;
-// //             std::cerr << RED << "    Error Code: " << error << RESET << std::endl;
-// //             std::cerr << RED << "    Reason    : Bad Request / Invalid Format" << RESET << std::endl;
-// //         }
-
-// //         std::cout << YELLOW << "----------------------------------------" << RESET << std::endl;
-// //         listen.clear();
-// //     }
-
-// //     return 0;
-// // }
-
-
-
-
-// #include <iostream>
-// #include <string>
-// #include <vector>
-
 
 // int main() {
-//     std::string result;
-    
-//     std::string tests[] = {
-//         "/index.html",
-//         "/my%20file.html",          
-//         "/A/B/../C",                
-//         "/A/./B",                   
-//         "/%2e%2e/%2e%2e/etc/passwd",
-//         "//A////B",                 
-//         "/direct/file/",            
-//         ""                          
-//     };
+//     // 1. قراءة الـ Config
+//     std::string configData;
+//     int configFd = open("configs/default.conf", O_RDONLY);
+//     if (configFd == -1) {
+//         std::cerr << "Error: Could not open configs/default.conf" << std::endl;
+//         return 1;
+//     }
+//     HelperFunctions::ReadData(configFd, configData, 10000);
+//     close(configFd);
 
-//     std::cout << "--- Testing URI Parsing System ---" << std::endl;
-//     std::cout << "----------------------------------" << std::endl;
+//     LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+//     cfg.addWithSpace(" \t");
+//     cfg.addCommentRule("#", "\n");
+//     cfg.addSeparatorToken('{', TOKEN_LBRACE);
+//     cfg.addSeparatorToken('}', TOKEN_RBRACE);
+//     cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
+//     cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
 
-//     for (int i = 0; i < 8; ++i) {
-//         std::cout << "Input  : [" << tests[i] << "]" << std::endl;
-        
-//         HttpError err = URIParser::normalizePath(tests[i], result);
-        
-//         if (!err.isError()) {
-//             std::cout << "Result : [" << result << "]" << std::endl;
-//         } else {
-//             std::cout << "Status : Error " << err.getCodeStatus() << std::endl;
+//     GenericLexer<TokenType> lexer(configData, cfg);
+//     std::vector< Token<TokenType> > tokens = lexer.tokenize();
+//     clsParse<TokenType> parse(tokens, TOKEN_EOF);
+//     clsParseConfigueFile configFile(parse);
+
+//     if (!configFile.ParseConfigue()) {
+//         std::cerr << "Config Error: " << configFile.getError().getMsgError() << std::endl;
+//         return 1;
+//     }
+//     std::vector<clsServerConfig> servers = configFile.getServers();
+
+//     PollOfClient client;
+//     const char *rawRequest =
+//         "GET http://mosab:pass123@127.0.0.1:8080/api/v1/users?id=1337#profile HTTP/1.1\r\n"
+//         "Host: 127.0.0.1\r\n"
+//         "X-Custom: val1\r\n"
+//         "X-Custom: val2\r\n"
+//         "\r\n";
+
+//     const char *Data = "3933 ";
+
+//     std::memset(client.request_metadata, 0, sizeof(client.request_metadata));
+//     std::memcpy(client.request_metadata, rawRequest, std::strlen(rawRequest));
+
+// 	stPollRequest req = makeRequest(client);
+//     RequestHandler handler(req); 
+//     RequestParser parser(req, &servers[0], &handler);
+//     parser.init(0);
+
+//     // for (int i = 0; client.request_metadata[i]; i++) {
+//         parser.Parse(179);
+//         // if (parser.isComplete() || parser.isError()) break;
+//     // }
+
+//     if (parser.isError()) {
+//         std::cerr << "Parse Error: " << handler.getError().getMsgError() << std::endl;
+//         return 1;
+//     }
+
+//     if (parser.isComplete()) {
+//         std::cout << "\n\033[1;35m--- AUTHORITY & URI (Direct from RequestParser) ---\033[0m" << std::endl;
+
+//         UriParser uri;
+//         uri.init(0);
+//         s_view Output;
+//         HttpError error = uri.;
+//         if (error.isError())
+//         {
+//             std::cout << error.getMsgError() << std::endl;
+//             return 1;
 //         }
-        
-//         std::cout << "----------------------------------" << std::endl;
+//         // printUriPart("Ipv4", Output);
+//         std::cout << "Port : " << uri.getPort() << std::endl;
+//         // printUriPart("Host",           uri.getHost());
+//         // printUriPart("Port",           uri.getPort());
+//         // printUriPart("Path",           uri.getPath());
+//         // printUriPart("Query",          uri.getQuery());
+//         // printUriPart("Fragment",       uri.getFragment());
+
+//         // std::cout << "\n\033[1;35m--- HEADERS & HANDLER ---\033[0m" << std::endl;
+//         // std::cout << "Method:         " << (parser.getRequestLine().getMethod() == HttpTables::M_GET ? "GET" : "OTHER") << std::endl;
+//         // std::cout << "Physical Path:  \033[1;32m" << handler.getPhysicalPath() << "\033[0m" << std::endl;
+//         // std::cout << "Status Code:    " << handler.getReturn().code << std::endl;
 //     }
 
 //     return 0;
@@ -207,27 +134,113 @@
 
 
 #include <iostream>
-#include <string>
-#include "../Request/Request.hpp"
+#include <cstring>
+#include <fstream>
+
+// void print_result(RequestParser& parser, const char* input, uint16_t startOffset) {
+// 	parser.init(startOffset);
+// 	parser.parse(input, std::strlen(input));
+
+// 	RequestLine requestLine = parser.getRequestLine();
+
+// 	std::cout << "Input:  " << input << "\n";
+// 	if (parser.isError()) {
+// 		std::cout << "Result: ERROR - " << parser.getError().getMsgError() << "\n";
+// 	} else {
+// 		std::cout << "Result: OK\n";
+// 		if (parser.get)
+// 			std::cout << "  Authority: " << std::string(parser.getAuthority().Data, parser.getAuthority().len) << "\n";
+// 		if (parser.getAuthority().len)
+// 			std::cout << "  Host: " << std::string(parser.getHost().Data, parser.getHost().len) << "\n";
+// 		if (parser.getPath().len)
+// 			std::cout << "  Path:      " << std::string(parser.getPath().Data, parser.getPath().len) << "\n";
+// 		if (parser.getQuery().len)
+// 			std::cout << "  Query:     " << std::string(parser.getQuery().Data, parser.getQuery().len) << "\n";
+// 		if (parser.getFragment().len)
+// 			std::cout << "  Fragment:  " << std::string(parser.getFragment().Data, parser.getFragment().len) << "\n";
+// 		std::cout << "  Port:      " << parser.getPort() << "\n";
+// 	}
+// 	std::cout << "----------------------------------------\n";
+// }
+
+#include <cstring>
+
+void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* raw_request) {
+
+	std::strncpy(client.request_metadata, raw_request, sizeof(client.request_metadata) - 1);
+	client.request_metadata[sizeof(client.request_metadata) - 1] = '\0';
+	
+	req.request_metadata = client.request_metadata;
+	req.known_headers    = client.known_headers;
+	req.unknown_headers  = client.unknown_headers;
+	req.sizeUnknownHeaders = sizeof(client.unknown_headers) / sizeof(client.unknown_headers[0]);
+	req.io_chunk         = client.io_chunk;
+}
 
 int main()
 {
-    clsRequest req;
 
-    std::string raw = "GET /index.html?name=abc HTTP/1.1\r\nHost: example.com\r\nContent-Length: 0\r\n\r\n";
+	PollOfClient client;
+	stPollRequest req;
 
-    req.parse(raw);
+	const char* http_request = 
+		"POST /test HTTP/1.1\r\n"
+		"Host: localhost\r\n"
+		"\r\n\0";
 
-    if (!req.isCompleted()) {
-        std::cout << "Request not completed; state may be parsing headers/body." << std::endl;
-    }
+	setPollRequestData(req, client, http_request);
 
-    // Print some parsed info from start line
-    std::cout << "Host: ";
-    // header storage changed to vector<string>, show headerMap via reflection not available; just print status
-    std::cout << "(see header parser)" << std::endl;
+	int fd = open("configs/default.conf", O_RDONLY);
+	std::string configeData;
+	configeData.resize(1025);
 
-    std::cout << "Completed: " << (req.isCompleted() ? "yes" : "no") << std::endl;
+	read(fd, &configeData[0], 1024);
 
-    return 0;
+
+
+	// fd, configeData, 1024
+
+	LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+
+	lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
+	lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
+	lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
+
+	lexerConfig.addCommentRule("#", "\n");
+	lexerConfig.addWithSpace(" \t\n");
+
+	GenericLexer<TokenType> lexer(configeData, lexerConfig);
+
+	std::vector< Token<TokenType> > Lexer = lexer.tokenize();
+
+	clsParse<TokenType> Data(Lexer, TOKEN_EOF);
+	clsParseConfigueFile ConfigueFile(Data);
+
+	ConfigueFile.ParseConfigue();
+	if (!ConfigueFile.getServers().size())
+	{
+		std::cout << ConfigueFile.getError().getMsgError() << std::endl;
+		std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
+		std::cout << "Block Server ZERO\n" << std::endl;
+		return 1;
+	}
+
+	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
+	RequestHandler	RequestHandler(req);
+
+	RequestParser Parser(req, &ServerConfig, &RequestHandler);
+
+
+	Parser.Parse(strlen(http_request));
+	
+	RequestLine requestLine = Parser.getRequestLine();
+
+	std::string Method = (requestLine.getMethod() == 0) ? "GET" : "POST";
+
+	std::cout << "Method : " << Method << std::endl;
+	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
+	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
+	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
+
+	return 0;
 }

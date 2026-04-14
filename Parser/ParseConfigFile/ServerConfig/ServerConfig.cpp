@@ -52,7 +52,7 @@ bool	clsServerConfig::ParseRoot()
 
 bool	clsServerConfig::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
+	_index = ConfigDirectiveParser::ParseIndex(ctx);
 	if (ctx.error.isError())
 		return (false);
 	return (true);
@@ -139,8 +139,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '{' at the beginning of server block"), false);
 
 	ctx.parser.advance();
-	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
-		ctx.parser.advance();
+	ConfigDirectiveParser::skipWhitespace(ctx.parser);
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE &&
 		   ctx.parser.peek().type != TOKEN_EOF)
@@ -154,7 +153,7 @@ bool	clsServerConfig::parseBlockServer()
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '}' at the end of server block"), false);
 
 	ctx.parser.advance();
-	ConfigDirectiveParser::skipWhitespace(ctx);
+	ConfigDirectiveParser::skipWhitespace(ctx.parser);
 
 	return true;
 }

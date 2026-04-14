@@ -14,11 +14,6 @@ std::string HelperFunctions::trim(const std::string& str) {
 	return str.substr(first, (last - first + 1));
 }
 
-unsigned long long HelperFunctions::getCurrentTimeInMs()
-{
-    return getCurrentTimeInS() * 1000;
-}
-
 void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
 		pos++;
@@ -42,6 +37,23 @@ long HelperFunctions::hexToDec(const std::string& hex)
 	for (std::size_t i = 0; i < hex.length(); ++i)
 	{
 		int digit = hexCharToDec(hex[i]);
+		
+		if (digit == -1)
+			return -1;
+		
+		decimalValue = (decimalValue << 4) | digit;
+	}
+	
+	return decimalValue;
+}
+
+long HelperFunctions::hexToDecS_view(char *buf, int len)
+{
+	long decimalValue = 0;
+	
+	for (int i = 0; i < len; ++i)
+	{
+		int digit = hexCharToDec(buf[i]);
 		
 		if (digit == -1)
 			return -1;
@@ -185,6 +197,25 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	return (200);
 }
 
+s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
+    s_view result;
+
+    if (!view.Data || view.len == 0 || !set || *set == '\0')
+        return result;
+
+    for (int i = (int)view.len - 1; i >= 0; --i) {
+        char current = view.Data[i];
+        
+        for (const char* s = set; *s != '\0'; ++s) {
+            if (current == *s) {
+                result.Data = view.Data + i;
+                result.len = view.len - i;
+                return result;
+            }
+        }
+    }
+    return result;
+}
 
 
 
@@ -261,13 +292,6 @@ std::string HelperFunctions::ConvertStringToLower(std::string &Str) {
     }
     return Str;
 }
-std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
-    for (size_t i = 0; i < Str.size(); i++) {
-        if (std::isalpha(Str[i]))
-            Str[i] = std::toupper(Str[i]);
-    }
-    return Str;
-}
 
 bool HelperFunctions::Ischar(const std::string &Sep, char C) {
     for (size_t i = 0; i < Sep.size(); i++) {
@@ -291,31 +315,23 @@ int HelperFunctions::SkeeSep(const std::string &Str, char Sep) {
     return i;
 }
 
-void  HelperFunctions::Split(std::vector<std::string> &Strings, std::string Str, char Sep, int TimesSplit)
-{
-    unsigned long Pos = 0;
-    std::string  SepString = "";
-    const char *PtrStr = NULL;
+std::vector<std::string> HelperFunctions::Split(std::string Str, char Sep, int TimesSplit) {
+    std::vector<std::string> Strings;
+    size_t Pos = 0;
     int i = 0;
-   
-    if ((Pos = Str.find(Sep)) == std::string::npos)
-        Strings.push_back(Str);
-    else
-    {
-        Str = Str.substr(SkeeSep(Str, Sep));
-        while ((Pos = Str.find(Sep)) != std::string::npos)
-        {
-            if (i == TimesSplit - 1 && TimesSplit > 0)
-                break;
-            else if (TimesSplit > 0)
-                i++;
-            Strings.push_back(Str.substr(0,Pos));
-            Pos += SkeeSep(Str.substr(Pos),Sep);
-            Str = Str.substr(Pos);
-        }
-        if (!Str.empty())
-            Strings.push_back(Str);
+    if (Str.empty()) return Strings;
+    
+    Str = Str.substr(SkeeSep(Str, Sep));
+    while ((Pos = Str.find(Sep)) != std::string::npos) {
+        if (TimesSplit > 0 && i == TimesSplit - 1)
+            break;
+        Strings.push_back(Str.substr(0, Pos));
+        size_t nextPos = Pos + SkeeSep(Str.substr(Pos), Sep);
+        Str = Str.substr(nextPos);
+        i++;
     }
+    if (!Str.empty()) Strings.push_back(Str);
+    return Strings;
 }
 
 int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
@@ -326,51 +342,27 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size) {
     return SizeByte;
 }
 
-std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size)
-{
+std::string HelperFunctions::GetNextLine(int FD, std::string &BigData, ssize_t Size) {
     std::string Buffer;
     std::string CleanLine;
     size_t Pos = 0;
     ssize_t SizeByte = 0;
 
-    while ((Pos = BigData.find('\n')) == std::string::npos)
-    {
+    while ((Pos = BigData.find('\n')) == std::string::npos) {
         SizeByte = ReadData(FD, Buffer, Size);
-        if (SizeByte < 0)
-            return "";
-        if (SizeByte == 0)
-            break;
+        if (SizeByte < 0) return "";
+        if (SizeByte == 0) break;
         BigData += Buffer;
     }
-    if (Pos != std::string::npos)
-    {
+    if (Pos != std::string::npos) {
         Pos += 1;
         CleanLine = BigData.substr(0, Pos);
         BigData = BigData.substr(Pos);
-    }
-    else
-    {
+    } else {
         CleanLine = BigData;
         BigData.clear();
     }
     return CleanLine;
-}
-
-void HelperFunctions::GetCleanLine(std::string &BigData, std::string &CleanLine)
-{
-    size_t Pos = 0;
-    Pos = BigData.find('\n');
-    if (Pos != std::string::npos)
-    {
-        Pos += 1;
-        CleanLine = BigData.substr(0, Pos);
-        BigData = BigData.substr(Pos);
-    }
-    else
-    {
-        CleanLine = BigData;
-        BigData.clear();
-    }
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT) {
@@ -406,60 +398,13 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-unsigned long long HelperFunctions::getCurrentTimeInS()
+unsigned long long HelperFunctions::getCurrentTimeInMs()
 {
-    long Time;
-    Time = time(0);
-    return (Time);
-}
-size_t	HelperFunctions::_ft_strlen(const char *s)
-{
-	size_t	i;
+    struct timeval Time;
 
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
+    gettimeofday(&Time, NULL);
 
-char	*HelperFunctions::ft_strdup(const char *src)
-{
-	int		l;
-	int		i;
-	char	*dest_dup;
-
-	if (!src)
-		return (NULL);
-	i = 0;
-	l = _ft_strlen(src);
-	dest_dup = new char[(l + 1)];
-	if (!dest_dup)
-		return (NULL);
-	while (src[i])
-	{
-		dest_dup[i] = src[i];
-		i++;
-	}
-	dest_dup[i] = '\0';
-	return (dest_dup);
-}
-
-void	HelperFunctions::free_matrex(char ***matrex)
-{
-	int	i;
-
-	i = 0;
-	if (!*matrex)
-		return ;
-	while ((*matrex)[i])
-	{
-		delete[] ((*matrex)[i]);
-		i++;
-	}
-	delete[] (*matrex);
-	*matrex = NULL;
+    return (Time.tv_sec * 1000) + (Time.tv_usec / 1000);
 }
 
 
@@ -477,7 +422,7 @@ void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType,
     while (!Line.empty())
     {
         Line = TrimStr(Line, "\t ");
-        Split(Split1 , Line, ':', 0);
+        Split1 = Split(Line, ':', 0);
         if (Split1.empty() || Split1.size() != 2)
         {
             StoredType.clear();
@@ -506,73 +451,6 @@ void HelperFunctions::StoredType(std::map<std::string, std::string> &StoredType,
     close(FD);
 }
 
-int	HelperFunctions::len_int(int nb)
-{
-	long	num;
-	int		i;
-
-	i = 0;
-	num = nb;
-	if (num == 0)
-		return (1);
-	if (num < 0)
-	{
-		i++;
-	}
-	while (num)
-	{
-		num = (num / 10);
-		i++;
-	}
-	return (i);
-}
-
-char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
-{
-	long	num;
-	int		len;
-
-	len = len_int(n);
-	num = n;
-	if (num < 0)
-	{
-		int_char[0] = '-';
-		num *= -1;
-	}
-	while (len > 1)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[len_int(n)] = '\0';
-	return ((int_char));
-}
-
-char	*HelperFunctions::ft_itoa(int n)
-{
-	long	num;
-	char	*int_char;
-	int		len;
-	int		prev_len;
-
-	len = len_int(n);
-    prev_len = len;
-	num = n;
-	int_char = new char(len + 1);
-	if (!int_char)
-		return (NULL);
-	if (num < 0)
-		return (ft_itoa_negative(n, int_char));
-	while (len)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[prev_len] = '\0';
-	return ((int_char));
-}
 
 std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
@@ -580,19 +458,4 @@ std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
     if ((Pos = Str.find('.')) == std::string::npos)
         return "";
     return (Str.substr(Pos, Str.size()));
-}
-
-void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
-{
-	char	*k;
-	char	c1;
-
-	k = (char *)str;
-	c1 = (char)c;
-	while (n--)
-	{
-		*k = c1;
-		k++;
-	}
-	return (str);
 }

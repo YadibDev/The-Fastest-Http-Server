@@ -1,46 +1,84 @@
 #include "LocationConfig.hpp"
 
 
-bool	clsLocation::ParseRoot()
+bool    clsLocation::ParseRoot()
 {
-	_root = ConfigDirectiveParser::ParseRoot(ctx);
-	return !ctx.error.isError();
+    if (_flags & Directives::D_ROOT)
+        return (ctx.error.setStatus(1, "Directives: root already set"), false);
+    if (_flags & Directives::D_ALIAS)
+        return (ctx.error.setStatus(1, "Directives: cannot have both root and alias"), false);
+    
+    _flags |= Directives::D_ROOT;
+    _root = ConfigDirectiveParser::ParseRoot(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseAlias()
+{
+    if (_flags & Directives::D_ALIAS)
+        return (ctx.error.setStatus(1, "Directives: alias already set"), false);
+    if (_flags & Directives::D_ROOT)
+        return (ctx.error.setStatus(1, "Directives: cannot have both root and alias"), false);
+
+    _flags |= Directives::D_ALIAS;
+    _alias = ConfigDirectiveParser::parseAlias(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseClientMaxBodySize()
+{
+    if (_flags & Directives::D_MAX_BODY)
+        return (ctx.error.setStatus(1, "Directives: client_max_body_size already set"), false);
+
+    _flags |= Directives::D_MAX_BODY;
+    _client_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseAutoIndex()
+{
+    if (_flags & Directives::D_AUTOINDEX)
+        return (ctx.error.setStatus(1, "Directives: autoindex already set"), false);
+
+    _flags |= Directives::D_AUTOINDEX;
+    _autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
+    return !ctx.error.isError();
+}
+
+bool    clsLocation::ParseReturn()
+{
+    if (_flags & Directives::D_RETURN)
+        return (ctx.error.setStatus(1, "Directives: return already set"), false);
+
+    _flags |= Directives::D_RETURN;
+    _return = ConfigDirectiveParser::ParseReturn(ctx);
+    return !ctx.error.isError();
 }
 
 bool	clsLocation::ParseIndex()
 {
-	_index = ConfigDirectiveParser::ParseIndex(ctx, _index.front());
+	_index = ConfigDirectiveParser::ParseIndex(ctx);
 	return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseAutoIndex()
+bool    clsLocation::ParseMethods()
 {
-	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
-	return !ctx.error.isError();
+    if (_flags & Directives::D_METHODS)
+        return (ctx.error.setStatus(1, "Directives: allow_methods already set"), false);
+
+    _flags |= Directives::D_METHODS;
+    _allow_methods = ConfigDirectiveParser::parseMethods(ctx);
+    return !ctx.error.isError();
 }
 
-bool	clsLocation::ParseMethods()
+bool    clsLocation::ParseUploadStore()
 {
-	_allow_methods = ConfigDirectiveParser::parseMethods(ctx);
-	return !ctx.error.isError();
-}
+    if (_flags & Directives::D_UPLOAD_STORE)
+        return (ctx.error.setStatus(1, "Directives: upload_store already set"), false);
 
-bool	clsLocation::ParseClientMaxBodySize()
-{
-	_client_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
-	return !ctx.error.isError();
-}
-
-bool	clsLocation::ParseReturn()
-{
-	_return = ConfigDirectiveParser::ParseReturn(ctx);
-	return !ctx.error.isError();
-}
-
-bool	clsLocation::ParseUploadStore()
-{
-	_upload_store = ConfigDirectiveParser::ParseUploadStore(ctx);
-	return !ctx.error.isError();
+    _flags |= Directives::D_UPLOAD_STORE;
+    _upload_store = ConfigDirectiveParser::ParseUploadStore(ctx);
+    return !ctx.error.isError();
 }
 
 bool	clsLocation::ParseCgiPass()
@@ -65,6 +103,7 @@ clsLocation::getLocationDirectiveType(const std::string& key)
 	if (directives.empty())
 	{
 		directives["root"]                  = L_DIR_ROOT;
+		directives["alias"]                  = L_DIR_ALIAS;
 		directives["index"]                 = L_DIR_INDEX;
 		directives["autoindex"]             = L_DIR_AUTOINDEX;
 		directives["allow_methods"]        = L_DIR_ACCEPTED_METHODS;
@@ -95,6 +134,7 @@ bool    clsLocation::ParseLocationDirective()
 	switch (dirType)
 	{
 		case L_DIR_ROOT:					return	ParseRoot();
+		case L_DIR_ALIAS:					return	ParseAlias();
 		case L_DIR_INDEX:					return	ParseIndex();
 		case L_DIR_AUTOINDEX:				return	ParseAutoIndex();
 		case L_DIR_ACCEPTED_METHODS:		return	ParseMethods();
@@ -114,7 +154,9 @@ clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
 	_root = sRoot;
 	_index = sIndex;
 	_client_max_body_size = sClient_max_body_size;
+	_allow_methods = -1;
 	_autoindex = sAutoIndex;
+	_flags = Directives::D_NONE;
 }
 
 
@@ -125,8 +167,6 @@ bool    clsLocation::parseLocation()
 	if (!ConfigDirectiveParser::parseLocationPath(ctx, _locationData))
 		return false;
 
-	// if (ctx.parser.advance().type != TOKEN_LBRACE)
-	// 	return (_ERROR.setStatus(400, "Error in {"), false);
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE &&
 		   ctx.parser.peek().type != TOKEN_EOF)
@@ -138,14 +178,14 @@ bool    clsLocation::parseLocation()
 	if (ctx.parser.peek().type != TOKEN_RBRACE)
 		return (ctx.error.setStatus(400, "Error in }"), false);
 	ctx.parser.advance();
-	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+	while (ctx.parser.peek().type == TOKEN_NEW_LINE)
 		ctx.parser.advance();
-	return (ctx.error.setStatus(0, ""), true);
+	return (true);
 }
 
 
 
-std::string clsLocation::getRoot() const {
+const std::string &clsLocation::getRoot() const {
 	return _root;
 }
 
@@ -165,11 +205,11 @@ unsigned long long clsLocation::getClientMaxBodySize() const {
 	return _client_max_body_size;
 }
 
-stReturnData clsLocation::getReturn() const {
+const stReturnData &clsLocation::getReturn() const {
 	return _return;
 }
 
-std::string clsLocation::getUploadStore() const {
+const std::string &clsLocation::getUploadStore() const {
 	return _upload_store;
 }
 
@@ -177,15 +217,20 @@ const std::map<std::string, std::string> &clsLocation::getCgiPass() const {
 	return _cgi_pass;
 }
 
-std::map<short, stErrorPagedata> clsLocation::getErrorPages() const {
+const std::map<short, stErrorPagedata> &clsLocation::getErrorPages() const {
 	return _error_pages;
+}
+
+const std::string	&clsLocation::getAlias() const
+{
+	return _alias;
 }
 
 HttpError clsLocation::getError() const {
 	return ctx.error;
 }
 
-stlocation clsLocation::getLocationData() const {
+const stlocation &clsLocation::getLocationData() const {
 	return _locationData;
 }
 

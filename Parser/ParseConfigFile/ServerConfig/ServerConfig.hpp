@@ -15,6 +15,12 @@
 class clsServerConfig {
 
 private:
+
+	enum e_directive {
+        ROOT            = 1 << 1,
+        INDEX           = 1 << 2,
+        MAX_BODY_SIZE   = 1 << 3,
+    };
 	std::vector<sockaddr_in>		_listens;
 	// std::vector<std::string>		_server_names;
 	std::string						_root;

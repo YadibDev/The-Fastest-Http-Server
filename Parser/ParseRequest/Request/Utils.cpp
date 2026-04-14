@@ -33,13 +33,13 @@ stPollRequest makeRequest(PollOfClient &client) {
         req.known_headers[i] = s_header_slot();
         req.known_headers[i].key.Data = NULL;
         req.known_headers[i].key.len = 0;
-        req.known_headers[i].next = HttpTables::INVALID_INDEX;
+        req.known_headers[i].next = INVALID_INDEX;
     }
     for (int i = 0; i < (int)req.sizeUnknownHeaders; i++) {
         req.unknown_headers[i] = s_header_slot();
         req.unknown_headers[i].key.Data = NULL;
         req.unknown_headers[i].key.len = 0;
-        req.unknown_headers[i].next = HttpTables::INVALID_INDEX;
+        req.unknown_headers[i].next = INVALID_INDEX;
     }
     return req;
 }

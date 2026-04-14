@@ -20,6 +20,7 @@ enum enBlocksDirective
 	L_DIR_RETURN,
 	L_DIR_UPLOAD_STORE,
 	L_DIR_CGI_PASS,
+	L_DIR_ALIAS,
 	L_DIR_ERROR_PAGE,
 	L_DIR_UNKNOWN
 };
@@ -33,14 +34,13 @@ struct s_parse_context {
 };
 
 
-
 class ConfigDirectiveParser {
 public:
 
 	static bool 							parseLocationPath(s_parse_context& ctx, stlocation& loc);
 	static std::string						ParseRoot(s_parse_context& ctx);
 	static unsigned long long				ParseClientMaxBodySize(s_parse_context& ctx);
-	static std::vector<std::string>			ParseIndex(s_parse_context& ctx, std::string &defaultIndex);
+	static std::vector<std::string>			ParseIndex(s_parse_context& ctx);
 	static bool								ParseAutoIndex(s_parse_context& ctx);
 	static sockaddr_in						ParseListen(s_parse_context& ctx);
 	static stReturnData						ParseReturn(s_parse_context& ctx);
@@ -48,9 +48,10 @@ public:
 	static std::map<short, stErrorPagedata>	ParseErrorPage(s_parse_context& ctx);
 	static void								ParseCGI(s_parse_context& ctx, std::map<std::string, std::string>& cgiMap);
 	static short							parseMethods(s_parse_context& ctx);
+	static std::string						parseAlias(s_parse_context& ctx);
 
 
-	static void								skipWhitespace(s_parse_context& ctx);
+	static void								skipWhitespace(clsParse<TokenType>& parser);
 
 private:
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);

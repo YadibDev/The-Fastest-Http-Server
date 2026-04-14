@@ -9,6 +9,7 @@ class URIParser {
     private:
         #define DEFUALT_PORT 80
         static std::string	twoDote(std::string path);
+
 public:
 
     static std::string	percentDecode(const std::string& str);
@@ -28,5 +29,6 @@ public:
     static HttpError extractQuery(const std::string& uri, std::string& outQuery);
     static HttpError extractFragment(const std::string& uri, std::string& outFragment);
     static HttpError normalizePath(const std::string& uri, std::string& outUri);
+    static short getMaxUriLength();
 
 };

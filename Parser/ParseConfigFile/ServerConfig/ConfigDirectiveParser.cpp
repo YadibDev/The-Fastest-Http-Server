@@ -23,12 +23,12 @@ bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& 
 		return (ctx.error.setStatus(400, "Location Error: Regex is not supported"), false);
 
 	ctx.parser.advance();
-
+	skipWhitespace(ctx.parser);
 	if (ctx.parser.peek().type != TOKEN_LBRACE)
 		return (ctx.error.setStatus(400, "Location Error: Expected '{' after path"), false);
 
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 
 	return true;
 }
@@ -40,16 +40,36 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 
 	std::string root;
 	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
-	// if (ctx.error.isError()) return "";
+	if (ctx.error.isError()) return "";
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after root"), "");
 	
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 
 	return root;
+}
+
+std::string		ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
+{
+	ctx.parser.advance(); 
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
+
+	std::string alias;
+	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, alias);
+	if (ctx.error.isError()) return "";
+
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		return (ctx.error.setStatus(400, "Missing ';' after alias"), "");
+	
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
+
+	return alias;
 }
 
 unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context& ctx) {
@@ -69,26 +89,27 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 		return (ctx.error.setStatus(400, "Missing ';' after max_body_size"), 0);
 
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 
 	return bytes;
 }
 
-std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx, std::string &defaultIndex) {
+std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx) {
 	std::vector<std::string> indices;
-	indices.push_back(defaultIndex);
+
 	ctx.parser.advance();
 
-	while (ctx.parser.peek().type == TOKEN_WORD) {
+	while (ctx.parser.peek().type == TOKEN_WORD)
+	{
 		indices.push_back(ctx.parser.peek().value);
 		ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after index list"), indices);
-	
+
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	return indices;
 }
 
@@ -99,19 +120,20 @@ bool ConfigDirectiveParser::ParseAutoIndex(s_parse_context& ctx) {
 
 	if (val == "on") result = true;
 	else if (val == "off") result = false;
-	else ctx.error.setStatus(400, "Invalid autoindex value: " + val);
+	else ctx.error.setStatus(400, "invalid value \"" + val + "\" in \"autoindex\" directive, it must be \"on\" or \"off");
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after autoindex"), false);
 	
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 
 	return result;
 }
 
-sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx) {
+sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx)
+{
 	sockaddr_in addr;
 	std::memset(&addr, 0, sizeof(sockaddr_in));
 	ctx.parser.advance();
@@ -130,7 +152,7 @@ sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx) {
 	}
 
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	return addr;
 }
 
@@ -138,9 +160,13 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
 	stReturnData ReturData;
 	ctx.parser.advance();
 	char* end;
-	
+
 	ReturData.code = std::strtol(ctx.parser.peek().value.c_str(), &end, 10);
-	if (*end != '\0') ReturData.code = -1;
+	if (*end != '\0')
+	{
+		std::cout << ReturData.code << std::endl;
+		ReturData.code = -1;
+	}
 
 	if (ctx.parser.advance().type != TOKEN_WORD) {
 		ctx.error.setStatus(400, "Syntax Error: Expected URI after return code");
@@ -152,7 +178,7 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
 		ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
 	}
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	return ReturData;
 }
 
@@ -170,7 +196,7 @@ std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 		ctx.error.setStatus(400, "Missing ';' after upload_path");
 
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	return path;
 }
 
@@ -197,7 +223,7 @@ void ConfigDirectiveParser::ParseCGI(s_parse_context& ctx, std::map<std::string,
 		return;
 	}
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	cgiMap[extension] = binPath;
 }
 
@@ -218,7 +244,7 @@ short ConfigDirectiveParser::parseMethods(s_parse_context& ctx) {
 		return (ctx.error.setStatus(400, "Expected ';' after methods"), 0);
 
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 	return combinedMethods;
 }
 
@@ -258,7 +284,7 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 		return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
 	
 	ctx.parser.advance();
-	skipWhitespace(ctx);
+	skipWhitespace(ctx.parser);
 
 	stErrorPagedata data;
 	data.response = responseOverride;
@@ -282,7 +308,7 @@ unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char u
 		case 'm': case 'M': multiplier = 1024ULL * 1024; break;
 		case 'k': case 'K': multiplier = 1024ULL; break;
 		case ' ': multiplier = 1; break;
-		default: error.setStatus(400, "Invalid unitType"); return 0;
+		default: error.setStatus(1, "\"client_max_body_size\" directive invalid value "); return 0;
 	}
 	return (unsigned long long)(value * multiplier);
 }
@@ -323,7 +349,7 @@ uint32_t ConfigDirectiveParser::validateIPWithSystem(const std::string& ip, int 
 	return ntohl(ipv4_raw); 
 }
 
-void ConfigDirectiveParser::skipWhitespace(s_parse_context& ctx) {
-	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
-		ctx.parser.advance();
+void ConfigDirectiveParser::skipWhitespace(clsParse<TokenType>& parser) {
+	while (parser.peek().type == TOKEN_NEW_LINE)
+		parser.advance();
 }
