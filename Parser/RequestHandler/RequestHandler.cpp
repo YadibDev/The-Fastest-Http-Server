@@ -29,7 +29,7 @@ void    RequestHandler::setMethod(HttpTables::eMethod method) { _method = method
 
 void    RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = allowed; }
 
-const void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& errorPages)
+void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& errorPages)
 {
     _error_pages = errorPages;
 }

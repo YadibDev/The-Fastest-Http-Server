@@ -23,7 +23,7 @@ bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& 
 		return (ctx.error.setStatus(400, "Location Error: Regex is not supported"), false);
 
 	ctx.parser.advance();
-
+	skipWhitespace(ctx.parser);
 	if (ctx.parser.peek().type != TOKEN_LBRACE)
 		return (ctx.error.setStatus(400, "Location Error: Expected '{' after path"), false);
 
@@ -132,7 +132,8 @@ bool ConfigDirectiveParser::ParseAutoIndex(s_parse_context& ctx) {
 	return result;
 }
 
-sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx) {
+sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx)
+{
 	sockaddr_in addr;
 	std::memset(&addr, 0, sizeof(sockaddr_in));
 	ctx.parser.advance();
@@ -159,9 +160,13 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
 	stReturnData ReturData;
 	ctx.parser.advance();
 	char* end;
-	
+
 	ReturData.code = std::strtol(ctx.parser.peek().value.c_str(), &end, 10);
-	if (*end != '\0') ReturData.code = -1;
+	if (*end != '\0')
+	{
+		std::cout << ReturData.code << std::endl;
+		ReturData.code = -1;
+	}
 
 	if (ctx.parser.advance().type != TOKEN_WORD) {
 		ctx.error.setStatus(400, "Syntax Error: Expected URI after return code");
@@ -345,6 +350,6 @@ uint32_t ConfigDirectiveParser::validateIPWithSystem(const std::string& ip, int 
 }
 
 void ConfigDirectiveParser::skipWhitespace(clsParse<TokenType>& parser) {
-	while (parser.peek().type == TOKEN_JOUJNO9ATE)
+	while (parser.peek().type == TOKEN_NEW_LINE)
 		parser.advance();
 }

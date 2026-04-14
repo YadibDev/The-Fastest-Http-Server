@@ -4,143 +4,240 @@
 #include <vector>
 #include <iomanip>
 
-// Includes الخاصة بالمشروع
 #include "../../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "../Request/RequestParser.hpp"
 #include "../Request/Utils.hpp"
 #include "../../RequestHandler/RequestHandler.hpp"
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "../Request/HeaderTable.hpp"
+#include "../URI/NUriParser.hpp"
+
+// // دالة مساعدة لطباعة نتائج الـ URI بشكل منظم
+// void printUriPart(const std::string& label, const s_view& view) {
+//     std::cout << "   " << std::left << std::setw(15) << label << ": ";
+//     if (view.Data) {
+//         print_view(view);
+//     } else {
+//         std::cout << "\033[1;30m[NULL]\033[0m";
+//     }
+//     std::cout << std::endl;
+// }
+
+// const char* getMethodName(HttpTables::eMethod m) {
+//     if (m == HttpTables::M_GET) return "GET";
+//     if (m == HttpTables::M_POST) return "POST";
+//     if (m == HttpTables::M_DELETE) return "DELETE";
+//     return "UNKNOWN";
+// }
+
+// void printHeaderSection(const std::string& title) {
+//     std::cout << "\n\033[1;35m--- " << title << " ---\033[0m" << std::endl;
+// }
+
+// void    test(const char *input, size_t len, s_view &Output, void (*fun)(const char *ptr, size_t len, s_view &Output), std::string nameTest)
+// {
+//     fun(input, len, Output);
+//     printUriPart(nameTest, Output);
+// }
+
+// int main() {
+//     // 1. قراءة الـ Config
+//     std::string configData;
+//     int configFd = open("configs/default.conf", O_RDONLY);
+//     if (configFd == -1) {
+//         std::cerr << "Error: Could not open configs/default.conf" << std::endl;
+//         return 1;
+//     }
+//     HelperFunctions::ReadData(configFd, configData, 10000);
+//     close(configFd);
+
+//     LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+//     cfg.addWithSpace(" \t");
+//     cfg.addCommentRule("#", "\n");
+//     cfg.addSeparatorToken('{', TOKEN_LBRACE);
+//     cfg.addSeparatorToken('}', TOKEN_RBRACE);
+//     cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
+//     cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
+
+//     GenericLexer<TokenType> lexer(configData, cfg);
+//     std::vector< Token<TokenType> > tokens = lexer.tokenize();
+//     clsParse<TokenType> parse(tokens, TOKEN_EOF);
+//     clsParseConfigueFile configFile(parse);
+
+//     if (!configFile.ParseConfigue()) {
+//         std::cerr << "Config Error: " << configFile.getError().getMsgError() << std::endl;
+//         return 1;
+//     }
+//     std::vector<clsServerConfig> servers = configFile.getServers();
+
+//     PollOfClient client;
+//     const char *rawRequest =
+//         "GET http://mosab:pass123@127.0.0.1:8080/api/v1/users?id=1337#profile HTTP/1.1\r\n"
+//         "Host: 127.0.0.1\r\n"
+//         "X-Custom: val1\r\n"
+//         "X-Custom: val2\r\n"
+//         "\r\n";
+
+//     const char *Data = "3933 ";
+
+//     std::memset(client.request_metadata, 0, sizeof(client.request_metadata));
+//     std::memcpy(client.request_metadata, rawRequest, std::strlen(rawRequest));
+
+// 	stPollRequest req = makeRequest(client);
+//     RequestHandler handler(req); 
+//     RequestParser parser(req, &servers[0], &handler);
+//     parser.init(0);
+
+//     // for (int i = 0; client.request_metadata[i]; i++) {
+//         parser.Parse(179);
+//         // if (parser.isComplete() || parser.isError()) break;
+//     // }
+
+//     if (parser.isError()) {
+//         std::cerr << "Parse Error: " << handler.getError().getMsgError() << std::endl;
+//         return 1;
+//     }
+
+//     if (parser.isComplete()) {
+//         std::cout << "\n\033[1;35m--- AUTHORITY & URI (Direct from RequestParser) ---\033[0m" << std::endl;
+
+//         UriParser uri;
+//         uri.init(0);
+//         s_view Output;
+//         HttpError error = uri.;
+//         if (error.isError())
+//         {
+//             std::cout << error.getMsgError() << std::endl;
+//             return 1;
+//         }
+//         // printUriPart("Ipv4", Output);
+//         std::cout << "Port : " << uri.getPort() << std::endl;
+//         // printUriPart("Host",           uri.getHost());
+//         // printUriPart("Port",           uri.getPort());
+//         // printUriPart("Path",           uri.getPath());
+//         // printUriPart("Query",          uri.getQuery());
+//         // printUriPart("Fragment",       uri.getFragment());
+
+//         // std::cout << "\n\033[1;35m--- HEADERS & HANDLER ---\033[0m" << std::endl;
+//         // std::cout << "Method:         " << (parser.getRequestLine().getMethod() == HttpTables::M_GET ? "GET" : "OTHER") << std::endl;
+//         // std::cout << "Physical Path:  \033[1;32m" << handler.getPhysicalPath() << "\033[0m" << std::endl;
+//         // std::cout << "Status Code:    " << handler.getReturn().code << std::endl;
+//     }
+
+//     return 0;
+// }
 
 
 
-const char* getMethodName(HttpTables::eMethod m) {
-    if (m == HttpTables::M_GET) return "GET";
-    if (m == HttpTables::M_POST) return "POST";
-    if (m == HttpTables::M_DELETE) return "DELETE";
-    return "UNKNOWN";
+
+
+
+
+#include <iostream>
+#include <cstring>
+#include <fstream>
+
+// void print_result(RequestParser& parser, const char* input, uint16_t startOffset) {
+// 	parser.init(startOffset);
+// 	parser.parse(input, std::strlen(input));
+
+// 	RequestLine requestLine = parser.getRequestLine();
+
+// 	std::cout << "Input:  " << input << "\n";
+// 	if (parser.isError()) {
+// 		std::cout << "Result: ERROR - " << parser.getError().getMsgError() << "\n";
+// 	} else {
+// 		std::cout << "Result: OK\n";
+// 		if (parser.get)
+// 			std::cout << "  Authority: " << std::string(parser.getAuthority().Data, parser.getAuthority().len) << "\n";
+// 		if (parser.getAuthority().len)
+// 			std::cout << "  Host: " << std::string(parser.getHost().Data, parser.getHost().len) << "\n";
+// 		if (parser.getPath().len)
+// 			std::cout << "  Path:      " << std::string(parser.getPath().Data, parser.getPath().len) << "\n";
+// 		if (parser.getQuery().len)
+// 			std::cout << "  Query:     " << std::string(parser.getQuery().Data, parser.getQuery().len) << "\n";
+// 		if (parser.getFragment().len)
+// 			std::cout << "  Fragment:  " << std::string(parser.getFragment().Data, parser.getFragment().len) << "\n";
+// 		std::cout << "  Port:      " << parser.getPort() << "\n";
+// 	}
+// 	std::cout << "----------------------------------------\n";
+// }
+
+#include <cstring>
+
+void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* raw_request) {
+
+	std::strncpy(client.request_metadata, raw_request, sizeof(client.request_metadata) - 1);
+	client.request_metadata[sizeof(client.request_metadata) - 1] = '\0';
+	
+	req.request_metadata = client.request_metadata;
+	req.known_headers    = client.known_headers;
+	req.unknown_headers  = client.unknown_headers;
+	req.sizeUnknownHeaders = sizeof(client.unknown_headers) / sizeof(client.unknown_headers[0]);
+	req.io_chunk         = client.io_chunk;
 }
 
-void printHeaderSection(const std::string& title) {
-    std::cout << "\n\033[1;35m--- " << title << " ---\033[0m" << std::endl;
-}
+int main()
+{
 
-int main() {
-    // 1. قراءة وتحليل ملف الإعدادات (Config)
-    std::string configData;
-    int configFd = open("configs/default.conf", O_RDONLY);
-    if (configFd == -1) {
-        std::cerr << "Error: Could not open configs/default.conf" << std::endl;
-        return 1;
-    }
-    HelperFunctions::ReadData(configFd, configData, 10000);
-    close(configFd);
+	PollOfClient client;
+	stPollRequest req;
 
-    LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
-    cfg.addWithSpace(" \t"); // تبسيط لإعدادات الـ Lexer
-    
-    cfg.addCommentRule("#", "\n");
-    cfg.addSeparatorToken('{', TOKEN_LBRACE);
-    cfg.addSeparatorToken('}', TOKEN_RBRACE);
-    cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
-    cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
+	const char* http_request = 
+		"POST /test HTTP/1.1\r\n"
+		"Host: localhost\r\n"
+		"\r\n";
 
-    GenericLexer<TokenType> lexer(configData, cfg);
-    std::vector< Token<TokenType> > tokens = lexer.tokenize();
-    clsParse<TokenType> parse(tokens, TOKEN_EOF);
-    clsParseConfigueFile configFile(parse);
+	setPollRequestData(req, client, http_request);
 
-    if (!configFile.ParseConfigue()) {
-        std::cerr << "Config Error: " << configFile.getError().getMsgError() << std::endl;
-        return 1;
-    }
-    std::vector<clsServerConfig> servers = configFile.getServers();
+	int fd = open("configs/default.conf", O_RDONLY);
+	std::string configeData;
+	configeData.resize(1025);
 
-    PollOfClient client;
-    const char *rawRequest =
-        "POST /cgi/script.py/path HTTP/1.1\r\n"
-        "Host: 127.0.0.1\r\n"
-        "X-Custom: value1\r\n"
-        "X-Custom: value2\r\n" // هيدر مكرر لاختبار countOccurrences
-        "Content-Length: 10\r\n"
-        "\r\n"
-        "BodyData!!";
+	read(fd, &configeData[0], 1024);
 
-    std::memset(client.request_metadata, 0, sizeof(client.request_metadata));
-    std::memcpy(client.request_metadata, rawRequest, std::strlen(rawRequest));
 
-    stPollRequest req = makeRequest(client);
-    RequestHandler handler(req); 
-    RequestParser parser(req, &servers[0], &handler);
-    parser.init(0);
 
-    for (int i = 0; client.request_metadata[i]; i++) {
-        parser.Parse(i);
-        if (parser.isComplete() || parser.isError()) break;
-    }
+	// fd, configeData, 1024
 
-    if (parser.isError()) {
-        std::cerr << "Parse Error: " << handler.getError().getMsgError() << std::endl;
-        return 1;
-    }
+	LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
 
-    if (parser.isComplete()) {
-        HeaderTable& table = handler.getHeader();
+	lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
+	lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
+	lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
 
-        printHeaderSection("Testing getKnownHeader");
-        s_header_slot* hostSlot = table.getKnownHeader(HttpTables::H_HOST);
-        if (hostSlot && hostSlot->val.Data) {
-            std::cout << "Host found: ";
-            print_view(hostSlot->val);
-            std::cout << std::endl;
-        }
+	lexerConfig.addCommentRule("#", "\n");
+	lexerConfig.addWithSpace(" \t\n");
 
-        printHeaderSection("Testing getUnknownHeader & isDuplicate");
-        s_header_slot* unknownSlot = table.getUnknownHeader(0);
-        if (unknownSlot && unknownSlot->key.Data) {
-            std::cout << "First Unknown Key: ";
-            print_view(unknownSlot->key);
-            std::cout << " | Value: ";
-            print_view(unknownSlot->val);
-            std::cout << "\nIs Duplicate: " << (table.isDuplicate(0) ? "Yes" : "No") << std::endl;
-        }
+	GenericLexer<TokenType> lexer(configeData, lexerConfig);
 
-        printHeaderSection("Testing countOccurrences");
-            int foundCount = 0;
-            for (uint8_t i = 0; i < 25; ++i) {
-                s_header_slot* slot = table.getUnknownHeader(i);
+	std::vector< Token<TokenType> > Lexer = lexer.tokenize();
 
-                if (slot && slot->val.Data != NULL) {
-                    foundCount++;
-                    std::cout << "\033[1;36m[Slot " << (int)i << "]\033[0m" << std::endl;
+	clsParse<TokenType> Data(Lexer, TOKEN_EOF);
+	clsParseConfigueFile ConfigueFile(Data);
 
-                    std::cout << "   Key:   "; print_view(slot->key); std::cout << std::endl;
-                    std::cout << "   Value: "; print_view(slot->val); std::cout << std::endl;
+	ConfigueFile.ParseConfigue();
+	if (!ConfigueFile.getServers().size())
+	{
+		std::cout << "Block Server ZERO\n" << std::endl;
+		return 1;
+	}
 
-                    bool dup = table.isDuplicate(i);
-                    std::cout << "   Status: " << (dup ? "\033[1;31mDuplicate (Linked)\033[0m" : "\033[1;32mOriginal\033[0m") << std::endl;
+	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
+	RequestHandler	RequestHandler(req);
 
-                    if (slot->next != HttpTables::INVALID_INDEX) {
-                        std::cout << "   Next Link -> Slot [" << (int)slot->next << "]" << std::endl;
-                    }
-                    std::cout << "------------------------------------\n";
-                }
-            }
+	RequestParser Parser(req, &ServerConfig, &RequestHandler);
 
-            if (foundCount == 0) {
-                std::cout << "No unknown headers found. Check your Parser logic!\n";
-            } else {
-                std::cout << "\033[1;32mTotal Unknown Headers in Array: " << foundCount << "\033[0m\n";
-            }
-            } else {
-            std::cerr << "Parser failed to complete the request.\n";
-        }
-        printHeaderSection("Final Handler Decisions");
-        std::cout << "Method:         " << getMethodName(handler.getMethod()) << std::endl;
-        std::cout << "Physical Path:  \033[1;32m" << handler.getPhysicalPath() << "\033[0m" << std::endl;
-        std::cout << "CGI: " << *handler.getPathCgi() << std::endl;
-        std::cout << "PathInfo: "; print_view(handler.getPathInfo()); std::cout << std::endl;
-        std::cout << "PathTranslated: "<< handler.getPathTranslated() << std::endl;
-        std::cout << "Status Code:    " << handler.getReturn().code << std::endl;
-    return 0;
+	Parser.Parse(strlen(http_request));
+	
+	RequestLine requestLine = Parser.getRequestLine();
+
+	std::string Method = (requestLine.getMethod() == 0) ? "GET" : "POST";
+
+	std::cout << "Method : " << Method << std::endl;
+	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
+	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
+	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
+
+	return 0;
 }

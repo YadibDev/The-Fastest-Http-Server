@@ -29,6 +29,6 @@ public:
     static HttpError extractQuery(const std::string& uri, std::string& outQuery);
     static HttpError extractFragment(const std::string& uri, std::string& outFragment);
     static HttpError normalizePath(const std::string& uri, std::string& outUri);
-    const static short getMaxUriLength();
+    static short getMaxUriLength();
 
 };

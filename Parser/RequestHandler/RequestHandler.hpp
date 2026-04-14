@@ -43,7 +43,7 @@ public:
 	void		setMethod(HttpTables::eMethod method);
 	void		setAllowedMethods(uint8_t allowed);
 	void		setHeader(HeaderTable	_Header);
-	const void	setErrorPages(const std::map<short, stErrorPagedata>& errorPages);
+	void		setErrorPages(const std::map<short, stErrorPagedata>& errorPages);
 	void		setPathCgi(const std::string* pathCgi);
 	void		setReturn(const stReturnData& returnData);
 	void		setUploadStore(const std::string* uploadStore);

@@ -46,10 +46,10 @@ const char* RequestLine::methodName() const
 	return 0;
 }
 
-void    RequestLine::selectMethod(const char *buffer, uint16_t size)
+bool    RequestLine::selectMethod(const char *buffer, uint16_t size)
 {
 	if (_offset > size)
-		return;
+		return true;
 
 	if (buffer[_offset] == 'G')
 		_methodType = HttpTables::M_GET;
@@ -58,58 +58,48 @@ void    RequestLine::selectMethod(const char *buffer, uint16_t size)
 	else if (buffer[_offset] == 'D')
 		_methodType = HttpTables::M_DELETE;
 	else
-	{
-		_state = STATE_ERROR;
-		return;
-	}
+		return false;
 
 	_method.Data = (char *)&buffer[_offset];
 	_methodIndex = 0;
 	_state = STATE_METHOD;
+	return true;
 }
 
-void    RequestLine::parseMethod(const char *buffer, uint16_t size)
+bool    RequestLine::parseMethod(const char *buffer, uint16_t size)
 {
 	const char *expected = methodName();
 
 	if (!expected)
-	{
-		_state = STATE_ERROR;
-		return;
-	}
+		return (_error.setStatus(405, "Method Not Allowed"), false);
 
 	while (expected[_methodIndex] && _offset <= size)
 	{
 		if (buffer[_offset] != expected[_methodIndex])
-		{
-			_state = STATE_ERROR;
-			return;
-		}
+			return (_error.setStatus(405, "Method Not Allowed"), false);
 		_offset++;
 		_methodIndex++;
 	}
 
 	if (expected[_methodIndex] != '\0')
-		return;
+		return true;
 	if (_offset > size)
-		return;
+		return true;
 	if (!isSpace(buffer[_offset]))
-	{
-		_state = STATE_ERROR;
-		return;
-	}
+		return (_error.setStatus(405, "Method Not Allowed"), false);
 
 	_method.len = (uint16_t)((char *)&buffer[_offset] - _method.Data);
 	_state = STATE_URI;
+	return true;
 }
 
-void    RequestLine::parseUri(const char *buffer, uint16_t size)
+bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 {
 	if (!_uriReady)
 	{
 		skipSpaceLastIndex(buffer, size, _offset);
 		if (_offset > size)
-			return;
+			return true;
 		_uriParser.init(_offset);
 		_uriReady = true;
 	}
@@ -118,17 +108,18 @@ void    RequestLine::parseUri(const char *buffer, uint16_t size)
 
 	if (_uriParser.isError())
 	{
-		_state = STATE_ERROR;
-		return;
+		_error = _uriParser.getError();
+		return false;
 	}
 	if (!_uriParser.isComplete())
-		return;
+		return true;
 
 	_offset = _uriParser.getOffset();
 	_state = STATE_VERSION;
+	return true;
 }
 
-void    RequestLine::parseVersion(const char *buffer, uint16_t size)
+bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 {
 	const char *expectedPrefix = "HTTP/1.";
 
@@ -136,7 +127,7 @@ void    RequestLine::parseVersion(const char *buffer, uint16_t size)
 	{
 		skipSpaceLastIndex(buffer, size, _offset);
 		if (_offset > size)
-			return;
+			return true;
 		
 		_version.Data = (char *)&buffer[_offset];
 		_version.len = 0;
@@ -146,26 +137,21 @@ void    RequestLine::parseVersion(const char *buffer, uint16_t size)
 	while (_versionIndex < 7 && _offset <= size)
 	{
 		if (buffer[_offset] != expectedPrefix[_versionIndex])
-		{
-			_state = STATE_ERROR;
-			return;
-		}
+			return (_error.setStatus(505, "HTTP Version Not Supported") , false);
 		_offset++;
 		_versionIndex++;
 	}
 
 	if (_versionIndex < 7)
-		return;
+		return true;
 
 	if (!_versionMinorRead)
 	{
 		if (_offset > size)
-			return;
+			return true;
 		if (buffer[_offset] != '0' && buffer[_offset] != '1')
-		{
-			_state = STATE_ERROR;
-			return;
-		}
+			return (_error.setStatus(505, "HTTP Version Not Supported") , false);
+
 		_offset++;
 		_versionMinorRead = true;
 		
@@ -173,38 +159,37 @@ void    RequestLine::parseVersion(const char *buffer, uint16_t size)
 	}
 
 	_state = STATE_CR;
+	return true;
 }
 
-void    RequestLine::parseCR(const char *buffer, uint16_t size)
+bool    RequestLine::parseCR(const char *buffer, uint16_t size)
 {
 	if (_offset > size)
-		return;
+		return true;
 	if (buffer[_offset] != '\r')
-	{
-		_state = STATE_ERROR;
-		return;
-	}
+		return (_error.setStatus(400, "Bad Request") , false);
+
 	_offset++;
 	_state = STATE_LF;
+	return true;
 }
 
-void    RequestLine::parseLF(const char *buffer, uint16_t size)
+bool    RequestLine::parseLF(const char *buffer, uint16_t size)
 {
 	if (_offset > size)
-		return;
+		return true;
 	if (buffer[_offset] != '\n')
-	{
-		_state = STATE_ERROR;
-		return;
-	}
+		return (_error.setStatus(400, "Bad Request") , false);
+
 	_offset++;
 	_state = STATE_COMPLETE;
+	return true;
 }
 
-void    RequestLine::parse(const char *buffer, uint16_t size)
+bool    RequestLine::parse(const char *buffer, uint16_t size)
 {
 	if (_state == STATE_COMPLETE || _state == STATE_ERROR)
-		return;
+		return true;
 
 	while (_offset <= size)
 	{
@@ -237,5 +222,6 @@ bool				RequestLine::isComplete() const { return (_state == STATE_COMPLETE); }
 bool				RequestLine::isError() const { return (_state == STATE_ERROR); }
 HttpTables::eMethod	RequestLine::getMethod() const { return _methodType; }
 s_view				RequestLine::getVersion() const { return _version; }
-UriParser			RequestLine::getRequestURI() const { return _uriParser; }
+const UriParser		&RequestLine::getRequestURI() const { return _uriParser; }
 uint16_t			RequestLine::getOffset() const { return _offset; }
+HttpError			RequestLine::getError() const { return _error; }

@@ -1,0 +1,174 @@
+3.2.2.  Host
+
+   The host subcomponent of authority is identified by an IP literal
+   encapsulated within square brackets, an IPv4 address in dotted-
+   decimal form, or a registered name.  The host subcomponent is case-
+   insensitive.  The presence of a host subcomponent within a URI does
+   not imply that the scheme requires access to the given host on the
+   Internet.  In many cases, the host syntax is used only for the sake
+
+
+
+Berners-Lee, et al.         Standards Track                    [Page 18]
+
+RFC 3986                   URI Generic Syntax               January 2005
+
+
+   of reusing the existing registration process created and deployed for
+   DNS, thus obtaining a globally unique name without the cost of
+   deploying another registry.  However, such use comes with its own
+   costs: domain name ownership may change over time for reasons not
+   anticipated by the URI producer.  In other cases, the data within the
+   host component identifies a registered name that has nothing to do
+   with an Internet host.  We use the name "host" for the ABNF rule
+   because that is its most common purpose, not its only purpose.
+
+      host        = IP-literal / IPv4address / reg-name
+
+   The syntax rule for host is ambiguous because it does not completely
+   distinguish between an IPv4address and a reg-name.  In order to
+   disambiguate the syntax, we apply the "first-match-wins" algorithm:
+   If host matches the rule for IPv4address, then it should be
+   considered an IPv4 address literal and not a reg-name.  Although host
+   is case-insensitive, producers and normalizers should use lowercase
+   for registered names and hexadecimal addresses for the sake of
+   uniformity, while only using uppercase letters for percent-encodings.
+
+   A host identified by an Internet Protocol literal address, version 6
+   [RFC3513] or later, is distinguished by enclosing the IP literal
+   within square brackets ("[" and "]").  This is the only place where
+   square bracket characters are allowed in the URI syntax.  In
+   anticipation of future, as-yet-undefined IP literal address formats,
+   an implementation may use an optional version flag to indicate such a
+   format explicitly rather than rely on heuristic determination.
+
+      IP-literal = "[" ( IPv6address / IPvFuture  ) "]"
+
+      IPvFuture  = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
+
+   The version flag does not indicate the IP version; rather, it
+   indicates future versions of the literal format.  As such,
+   implementations must not provide the version flag for the existing
+   IPv4 and IPv6 literal address forms described below.  If a URI
+   containing an IP-literal that starts with "v" (case-insensitive),
+   indicating that the version flag is present, is dereferenced by an
+   application that does not know the meaning of that version flag, then
+   the application should return an appropriate error for "address
+   mechanism not supported".
+
+   A host identified by an IPv6 literal address is represented inside
+   the square brackets without a preceding version flag.  The ABNF
+   provided here is a translation of the text definition of an IPv6
+   literal address provided in [RFC3513].  This syntax does not support
+   IPv6 scoped addressing zone identifiers.
+
+
+
+
+Berners-Lee, et al.         Standards Track                    [Page 19]
+
+RFC 3986                   URI Generic Syntax               January 2005
+
+
+   A 128-bit IPv6 address is divided into eight 16-bit pieces.  Each
+   piece is represented numerically in case-insensitive hexadecimal,
+   using one to four hexadecimal digits (leading zeroes are permitted).
+   The eight encoded pieces are given most-significant first, separated
+   by colon characters.  Optionally, the least-significant two pieces
+   may instead be represented in IPv4 address textual format.  A
+   sequence of one or more consecutive zero-valued 16-bit pieces within
+   the address may be elided, omitting all their digits and leaving
+   exactly two consecutive colons in their place to mark the elision.
+
+      IPv6address =                            6( h16 ":" ) ls32
+                  /                       "::" 5( h16 ":" ) ls32
+                  / [               h16 ] "::" 4( h16 ":" ) ls32
+                  / [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+                  / [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+                  / [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
+                  / [ *4( h16 ":" ) h16 ] "::"              ls32
+                  / [ *5( h16 ":" ) h16 ] "::"              h16
+                  / [ *6( h16 ":" ) h16 ] "::"
+
+      ls32        = ( h16 ":" h16 ) / IPv4address
+                  ; least-significant 32 bits of address
+
+      h16         = 1*4HEXDIG
+                  ; 16 bits of address represented in hexadecimal
+
+   A host identified by an IPv4 literal address is represented in
+   dotted-decimal notation (a sequence of four decimal numbers in the
+   range 0 to 255, separated by "."), as described in [RFC1123] by
+   reference to [RFC0952].  Note that other forms of dotted notation may
+   be interpreted on some platforms, as described in Section 7.4, but
+   only the dotted-decimal form of four octets is allowed by this
+   grammar.
+
+      IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
+
+      dec-octet   = DIGIT                 ; 0-9
+                  / %x31-39 DIGIT         ; 10-99
+                  / "1" 2DIGIT            ; 100-199
+                  / "2" %x30-34 DIGIT     ; 200-249
+                  / "25" %x30-35          ; 250-255
+
+   A host identified by a registered name is a sequence of characters
+   usually intended for lookup within a locally defined host or service
+   name registry, though the URI's scheme-specific semantics may require
+   that a specific registry (or fixed name table) be used instead.  The
+   most common name registry mechanism is the Domain Name System (DNS).
+   A registered name intended for lookup in the DNS uses the syntax
+
+
+
+Berners-Lee, et al.         Standards Track                    [Page 20]
+
+RFC 3986                   URI Generic Syntax               January 2005
+
+
+   defined in Section 3.5 of [RFC1034] and Section 2.1 of [RFC1123].
+   Such a name consists of a sequence of domain labels separated by ".",
+   each domain label starting and ending with an alphanumeric character
+   and possibly also containing "-" characters.  The rightmost domain
+   label of a fully qualified domain name in DNS may be followed by a
+   single "." and should be if it is necessary to distinguish between
+   the complete domain name and some local domain.
+
+      reg-name    = *( unreserved / pct-encoded / sub-delims )
+
+   If the URI scheme defines a default for host, then that default
+   applies when the host subcomponent is undefined or when the
+   registered name is empty (zero length).  For example, the "file" URI
+   scheme is defined so that no authority, an empty host, and
+   "localhost" all mean the end-user's machine, whereas the "http"
+   scheme considers a missing authority or empty host invalid.
+
+   This specification does not mandate a particular registered name
+   lookup technology and therefore does not restrict the syntax of reg-
+   name beyond what is necessary for interoperability.  Instead, it
+   delegates the issue of registered name syntax conformance to the
+   operating system of each application performing URI resolution, and
+   that operating system decides what it will allow for the purpose of
+   host identification.  A URI resolution implementation might use DNS,
+   host tables, yellow pages, NetInfo, WINS, or any other system for
+   lookup of registered names.  However, a globally scoped naming
+   system, such as DNS fully qualified domain names, is necessary for
+   URIs intended to have global scope.  URI producers should use names
+   that conform to the DNS syntax, even when use of DNS is not
+   immediately apparent, and should limit these names to no more than
+   255 characters in length.
+
+   The reg-name syntax allows percent-encoded octets in order to
+   represent non-ASCII registered names in a uniform way that is
+   independent of the underlying name resolution technology.  Non-ASCII
+   characters must first be encoded according to UTF-8 [STD63], and then
+   each octet of the corresponding UTF-8 sequence must be percent-
+   encoded to be represented as URI characters.  URI producing
+   applications must not use percent-encoding in host unless it is used
+   to represent a UTF-8 character sequence.  When a non-ASCII registered
+   name represents an internationalized domain name intended for
+   resolution via the DNS, the name must be transformed to the IDNA
+   encoding [RFC3490] prior to name lookup.  URI producers should
+   provide these registered names in the IDNA encoding, rather than a
+   percent-encoding, if they wish to maximize interoperability with
+   legacy URI resolvers.

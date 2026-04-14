@@ -167,8 +167,6 @@ bool    clsLocation::parseLocation()
 	if (!ConfigDirectiveParser::parseLocationPath(ctx, _locationData))
 		return false;
 
-	// if (ctx.parser.advance().type != TOKEN_LBRACE)
-	// 	return (_ERROR.setStatus(400, "Error in {"), false);
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE &&
 		   ctx.parser.peek().type != TOKEN_EOF)
@@ -180,7 +178,7 @@ bool    clsLocation::parseLocation()
 	if (ctx.parser.peek().type != TOKEN_RBRACE)
 		return (ctx.error.setStatus(400, "Error in }"), false);
 	ctx.parser.advance();
-	while (ctx.parser.peek().type == TOKEN_JOUJNO9ATE)
+	while (ctx.parser.peek().type == TOKEN_NEW_LINE)
 		ctx.parser.advance();
 	return (true);
 }

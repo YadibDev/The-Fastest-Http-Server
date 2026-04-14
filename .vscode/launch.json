@@ -4,7 +4,7 @@
         "type": "lldb",
         "request": "launch",
         "name": "Launch",
-        "program": "/mnt/homes/mjaouchi/Desktop/webserv/a.out",
+        "program": "${workspaceFolder}/webserv",
         "args": [],
         "cwd": "${workspaceFolder}"
     }

@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -g --std=c++98
+CPPFLAGS = -Wall -Wextra -g  --std=c++98
 NAME = webserv
 
 Header = Parser/ParseRequest/Request/Header.hpp Parser/ParseRequest/Request/HeaderTable.hpp Parser/ParseRequest/Request/HttpTypes.hpp Parser/ParseRequest/Request/RequestLine.hpp Parser/ParseRequest/Request/RequestParser.hpp \
@@ -26,9 +26,9 @@ ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(R
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)
 
-all : $(NAME) 
+all : $(NAME)
 
-$(NAME) : $(OBJ) 
+$(NAME) : $(OBJ)
 	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
 
 %.o : %.cpp $(Header)
