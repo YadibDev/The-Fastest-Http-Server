@@ -2,18 +2,18 @@
 #include <cstring> 
 
 RequestHandler::RequestHandler(stPollRequest& request)
-    : _autoindex(false),
-      _method(HttpTables::M_UNKNOWN),
-      _allowMethods(0),
-      _pathCgi(NULL),
-      _upload_store(NULL),
-      _Header(request)
+	:	_Header(request),
+		_pathCgi(NULL),
+		_upload_store(NULL)
 {
-    _physicalPath[0] = '\0';
-    _query.Data = NULL;
-    _query.len = 0;
-    _version.Data = NULL;
-    _version.len = 0;
+	_allowMethods = 0;
+	_method = HttpTables::M_UNKNOWN;
+	_autoindex = false;
+	_physicalPath[0] = '\0';
+	_query.Data = NULL;
+	_query.len = 0;
+	_version.Data = NULL;
+	_version.len = 0;
 }
 
 RequestHandler::~RequestHandler() {}
@@ -31,24 +31,24 @@ void    RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = all
 
 void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& errorPages)
 {
-    _error_pages = errorPages;
+	_error_pages = errorPages;
 }
 
 void RequestHandler::setPathInfo(const s_view pathInfo) {
-    _PathInfo = pathInfo;
+	_PathInfo = pathInfo;
 }
 
 void RequestHandler::setPathTranslated(std::string pathTranslated) {
-    _PathTranslated = pathTranslated;
+	_PathTranslated = pathTranslated;
 }
 
 void RequestHandler::setServerPort(const s_view serverPort) {
-    _ServerPort = serverPort;
+	_ServerPort = serverPort;
 }
 
 void    RequestHandler::setHeader(HeaderTable	Header)
 {
-    _Header = Header;
+	_Header = Header;
 }
 
 void    RequestHandler::setPathCgi(const std::string* pathCgi) { _pathCgi = pathCgi; }
@@ -72,15 +72,15 @@ s_view RequestHandler::getQuery() const { return _query; }
 s_view RequestHandler::getVersion() const { return _version; }
 
 const s_view& RequestHandler::getPathInfo() const {
-    return _PathInfo;
+	return _PathInfo;
 }
 
 const std::string &RequestHandler::getPathTranslated() const {
-    return _PathTranslated;
+	return _PathTranslated;
 }
 
 const s_view& RequestHandler::getServerPort() const {
-    return _ServerPort;
+	return _ServerPort;
 }
 
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
@@ -88,14 +88,14 @@ HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
 HeaderTable    &RequestHandler::getHeader()
 {
-    return _Header;
+	return _Header;
 }
 
 stErrorPagedata RequestHandler::getErrorPage(short code) const {
-    std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
-    if (it == _error_pages.end())
-        return stErrorPagedata();
-    return it->second;
+	std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
+	if (it == _error_pages.end())
+		return stErrorPagedata();
+	return it->second;
 }
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

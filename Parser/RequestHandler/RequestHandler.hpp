@@ -23,8 +23,8 @@ private:
 	HeaderTable			_Header;
 	std::map<short, stErrorPagedata>	_error_pages;
 	const std::string*	_pathCgi;
+	const std::string*	_upload_store;
 	stReturnData		_return;
-	std::string*		_upload_store;
 	std::string			_body;
 	std::string			_filePathBody;
 	HttpError			_error;
