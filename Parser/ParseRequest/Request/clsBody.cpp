@@ -109,8 +109,11 @@ void clsBody::handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_
     size_t &len = chunkHelp.multiLength;
     char *arr = chunkHelp.chunkMulti;
 
-    arr[len++] = io_chunk[t++];
-    size--;
+    while (len < 8000 && t < offset && size)
+    {
+        arr[len++] = io_chunk[t++];
+        size--;
+    }
 
     if (size == 0 || t == offset || len == 8000)
     {
@@ -127,6 +130,7 @@ void clsBody::handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_
         _multipartLib.setTrav(0);
     }
 }
+
 void clsBody::_handleChunk(size_t &ofset)
 {
     // pointing to data

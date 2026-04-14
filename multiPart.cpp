@@ -325,29 +325,19 @@ using namespace std;
 
 std::set<char> forbidden = {
     '(', ')', '<', '>', '@', ',', ';', ':',
-    '\\', '"', '/', '[', ']', '?', '=', '{', '}'
-};
+    '\\', '"', '/', '[', ']', '?', '=', '{', '}'};
 
-std::string req =
-    "--MyBoundary\r\n"
-    "Content-Disposition: form-data; name=\"username\"\r\n"
-    "\r\n"
-    "yassine\r\n\r\n"
-    "--MyBoundary--\r\n";
-
-string Header = "a\r\n"
-                "b\r\n"
-                "Content-Disposition: form-data; name=\"username\"\r\n"
-                "Content-type: \"image/png\"";
+string Header = "key:A  \r\n"
+                "content-dispositioN: form-data; name=var; filename=data.txt \r\n";
 
 void moveOffsetToDel(size_t &trav)
 {
     while (trav < Header.size())
     {
         if (Header[trav] == ';')
-            return ;
+            return;
         else if (trav + 1 < Header.size() && Header[trav] == '\r' && Header[trav + 1] == '\n')
-            return ;
+            return;
         trav++;
     }
 }
@@ -363,93 +353,323 @@ bool StoreValueAfterDelim(string &arr, size_t &trav, size_t &cur)
     short quotes = 0;
     bool backSlach = false;
 
-        skipWhiteSpaces(Header.c_str(), trav, Header.size());
-        while (trav < Header.size() && Header[trav] != '\r')
+    skipWhiteSpaces(Header.c_str(), trav, Header.size());
+    while (trav < Header.size() && Header[trav] != '\r')
+    {
+        if ((arr.length() != 0 && quotes != 1 && forbidden.count(Header[trav])) || (Header[trav] >= 0 && Header[trav] <= 32) || Header[trav] == 127)
         {
-            if ((arr.length() != 0 && quotes != 1 && forbidden.count(Header[trav])) || (Header[trav] >= 0 && Header[trav] <= 32) || Header[trav] == 127)
+            if (Header[trav] == ';')
             {
-                if (Header[trav] == ';')
-                {
-                    trav++;
-                    break;
-                }
-                else if (Header[trav] == ' ' || Header[trav] == '\t')
-                    skipWhiteSpaces(Header.c_str(), trav, Header.size());
+                trav++;
+                break;
+            }
+            else if (Header[trav] == ' ' || Header[trav] == '\t')
+                skipWhiteSpaces(Header.c_str(), trav, Header.size());
+            else
+                return false;
+        }
+        else
+        {
+            if (backSlach == false && Header[trav] == '"')
+            {
+                if (arr.length() == 0 || quotes == 1)
+                    quotes++;
                 else
                     return false;
+                trav++;
             }
             else
             {
-                if (backSlach == false && Header[trav] == '"')
+                if (backSlach == false && Header[trav] == '\\')
+                    backSlach = true;
+                else if (quotes != 2)
                 {
-                    if (arr.length() == 0 || quotes == 1)
-                        quotes++;
-                    else
-                        return false;
-                    trav++;
+                    arr += Header[trav++];
+                    backSlach = false;
                 }
                 else
-                {
-                    if (backSlach == false && Header[trav] == '\\')
-                        backSlach = true;
-                    else if (quotes != 2)
-                    {
-                        arr += Header[trav++];
-                        backSlach = false;
-                    }
-                    else
-                        return false;
-                }
+                    return false;
             }
         }
-        if (quotes == 1)
-            return 1;
-        cur = trav;
-        return true;
+    }
+    if (quotes == 1)
+        return 1;
+    cur = trav;
+    return true;
 }
-char sanitizeKey(char *arr, size_t start, size_t end)
+
+char sanitizeKey(char *arr, size_t start, size_t end, char del, int start_end[2])
 {
-    for (int i 
-    return 'S'
+    start_end[0] = start;
+    start_end[1] = -1;
+
+    if (start == end)
+        return 'E';
+    while (start < end)
+    {
+        if (arr[start] == del)
+        {
+            start_end[1] = start;
+            return 'S';
+        }
+        else if (forbidden.count(arr[start]) || (arr[start] >= 0 && arr[start] <= 32) || arr[start] == 127)
+            return 'E';
+        arr[start] = std::tolower(arr[start]);
+        start++;
+    }
     return 'E';
+}
+
+char sanitizeVal(char *arr, size_t start, size_t end, int start_end[2])
+{
+    skipWhiteSpaces(Header.c_str(), start, Header.size());
+    if (start == end)
+        return 'E';
+
+    start_end[0] = start;
+    start_end[1] = -1;
+
+    bool openQuotes = false;
+    bool closedQuotes = false;
+    bool backSlach = false;
+    bool getData = false;
+    bool done = false;
+    while (start < end)
+    {
+        if (arr[start] == '\\' && (openQuotes == true && closedQuotes == false))
+        {
+            backSlach = true;
+            start++;
+        }
+        else if (backSlach == false && arr[start] == '\"' && (openQuotes == false || closedQuotes == false))
+        {
+            if (getData == true && openQuotes == false)
+                return 'E';
+            else if (openQuotes == false)
+            {
+                start_end[0] = start + 1;
+                openQuotes = true;
+            }
+            else if (closedQuotes == false)
+            {
+                start_end[1] = start;
+                closedQuotes = true;
+            }
+            else
+                return 'E';
+            start++;
+        }
+        else
+        {
+            if ((arr[start] >= 0 && arr[start] <= 31) || arr[start] == 127)
+                return 'E';
+            else if ((closedQuotes == true || openQuotes == false) && forbidden.count(arr[start]))
+                return 'E';
+            else if ((closedQuotes == true || done == true) && arr[start] != ' ' && arr[start] != '\t')
+            {
+                return 'E';
+            }
+            else if ((closedQuotes == true || openQuotes == false) && (arr[start] == ' ' || arr[start] == '\t'))
+            {
+                if (done == false)
+                {
+                    start_end[1] = start;
+                    done = true;
+                }
+                skipWhiteSpaces(Header.c_str(), start, Header.size()); // test this things and add algo taking key and value
+            }
+            else
+            {
+                start++;
+                getData = true;
+            }
+        }
+    }
+    if (openQuotes == true && closedQuotes == false)
+        return 'E';
+    if (done == false)
+    {
+        start_end[1] = start;
+        done = true;
+    }
+    return 'S';
+}
+
+struct multiPartHeads
+{
+    bool contentTypeEx = false;
+    bool fileNameEx = false;
+    bool contentDispoEx = false;
+    bool nameVarEx = false;
+    bool insideDisposition = false;
+    string contentTypeVal = "";
+    string contentDispoVal = "";
+    string fileNameVal;
+};
+
+multiPartHeads HeadsData;
+
+#define CONTENT_TYPE 1
+#define CONTENT_DISPO 2
+#define NAME_PAR 3
+#define FILENAME_PAR 4
+
+char myComparaison(int st_end_key[2], bool parms = 0)
+{
+    int size = st_end_key[1] - st_end_key[0];
+    int start = st_end_key[0];
+
+    if (size == 19 && strncmp(&Header[start], "content-disposition", 19) == 0)
+        return CONTENT_DISPO;
+    else if (size == 12 && strncmp(&Header[start], "content-type", 19) == 0)
+        return CONTENT_TYPE;
+    else if (parms)
+    {
+        if (size == 4 && strncmp(&Header[start], "name", 4) == 0)
+            return NAME_PAR;
+        else if (size == 8 && strncmp(&Header[start], "filename", 4) == 0)
+            return FILENAME_PAR;
+    }
+    return 0;
+}
+
+void storeValue(int value_indexes[2], string &value)
+{
+    int size = value_indexes[1] - value_indexes[0];
+    int start = value_indexes[0];
+
+    if (size <= 0)
+    {
+        value = "";
+        return;
+    }
+
+    value.resize(size);
+    std::memcpy(&value[0], &Header[start], size);
+}
+
+char sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2], size_t start, size_t end, size_t temp)
+{
+    char whichHead = 0;
+    if (temp)
+    {
+        skipWhiteSpaces(&Header[0], start, Header.size());
+        if (sanitizeKey(&Header[0], start, end, '=', st_end_key) == 'S')
+        {
+            whichHead = myComparaison(st_end_key, 1);
+        }
+        else
+            return 'E';
+    }
+    else
+    {
+        if (sanitizeKey(&Header[0], start, end, ':', st_end_key) == 'S')
+        {
+            whichHead = myComparaison(st_end_key);
+        }
+        else
+            return 'E';
+    }
+    return sanitizeVal(&Header[0], st_end_key[1] + 1, end, st_end_value);
+}
+
+char storeValues(int key_indexes[2], int value_indexes[2], short delTot)
+{
+    bool isParms = delTot > 0;
+
+    if (isParms && HeadsData.insideDisposition)
+    {
+        char whichPams = myComparaison(key_indexes, isParms);
+        if (whichPams == NAME_PAR)
+        {
+            if (HeadsData.nameVarEx)
+                return 'E';
+            HeadsData.nameVarEx = true;
+        }
+        else if (whichPams == FILENAME_PAR)
+        {
+            if (HeadsData.fileNameEx)
+                return 'E';
+            HeadsData.fileNameEx = true;
+            storeValue(value_indexes, HeadsData.fileNameVal);
+        }
+    }
+    else if (isParms == false)
+    {
+        HeadsData.insideDisposition = false; // reset it every time we check header key
+
+        char whichPams = myComparaison(key_indexes);
+        if (whichPams == CONTENT_TYPE)
+        {
+            if (HeadsData.contentTypeEx)
+                return 'E';
+            HeadsData.contentTypeEx = true;
+            storeValue(value_indexes, HeadsData.contentTypeVal);
+        }
+        else if (whichPams == CONTENT_DISPO)
+        {
+            if (HeadsData.contentDispoEx)
+                return 'E';
+            HeadsData.contentDispoEx = true;
+            HeadsData.insideDisposition = true;
+            storeValue(value_indexes, HeadsData.contentDispoVal);
+            if (HeadsData.contentDispoVal != "form-data")
+                return 'E';
+        }
+    }
+    return 'S';
 }
 
 int main()
 {
     size_t cur = 0;
     size_t trav = 0;
-    char option = 'k';
+    short delTot = 0;
 
-    bool contentTypeEx = false;
-    bool fileNameEx = false;
-    bool contentDispoEx = false;
-    bool nameVarEx = false;
-    
-    string contentType = "";
-    string contentDispo = "";
-
-    while (1)
+    int key_indexes[2];
+    int value_indexes[2];
+    while (trav < Header.size())
     {
         moveOffsetToDel(trav);
-        if (option = 'k')
 
+        if ((sanitizeKeyAndValue(key_indexes, value_indexes, cur, trav, delTot) == 'E') || (storeValues(key_indexes, value_indexes, delTot) == 'E'))
+        {
+            std::cout << "\033[31mERROR\033[0m" << std::endl; // Red
+            return 1;
+        }
+        if (Header[trav] == ';')
+        {
+            ++delTot;
+            ++trav; // skip del
+            cur = trav;
+        }
+        else
+        {
+            delTot = 0; // reset total delimiters in line
+            trav += 2;  // skip crlf
+            cur = trav;
+        }
     }
-    cout << contentType << std::endl;
-    cout << contentDispo << std::endl;
+    if (HeadsData.contentDispoEx)
+        std::cout << HeadsData.contentDispoVal << endl;
+    if (HeadsData.contentTypeEx)
+        std::cout << HeadsData.contentTypeVal << endl;
+    if (HeadsData.fileNameEx)
+        std::cout << HeadsData.fileNameVal << endl;
+
     // "Content-Disposition";
     // "content-type";
-
 }
-    // clsMultiPart multiParser("--MyBoundary", 12, 0);
 
-    // multiParser.Parser(&req[0], 11);
-    // multiParser.Parser(&req[0], 11);
-    // multiParser.Parser(&req[0], 11);
-    // multiParser.Parser(&req[0], 50);
-    // multiParser.Parser(&req[0], 58);
-    // multiParser.Parser(&req[0], 92);
-    // std::cout << "_______\n";
+// clsMultiPart multiParser("--MyBoundary", 12, 0);
 
+// multiParser.Parser(&req[0], 11);
+// multiParser.Parser(&req[0], 11);
+// multiParser.Parser(&req[0], 11);
+// multiParser.Parser(&req[0], 50);
+// multiParser.Parser(&req[0], 58);
+// multiParser.Parser(&req[0], 92);
+// std::cout << "_______\n";
 
 // int main(){
 //     cout <<  "{"<< &req[72] << std::endl;
