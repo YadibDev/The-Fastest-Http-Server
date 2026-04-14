@@ -13,11 +13,11 @@ void UriParser::init(uint16_t startOffset) {
 	_shemaIndex     = 0;
 	_port           = DEFAULT_PORT;
 
-	_authority.Data = nullptr; _authority.len = 0;
-	_host.Data      = nullptr; _host.len      = 0;
-	_path.Data      = nullptr; _path.len      = 0;
-	_query.Data     = nullptr; _query.len     = 0;
-	_fragment.Data  = nullptr; _fragment.len  = 0;
+	_authority.Data = NULL; _authority.len = 0;
+	_host.Data      = NULL; _host.len      = 0;
+	_path.Data      = NULL; _path.len      = 0;
+	_query.Data     = NULL; _query.len     = 0;
+	_fragment.Data  = NULL; _fragment.len  = 0;
 
 	_error = HttpError();
 }
@@ -150,11 +150,11 @@ void UriParser::parseAuthority(const char* buffer, uint16_t size) {
 	if (!_authority.Data)
 		_authority.Data = const_cast<char*>(&buffer[_offset]);
 
-	const char* atPos = nullptr;
+	const char* atPos = NULL;
 	for (uint16_t i = _offset; i < size; ++i) {
 		if (buffer[i] == '@') { atPos = &buffer[i]; break; }
 	}
-	if (atPos != nullptr)
+	if (atPos != NULL)
 		_offset = static_cast<uint16_t>(atPos - buffer + 1);
 
 	_state = STATE_HOST;

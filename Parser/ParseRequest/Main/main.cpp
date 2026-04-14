@@ -186,7 +186,7 @@ int main()
 	const char* http_request = 
 		"POST /test HTTP/1.1\r\n"
 		"Host: localhost\r\n"
-		"\r\n";
+		"\r\n\0";
 
 	setPollRequestData(req, client, http_request);
 
@@ -219,6 +219,8 @@ int main()
 	ConfigueFile.ParseConfigue();
 	if (!ConfigueFile.getServers().size())
 	{
+		std::cout << ConfigueFile.getError().getMsgError() << std::endl;
+		std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
 		std::cout << "Block Server ZERO\n" << std::endl;
 		return 1;
 	}
@@ -227,6 +229,7 @@ int main()
 	RequestHandler	RequestHandler(req);
 
 	RequestParser Parser(req, &ServerConfig, &RequestHandler);
+
 
 	Parser.Parse(strlen(http_request));
 	

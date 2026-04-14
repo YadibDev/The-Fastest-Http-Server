@@ -4,7 +4,7 @@
         "type": "lldb",
         "request": "launch",
         "name": "Launch",
-        "program": "${workspaceFolder}/webserv",
+        "program": "/workspaces/The-Fastest-Http-Server/webserv",
         "args": [],
         "cwd": "${workspaceFolder}"
     }

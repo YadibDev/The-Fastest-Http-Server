@@ -8,10 +8,9 @@
 class Header {
 private:
 	#define SEED 0x12345678
-	enum State { STATE_KEY, STATE_VALUE, STATE_CR, STATE_LF, STATE_DECISION, STATE_COMPLETE, STATE_ERROR };
 
 	stPollRequest				&_request;
-	uint8_t						_state;
+	HttpTables::State			_state;
 	uint16_t					_offset;
 	uint16_t					_keyStart;
 	uint16_t					_valueStart;

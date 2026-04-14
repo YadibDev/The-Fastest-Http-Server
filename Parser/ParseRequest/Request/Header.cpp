@@ -4,7 +4,7 @@
 
 Header::Header(stPollRequest &request) : _request(request)
 {
-	_state = STATE_KEY;
+	_state = HttpTables::STATE_KEY;
 	_offset = 0;
 	_keyStart = 0;
 	_valueStart = 0;
@@ -12,7 +12,7 @@ Header::Header(stPollRequest &request) : _request(request)
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
 	_currentHeader = HttpTables::H_UNKNOWN;
-	_currentUnknownIndex = HttpTables::INVALID_INDEX;
+	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
 }
 
@@ -25,9 +25,9 @@ void    Header::init(uint16_t offset)
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
 	_currentHeader = HttpTables::H_UNKNOWN;
-	_currentUnknownIndex = HttpTables::INVALID_INDEX;
+	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
-	_state = STATE_KEY;
+	_state = HttpTables::STATE_KEY;
 }
 
 void	Header::hashStep(char c)
@@ -86,7 +86,8 @@ bool    Header::makeUnknownHeader()
 	_request.unknown_headers[_currentUnknownIndex].key.Data = (char *)&_request.request_metadata[_keyStart];
 	_request.unknown_headers[_currentUnknownIndex].key.len = (_offset - 1) - _keyStart;
 	
-	_request.unknown_headers[_currentUnknownIndex].next = HttpTables::INVALID_INDEX;
+	_request.unknown_headers[_currentUnknownIndex].next = INVALID_INDEX;
+	return true;
 }
 
 bool    Header::makeKnownHeader()
@@ -102,11 +103,11 @@ bool    Header::makeKnownHeader()
 		if (!makeUnknownHeader())
 			return false;
 		uint8_t next = _request.known_headers[_currentHeader].next;
-		if (next == HttpTables::INVALID_INDEX)
+		if (next == INVALID_INDEX)
 			_request.known_headers[_currentHeader].next = _currentUnknownIndex;
 		else
 		{
-			while (_request.unknown_headers[next].next != HttpTables::INVALID_INDEX)
+			while (_request.unknown_headers[next].next != INVALID_INDEX)
 				next = _request.unknown_headers[next].next;
 			_request.unknown_headers[next].next = _currentUnknownIndex;
 		}
@@ -117,13 +118,17 @@ bool    Header::makeKnownHeader()
 bool    Header::selectHeaderSlot()
 {
 	_currentHeader = fromHash(_hash);
-	_currentUnknownIndex = HttpTables::INVALID_INDEX;
+	_currentUnknownIndex = INVALID_INDEX;
 	if (_currentHeader != HttpTables::H_UNKNOWN)
+	{
 		if (!makeKnownHeader())
 			return false;
+	}
 	else
+	{
 		if (!makeUnknownHeader())
 			return false;
+	}
 
 	_hash = SEED;
 	_skipSpaceAfterColon = true;
@@ -133,7 +138,7 @@ bool    Header::selectHeaderSlot()
 void    Header::storeValue()
 {
 	uint16_t valueLen = _offset - _valueStart;
-	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == HttpTables::INVALID_INDEX)
+	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == INVALID_INDEX)
 	{
 		_request.known_headers[_currentHeader].val.Data = (char *)&_request.request_metadata[_valueStart];
 		_request.known_headers[_currentHeader].val.len = valueLen;
@@ -148,7 +153,7 @@ void    Header::storeValue()
 
 bool    Header::parseKey(uint16_t size)
 {
-	while (canRead(size) && _state == STATE_KEY)
+	while (canRead(size) && _state == HttpTables::STATE_KEY)
 	{
 		char c = _request.request_metadata[_offset];
 		if (c == ':')
@@ -156,7 +161,7 @@ bool    Header::parseKey(uint16_t size)
 			_offset++;
 			if (!selectHeaderSlot())
 				return false;
-			_state = STATE_VALUE;
+			_state = HttpTables::STATE_VALUE;
 			return true;
 		}
 		if (!isHeaderKeyChar(c))
@@ -177,12 +182,12 @@ bool    Header::parseValue(uint16_t size)
 		_valueStart = _offset;
 		_skipSpaceAfterColon = false;
 	}
-	while (canRead(size) && _state == STATE_VALUE)
+	while (canRead(size) && _state == HttpTables::STATE_VALUE)
 	{
 		char c = _request.request_metadata[_offset];
 		if (c == '\r')
 		{
-			_state = STATE_CR;
+			_state = HttpTables::STATE_CR;
 			return (storeValue(), true);
 		}
 		if (!isHeaderValueChar(c))
@@ -198,7 +203,7 @@ bool    Header::parseCR(uint16_t size)
 	if (_request.request_metadata[_offset] != '\r')
 		return (_error.setStatus(400, "Bad Request"), false);
 	_offset++;
-	_state = STATE_LF;
+	_state = HttpTables::STATE_LF;
 	return true;
 }
 
@@ -208,7 +213,7 @@ bool    Header::parseLF(uint16_t size)
 	if (_request.request_metadata[_offset] != '\n')
 		return (_error.setStatus(400, "Bad Request"), false);
 	_offset++;
-	_state = STATE_DECISION;
+	_state = HttpTables::STATE_DECISION;
 	return true;
 }
 
@@ -218,15 +223,16 @@ bool    Header::parseDecision(uint16_t size)
 	if (_request.request_metadata[_offset] == '\r')
 	{
 		_emptyLinePending = true;
-		_state = STATE_CR;
+		_state = HttpTables::STATE_CR;
 		return true;
 	}
 	_emptyLinePending = false;
 	_keyStart = _offset;
 	_hash = SEED;
 	_currentHeader = HttpTables::H_UNKNOWN;
-	_currentUnknownIndex = HttpTables::INVALID_INDEX;
-	_state = STATE_KEY;
+	_currentUnknownIndex = INVALID_INDEX;
+	_state = HttpTables::STATE_KEY;
+	return true;
 }
 
 void    Header::Parse(uint16_t size)
@@ -235,22 +241,22 @@ void    Header::Parse(uint16_t size)
 	{
 		uint16_t oldOffset = _offset;
 		uint8_t oldState = _state;
-		if (_state == STATE_KEY) parseKey(size);
-		else if (_state == STATE_VALUE) parseValue(size);
-		else if (_state == STATE_CR) parseCR(size);
-		else if (_state == STATE_LF)
+		if (_state == HttpTables::STATE_KEY) parseKey(size);
+		else if (_state == HttpTables::STATE_VALUE) parseValue(size);
+		else if (_state == HttpTables::STATE_CR) parseCR(size);
+		else if (_state == HttpTables::STATE_LF)
 		{
 			parseLF(size);
-			if (_state == STATE_DECISION && _emptyLinePending) _state = STATE_COMPLETE;
+			if (_state == HttpTables::STATE_DECISION && _emptyLinePending) _state = HttpTables::STATE_COMPLETE;
 		}
-		else if (_state == STATE_DECISION) parseDecision(size);
+		else if (_state == HttpTables::STATE_DECISION) parseDecision(size);
 		else break;
-		if (_error.isError() || _state == STATE_COMPLETE) break;
+		if (_error.isError() || _state == HttpTables::STATE_COMPLETE) break;
 		if (_offset == oldOffset && _state == oldState) break;
 	}
 }
 
 uint16_t    Header::getOffset() const { return _offset; }
-bool        Header::isError() const { return (_state == STATE_ERROR); }
-bool        Header::isComplete() const { return (_state == STATE_COMPLETE); }
+bool        Header::isError() const { return (_state == HttpTables::STATE_ERROR); }
+bool        Header::isComplete() const { return (_state == HttpTables::STATE_COMPLETE); }
 HttpError	Header::getError() const { return _error; }

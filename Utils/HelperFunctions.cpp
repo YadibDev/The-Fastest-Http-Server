@@ -51,7 +51,7 @@ long HelperFunctions::hexToDecS_view(char *buf, int len)
 {
 	long decimalValue = 0;
 	
-	for (std::size_t i = 0; i < len; ++i)
+	for (int i = 0; i < len; ++i)
 	{
 		int digit = hexCharToDec(buf[i]);
 		

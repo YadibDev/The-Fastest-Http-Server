@@ -211,11 +211,12 @@ bool    RequestLine::parse(const char *buffer, uint16_t size)
 		else
 			break;
 
-		if (_state == STATE_COMPLETE || _state == STATE_ERROR)
+		if (_state == STATE_COMPLETE || _error.isError())
 			break;
 		if (_offset == oldOffset && _state == oldState)
 			break;
 	}
+	return true;
 }
 
 bool				RequestLine::isComplete() const { return (_state == STATE_COMPLETE); }

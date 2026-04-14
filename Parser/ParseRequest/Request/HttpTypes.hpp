@@ -1,10 +1,12 @@
 #ifndef HTTP_TYPES_HPP
 #define HTTP_TYPES_HPP
 
-#include <cstdint>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
+#define INVALID_INDEX 255
+	
 struct s_view
 {
 	char *Data;
@@ -14,8 +16,9 @@ struct s_view
 
 class HttpTables {
 public:
-	static const uint8_t INVALID_INDEX = 255;
+
 	enum eMethod { M_GET, M_POST, M_DELETE, M_METHOD_COUNT, M_UNKNOWN };
+	enum State { STATE_KEY, STATE_VALUE, STATE_CR, STATE_LF, STATE_DECISION, STATE_COMPLETE, STATE_ERROR };
 	enum eKnownHeader {
 		H_HOST, H_CONTENT_LENGTH, H_TRANSFER_ENCODING, H_CONTENT_TYPE,
 		H_CONNECTION, H_EXPECT, H_AUTHORIZATION, H_COOKIE,
@@ -41,7 +44,7 @@ struct s_header_slot {
 	s_view		val;
 	uint8_t		next;
 	uint32_t	Hash;
-	s_header_slot() : next(HttpTables::INVALID_INDEX), Hash(0) {}
+	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
 };
 
 struct PollOfClient {

@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -g  --std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98
 NAME = webserv
 
 Header = Parser/ParseRequest/Request/Header.hpp Parser/ParseRequest/Request/HeaderTable.hpp Parser/ParseRequest/Request/HttpTypes.hpp Parser/ParseRequest/Request/RequestLine.hpp Parser/ParseRequest/Request/RequestParser.hpp \

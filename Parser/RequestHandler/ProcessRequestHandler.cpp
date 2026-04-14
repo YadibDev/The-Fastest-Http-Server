@@ -61,7 +61,7 @@ void	computePathTranslated(const std::string& rootPath, RequestHandler* handler)
 	s_view PathInfo = handler->getPathInfo();
 	size_t totalSize = rootPath.size() + PathInfo.len;
 
-	bool needSlash = (!rootPath.empty() && rootPath.back() != '/' && PathInfo.len > 0 && PathInfo.Data[0] != '/');
+	bool needSlash = (!rootPath.empty() && rootPath[rootPath.size() - 1] != '/' && PathInfo.len > 0 && PathInfo.Data[0] != '/');
 
 	if (needSlash)
 		totalSize += 1;

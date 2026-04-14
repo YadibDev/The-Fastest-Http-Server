@@ -26,7 +26,7 @@ s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) {
 }
 
 s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) {
-    if (index >= _request.sizeUnknownHeaders || index == HttpTables::INVALID_INDEX)
+    if (index >= _request.sizeUnknownHeaders || index == INVALID_INDEX)
         return NULL;
     return &_request.unknown_headers[index];
 }
@@ -51,7 +51,7 @@ void HeaderTable::linkThisHeader(uint8_t newIndex, uint8_t currentIndex)
             {
                 
                 uint8_t last = i;
-                while (_request.unknown_headers[last].next != HttpTables::INVALID_INDEX)
+                while (_request.unknown_headers[last].next != INVALID_INDEX)
                     last = _request.unknown_headers[last].next;
                 
                 if (last != newIndex)
@@ -77,7 +77,7 @@ uint8_t HeaderTable::countOccurrences(HttpTables::eKnownHeader h) {
     
     uint8_t count = 1;
     uint8_t nextIdx = current->next;
-    while (nextIdx != HttpTables::INVALID_INDEX) {
+    while (nextIdx != INVALID_INDEX) {
         count++;
         nextIdx = _request.unknown_headers[nextIdx].next;
     }
