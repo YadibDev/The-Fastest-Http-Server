@@ -153,6 +153,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     {
         string chunkData;
 
+        // resize single time 
         chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
