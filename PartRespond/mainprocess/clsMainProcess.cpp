@@ -12,7 +12,7 @@
 
 #include "../mainprocess/Webserv.hpp"
 
-clsMainProcess::clsMainProcess(){}
+clsMainProcess::clsMainProcess() {}
 clsMainProcess::~clsMainProcess(){}
 
 void clsMainProcess::_PartRedirection()

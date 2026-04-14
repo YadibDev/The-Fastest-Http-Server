@@ -54,6 +54,12 @@ struct PollOfClient {
 	s_header_slot	unknown_headers[25];
 	char			Response_metadata[16384];
 	uint16_t		read_offset;
+	uint16_t read_body;
+    void Reset()
+    {
+        read_offset = 0;
+        read_body = 0;
+    }
 };
 
 struct stPollRequest {

@@ -4,7 +4,9 @@
 
 
 
-clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
+clsClient::clsClient(const sockaddr_in &addr, int fd) : _dataForReq(),
+                                                        RequestXconfig(_dataForReq),
+                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;

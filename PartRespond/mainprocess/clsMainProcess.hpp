@@ -22,7 +22,6 @@ class clsMainProcess
 {
     private:
         clsResponse _Response;
-        // clsParseOutCGI _ParseOutCGI;
         // clsCGI _CGI;
         RequestHandler _DataRequest;
         void _PartRedirection();

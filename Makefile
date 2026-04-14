@@ -14,8 +14,9 @@ RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/respons
 CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
 				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
 
-REQUEST_FILES = Parser/ParseRequest/Request/clsStartLine.cpp Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/Request.cpp Parser/ParseRequest/URI/URI.cpp \
-				Parser/ParseRequest/URI/URIParser.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp
+REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
+				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp \
+				Parser/ParseRequest/Main/main.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp\
 
 ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES)
 
