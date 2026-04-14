@@ -52,13 +52,6 @@ struct RequestStatus {
     };
 };
 
-struct  stArguments {
-	size_t        _Pos;
-	HttpError    _Error;
-	std::string    _Data;
-	RequestStatus::e_state _State;
-};
-
 
 struct stlocation {
 	enum eType {

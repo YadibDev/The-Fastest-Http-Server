@@ -30,11 +30,10 @@ bool    RequestParser::LProcessRequestHandler()
 	return true;
 }
 
-bool    RequestParser::ParseRequestLine(uint16_t size)
+bool	RequestParser::ParseRequestLine(uint16_t size)
 {
 	_requestLine.parse(_request.request_metadata, size);
 	_offset = _requestLine.getOffset();
-
 	if (_requestLine.isError())
 	{
 		_error = _requestLine.getError();
