@@ -166,8 +166,6 @@ HttpError	URIParser::isValidRegName(const std::string& name) {
 
 	for (size_t i = 0; i < name.size(); ++i) {
 		unsigned char c = name[i];
-		if (isRegChar(c)) 
-			continue;
 		if (c == '%') {
 			if (i + 2 < name.size() && 
 				std::isxdigit(static_cast<unsigned char>(name[i+1])) && 
@@ -177,6 +175,8 @@ HttpError	URIParser::isValidRegName(const std::string& name) {
 			}
 			return HttpError(400, "Invalid percent-encoding in Host name");
 		}
+		if (isRegChar(c)) 
+			continue;
 		return HttpError(400, "Host name contains forbidden characters");
 	}
 	return HttpError();
@@ -372,9 +372,9 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
     return HttpError();
 }
 
-const short	URIParser::getMaxUriLength()
+short	URIParser::getMaxUriLength()
 {
-    const short MAX_URI_LENGTH = 8192;
+    short MAX_URI_LENGTH = 8192;
 
 	return MAX_URI_LENGTH;
 }
