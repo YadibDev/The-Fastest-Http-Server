@@ -1,7 +1,5 @@
 #include "HelperFunctions.hpp"
-std::map<int, std::string> HelperFunctions::_Message; 
-std::map<std::string, std::string> HelperFunctions::_TypeContent;
-std::map<int, std::string> HelperFunctions::_Body;;
+
 std::string HelperFunctions::trim(const std::string& str) {
 	const std::string whitespace = " \t";
 	
@@ -220,9 +218,11 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 }
 
 
-
-
 // Achraf
+
+std::map<int, std::string> HelperFunctions::_Message; 
+std::map<std::string, std::string> HelperFunctions::_TypeContent;
+std::map<int, std::string> HelperFunctions::_Body;
 
 bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word, bool Switch) {
     int i = 0;
@@ -276,6 +276,13 @@ void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
     for (short i = 0; i < (short)Str.size() && i < Size; i++)
         if (std::isalpha(Str[i]))
             Str[i] = std::tolower(Str[i]);
+}
+std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
+    for (size_t i = 0; i < Str.size(); i++) {
+        if (std::isalpha(Str[i]))
+            Str[i] = std::toupper(Str[i]);
+    }
+    return Str;
 }
 
 bool HelperFunctions::Ischar(const std::string &Sep, char C) {
@@ -370,11 +377,13 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 		Result += MaxHex[i--];
 	return (Result);
 }
-unsigned long long HelperFunctions::getCurrentTimeInMs()
+
+unsigned long HelperFunctions::getCurrentTimeInMs()
 {
     return getCurrentTimeInS() * 1000;
 }
-unsigned long HelperFunctions::getCurrentTimeInS()
+
+long HelperFunctions::getCurrentTimeInS()
 {
     long Time;
     Time = time(0);
@@ -385,13 +394,13 @@ size_t	HelperFunctions::ft_strlen(const char *s)
 {
 	size_t	i;
 
-    i = 0;
-    while (s[i] != '\0')
-        i++;
-    return i;
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
 }
-
-
 
 char	*HelperFunctions::ft_strdup(const char *src)
 {

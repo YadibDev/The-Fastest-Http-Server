@@ -520,7 +520,11 @@ private:
 
 	void	selectMethod(const char *buffer, uint16_t size)
 	{
+<<<<<<< HEAD
 		if (_offset > size)
+=======
+		if (_offset >= size)
+>>>>>>> Respond
 			return;
 
 		if (buffer[_offset] == 'G')
@@ -630,7 +634,11 @@ private:
 
 		if (!_versionMinorRead)
 		{
+<<<<<<< HEAD
 			if (_offset > size)
+=======
+			if (_offset >= size)
+>>>>>>> Respond
 				return;
 			if (buffer[_offset] != '0' && buffer[_offset] != '1')
 			{

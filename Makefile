@@ -23,12 +23,12 @@ ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(R
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)
 
-all : $(NAME) 
+all : $(NAME)
 
-$(NAME) : $(OBJ) 
+$(NAME) : $(OBJ)
 	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
 
-%.o : %.cpp
+%.o : %.cpp $(Header)
 	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
 
 clean:
