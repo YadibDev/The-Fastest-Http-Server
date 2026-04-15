@@ -5,6 +5,7 @@ RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConf
 	  _state(STATE_REQUEST_LINE),
 	  _offset(0),
 	  _requestLine(),
+	  _body(request),
 	  _header(request),
 	  _ServerConfig(ServerConfig),
 	  _RequestHandler(RequestHandler)
@@ -64,9 +65,21 @@ bool    RequestParser::ParseHeader(uint16_t size)
 	return true;
 }
 
-bool    RequestParser::ParseBody(uint16_t)
+bool    RequestParser::ParseBody(uint16_t size)
 {
-	_state = STATE_COMPLETE;
+	if (_body.getState() ==  SETTING_VARS || _body.getState() >= DONE_GOOD)
+	{
+		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - offset);
+		*(_request.read_body_ptr) = size - offset;
+	}
+
+	_body.bodyHandler(*(_request.read_body_ptr));
+
+	if (_body.getState == DONE_GOOD)
+		_state = STATE_COMPLETE;
+	else if (_body.getState == DONE_WIHTERROR)
+		_state = STATE_ERROR;
+
 	return true;
 }
 

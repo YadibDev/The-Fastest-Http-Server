@@ -7,8 +7,8 @@ clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
                                                                                 RequestXconfig(_dataForReq),
                                                                                 _Requester(_dataForReq, &block, &RequestXconfig),
                                                                                 _ResponderProecss(RequestXconfig),
-                                                                                _socket(fd),
-                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()),
+                                                                                _socket(fd), // must be not const
+                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()),  // must be not const
                                                                                 _addr(addr)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
@@ -16,7 +16,7 @@ clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
     this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
-
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -37,6 +37,7 @@ clsClient::clsClient(const clsClient &other) : _dataForReq(),
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
     this->_dataForReq.sizeUnknownHeaders = 25;
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;

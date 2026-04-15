@@ -8,19 +8,16 @@
 
 class clsRequest;
 
-enum bodyPlace
+struct bodyPlace
 {
-    NONE,
-    RAM,
-    DISK
+    enum body
+    {
+        NONE,
+        RAM,
+        DISK
+    };
 };
 
-enum whichBoundary
-{
-    startBoundary,
-    endBoundary,
-    nothing
-};
 
 enum bodySteps
 {
@@ -66,7 +63,7 @@ private:
     ssize_t     _Length;
     bool _isMultiPart;
     bool _isChunk;
-    void _handleChunk(size_t ofset);
+    void _handleChunk(size_t &ofset);
 public:
     // geters
     clsBody(stPollRequest &p);

@@ -365,6 +365,7 @@ void clsMultiPart::InitializeMulti(char *boundary, short lenBound, size_t start)
     cur = start;
     trav = cur;
     processIn = HEADER;
+    error = false;
     multiHeaders.Reset();
 }
 

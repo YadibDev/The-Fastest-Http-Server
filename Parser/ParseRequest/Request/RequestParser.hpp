@@ -7,6 +7,7 @@
 #include "../../ParseConfigFile/ServerConfig/ServerConfig.hpp"
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "HeaderTable.hpp"
+#include "clsBody.hpp"
 
 class RequestParser
 {
@@ -15,6 +16,7 @@ private:
 	uint16_t _offset;
 	RequestLine _requestLine;
 	Header _header;
+	clsBody _body;
 	clsServerConfig *_ServerConfig;
 	RequestHandler *_RequestHandler;
 	HttpError _error;

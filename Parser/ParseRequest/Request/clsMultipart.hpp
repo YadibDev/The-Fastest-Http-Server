@@ -79,7 +79,7 @@ private:
     char endFinal[2];
     bool _hitEnd;         // at start false
     bool foundFirstBound; // at start false
-    bool error = false;
+    bool error;
 
 public:
     void InitializeMulti(char *boundary, short lenBound, size_t start);
@@ -88,5 +88,5 @@ public:
     bool getError();
     size_t getTrav() { return trav; }
     void setTrav(size_t t) { trav = t; };
-    bool hitEnd() { return hitEnd; };
+    bool hitEnd() { return _hitEnd; };
 };
