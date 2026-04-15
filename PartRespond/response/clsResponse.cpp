@@ -235,7 +235,6 @@ void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool la
 
 const std::string &clsResponse::GetBody() const
 {
-    
     return _Body;
 }
 

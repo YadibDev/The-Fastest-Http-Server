@@ -1,12 +1,24 @@
 {
   "configurations": [
-  {
-    "type": "lldb",
-    "request": "launch",
-    "name": "Launch",
-    "program": "${workspaceFolder}/webserv",
-    "args": [],
-    "cwd": "${workspaceFolder}"
-  }
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Launch",
+      "program": "${workspaceFolder}/webserv",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+
+      "stopOnEntry": false,
+
+      "initCommands": [
+        "settings set target.process.stop-on-exec false"
+      ],
+
+      "preRunCommands": [
+        "breakpoint set --name __cxa_throw",
+        "breakpoint set --name abort",
+        "breakpoint set --name __assert_fail"
+      ]
+    }
   ]
 }

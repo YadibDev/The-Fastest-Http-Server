@@ -23,7 +23,7 @@ class clsMainProcess
 private:
     clsResponse _Response;
     // clsCGI _CGI;
-    RequestHandler _DataRequest;
+    RequestHandler &_DataRequest;
     void _PartRedirection();
     void _PartPermission();
     void _PartCGI();
