@@ -2,15 +2,19 @@
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
 
-
-
-clsClient::clsClient(const sockaddr_in &addr, int fd) : _dataForReq(),
-                                                        RequestXconfig(_dataForReq),
-                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
+                                                                                block(block),
+                                                                                RequestXconfig(_dataForReq),
+                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
+                                                                                _ResponderProecss(RequestXconfig),
+                                                                                _socket(fd),
+                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()),
+                                                                                _addr(addr)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    _dataForReq.request_metadata = _theData.request_metadata;
     this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
 
     _fdRespond = 0;
@@ -18,13 +22,21 @@ clsClient::clsClient(const sockaddr_in &addr, int fd) : _dataForReq(),
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
+clsClient::clsClient(const clsClient &other) : _dataForReq(),
+                                               block(other.block),
+                                               RequestXconfig(_dataForReq),
+                                               _Requester(_dataForReq, &block, &RequestXconfig),
+                                               _ResponderProecss(RequestXconfig),
+                                               _socket(other._socket),
+                                               _FirstConnection(other._FirstConnection),
+                                               _addr(other._addr)
+
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
-
+    _dataForReq.request_metadata = _theData.request_metadata;
+    this->_dataForReq.sizeUnknownHeaders = 25;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -83,14 +95,14 @@ int clsClient::_ReadDataForReq()
 {
     int size = 0;
 
-    if (_Requester._state == READING_LINE || _Requester._state == READING_HEADERS)
+    if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
         size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
     }
-    else if (_Requester._state == READING_BODY)
+    else if (_Requester._state == RequestParser::STATE_BODY)
     {
         // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
@@ -110,25 +122,25 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
-        _Requester._state = READING_LINE;
         _state = REQUEST_MODE;
+        // reset state of request
         _theData.Reset();
     }
 
     int size = _ReadDataForReq(); // reading data for request
-   
-    if (_state == CONNECTION_CLOSED || size == -1)
-        return ;
 
-    // if (_Requester._state == READING_BODY)
-    //     _Requester.parse(_theData.read_body);  // then pase it to parse
-    // else
-    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
-    
-    if (_Requester.isCompleted()) // add get error here
+    if (_state == CONNECTION_CLOSED || size == -1)
+        return;
+
+    if (_Requester._state == RequestParser::STATE_BODY)
+        _Requester.Parse(_theData.read_body); // then pase it to parse
+    else
+        _Requester.Parse(_theData.read_offset - 1); // then pase it to parse
+
+    if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
-        return ;
+        return;
     }
 }
 
@@ -145,14 +157,13 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         if (_fdRespond == 0)
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
         s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
-        // i woill work here for 
+        // i woill work here for
         if (s < CHUNK_LIMIT)
         {
             _state = LAST_CHUNKED;
             chunkData.resize(s);
             // if last respond we will add the end
             _Responder.ChunkData(respondBuffer, chunkData, true);
-
         }
         else
         {
@@ -177,11 +188,10 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
             close(_fdRespond);
             _fdRespond = 0;
         }
-        
     }
 }
 
-void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
+void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
@@ -189,9 +199,8 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
         _state = RESPOND_MODE;
 
         // linke request with config
-        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
 
-        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
+        this->_ResponderProecss.MainProcess(); // create respond
 
         respondBuffer += Respond.GetHeaderFeild();
 

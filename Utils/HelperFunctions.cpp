@@ -370,7 +370,10 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 		Result += MaxHex[i--];
 	return (Result);
 }
-
+unsigned long long HelperFunctions::getCurrentTimeInMs()
+{
+    return getCurrentTimeInS() * 1000;
+}
 unsigned long HelperFunctions::getCurrentTimeInS()
 {
     long Time;
@@ -381,6 +384,11 @@ unsigned long HelperFunctions::getCurrentTimeInS()
 size_t	HelperFunctions::ft_strlen(const char *s)
 {
 	size_t	i;
+
+    i = 0;
+    while (s[i] != '\0')
+        i++;
+    return i;
 }
 
 

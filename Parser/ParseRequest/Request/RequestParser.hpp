@@ -8,36 +8,43 @@
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "HeaderTable.hpp"
 
-class RequestParser {
+class RequestParser
+{
 private:
+	stPollRequest &_request;
+	uint16_t _offset;
+	RequestLine _requestLine;
+	Header _header;
+	clsServerConfig *_ServerConfig;
+	RequestHandler *_RequestHandler;
+	HttpError _error;
 
-	enum State { STATE_REQUEST_LINE, STATE_HEADERS, STATE_BODY, STATE_COMPLETE, STATE_ERROR };
-
-	stPollRequest	&_request;
-	State			_state;
-	uint16_t		_offset;
-	RequestLine		_requestLine;
-	Header			_header;
-	clsServerConfig	*_ServerConfig;
-	RequestHandler	*_RequestHandler;
-	HttpError		_error;
-
-	bool	LProcessRequestHandler();
-	bool    HProcessRequestHandler();
-	bool	ParseRequestLine(uint16_t size);
-	bool	ParseHeader(uint16_t size);
-	bool	ParseBody(uint16_t);
+	bool LProcessRequestHandler();
+	bool HProcessRequestHandler();
+	bool ParseRequestLine(uint16_t size);
+	bool ParseHeader(uint16_t size);
+	bool ParseBody(uint16_t);
 
 public:
+	// yadib modifier this part of mosaab
 
-	RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler);
-	void			init(uint16_t offset = 0);
-	void			Parse(uint16_t size);
-	bool			isComplete() const;
-	bool			isError() const;
-	RequestLine		getRequestLine() const;
-	HttpError		getError() const;
+	enum State
+	{
+		STATE_REQUEST_LINE,
+		STATE_HEADERS,
+		STATE_BODY,
+		STATE_COMPLETE,
+		STATE_ERROR
+	};
+	State _state;
+
+	RequestParser(stPollRequest &request, clsServerConfig *ServerConfig, RequestHandler *RequestHandler);
+	void init(uint16_t offset = 0);
+	void Parse(uint16_t size);
+	bool isComplete() const;
+	bool isError() const;
+	RequestLine getRequestLine() const;
+	HttpError getError() const;
 };
 
 #endif
-
