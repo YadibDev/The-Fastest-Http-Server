@@ -1,7 +1,7 @@
 #include "HelperFunctions.hpp"
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
-std::map<int, std::string> HelperFunctions::_Body;;
+std::map<int, std::string> HelperFunctions::_Body;
 std::string HelperFunctions::trim(const std::string& str) {
 	const std::string whitespace = " \t";
 	
