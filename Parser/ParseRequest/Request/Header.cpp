@@ -11,12 +11,13 @@ Header::Header(stPollRequest &request) : _request(request)
 	_hash = SEED;
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
+	_AuthorityExist = false;
 	_currentHeader = HttpTables::H_UNKNOWN;
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
 }
 
-void    Header::init(uint16_t offset)
+void    Header::init(uint16_t offset, bool AuthorityExist)
 {
 	_offset = offset;
 	_keyStart = offset;
@@ -24,6 +25,7 @@ void    Header::init(uint16_t offset)
 	_hash = SEED;
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
+	_AuthorityExist = AuthorityExist;
 	_currentHeader = HttpTables::H_UNKNOWN;
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
@@ -75,6 +77,13 @@ bool    Header::isHeaderValueChar(char c)
 
 bool    Header::canRead(uint16_t size) const { return (_offset <= size); }
 
+bool	Header::CheckHostAbsUri(s_view &VHost)
+{
+	if (!VHost.len)
+		return (_error.setStatus(400, "Header Fields Host Is Empty"), false);
+	return true;
+}
+
 bool    Header::makeUnknownHeader()
 {
 	if (_indexUnknownHeaders >= _request.sizeUnknownHeaders)
@@ -94,9 +103,16 @@ bool    Header::makeKnownHeader()
 {
 	if (_request.known_headers[_currentHeader].key.Data == NULL)
 	{
+		if (_currentHeader == HttpTables::H_HOST || _currentHeader == HttpTables::H_CONTENT_LENGTH)
+			if (_request.known_headers[HttpTables::H_HOST].Hash != -1 || _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
+				return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
+
 		_request.known_headers[_currentHeader].Hash = _hash;
 		_request.known_headers[_currentHeader].key.Data = (char *)&_request.request_metadata[_keyStart];
 		_request.known_headers[_currentHeader].key.len = (_offset - 1) - _keyStart;
+		if (_request.known_headers[HttpTables::H_HOST].Hash != -1) // is exist
+			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
+				return false;
 	}
 	else
 	{

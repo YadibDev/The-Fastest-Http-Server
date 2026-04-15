@@ -21,6 +21,7 @@ private:
 	uint8_t						_currentUnknownIndex;
 	uint8_t						_indexUnknownHeaders;
 	HttpError					_error;
+	bool						_AuthorityExist;
 
 
 	void hashStep(char c);
@@ -28,6 +29,7 @@ private:
 	bool	isHeaderKeyChar(char c);
 	bool	isHeaderValueChar(char c);
 	bool	canRead(uint16_t size) const;
+	bool	CheckHostAbsUri(s_view &HValue);
 	bool	makeUnknownHeader();
 	bool	makeKnownHeader();
 	bool	selectHeaderSlot();
@@ -41,7 +43,7 @@ private:
 public:
 	Header(stPollRequest &request);
 
-	void		init(uint16_t offset);
+	void		init(uint16_t offset, bool AuthorityExist);
 	void		Parse(uint16_t size);
 	bool		isError() const;
 	bool		isComplete() const;

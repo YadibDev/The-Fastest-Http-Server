@@ -87,13 +87,13 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         _PartRedirection();
     else if (!_DataRequest.MethodAllowed())
         _PartPermission();
-    else if ((_DataRequest.getMethod() == "GET"))
+    else if ((_DataRequest.getMethod() == HttpTables::eMethod::M_GET))
         _PartGETMethod();
-    else if (_DataRequest.getPathCgi() != "")
+    else if (*_DataRequest.getPathCgi() != "")
         _PartCGI();
-    else if ((_DataRequest.getMethod() == "DELETE"))
+    else if ((_DataRequest.getMethod() == HttpTables::eMethod::M_GET))
         _PartDeleteMethod();
-    else if ((_DataRequest.getMethod() == "POST"))
+    else if (_DataRequest.getMethod() == HttpTables::eMethod::M_POST)
         _PartPOSMethod();
         
 }

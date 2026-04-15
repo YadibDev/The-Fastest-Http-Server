@@ -11,23 +11,23 @@
 
 class RequestHandler {
 private:
-	char				_physicalPath[4096];
-	bool				_autoindex;
-	s_view				_query;
-	s_view				_version;
-	s_view				_PathInfo;
-	std::string			_PathTranslated;
-	s_view				_ServerPort;
-	HttpTables::eMethod	_method;
-	uint8_t				_allowMethods;
-	HeaderTable			_Header;
+	char								_physicalPath[4096];
+	bool								_autoindex;
+	s_view								_query;
+	s_view								_version;
+	s_view								_PathInfo;
+	std::string							_PathTranslated;
+	s_view								_ServerPort;
+	HttpTables::eMethod					_method;
+	uint8_t								_allowMethods;
+	HeaderTable							_Header;
 	std::map<short, stErrorPagedata>	_error_pages;
-	const std::string*	_pathCgi;
-	const std::string*	_upload_store;
-	stReturnData		_return;
-	std::string			_body;
-	std::string			_filePathBody;
-	HttpError			_error;
+	const std::string*					_pathCgi;
+	const std::string*					_upload_store;
+	stReturnData						_return;
+	std::string							_body;
+	std::string							_filePathBody;
+	HttpError							_error;
 
 public:
 	RequestHandler(stPollRequest& request);

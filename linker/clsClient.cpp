@@ -4,9 +4,10 @@
 
 
 
-clsClient::clsClient(const sockaddr_in &addr, int fd) : _dataForReq(),
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
                                                         RequestXconfig(_dataForReq),
-                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
+                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd),
+                                                        _Requester(_dataForReq,  &block, &RequestXconfig)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
@@ -18,12 +19,13 @@ clsClient::clsClient(const sockaddr_in &addr, int fd) : _dataForReq(),
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
+clsClient::clsClient(const clsClient &other) : _dataForReq(other._dataForReq),
+                                            RequestXconfig(other.RequestXconfig),
+                                            _Requester(other._Requester),
+                                            _addr(other._addr),
+                                            _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
+    
 
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
@@ -83,14 +85,14 @@ int clsClient::_ReadDataForReq()
 {
     int size = 0;
 
-    if (_Requester._state == READING_LINE || _Requester._state == READING_HEADERS)
+    if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
         size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
     }
-    else if (_Requester._state == READING_BODY)
+    else if (_Requester._state == RequestParser::STATE_BODY)
     {
         // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
@@ -110,7 +112,6 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
-        _Requester._state = READING_LINE;
         _state = REQUEST_MODE;
         _theData.Reset();
     }
@@ -125,7 +126,7 @@ void clsClient::ProcessRequest()
     // else
     //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
     
-    if (_Requester.isCompleted()) // add get error here
+    if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
         return ;
@@ -189,7 +190,6 @@ void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
         _state = RESPOND_MODE;
 
         // linke request with config
-        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
 
         this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
 

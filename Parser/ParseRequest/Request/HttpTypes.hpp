@@ -44,7 +44,7 @@ struct s_header_slot {
 	s_view		val;
 	uint8_t		next;
 	uint32_t	Hash;
-	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
+	s_header_slot() : next(INVALID_INDEX), Hash(-1) {}
 };
 
 struct PollOfClient {

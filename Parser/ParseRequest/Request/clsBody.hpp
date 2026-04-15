@@ -15,12 +15,8 @@ enum bodyPlace
     DISK
 };
 
-enum whichBoundary
-{
-    startBoundary,
-    endBoundary,
-    nothing
-};
+
+
 
 enum bodySteps
 {

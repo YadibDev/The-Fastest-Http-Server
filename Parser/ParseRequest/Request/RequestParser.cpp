@@ -7,7 +7,8 @@ RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConf
 	  _requestLine(),
 	  _header(request),
 	  _ServerConfig(ServerConfig),
-	  _RequestHandler(RequestHandler)
+	  _RequestHandler(RequestHandler),
+	  _body(request)
 {
 }
 
@@ -64,8 +65,12 @@ bool    RequestParser::ParseHeader(uint16_t size)
 	return true;
 }
 
-bool    RequestParser::ParseBody(uint16_t)
+bool	RequestParser::ParseBody(uint16_t size)
 {
+	if (_body.getState() == SETTING_VARS || _body.getState() >= 3)
+	{
+			
+	}
 	_state = STATE_COMPLETE;
 	return true;
 }
