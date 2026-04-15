@@ -1,5 +1,5 @@
 #include "clsBody.hpp"
-#include "Request.hpp"
+
 
 #define MAX_BODY_RAM 8100
 // geters
@@ -28,7 +28,7 @@ const bodyPlace &clsBody::getBodyLocation() const
     return _bodyLocation;
 }
 
-const bodySteps &clsBody::getState() const
+const bodySteps::step clsBody::getState() const
 {
     return _state;
 }
@@ -38,7 +38,7 @@ void clsBody::Reset()
     this->_fileName = "tmp/file_XXXXXX";
     this->_bodyLocation = NONE;
     this->_isError = false;
-    this->_state = SETTING_VARS;
+    this->_state = bodySteps::SETTING_VARS;
     this->_isMultiPart = false;
     this->_isChunk = false;
     this->_Length = -1;
@@ -58,8 +58,9 @@ bool clsBody::thereIsAline(const std::string &buffer, size_t &start, char c, cha
     return false;
 }
 // working on normal body without chunk
-void clsBody::bodyHandler(size_t &offset)
+void clsBody::bodyHandler(uint16_t *off)
 {
+    uint16_t &offset = *off;
     // i must handle left data in `request meta data` case
     if (_state == SETTING_VARS || _state == DONE_WIHTERROR || _state == DONE_GOOD)
     {
@@ -104,9 +105,9 @@ void clsBody::bodyHandler(size_t &offset)
     }
 }
 
-void clsBody::handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_chunk)
+void clsBody::handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk)
 {
-    size_t &len = chunkHelp.multiLength;
+    uint16_t &len = chunkHelp.multiLength;
     char *arr = chunkHelp.chunkMulti;
 
     while (len < 8000 && t < offset && size)
@@ -119,7 +120,7 @@ void clsBody::handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_
     {
         _multipartLib.Parser(arr, len);
 
-        size_t trv = _multipartLib.getTrav(); // index in multipart
+        uint16_t trv = _multipartLib.getTrav(); // index in multipart
 
         int i;
         for (i = 0; i < len - trv; i++)
@@ -131,7 +132,7 @@ void clsBody::handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_
     }
 }
 
-void clsBody::_handleChunk(size_t &ofset)
+void clsBody::_handleChunk(uint16_t &ofset)
 {
     // pointing to data
     char *arr = data.io_chunk;
@@ -216,9 +217,9 @@ void clsBody::_handleChunk(size_t &ofset)
         }
     }
 }
-void clsBody::moveOffsetMulti(size_t &offset)
+void clsBody::moveOffsetMulti(uint16_t &offset)
 {
-    size_t t = _multipartLib.getTrav();
+    uint16_t t = _multipartLib.getTrav();
     int i;
     for (i = 0; i < offset - t; i++)
     {
@@ -228,7 +229,7 @@ void clsBody::moveOffsetMulti(size_t &offset)
     _multipartLib.setTrav(0);
 }
 
-void clsBody::normalBody(size_t &offset)
+void clsBody::normalBody(uint16_t &offset)
 {
     static int writeSize = 0;
     int temp;
@@ -285,7 +286,7 @@ void clsBody::normalBody(size_t &offset)
             }
     }
 
-    if (_state == DONE_GOOD || _state == DONE_WIHTERROR)
+    if (_state == bodySteps::DONE_GOOD || _state == bodySteps::DONE_WIHTERROR)
     {
         if (fd != -1)
             close (fd);

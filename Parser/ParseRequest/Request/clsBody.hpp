@@ -19,23 +19,26 @@ struct bodyPlace
 };
 
 
-enum bodySteps
+struct bodySteps
 {
-    SETTING_VARS,
-    READING_HEADERS,
-    READING_BODY,
-    DONE_GOOD,
-    DONE_WIHTERROR,
+    enum step
+    {
+        SETTING_VARS,
+        READING_HEADERS,
+        READING_BODY,
+        DONE_GOOD,
+        DONE_WIHTERROR
+    };
 };
 
 struct chunkVars
 {
-    size_t size;
-    size_t cur;
-    size_t trav;
+    uint16_t size;
+    uint16_t cur;
+    uint16_t trav;
     bool readsize;
     char chunkMulti[8000];
-    size_t multiLength;
+    uint16_t multiLength;
     void Reset()
     {
         size = 0;
@@ -71,14 +74,14 @@ public:
     const char *getBodyInRam() const;
     const bodyPlace &getBodyLocation() const; // is in ram or disk
     const bool &getIsError() const;
-    const bodySteps &getState() const;
+    const bodySteps::step getState() const;
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
-    void bodyHandler(size_t &offset);
-    void normalBody(size_t &offset);
+    void bodyHandler(uint16_t *off);
+    void normalBody(uint16_t &offset);
     void Reset();
     void moveOffsetMulti();
-    void handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_chunk);
+    void handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk);
 
 };
 

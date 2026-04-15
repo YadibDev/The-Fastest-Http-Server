@@ -1,14 +1,15 @@
 #include "RequestParser.hpp"
 
 RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler)
-	: _request(request),
-	  _state(STATE_REQUEST_LINE),
-	  _offset(0),
-	  _requestLine(),
-	  _body(request),
-	  _header(request),
-	  _ServerConfig(ServerConfig),
-	  _RequestHandler(RequestHandler)
+	:
+	_request(request),
+	_offset(0),
+	_requestLine(),
+	_header(request),
+	_body(request),
+	_ServerConfig(ServerConfig),
+	_RequestHandler(RequestHandler),
+	_state(STATE_REQUEST_LINE)
 {
 }
 
@@ -67,17 +68,17 @@ bool    RequestParser::ParseHeader(uint16_t size)
 
 bool    RequestParser::ParseBody(uint16_t size)
 {
-	if (_body.getState() ==  SETTING_VARS || _body.getState() >= DONE_GOOD)
+	if (_body.getState() ==  bodySteps::SETTING_VARS || _body.getState() >= bodySteps::DONE_GOOD)
 	{
-		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - offset);
-		*(_request.read_body_ptr) = size - offset;
+		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - _offset);
+		*_request.read_body_ptr = size - _offset;
 	}
 
-	_body.bodyHandler(*(_request.read_body_ptr));
+	_body.bodyHandler((_request.read_body_ptr));
 
-	if (_body.getState == DONE_GOOD)
+	if (_body.getState() == bodySteps::DONE_GOOD)
 		_state = STATE_COMPLETE;
-	else if (_body.getState == DONE_WIHTERROR)
+	else if (_body.getState() == bodySteps::DONE_WIHTERROR)
 		_state = STATE_ERROR;
 
 	return true;
