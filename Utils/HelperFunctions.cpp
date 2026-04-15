@@ -49,6 +49,23 @@ long HelperFunctions::hexToDec(const std::string& hex)
 	return decimalValue;
 }
 
+long HelperFunctions::hexToDecS_view(char *buf, int len)
+{
+	long decimalValue = 0;
+	
+	for (int i = 0; i < len; ++i)
+	{
+		int digit = hexCharToDec(buf[i]);
+		
+		if (digit == -1)
+			return -1;
+		
+		decimalValue = (decimalValue << 4) | digit;
+	}
+	
+	return decimalValue;
+}
+
 bool HelperFunctions::is_numeric(const std::string& str) {
 	for (size_t i = 0; i < str.length(); i++)
 		if (!std::isdigit(str[i])) return false;
@@ -182,26 +199,43 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	return (200);
 }
 
-// Achraf
+s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
+    s_view result;
 
-bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word, bool Switch) {
-    int i = 0;
-    int lenghtBigStr = BigStr.size();
-    int lenghtWord = Word.size();
+    if (!view.Data || view.len == 0 || !set || *set == '\0')
+        return result;
 
-    if (Switch) {
-        while (i < lenghtBigStr && i < lenghtWord) {
-            if (BigStr[i] != Word[i])
-                return false;
-            i++;
-        }
-    } else {
-        while (lenghtBigStr > 0 && lenghtWord > 0) {
-            if (BigStr[--lenghtBigStr] != Word[--lenghtWord])
-                return false;
+    for (int i = (int)view.len - 1; i >= 0; --i) {
+        char current = view.Data[i];
+        
+        for (const char* s = set; *s != '\0'; ++s) {
+            if (current == *s) {
+                result.Data = view.Data + i;
+                result.len = view.len - i;
+                return result;
+            }
         }
     }
-    return (!lenghtWord || (Switch && lenghtWord == i));
+    return result;
+}
+
+
+// Achraf
+
+std::map<int, std::string> HelperFunctions::_Message; 
+std::map<std::string, std::string> HelperFunctions::_TypeContent;
+std::map<int, std::string> HelperFunctions::_Body;
+
+bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
+    short i = 0;
+
+    while (i < SizeStr && i < (short)Word.length())
+    {
+        if (std::tolower(BigStr[i]) != Word[i])
+            return false;
+        i++;
+    }
+    return (true);
 }
 
 bool HelperFunctions::IsStringDigit(const std::string &StringDigit, short Start, short End)
@@ -338,7 +372,12 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-unsigned long HelperFunctions::getCurrentTimeInS()
+unsigned long HelperFunctions::getCurrentTimeInMs()
+{
+    return getCurrentTimeInS() * 1000;
+}
+
+long HelperFunctions::getCurrentTimeInS()
 {
     long Time;
     Time = time(0);

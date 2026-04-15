@@ -38,7 +38,7 @@ bool clsParseConfigueFile::ParseConfigue()
 
     while (_Parse.peek().type != TOKEN_EOF) {
         if (_Parse.peek().type != TOKEN_WORD) {
-            ctx.error.setStatus(400, "Syntax Error: Expected block name");
+            _ERROR.setStatus(400, "Syntax Error: Expected block name");
             return false;
         }
 

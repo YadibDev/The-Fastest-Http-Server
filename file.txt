@@ -1,6 +1,0 @@
-connection
-content-lentgh
-transfer-encoding
-cookie
-range
-host

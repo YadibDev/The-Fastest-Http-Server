@@ -6,9 +6,9 @@
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
 #include "../PartRespond/mainprocess/Webserv.hpp"
-#include "../Parser/ParseRequest/Request/Request.hpp"
 #include "../Parser/RequestHandler/RequestHandler.hpp"
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
+#include "../Parser/ParseRequest/Request/RequestParser.hpp"
 
 using namespace std;
 
@@ -18,7 +18,6 @@ enum clinetState
     REQUEST_MODE,
     START_RESPOND,
     RESPOND_MODE,
-    SEND_BODY,
     LAST_CHUNKED,
     CONNECTION_CLOSED
 };
@@ -33,27 +32,33 @@ enum whereIsBody
 class clsClient
 {
 private:
-    
     // request object it will be here
-    size_t _BodyOfset;
-    string _DataLeft;
-    size_t _HeaderOfset;
-    
+    clsServerConfig &block;
+    const int _socket;
+    const size_t _FirstConnection; // first established connection in ms mile seconds
+    const sockaddr_in _addr;       // ip and port of the client
+
+    PollOfClient _theData;
+    stPollRequest _dataForReq;
+    bool _resetReq;
+
+    string respondBuffer;
+
+    RequestHandler RequestXconfig;
+    RequestParser _Requester;
     clsMainProcess _ResponderProecss;
-    clsRequest _Requester;
 
     clinetState _state;
     int _fdRespond;
     whereIsBody _BodyPlace;
-    const sockaddr_in _addr;       // ip and port of the client
-    size_t _LastConnection;        // update connection in ms
-    const size_t _FirstConnection; // first established connection in ms mile seconds
-    const int _socket;
+
+    size_t _LastConnection; // update connection in ms
 
     void _SendRespond(const clsResponse &_Responder);
-    // void _ReadRequest();
+    int _ReadDataForReq();
+
 public:
-    clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
+    clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
     clsClient(const clsClient &other);
 
     ~clsClient();
@@ -74,7 +79,7 @@ public:
 
     // the flow of request and respnd
     void ProcessRequest(); // will be
-    void ProcessRespond(const clsServerConfig &serverConfig);
+    void ProcessRespond();
     // void ProcessBoth();
 };
 

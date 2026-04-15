@@ -6,14 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 18:29:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/15 19:30:43 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 
-clsResponse::clsResponse()
+clsResponse::clsResponse(const RequestHandler &DataRequest): _DataRequest(DataRequest)
 {
     _Status = 0;
     _BodySize = 0;
@@ -42,7 +42,7 @@ void clsResponse::MakeResponse()
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         InitialHeaders();
-    else
+    if (_Mod[stMod::ERROR] == stMod::ERROR)
     {
         ErrorRespnseHandling();
         return ;
@@ -64,27 +64,26 @@ void clsResponse::InitialHeaders()
     Date();
     CachControl();
     Server();
-    std::vector<std::string>  Headers = _DataRequest.getHeaderValues("connection");
-
     // this handel by enums and git value from array
     
-    if (!Headers.empty())
+    if (DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).Hash != -1)
     {
-        if (Headers[0] == "close")
+        if (HelperFunctions::ComWord(DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).Data,
+            "close", DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).len))
         {
             _IsConnection = false;
-            ConnectionClose();
+            Connection(false);
         }
         else
-            ConnectionKeepAlive();
+            Connection(true);
     }
     else
-        ConnectionKeepAlive();
+        Connection(true);;
 }
 
 void clsResponse::ErrorRespnseHandling()
 {
-    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    stErrorPagedata &ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
     if (ErrorPageConf.response)
     {
@@ -115,10 +114,7 @@ void clsResponse::ErrorRespnseHandling()
     _HeaderFeild +=  _ErrorPage.ResponseError(PrevStatus);
 }
 
-void clsResponse::ConnectionClose()
-{
-   _HeaderFeild += "Connection: Close\r\n";
-}
+
 
 void clsResponse::Status()
 {
@@ -147,9 +143,12 @@ void clsResponse::ContentType()
 
 }
 
-void clsResponse::ConnectionKeepAlive()
+void clsResponse::Connection(bool Isclose)
 {
-    _HeaderFeild += "Connection: keep-alive\r\n";
+    if (Isclose)
+        _HeadersFieldFinal += "Connection: keep-alive";
+    else
+        _HeadersFieldFinal += "Connection: Close";
 }
 void clsResponse::Transfer_Encoding()
 {
@@ -232,16 +231,6 @@ void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool la
         NewStr += "0\r\n\r\n";
 }
 
- const std::string &clsResponse::GetBody() const
-{
-    return 0;
-}
-
-const std::string &clsResponse::GetFileName() const
-{
-    return 0;
-}
-
 void clsResponse::SetStatus(short Status)
 {
     _Status = Status;
@@ -266,6 +255,8 @@ void clsResponse::Reset()
     _BodySize = 0;
     _FileName = "";
     _FileFromDisk = "";
+    _Body = "";
+    _HeaderFeild = "";
     _IsConnection = false;
 }
 
@@ -276,11 +267,16 @@ bool clsResponse::GetIsConnection() const
 
 const std::string &clsResponse::GetHeaderFeild() const
 {
-    return std::string(_HeaderFeild);
+    return _HeaderFeild;
 }
-void clsResponse::SetRequestHandler(const RequestHandler &DataRequest)
+const std::string &clsResponse::GetBody() const
 {
-    _DataRequest = DataRequest;
+    return _Body;
+}
+
+const std::string &clsResponse::GetFileName() const
+{
+    return _FileName;
 }
 
 clsResponse::~clsResponse(){}

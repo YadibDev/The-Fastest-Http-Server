@@ -55,18 +55,18 @@ public:
 
 	bool								parseLocation();
 	
-	std::string							getRoot() const;
+	const std::string							&getRoot() const;
 	const std::string							&getAlias() const;
 	const std::vector<std::string>			&getIndex() const;
 	bool								getAutoIndex() const;
 	short								getAllowMethods() const;
 	unsigned long long					getClientMaxBodySize() const;
-	stReturnData						getReturn() const;
-	std::string							getUploadStore() const;
+	const stReturnData						&getReturn() const;
+	const std::string							&getUploadStore() const;
 	const std::map<std::string, std::string>	&getCgiPass() const;
 	const std::map<short, stErrorPagedata>	&getErrorPages() const;
 
-	stlocation							getLocationData() const;
+	const stlocation						&getLocationData() const;
 	HttpError							getError() const;
 
 };

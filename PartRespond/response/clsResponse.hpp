@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/12 16:49:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/15 19:26:43 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class clsResponse
         std::string _HeaderFeild;
         std::string _FileName;
         std::string _FileFromDisk;
-        RequestHandler _DataRequest;
+        const RequestHandler &_DataRequest;
 
         const std::string GetTypeData(const std::string &Type);
         void ErrorRespnseHandling();
@@ -42,8 +42,7 @@ class clsResponse
         void Status();
         void ContentLength();
         void ContentType();
-        void ConnectionKeepAlive();
-        void ConnectionClose();
+        void Connection(bool Isclose);
         void Redirction();
         void Transfer_Encoding();
         void StoredInFileOrStr();
@@ -52,12 +51,11 @@ class clsResponse
         void Server();
     public:
         void Reset();
-        clsResponse();
+        clsResponse(const RequestHandler &_DataRequest);
         const std::string &GetBody() const;
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
-        void SetRequestHandler(const RequestHandler &DataRequest);
         void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(stMod::eMod Mod);
         void SetType(const std::string &Type);

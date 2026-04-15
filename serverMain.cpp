@@ -11,11 +11,11 @@
 #include "server/clsEpollHandler.hpp"
 #include "server/clsServerSock.hpp"
 #include "linker/clsLinker.hpp"
-#include "Parser/ParseRequest/Request/Request.hpp"
 #include <vector>
 #include "PartRespond/mainprocess/Webserv.hpp"
 #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
+#include <csignal>
 // include "Parser/RequestHandler/RequestHandler.hpp"
 using namespace std;
 
@@ -26,41 +26,49 @@ using namespace std;
 //     Linker Manager;
 // };
 
+void function(int signal)
+{
+    exit(1);
+}
+
 int main()
 {
-
-    std::string Data;
+    signal(SIGINT, function);
     int fd = open("configs/default.conf", O_RDONLY);
-    if (fd == -1)
+    std::string configeData;
+    configeData.resize(1025);
+
+    read(fd, &configeData[0], 1024);
+
+    // fd, configeData, 1024
+
+    LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+
+    lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
+    lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
+    lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
+
+    lexerConfig.addCommentRule("#", "\n");
+    lexerConfig.addWithSpace(" \t\n");
+
+    GenericLexer<TokenType> lexer(configeData, lexerConfig);
+
+    std::vector<Token<TokenType> > Lexer = lexer.tokenize();
+
+    clsParse<TokenType> Data(Lexer, TOKEN_EOF);
+    clsParseConfigueFile ConfigueFile(Data);
+
+    ConfigueFile.ParseConfigue();
+    if (!ConfigueFile.getServers().size())
     {
-        std::cerr << "Error: Could not open config file." << std::endl;
+        std::cout << ConfigueFile.getError().getMsgError() << std::endl;
+        std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
+        std::cout << "Block Server ZERO\n"
+                  << std::endl;
         return 1;
     }
 
-    ssize_t Size = 10000;
-    HelperFunctions::ReadData(fd, Data, Size);
-    close(fd);
-
-    LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
-    cfg.addCommentRule("#", "\n");
-    cfg.addSeparatorToken('{', TOKEN_LBRACE);
-    cfg.addSeparatorToken('}', TOKEN_RBRACE);
-    cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
-    cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
-    cfg.addWithSpace(" \t");
-
-    GenericLexer<TokenType> Lexer(Data, cfg);
-    std::vector<Token<TokenType> > Tokens = Lexer.tokenize();
-    clsParse<TokenType> Parse(Tokens, TOKEN_EOF);
-
-    clsParseConfigueFile configFile(Parse);
-    configFile.ParseConfigue();
-    if (configFile.getServers().empty())
-    {
-        std::cout << "SEGFAULT HNA 58 main server\n";
-        return 1;
-    }
-    clsServerConfig Block = configFile.getServers()[0];
+    clsServerConfig Block = ConfigueFile.getServers()[0];
 
     clsEpollHandler epoll;
     epoll_event ClientBuffer[100];
@@ -83,11 +91,17 @@ int main()
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
             int newClient;
-            if ((ClientBuffer[i].events & EPOLLRDHUP) == EPOLLRDHUP)
+            if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
             {
-                std::cout << "Hello world" << std::endl;
-                std::cout << "Hello world" << std::endl;
-                std::cout << "Hello world" << std::endl;
+                if (ClientBuffer[i].events & EPOLLRDHUP)
+                    std::cout << "EPOLLRDHUP" << std::endl;
+                else if (ClientBuffer[i].events & EPOLLERR)
+                    std::cout << "EPOLLERR" << std::endl;
+                else
+                    std::cout << "EPOLLHUP" << std::endl;
+                ClientsLinker.removeClient(fd);
+                std::cout << "Fd" << fd << std::endl;
+                continue;
             }
             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
             {
@@ -100,10 +114,9 @@ int main()
                 }
                 else if (newClient > 0)
                 {
-                    // flow of accept client jdid
-                    cout << newClient << endl;
-                    ClientsLinker.insertClient(newClient, addr);
-                    epoll.addClient(newClient);
+                    // flow of accept new client
+                    ClientsLinker.insertClient(newClient, addr, Block);
+                    epoll.addClient(newClient, EPOLLIN);
                 }
                 else
                 {
@@ -119,38 +132,26 @@ int main()
                     }
                     if (client.GetState() == START_RESPOND)
                     {
-                        std::cout << "***********Done \n\n"
-                                  << std::endl;
-                        client.ProcessRespond(Block);
-                        if (ClientsLinker.GetClientAt(newClient).GetState() != BEGIN)
-                            epoll.changeAbility(newClient, EPOLLOUT);
+                        epoll.changeAbility(newClient, EPOLLOUT);
                     }
                 }
             }
             else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
             {
                 newClient = fd;
-                std::cout << "RESPOND 2 start" << endl;
-                RequestHandler reqHandler;
 
-                try
-                {
-                    ClientsLinker.GetClientAt(newClient).ProcessRespond(Block);
-                }
-                catch (std::exception &e)
-                {
-                    cout << e.what() << endl;
-                }
-                if (ClientsLinker.GetClientAt(newClient).GetState() == BEGIN)
+                clsClient &client = ClientsLinker.GetClientAt(newClient);
+
+                client.ProcessRespond();
+                if (client.GetState() == BEGIN)
                     epoll.changeAbility(newClient, EPOLLIN);
-                else if (ClientsLinker.GetClientAt(newClient).GetState() == CONNECTION_CLOSED)
+                else if (client.GetState() == CONNECTION_CLOSED)
                 {
+                    std::cout << "Removed\n";
                     ClientsLinker.removeClient(newClient);
                     continue;
                 }
-                std::cout << "RESPOND 2 end" << endl;
             }
-        
         }
     }
 }

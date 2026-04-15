@@ -1,0 +1,2 @@
+6883  execve("./webserv", ["./webserv"], 0x7ffed3a103b8 /* 106 vars */) = -1 ENOEXEC (Exec format error)
+6883  +++ exited with 1 +++

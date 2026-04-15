@@ -15,7 +15,7 @@
 #define COLOR_BOLD "\033[1m"
 #define COLOR_RESET "\033[0m"
 
-#define MAX_QUEUE 100 // back log or total pending connection
+#define MAX_QUEUE 400 // back log or total pending connection
 using namespace std;
 
 class clsServerSock

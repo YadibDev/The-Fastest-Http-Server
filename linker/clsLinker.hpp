@@ -19,7 +19,7 @@ public:
     clsClient &GetClientAt(int fd);
     void TimeOutClients();
     void removeClient(int fd);
-    void insertClient(int fd, const sockaddr_in &addr);
+    void insertClient(int fd, const sockaddr_in &addr, clsServerConfig &block);
 };
 
 #endif

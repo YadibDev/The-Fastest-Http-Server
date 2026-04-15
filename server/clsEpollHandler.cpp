@@ -46,15 +46,18 @@ bool clsEpollHandler::addServerSockets(clsServerSock &SocketsServer, int ability
 }
 
 //, bool isClient = 1
-bool clsEpollHandler::addClient(int fd, int ability)
+#include <stdio.h>
+bool clsEpollHandler::addClient(int fd, long long ability)
 {
     memset(&tempEvent, 0, sizeof(tempEvent));
     tempEvent.data.fd = fd;
-    tempEvent.events = ability;
+    tempEvent.events = (ability | EPOLLRDHUP);
+
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_ADD, fd, &tempEvent) == -1)
     {
-        std::cout << "Fail to add new client in epoll" << std::endl;
+        std::cout << "epoll fd " << _EpollFd << " Fail to add new client in epoll " << fd << std::endl;
+        perror("error: epoll:");
         return false; // we can add here sterror and errno for debugin in future
     }
     return true;
@@ -64,7 +67,7 @@ void clsEpollHandler::changeAbility(int fd, int newAbility)
 {
     memset(&tempEvent, 0, sizeof(tempEvent));
     tempEvent.data.fd = fd;
-    tempEvent.events = newAbility;
+    tempEvent.events = (newAbility | EPOLLRDHUP);
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_MOD, fd, &tempEvent) == -1)
         clog << COLOR_BOLD << COLOR_RED << fd << " ==> fail to change mode EPOLL_CTL_MOD" << std::endl;

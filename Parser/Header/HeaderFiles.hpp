@@ -44,19 +44,12 @@ struct Methods {
 
 struct RequestStatus {
     enum e_state {
-        READING_LINE    = 0, // نبدأ من 16 كما طلبت لتجنب التداخل
+        READING_LINE    = 0,
         READING_HEADERS = 1,
         READING_BODY    = 2,
         COMPLETED       = 3,
         ERROR           = 4
     };
-};
-
-struct  stArguments {
-	size_t        _Pos;
-	HttpError    _Error;
-	std::string    _Data;
-	RequestStatus::e_state _State;
 };
 
 
@@ -81,7 +74,7 @@ struct stErrorPagedata {
 	short       response;
 	std::string uri;
 
-	stErrorPagedata() : response(0), uri("") {}
+	stErrorPagedata() : response(-1), uri("") {}
 };
 
 #endif
