@@ -18,6 +18,47 @@ RequestHandler::RequestHandler(stPollRequest& request)
 
 RequestHandler::~RequestHandler() {}
 
+bool	RequestHandler::HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
+{
+	s_view extView = HelperFunctions::find_last_of_view(uri, ".");
+	_PathInfo = HelperFunctions::find_first_of_view(extView, "/");
+	
+	if (!extView.Data || !extView.len || extView.len > 255)
+		return true;
+
+	char buffer[256];
+	size_t copyLen = extView.len - _PathInfo.len;
+	if (copyLen > 255)
+		return (_error.setStatus(414, "URI Too Long"), false);
+
+	memcpy(buffer, extView.Data, copyLen);
+	buffer[copyLen] = '\0';
+
+	std::string extensionStr(buffer);
+	std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extensionStr);
+
+	if (it != cgi_pass.end())
+		_pathCgi = &it->second;
+	return true;	
+}
+
+void	RequestHandler::computePathTranslated(const std::string& rootPath)
+{
+	size_t totalSize = rootPath.size() + _PathInfo.len;
+
+	bool needSlash = (!rootPath.empty() && rootPath[rootPath.size() - 1] != '/' && _PathInfo.len > 0 && _PathInfo.Data[0] != '/');
+
+	if (needSlash)
+		totalSize += 1;
+
+	_PathTranslated.reserve(totalSize);
+	_PathTranslated.append(rootPath);
+
+	if (needSlash)
+		_PathTranslated += '/';
+
+	_PathTranslated.append(_PathInfo.Data, _PathInfo.len);
+}
 
 void    RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
 
@@ -34,8 +75,9 @@ void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& er
 	_error_pages = errorPages;
 }
 
-void RequestHandler::setPathInfo(const s_view pathInfo) {
-	_PathInfo = pathInfo;
+void	RequestHandler::setDefaultErrorPage(const stErrorPagedata* defaultErrorPage)
+{
+	_defaultErrorPage = defaultErrorPage;
 }
 
 void RequestHandler::setPathTranslated(std::string pathTranslated) {
@@ -91,10 +133,10 @@ HeaderTable    &RequestHandler::getHeader()
 	return _Header;
 }
 
-stErrorPagedata RequestHandler::getErrorPage(short code) const {
+const stErrorPagedata &RequestHandler::getErrorPage(short code) const {
 	std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
 	if (it == _error_pages.end())
-		return stErrorPagedata();
+		return _error_pages[1];
 	return it->second;
 }
 

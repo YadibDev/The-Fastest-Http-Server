@@ -11,13 +11,12 @@ Header::Header(stPollRequest &request) : _request(request)
 	_hash = SEED;
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
-	_AuthorityExist = false;
 	_currentHeader = HttpTables::H_UNKNOWN;
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
 }
 
-void    Header::init(uint16_t offset, bool AuthorityExist)
+void    Header::init(uint16_t offset)
 {
 	_offset = offset;
 	_keyStart = offset;
@@ -25,7 +24,6 @@ void    Header::init(uint16_t offset, bool AuthorityExist)
 	_hash = SEED;
 	_emptyLinePending = false;
 	_skipSpaceAfterColon = false;
-	_AuthorityExist = AuthorityExist;
 	_currentHeader = HttpTables::H_UNKNOWN;
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
@@ -77,10 +75,47 @@ bool    Header::isHeaderValueChar(char c)
 
 bool    Header::canRead(uint16_t size) const { return (_offset <= size); }
 
+
+bool isValidHostFormat(s_view &VHost)
+{
+
+    int lastColon = -1;
+    for (int i = VHost.len - 1; i >= 0; --i)
+	{
+        if (VHost.Data[i] == ':')
+		{
+            lastColon = i;
+            break;
+        }
+    }
+
+    int hostLen = (lastColon == -1) ? VHost.len : lastColon;
+
+    if (hostLen == 0)
+		return false;
+
+    if (lastColon != -1)
+	{
+        if (lastColon == VHost.len - 1)
+			return false;
+
+        for (int i = lastColon + 1; i < (int)VHost.len; ++i)
+		{
+            char c = VHost.Data[i];
+            if (!(c >= '0' && c <= '9'))
+                return false;
+        }
+    }
+
+    return true;
+}
+
 bool	Header::CheckHostAbsUri(s_view &VHost)
 {
 	if (!VHost.len)
 		return (_error.setStatus(400, "Header Fields Host Is Empty"), false);
+	if (!isValidHostFormat(VHost))
+		return (_error.setStatus(400, "host[:port]"), false);
 	return true;
 }
 

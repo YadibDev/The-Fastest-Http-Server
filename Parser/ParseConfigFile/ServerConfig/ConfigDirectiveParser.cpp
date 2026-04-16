@@ -248,6 +248,11 @@ short ConfigDirectiveParser::parseMethods(s_parse_context& ctx) {
 	return combinedMethods;
 }
 
+bool	isValidStatusCode(short code)
+{
+    return code >= 100 && code <= 599;
+}
+
 std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx) {
 	std::map<short, stErrorPagedata> errorMap;
 	std::vector<short> codes;
@@ -258,7 +263,10 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 	while (ctx.parser.peek().type == TOKEN_WORD && HelperFunctions::is_numeric(ctx.parser.peek().value))
 	{
-		codes.push_back((short)std::atoi(ctx.parser.peek().value.c_str()));
+		short code = (short)std::atoi(ctx.parser.peek().value.c_str());
+		if (!isValidStatusCode(code))
+			return (ctx.error.setStatus(400, "Expected ';' after methods"), errorMap);
+		codes.push_back(code);
 		ctx.parser.advance();
 	}
 

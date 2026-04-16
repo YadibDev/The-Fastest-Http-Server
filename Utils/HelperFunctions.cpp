@@ -219,7 +219,26 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
     return result;
 }
 
+s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
+{
 
+    s_view result;
+
+    if (!view.Data || view.len == 0 || !set || *set == '\0')
+        return result;
+
+    for (size_t i = 0; i < view.len; ++i) {
+        char current = view.Data[i];
+        for (const char* s = set; *s != '\0'; ++s) {
+            if (current == *s) {
+                result.Data = view.Data + i;
+                result.len = view.len - i;
+                return result;
+            }
+        }
+    }
+    return result;
+}
 
 
 // Achraf
