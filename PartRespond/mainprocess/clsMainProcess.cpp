@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 19:02:14 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 21:16:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,8 @@ clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
-    std::cout << _DataRequest.getReturn().code << std::endl;
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(stMod::REDIRECTION);
-    // modfier by yadib
-    // _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 

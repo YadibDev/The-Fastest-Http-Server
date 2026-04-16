@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 14:48:40 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 17:43:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class clsErrorPage
         void _HeadersErrorResponse();
         void _StoredBodys();
         void _StoredMessage();
-        void _Status();
+        void _StatusLine();
         void _ContentLength();
         void _ContentType();
         void _ConnectionClose();
@@ -43,11 +43,11 @@ class clsErrorPage
         void _StoredInFileOrStr()
     public:
         clsErrorPage();
-        void SetType(std::string Type);
         void SetBodySize(int BodySize);
-        void SetMod(const stMod::eMod *Mod);
-        std::string GetType();
-        void ResponseError(int Status, const std::string &FilePageError);
+        const std::string &GetHeaderField();
+        const std::string &GetBody();
+        const std::string &GetFileFromDisk();
+        const void ResponseError(int Status, const std::string &FilePageError);
         ~clsErrorPage();
 };
 #endif

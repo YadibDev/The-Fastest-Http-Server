@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/13 10:58:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 21:08:05 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,7 +314,7 @@ void clsParseOutCGI::_CreatFileTemp()
         _Mod[stMod::ERROR] = stMod::ERROR;
         return ;
     }
-     _NameFileBody =  temp;
+    _FileNameFromDisk =  temp;
 }
 
 void clsParseOutCGI::_ReceivingBody(std::string &Data)
@@ -340,7 +340,7 @@ void clsParseOutCGI::_ReceivingBody(std::string &Data)
             _CreatFileTemp();
             if (_Mod[stMod::ERROR] == stMod::ERROR)
                 return ;
-            if ((_Fdout = open(_NameFileBody.c_str(),O_CREAT | O_WRONLY, 0644)) == -1)
+            if ((_Fdout = open(_FileNameFromDisk.c_str(),O_CREAT | O_WRONLY, 0644)) == -1)
             {
                 _Status = 502;
                 _Mod[stMod::ERROR] = stMod::ERROR;
@@ -373,14 +373,12 @@ void clsParseOutCGI::_StoredInFileOrStr()
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         return ;
     }
     _BytesBody = MetaData.st_size;
     if (_BytesBody > _MaxSizeBody)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
-        _NameFileBody = _FileNameFromDisk;
         return ;
     }
     int FD = open(_FileNameFromDisk.c_str(), O_RDONLY, 644);
@@ -388,17 +386,16 @@ void clsParseOutCGI::_StoredInFileOrStr()
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         return ;
     }
     if (read(FD,&_Body[0],40000) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         close(FD);
         return ;
     }
+    _FileNameFromDisk.clear();
     close(FD);
 }
 
@@ -409,34 +406,18 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
     close(_Pipe_Fd);
-    // stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    // short PrevStatus = _Status;
-    // if (ErrorPageConf.response)
-    // {
-    //     if (ErrorPageConf.response != -1)
-    //         _Status = ErrorPageConf.response;
-    //         _FileNameFromDisk = ErrorPageConf.uri;
-    //     StoredInFileOrStr();
-    //     if (!_Erno)
-    //     {
-    //         _ErrorPage.SetMod(_Mod);
-    //         _ErrorPage.SetBodySize(_BytesBody);
-    //         _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-    //         _HeadersFieldFinal += _ErrorPage.ResponseError(PrevStatus);
-    //         return ;
-    //     }
-    //     else
-    //     {
-    //         _ErrorPage.SetBodySize(0);
-    //         _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    //         _Body += HelperFunctions::GetBody(PrevStatus);
-    //         _HeadersFieldFinal +=  _ErrorPage.ResponseError(PrevStatus);
-    //         return ;
-    //     }
-    // }
-    _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    _Body = HelperFunctions::GetBody(_Status);
-    _HeadersFieldFinal =  _ErrorPage.ResponseError(_Status);
+    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    if (ErrorPageConf.response)
+    {
+        if (ErrorPageConf.response != -1)
+            _Status = ErrorPageConf.response;
+        _ErrorPage.ResponseError(_Status, ErrorPageConf.uri);
+    }
+    else
+        _ErrorPage.ResponseError(_Status, "");
+    _Body = _ErrorPage.GetBody();
+    _HeadersFieldFinal = _ErrorPage.GetHeaderField();
+    _FileNameFromDisk = _ErrorPage.GetFileFromDisk();
 }
 
 void clsParseOutCGI::ReceivingData(std::string &Data)
@@ -494,11 +475,9 @@ void clsParseOutCGI::_Server()
 
 void clsParseOutCGI::_ContentLength()
 {
-    char *Number = HelperFunctions::ft_itoa(_BytesBody);
     _HeadersFieldFinal += "Content-Length: ";
-    _HeadersFieldFinal += Number ;
+    HelperFunctions::NumToStr(_BytesBody, _HeaderFeild);
     _HeadersFieldFinal +="\r\n";
-    delete[] Number;
 }
 
 const std::string &clsParseOutCGI::GetHeadersFieldFinal()
@@ -522,6 +501,6 @@ const std::string &clsParseOutCGI::GetBody()
 
 const std::string &clsParseOutCGI::GetFileNameBody()
 {
-    return _NameFileBody;
+    return _FileNameFromDisk;
 }
 clsParseOutCGI::~clsParseOutCGI(){}

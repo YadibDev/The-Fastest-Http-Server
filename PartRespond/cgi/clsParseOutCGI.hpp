@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/13 10:32:53 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 21:08:45 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CLS_PARSE_OUT_CGI_HPP
 
 #include "../mainprocess/librarys.hpp"
-// #include "../../Parser/RequestHandler/RequestHandler.hpp"
+#include "../../Parser/RequestHandler/RequestHandler.hpp"
 #include "../response/clsErrorPage.hpp"
 
 struct stHeadersCGI
@@ -37,7 +37,7 @@ class clsParseOutCGI
         std::string _ValueHeader;
         std::string _FileNameFromDisk;
         clsErrorPage _ErrorPage;
-        // RequestHandler _DataRequest; use
+        RequestHandler _DataRequest;
         short _CountSizeHeaders;
         short _MaxSizeHeaders;
         int _MaxSizeBody;
@@ -47,7 +47,6 @@ class clsParseOutCGI
         std::string _HeadersFieldFinal;
         std::string _Line;
         std::string _NameFileBody;
-        bool _Erno;
         int _Pipe_Fd;
         int _Fdout;
         bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);

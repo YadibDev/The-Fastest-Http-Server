@@ -79,6 +79,7 @@ public:
     static size_t	ft_strlen(const char *s);
     static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
     static int Countword(const std::string &Str, const std::string &Sep);
+    static void NumToStr(int Number, std::string &Str);
 
 
 private:

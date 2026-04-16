@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 15:56:38 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 19:02:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
  clsErrorPage::clsErrorPage()
 {
-    _Type = "";
     _Status = 0;
     _BodySize = 0;
     _Type.resize(500);
@@ -33,26 +32,21 @@
     _Erno = false;
 }
 
-void clsErrorPage::SetType(std::string Type) 
-{
-    _Type = Type;
-}
-
 void clsErrorPage::_HeadersErrorResponse()
 {
-    Status();
-    ContentType();
+    _StatusLine();
+    _ContentType();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
-        ContentLength();
-    Server();
-    Date();
+        _ContentLength();
+    _Server();
+    _Date();
     if (_Status == 405)
-       Allow();
+       _Allow();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
-        Transfer_Encoding();
+        _Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
-        RetryAfter();
-    ConnectionClose();
+        _RetryAfter();
+    _ConnectionClose();
     _HeaderFeild += "\r\n";
 }
  
@@ -91,7 +85,7 @@ void clsErrorPage::_StoredInFileOrStr()
         close(FD);
         return ;
     }
-    _FileFromDisk = "";
+    _FileFromDisk.clear();
     close(FD);
 }
  
@@ -106,7 +100,8 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         if (_Erno)
         {
             Type = ".html";
-            _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(PrevStatus));
+            _FileFromDisk = "";
+            _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
             _Body = HelperFunctions::GetBody(PrevStatus);
             _HeadersErrorResponse();
             return ;
@@ -119,6 +114,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         }
     }
     Type = ".html";
+    _FileFromDisk = "";
     _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(Status));
     _Body = HelperFunctions::GetBody(Status);
     _HeadersErrorResponse();
@@ -129,24 +125,20 @@ void clsErrorPage::_ConnectionClose()
     _HeaderFeild += "Connection: Close\r\n";
 }
 
-void clsErrorPage::_Status()
+void clsErrorPage::_StatusLine()
 {
-    char *Number = HelperFunctions::ft_itoa(_Status);
     _HeaderFeild += "HTTP/1.1 ";
-    _HeaderFeild += Number ;
+    HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
     _HeaderFeild +=  " ";
     _HeaderFeild += HelperFunctions::GetStatusMessage(_Status) ;
     _HeaderFeild += "\r\n";
-    delete[] Number;
 }
 
 void clsErrorPage::ContentLength()
 {
-     char *Number = HelperFunctions::ft_itoa(_BodySize);
     _HeaderFeild += "Content-Length: ";
-    _HeaderFeild += Number ;
+    HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
     _HeaderFeild +="\r\n";
-    delete[] Number;
 }
 void clsErrorPage::_ContentType()
 {
@@ -168,11 +160,10 @@ void clsErrorPage::Server()
 }
 void clsErrorPage::_RetryAfter()
 {
-    char *Number = HelperFunctions::ft_itoa(120);
     _HeaderFeild += "Retey-After: ";
+    HelperFunctions::NumToStr(120, _HeaderFeild);
     _HeaderFeild += Number;
     _HeaderFeild += "\r\n";
-    delete[] Number;   
 }
 void clsErrorPage::Allow()
 {
@@ -193,6 +184,20 @@ void clsErrorPage::SetMod(const stMod::eMod *Mod)
 void clsErrorPage::SetBodySize(int BodySize)
 {
     _BodySize = BodySize;
+}
+
+const std::string &clsErrorPage::GetHeaderField()
+{
+    return (_HeaderFeild);
+}
+
+const std::string &clsErrorPage::GetBody()
+{
+    return (_Body)
+}
+const std::string &clsErrorPage::GetFileFromDisk()
+{
+    return (_FileFromDisk);
 }
 
 clsErrorPage::~clsErrorPage()

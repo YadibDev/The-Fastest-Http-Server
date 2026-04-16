@@ -237,17 +237,6 @@ bool HelperFunctions::Iswhaitspace(char C) {
     return (C == ' ' || C == '\t');
 }
 
-std::string HelperFunctions::TrimStr(std::string Str, const std::string &Sep) {
-    if (Str.empty()) return Str;
-    size_t Start = 0;
-    size_t End = Str.length() - 1;
-    while (Start < Str.length() && Ischar(Sep, Str[Start]))
-        Start++;
-    while (End > Start && Ischar(Sep, Str[End]))
-        End--;
-    return Str.substr(Start, End - Start + 1);
-}
-
 void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
 {
     for (short i = 0; i < (short)Str.size() && i < Size; i++)
@@ -436,6 +425,36 @@ int	HelperFunctions::len_int(int nb)
 		i++;
 	}
 	return (i);
+}
+
+void HelperFunction::NumToStr(int Number, std::string &Str)
+{
+    char Remainder = 0;
+    int NewNumbr = 0;
+    int Counter = 0;
+    if (Number < 0)
+    {
+        Number *= -1;
+        Str += '-';
+    }
+    while (Number)
+    {
+        NewNumbr =( NewNumbr * 10) + Number % 10;
+        Number /= 10;
+        Counter++;
+    }
+    while (NewNumbr)
+    {
+        Remainder = (NewNumbr % 10) + '0';
+        Str += Remainder;
+        NewNumbr /= 10;
+        Counter--;
+    }
+    while (Counter > 0)
+    {
+        Str += '0';
+        Counter--;
+    }
 }
 
 char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)

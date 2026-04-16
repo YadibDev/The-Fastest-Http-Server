@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 16:26:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 21:15:39 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _MaxSizeBody = 40000;
     
     _IsConnection = true;
-    _Erno = false;
     _SizeHeaders = 0;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(_MaxSizeHeader);
@@ -72,7 +71,6 @@ void clsResponse::_InitialHeaders()
     _Date();
     _CachControl();
     _Server();
-    // this handel by enums and git value from array
     if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
         if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
@@ -91,55 +89,35 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     stErrorPagedata &ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    short PrevStatus = _Status;
-    if (!ErrorPageConf.uri.empty())
+
+    if (ErrorPageConf.response)
     {
         if (ErrorPageConf.response != -1)
             _Status = ErrorPageConf.response;
-        _FileFromDisk = ErrorPageConf.uri;
-        _StoredInFileOrStr();
-        if (!_Erno)
-        {
-            _ErrorPage.SetMod(_Mod);
-            _ErrorPage.SetBodySize(_BodySize);
-            _ErrorPage.SetType(HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(ErrorPageConf.uri)));
-            _HeaderFeild = _ErrorPage.ResponseError(PrevStatus);
-            return ;
-        }
-        else
-        {
-            _ErrorPage.SetBodySize(0);
-            _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-            _HeaderFeild += _ErrorPage.ResponseError(PrevStatus).c_str();
-            return ;
-        }
+        _ErrorPage.ResponseError(_Status, ErrorPageConf.uri);
     }
-    _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-    _Body += HelperFunctions::GetBody(_Status);
-    _BodySize = _Body.size();
-    _HeaderFeild +=  _ErrorPage.ResponseError(PrevStatus);
+    else
+        _ErrorPage.ResponseError(_Status, "");
+    _Body = _ErrorPage.GetBody();
+    _HeadersFieldFinal = _ErrorPage.GetHeaderField();
+    _FileNameFromDisk = _ErrorPage.GetFileFromDisk();
 }
-
 
 
 void clsResponse::_StatusLine()
 {
-    char *Number = HelperFunctions::ft_itoa(_Status);
     _HeaderFeild += "HTTP/1.1 ";
-    _HeaderFeild +=  Number;
+    HelperFunctions::NumToStr(_Status, _HeaderFeild);
     _HeaderFeild += " ";
     _HeaderFeild += HelperFunctions::GetStatusMessage(_Status);
     _HeaderFeild += "\r\n";
-    delete[] Number;
 }
 
 void clsResponse::_ContentLength()
 {
-    char *Number = HelperFunctions::ft_itoa(_BodySize);
     _HeaderFeild +=  "Content-Length: ";
-    _HeaderFeild += Number;
+    HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
     _HeaderFeild +=  "\r\n";
-    delete[] Number;
 }
 void clsResponse::_ContentType()
 {
@@ -164,7 +142,7 @@ void clsResponse::_Transfer_Encoding()
 void clsResponse::_Redirction()
 {
    _HeaderFeild += "Location: ";
-   _HeaderFeild += "value location";
+   _HeaderFeild += _DataRequest.getReturn().value;
    _HeaderFeild += "\r\n";
 }
 void clsResponse::_Date()
