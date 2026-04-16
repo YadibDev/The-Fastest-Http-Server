@@ -37,21 +37,21 @@ class clsResponse
         const RequestHandler &_DataRequest;
 
         const std::string GetTypeData(const std::string &Type);
-        void ErrorRespnseHandling();
-        void InitialHeaders();
-        void Status();
-        void ContentLength();
-        void ContentType();
-        void Connection(bool Isclose);
-        void Redirction();
-        void Transfer_Encoding();
-        void StoredInFileOrStr();
-        void Date();
-        void CachControl();
-        void Server();
+        void _ErrorRespnseHandling();
+        void _InitialHeaders();
+        void _StatusLine();
+        void _ContentLength();
+        void _ContentType();
+        void _Connection(bool Isclose);
+        void _Redirction();
+        void _Transfer_Encoding();
+        void _StoredInFileOrStr();
+        void _Date();
+        void _CachControl();
+        void _Server();
     public:
         void Reset();
-        clsResponse(const RequestHandler &_DataRequest);
+        clsResponse(RequestHandler &_DataRequest);
         const std::string &GetBody() const;
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
@@ -61,7 +61,7 @@ class clsResponse
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
-        void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
+        void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
 
         ~clsResponse();
 };

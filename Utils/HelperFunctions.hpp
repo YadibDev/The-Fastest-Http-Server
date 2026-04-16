@@ -23,7 +23,6 @@
 class HelperFunctions
 {
 public:
-	static std::string trim(const std::string &str);
 	static void skipWhitespace(const std::string &str, size_t &pos);
 	static bool isCRLF(const std::string &str);
 	static long hexToDec(const std::string &hex);
@@ -45,7 +44,7 @@ public:
     // achraf part
     static unsigned long getCurrentTimeInMs();
     static long getCurrentTimeInS();
-	static bool CmpWord(const std::string &BigStr, const std::string &Word, bool Switch);
+	static bool CmpWord(char *Str, const std::string &Word, short SizeStr);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
     static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
     static bool Iswhaitspace(char C);

@@ -1,20 +1,7 @@
 #include "HelperFunctions.hpp"
-std::map<int, std::string> HelperFunctions::_Message; 
-std::map<std::string, std::string> HelperFunctions::_TypeContent;
-std::map<int, std::string> HelperFunctions::_Body;
-std::string HelperFunctions::trim(const std::string& str) {
-	const std::string whitespace = " \t";
-	
-	size_t first = str.find_first_not_of(whitespace);
-	
-	if (first == std::string::npos) {
-		return "";
-	}
-	
-	size_t last = str.find_last_not_of(whitespace);
-	
-	return str.substr(first, (last - first + 1));
-}
+std::map<int, std::string> _Message; 
+std::map<std::string, std::string> _TypeContent;
+std::map<int, std::string> _Body;
 
 void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
@@ -45,7 +32,6 @@ long HelperFunctions::hexToDec(const std::string& hex)
 		
 		decimalValue = (decimalValue << 4) | digit;
 	}
-	
 	return decimalValue;
 }
 
@@ -226,12 +212,12 @@ std::map<int, std::string> HelperFunctions::_Message;
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 
-bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
+bool HelperFunctions::CmpWord(char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
 
     while (i < SizeStr && i < (short)Word.length())
     {
-        if (std::tolower(BigStr[i]) != Word[i])
+        if (std::tolower(Str[i]) != Word[i])
             return false;
         i++;
     }

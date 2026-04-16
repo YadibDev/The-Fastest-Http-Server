@@ -13,7 +13,7 @@
 #include "../mainprocess/Webserv.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 
-clsResponse::clsResponse(const RequestHandler &DataRequest): _DataRequest(DataRequest)
+clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
 {
     _Status = 0;
     _BodySize = 0;
@@ -36,52 +36,53 @@ void clsResponse::MakeResponse()
 {
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
-        _FileFromDisk = _DataRequest.getPhysicalPath().c_str();
+        const char * Arr = _DataRequest.getPhysicalPath();
+        _FileFromDisk = Arr;
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
-        StoredInFileOrStr();
+        _StoredInFileOrStr();
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
-        InitialHeaders();
+        _InitialHeaders();
     if (_Mod[stMod::ERROR] == stMod::ERROR)
     {
-        ErrorRespnseHandling();
+        _ErrorRespnseHandling();
         return ;
     }
    _HeaderFeild += "\r\n";
 }
 
-void clsResponse::InitialHeaders()
+void clsResponse::_InitialHeaders()
 {
-    Status();
+    _StatusLine();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
-        ContentLength();
+        _ContentLength();
     if (_BodySize)
-        ContentType();
+        _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
-        Transfer_Encoding();
+        _Transfer_Encoding();
     if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
-        Redirction();
-    Date();
-    CachControl();
-    Server();
+        _Redirction();
+    _Date();
+    _CachControl();
+    _Server();
     // this handel by enums and git value from array
     
-    if (DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).Hash != -1)
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
-        if (HelperFunctions::ComWord(DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).Data,
-            "close", DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION).len))
+        if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
+            "close", _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->len))
         {
             _IsConnection = false;
-            Connection(false);
+            _Connection(false);
         }
         else
-            Connection(true);
+            _Connection(true);
     }
     else
-        Connection(true);;
+        _Connection(true);
 }
 
-void clsResponse::ErrorRespnseHandling()
+void clsResponse::_ErrorRespnseHandling()
 {
     stErrorPagedata &ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
@@ -90,7 +91,7 @@ void clsResponse::ErrorRespnseHandling()
         if (ErrorPageConf.response != -1)
             _Status = ErrorPageConf.response;
         _FileFromDisk = ErrorPageConf.uri;
-        StoredInFileOrStr();
+        _StoredInFileOrStr();
         if (!_Erno)
         {
             _ErrorPage.SetMod(_Mod);
@@ -116,7 +117,7 @@ void clsResponse::ErrorRespnseHandling()
 
 
 
-void clsResponse::Status()
+void clsResponse::_StatusLine()
 {
     char *Number = HelperFunctions::ft_itoa(_Status);
     _HeaderFeild += "HTTP/1.1 ";
@@ -127,7 +128,7 @@ void clsResponse::Status()
     delete[] Number;
 }
 
-void clsResponse::ContentLength()
+void clsResponse::_ContentLength()
 {
     char *Number = HelperFunctions::ft_itoa(_BodySize);
     _HeaderFeild +=  "Content-Length: ";
@@ -135,7 +136,7 @@ void clsResponse::ContentLength()
     _HeaderFeild +=  "\r\n";
     delete[] Number;
 }
-void clsResponse::ContentType()
+void clsResponse::_ContentType()
 {
     _HeaderFeild += "Content-Type: ";
     _HeaderFeild += _Type;
@@ -143,41 +144,41 @@ void clsResponse::ContentType()
 
 }
 
-void clsResponse::Connection(bool Isclose)
+void clsResponse::_Connection(bool Isclose)
 {
     if (Isclose)
-        _HeadersFieldFinal += "Connection: keep-alive";
+        _HeaderFeild += "Connection: keep-alive";
     else
-        _HeadersFieldFinal += "Connection: Close";
+        _HeaderFeild += "Connection: Close";
 }
-void clsResponse::Transfer_Encoding()
+void clsResponse::_Transfer_Encoding()
 {
     _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
-void clsResponse::Redirction()
+void clsResponse::_Redirction()
 {
    _HeaderFeild += "Location: ";
    _HeaderFeild += "value location";
    _HeaderFeild += "\r\n";
 }
-void clsResponse::Date()
+void clsResponse::_Date()
 {
    _HeaderFeild += "Date: ";
    _HeaderFeild += HelperFunctions::DateTime();
    _HeaderFeild += "\r\n";
 }
-void clsResponse::CachControl()
+void clsResponse::_CachControl()
 {
     _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
-void clsResponse::Server()
+void clsResponse::_Server()
 {
   _HeaderFeild += "Server: HTTP/1.1\r\n";
 }
 
-void clsResponse::StoredInFileOrStr()
+void clsResponse::_StoredInFileOrStr()
 {
     struct stat MetaData;
     _Body.clear();
