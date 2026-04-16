@@ -1,12 +1,34 @@
 #include "clsMultipart.hpp"
 
 // multi header funtions
+std::set<char> clsMultiHeader::forbidden;
 
-set<char> clsMultiHeader::forbidden = {
-    '(', ')', '<', '>', '@', ',', ';', ':',
-    '\\', '"', '/', '[', ']', '?', '=', '{', '}'};
+clsMultiHeader::clsMultiHeader()
+{
+    if (forbidden.size() == 0)
+    {
+        forbidden.insert('(');
+        forbidden.insert(')');
+        forbidden.insert('<');
+        forbidden.insert('>');
+        forbidden.insert('@');
+        forbidden.insert(',');
+        forbidden.insert(';');
+        forbidden.insert(':');
+        forbidden.insert('\\');
+        forbidden.insert('"');
+        forbidden.insert('/');
+        forbidden.insert('[');
+        forbidden.insert(']');
+        forbidden.insert('?');
+        forbidden.insert('=');
+        forbidden.insert('{');
+        forbidden.insert('}');
+    }
+}
+    
 
-void clsMultiHeader::moveOffsetToDel(size_t &trav)
+void clsMultiHeader::moveOffsetToDel(uint16_t &trav)
 {
     while (trav < ofset)
     {
@@ -18,13 +40,13 @@ void clsMultiHeader::moveOffsetToDel(size_t &trav)
     }
 }
 
-void clsMultiHeader::skipWhiteSpaces(const char *str, size_t &trav, size_t size)
+void clsMultiHeader::skipWhiteSpaces(const char *str, uint16_t &trav, uint16_t size)
 {
     while (trav < size && (str[trav] == ' ' || str[trav] == '\t'))
         trav++;
 }
 
-// bool StoreValueAfterDelim(string &arr, size_t &trav, size_t &cur)
+// bool StoreValueAfterDelim(string &arr, uint16_t &trav, uint16_t &cur)
 // {
 //     short quotes = 0;
 //     bool backSlach = false;
@@ -74,7 +96,7 @@ void clsMultiHeader::skipWhiteSpaces(const char *str, size_t &trav, size_t size)
 //     return true;
 // }
 
-char clsMultiHeader::sanitizeKey(char *arr, size_t start, size_t end, char del, int start_end[2])
+char clsMultiHeader::sanitizeKey(char *arr, uint16_t start, uint16_t end, char del, int start_end[2])
 {
     start_end[0] = start;
     start_end[1] = -1;
@@ -96,7 +118,7 @@ char clsMultiHeader::sanitizeKey(char *arr, size_t start, size_t end, char del, 
     return 'E';
 }
 
-char clsMultiHeader::sanitizeVal(char *arr, size_t start, size_t end, int start_end[2])
+char clsMultiHeader::sanitizeVal(char *arr, uint16_t start, uint16_t end, int start_end[2])
 {
     skipWhiteSpaces(Header, start, ofset);
     if (start == end)
@@ -205,26 +227,18 @@ void clsMultiHeader::storeValue(int value_indexes[2], string &value)
     std::memcpy(&value[0], &Header[start], size);
 }
 
-char clsMultiHeader::sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2], size_t start, size_t end, size_t temp)
+char clsMultiHeader::sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2], uint16_t start, uint16_t end, uint16_t temp)
 {
     char whichHead = 0;
     if (temp)
     {
         skipWhiteSpaces(Header, start, ofset);
-        if (sanitizeKey(Header, start, end, '=', st_end_key) == 'S')
-        {
-            whichHead = myComparaison(st_end_key, 1);
-        }
-        else
+        if (sanitizeKey(Header, start, end, '=', st_end_key) == 'E')
             return 'E';
     }
     else
     {
-        if (sanitizeKey(Header, start, end, ':', st_end_key) == 'S')
-        {
-            whichHead = myComparaison(st_end_key);
-        }
-        else
+        if (sanitizeKey(Header, start, end, ':', st_end_key) == 'E')
             return 'E';
     }
     return sanitizeVal(Header, st_end_key[1] + 1, end, st_end_value);
@@ -301,8 +315,8 @@ bool clsMultiHeader::moveOffsetToDel(int &cur, int &trav)
 
 void clsMultiHeader::Parsing()
 {
-    size_t cur = 0;
-    size_t trav = 0;
+    uint16_t cur = 0;
+    uint16_t trav = 0;
     short delTot = 0;
 
     int key_indexes[2];
@@ -354,7 +368,7 @@ void clsMultiHeader::Reset()
 
 // multipart functions
 
-void clsMultiPart::InitializeMulti(char *boundary, short lenBound, size_t start)
+void clsMultiPart::InitializeMulti(char *boundary, short lenBound, uint16_t start)
 {
     this->lenBound = lenBound;
     std::memcpy(this->boundary, boundary, lenBound);
@@ -404,7 +418,7 @@ whichBound clsMultiPart::isBoundary(char *arr, bool edgeCase)
     return None;
 };
 
-void clsMultiPart::Parser(char *arr, size_t &offset)
+void clsMultiPart::Parser(char *arr, uint16_t &offset)
 {
     while (trav < offset && cur < offset && error == false)
     {
@@ -443,8 +457,8 @@ void clsMultiPart::Parser(char *arr, size_t &offset)
                 whichBound boundType = isBoundary(&arr[trav], edgeCase);
                 if (boundType != None)
                 {
-                    if (processIn == BODY)
-                        ;
+                    // if (processIn == BODY)
+                    //     ;
                     // reset body data
                     if (boundType == endBoundary)
                         this->_hitEnd = true;
@@ -460,8 +474,8 @@ void clsMultiPart::Parser(char *arr, size_t &offset)
                 {
                     if (processIn == HEADER)
                         multiHeaders.addChar(arr[trav]);
-                    else
-                        ;
+                    // else
+                    //     ; // add body here
                     // handleBody
                     trav += 1;
                 }

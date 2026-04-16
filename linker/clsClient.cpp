@@ -2,14 +2,15 @@
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
 
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
                                                                                 block(block),
-                                                                                RequestXconfig(_dataForReq),
-                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
-                                                                                _ResponderProecss(RequestXconfig),
                                                                                 _socket(fd), // must be not const
                                                                                 _FirstConnection(HelperFunctions::getCurrentTimeInMs()),  // must be not const
-                                                                                _addr(addr)
+                                                                                _addr(addr),
+                                                                                _dataForReq(),
+                                                                                RequestXconfig(_dataForReq),
+                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
+                                                                                _ResponderProecss(RequestXconfig)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
@@ -150,7 +151,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     ssize_t s;
     ssize_t nBytes;
 
-    if (_BodyPlace == DISK_FILE)
+    if (_BodyPlace == bodyPlaceEnum::DISK)
     {
         string chunkData;
 
@@ -179,7 +180,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     if (nBytes != -1)
         respondBuffer = &respondBuffer[nBytes];
 
-    if (respondBuffer.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+    if (respondBuffer.empty() && (_BodyPlace == bodyPlaceEnum::RAM || _state == LAST_CHUNKED))
     {
         _state = BEGIN;
         respondBuffer = "";
@@ -209,10 +210,10 @@ void clsClient::ProcessRespond()
         if (Respond.GetFileName().empty())
         {
             respondBuffer += Respond.GetBody();
-            _BodyPlace = RAM;
+            _BodyPlace = bodyPlaceEnum::RAM;
         }
         else
-            _BodyPlace = DISK_FILE;
+            _BodyPlace = bodyPlaceEnum::DISK;
     }
     _SendRespond(Respond);
 }

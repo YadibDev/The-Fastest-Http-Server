@@ -5,31 +5,11 @@
 #include <string>
 #include "clsMultipart.hpp"
 #include "Header.hpp"
+#include <unistd.h>
 
 class clsRequest;
 
-struct bodyPlace
-{
-    enum body
-    {
-        NONE,
-        RAM,
-        DISK
-    };
-};
 
-
-struct bodySteps
-{
-    enum step
-    {
-        SETTING_VARS,
-        READING_HEADERS,
-        READING_BODY,
-        DONE_GOOD,
-        DONE_WIHTERROR
-    };
-};
 
 struct chunkVars
 {
@@ -57,8 +37,7 @@ private:
     stPollRequest &data;
     clsMultiPart _multipartLib;
     chunkVars chunkHelp;
-    bodyPlace _bodyLocation;
-    bodySteps _state;
+    
     std::string _fileName;
     
     int fd;
@@ -66,21 +45,38 @@ private:
     ssize_t     _Length;
     bool _isMultiPart;
     bool _isChunk;
-    void _handleChunk(size_t &ofset);
+    void _handleChunk(uint16_t &ofset);
 public:
+    enum place
+    {
+        NONE,
+        RAM,
+        DISK
+    };
+    enum step
+    {
+        SETTING_VARS,
+        READING_HEADERS,
+        READING_BODY,
+        DONE_GOOD,
+        DONE_WIHTERROR
+    };
+    place _bodyLocation;
+    step _state;
+
     // geters
     clsBody(stPollRequest &p);
     const std::string &getFileName() const;
     const char *getBodyInRam() const;
-    const bodyPlace &getBodyLocation() const; // is in ram or disk
+    place getBodyLocation() const; // is in ram or disk
     const bool &getIsError() const;
-    const bodySteps::step getState() const;
+    step getState() const;
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
     void bodyHandler(uint16_t *off);
     void normalBody(uint16_t &offset);
     void Reset();
-    void moveOffsetMulti();
+    void moveOffsetMulti(uint16_t &offset);
     void handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk);
 
 };

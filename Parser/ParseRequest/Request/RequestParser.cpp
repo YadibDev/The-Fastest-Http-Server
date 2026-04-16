@@ -68,7 +68,7 @@ bool    RequestParser::ParseHeader(uint16_t size)
 
 bool    RequestParser::ParseBody(uint16_t size)
 {
-	if (_body.getState() ==  bodySteps::SETTING_VARS || _body.getState() >= bodySteps::DONE_GOOD)
+	if (_body.getState() ==  clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
 	{
 		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - _offset);
 		*_request.read_body_ptr = size - _offset;
@@ -76,9 +76,9 @@ bool    RequestParser::ParseBody(uint16_t size)
 
 	_body.bodyHandler((_request.read_body_ptr));
 
-	if (_body.getState() == bodySteps::DONE_GOOD)
+	if (_body.getState() == clsBody::DONE_GOOD)
 		_state = STATE_COMPLETE;
-	else if (_body.getState() == bodySteps::DONE_WIHTERROR)
+	else if (_body.getState() == clsBody::DONE_WIHTERROR)
 		_state = STATE_ERROR;
 
 	return true;
