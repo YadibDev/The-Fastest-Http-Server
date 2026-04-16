@@ -71,6 +71,7 @@ public:
     place getBodyLocation() const; // is in ram or disk
     const bool &getIsError() const;
     step getState() const;
+    void shiftingData(char *src, int offset, int sizeShift);
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
     void bodyHandler(uint16_t *off);

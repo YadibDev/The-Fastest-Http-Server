@@ -233,10 +233,17 @@ void clsBody::moveOffsetMulti(uint16_t &offset)
     _multipartLib.setTrav(0);
 }
 
+void clsBody::shiftingData(char *src, int offset, int sizeShift)
+{
+    for (int i = 0; i < sizeShift; i++)
+    {
+        src[i] = src[offset + i];
+    }
+}
+
 void clsBody::normalBody(uint16_t &offset)
 {
     static int writeSize = 0;
-    int temp;
     if (_bodyLocation == clsBody::DISK)
     {
         // 5asni ndir b7sab dik l3ayba dyal body ba9i f meta request
@@ -259,15 +266,21 @@ void clsBody::normalBody(uint16_t &offset)
                 }
                 else
                 {
-                    temp = writeSize;
-                    writeSize += write(this->fd, data.io_chunk, offset); // i will change this
-                    offset -= writeSize;
-                    if (temp < writeSize)
+                    int temp = write(this->fd, data.io_chunk, offset); // i will change this 
+                    if (temp == -1)
                     {
                         this->_isError = true;
                         return ;
                     }
-                    else if (offset == writeSize)
+                    writeSize += temp;
+                    offset -= temp;
+
+                    if (offset)
+                    {
+                        shiftingData(data.io_chunk, temp, offset);
+                    }
+
+                    if (this->_Length == writeSize)
                         _state = clsBody::DONE_GOOD;
                 }
         }
