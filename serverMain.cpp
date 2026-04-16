@@ -110,7 +110,7 @@ int main()
                 {
                     if (newClient == -1)
                         std::cerr << "Accept Fail" << std::endl;
-                    continue;
+                    continue ;
                 }
                 else if (newClient > 0)
                 {
@@ -128,7 +128,7 @@ int main()
                     if (client.GetState() == CONNECTION_CLOSED)
                     {
                         ClientsLinker.removeClient(newClient);
-                        continue;
+                        continue ;
                     }
                     if (client.GetState() == START_RESPOND)
                     {

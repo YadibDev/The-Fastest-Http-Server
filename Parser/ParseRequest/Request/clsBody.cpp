@@ -68,7 +68,7 @@ void clsBody::bodyHandler(uint16_t *off)
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
         this->Reset();
-        if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != (uint32_t) -1)
+        if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != -1)
         {
             _isChunk = true;
             _bodyLocation = clsBody::DISK;
@@ -79,7 +79,7 @@ void clsBody::bodyHandler(uint16_t *off)
                 return;
             }
         }
-        else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != (uint32_t) -1)
+        else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
         {
             _isChunk = false;
             const char *content_leng = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data; //
@@ -101,11 +101,12 @@ void clsBody::bodyHandler(uint16_t *off)
             _state = clsBody::READING_BODY ;
         }
         
-        if ( data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != (uint32_t) -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 9 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 9) == 0 )
+        if ( data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 9 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 9) == -1)
             _isMultiPart = true; 
         else
             _isMultiPart = false;
     }
+    normalBody(offset); // i must change name of it
 }
 
 void clsBody::handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk)

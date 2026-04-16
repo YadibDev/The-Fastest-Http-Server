@@ -61,7 +61,7 @@ bool    RequestParser::ParseHeader(uint16_t size)
 		return false;
 	}
 	if (_header.isComplete())
-		_state = STATE_COMPLETE;
+		_state = STATE_BODY;
 
 	return true;
 }
@@ -70,11 +70,18 @@ bool    RequestParser::ParseBody(uint16_t size)
 {
 	if (_body.getState() ==  clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
 	{
+		if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash == -1
+			&& _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
+		{
+			_error.setStatus(411, "Length Required");
+			return false; 
+		}
+		size++;
 		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - _offset);
 		*_request.read_body_ptr = size - _offset;
 	}
 
-	_body.bodyHandler((_request.read_body_ptr));
+	_body.bodyHandler(_request.read_body_ptr);
 
 	if (_body.getState() == clsBody::DONE_GOOD)
 		_state = STATE_COMPLETE;

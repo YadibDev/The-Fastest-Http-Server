@@ -142,6 +142,25 @@ void clsClient::ProcessRequest()
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
+        std::cout << "-----------------------------" << std::endl;
+        std::cout << "\n \033[32m the request completed \033[0m \n" << std::endl; // Green
+        std::cout << this->_theData.request_metadata << std::endl;
+        if (_Requester._body._bodyLocation == clsBody::DISK)
+            std::cout << "\nbody in disk\n" << std::endl;
+        else if (_Requester._body._bodyLocation == clsBody::RAM)
+            std::cout << "\nbody in RAM\n" << std::endl;
+        std::cout << "\nbody in \n" << _Requester._body._bodyLocation << std::endl;
+
+        if (this->_theData.read_body)
+        {
+            std::cout << "\nbody size : " << this->_theData.read_body << std::endl << std::endl;
+            for (int i = 0; i < _theData.read_body; i++)
+            {
+                std::cout << this->_theData.io_chunk[i];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "-----------------------------" << std::endl;
         return;
     }
 }

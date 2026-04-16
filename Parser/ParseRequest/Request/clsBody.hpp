@@ -33,7 +33,7 @@ struct chunkVars
 
 class clsBody
 {
-private:
+public: // time to debug
     stPollRequest &data;
     clsMultiPart _multipartLib;
     chunkVars chunkHelp;

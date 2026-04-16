@@ -11,7 +11,7 @@
 
 class RequestParser
 {
-private:
+public:// time to debug
 	stPollRequest &_request;
 	uint16_t _offset;
 	RequestLine _requestLine;
