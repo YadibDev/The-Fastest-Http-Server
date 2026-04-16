@@ -62,7 +62,7 @@ public:
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex);
     static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
-    static std::string GetTypeDataFile(const std::string &Str);
+    static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(std::string &BigData, std::string &CleanLine , short *MaxHeader, bool *Flag);
     static char	*ft_itoa(int n);
     static char	*ft_itoa_negative(int n, char *int_char);
@@ -85,6 +85,7 @@ private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
+    static const char *_PoinerType[10];
     HelperFunctions() {}
 };
 

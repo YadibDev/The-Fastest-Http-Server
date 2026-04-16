@@ -1,7 +1,4 @@
 #include "HelperFunctions.hpp"
-std::map<int, std::string> _Message; 
-std::map<std::string, std::string> _TypeContent;
-std::map<int, std::string> _Body;
 
 void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
@@ -488,12 +485,24 @@ char	*HelperFunctions::ft_itoa(int n)
 	return ((int_char));
 }
 
-std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
+const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
     size_t Pos;
+    short i = 0;
     if ((Pos = Str.find('.')) == std::string::npos)
-        return "";
-    return (Str.substr(Pos, Str.size()));
+    {
+        _PoinerType[0] = '\0';
+        return _PoinerType;
+    }
+    Pos++;
+    while (i < 10 && Pos < Str.length())
+    {
+        _PoinerType[i] = Str[Pos];
+        Pos++;
+        i++;
+    }
+    _PoinerType[i] = '\0';
+    return (_PoinerType);
 }
 
 void	*HelperFunctions::ft_memset(void *str, int c, size_t n)

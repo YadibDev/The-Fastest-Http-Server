@@ -6,13 +6,13 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/11 22:42:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 10:21:59 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
 
-clsCGI::clsCGI()
+clsCGI::clsCGI(const RequestHandler DataRequest) : _DataRequest(DataRequest)
 {
     _IsRunCGI = false;
 }

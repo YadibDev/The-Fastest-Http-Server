@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 19:30:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/16 16:26:37 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,23 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _BodySize = 0;
     _MaxSizeHeader = 4000;
     _MaxSizeBody = 40000;
-    _FileName = "";
-    _FileFromDisk = "";
-    _Type = "";
+    
     _IsConnection = true;
     _Erno = false;
     _SizeHeaders = 0;
+    _FileFromDisk.resize(1000);
     _HeaderFeild.resize(_MaxSizeHeader);
-    _HeaderFeild.clear();
     _Body.resize(_MaxSizeBody);
-    _Body.clear();
+    _Type.resize(500);
+    if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
+    {
+        _Mod[stMod::ERROR] == stMod::ERROR;
+        _Status = 500;
+        return ;
+    }
+    _FileFromDisk.clear();
+    _HeaderFeild.clear();
+    _Type.clear();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
 }
 
@@ -66,7 +73,6 @@ void clsResponse::_InitialHeaders()
     _CachControl();
     _Server();
     // this handel by enums and git value from array
-    
     if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
         if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
@@ -86,7 +92,7 @@ void clsResponse::_ErrorRespnseHandling()
 {
     stErrorPagedata &ErrorPageConf = _DataRequest.getErrorPage(_Status);
     short PrevStatus = _Status;
-    if (ErrorPageConf.response)
+    if (!ErrorPageConf.uri.empty())
     {
         if (ErrorPageConf.response != -1)
             _Status = ErrorPageConf.response;
@@ -104,7 +110,6 @@ void clsResponse::_ErrorRespnseHandling()
         {
             _ErrorPage.SetBodySize(0);
             _ErrorPage.SetType(HelperFunctions::GetType(".html"));
-            _BodySize += HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
             _HeaderFeild += _ErrorPage.ResponseError(PrevStatus).c_str();
             return ;
         }
