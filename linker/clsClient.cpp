@@ -22,14 +22,14 @@ clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _dataForReq(),
-                                               block(other.block),
-                                               RequestXconfig(_dataForReq),
-                                               _Requester(_dataForReq, &block, &RequestXconfig),
-                                               _ResponderProecss(RequestXconfig),
+clsClient::clsClient(const clsClient &other) : block(other.block),
                                                _socket(other._socket),
                                                _FirstConnection(other._FirstConnection),
-                                               _addr(other._addr)
+                                               _addr(other._addr),
+                                               _dataForReq(),
+                                               RequestXconfig(_dataForReq),
+                                               _Requester(_dataForReq, &block, &RequestXconfig),
+                                               _ResponderProecss(RequestXconfig)
 
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
@@ -88,8 +88,8 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
-    if (_fdRespond > 0)
-        close(_fdRespond);
+    // if (_fdRespond > 0)
+    //     close(_fdRespond);
 }
 
 int clsClient::_ReadDataForReq()

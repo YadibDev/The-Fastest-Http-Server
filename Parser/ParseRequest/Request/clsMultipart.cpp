@@ -229,7 +229,6 @@ void clsMultiHeader::storeValue(int value_indexes[2], string &value)
 
 char clsMultiHeader::sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2], uint16_t start, uint16_t end, uint16_t temp)
 {
-    char whichHead = 0;
     if (temp)
     {
         skipWhiteSpaces(Header, start, ofset);

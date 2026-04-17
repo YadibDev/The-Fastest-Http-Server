@@ -1,0 +1,9 @@
+-----------------------------------
+sockets are now in passive mode
+-----------------------------------
+accepted
+6
+Not server socket 
+Not server socket 
+EPOLLRDHUP
+Fd 6

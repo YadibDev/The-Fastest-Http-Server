@@ -1,6 +1,5 @@
 #include "clsBody.hpp"
 
-
 #define MAX_BODY_RAM 8100
 
 // geters
@@ -83,26 +82,27 @@ void clsBody::bodyHandler(uint16_t *off)
         {
             _isChunk = false;
             const char *content_leng = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data; //
-            _Length = std::atol(content_leng); // maybe handle overflow and add check if he  is more than the limit in config fie
+            _Length = std::atol(content_leng);                                                    // maybe handle overflow and add check if he  is more than the limit in config fie
             if (_Length > MAX_BODY_RAM)
             {
                 _bodyLocation = clsBody::DISK;
                 fd = mkstemp(&_fileName[0]);
                 if (fd == -1)
                 {
-                    this->_isError = true ;
+                    this->_isError = true;
                     return;
                 }
             }
             else
             {
-                _bodyLocation = clsBody::RAM ;
+                _bodyLocation = clsBody::RAM;
             }
-            _state = clsBody::READING_BODY ;
+            _state = clsBody::READING_BODY;
         }
-        
-        if ( data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 9 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 9) == -1)
-            _isMultiPart = true; 
+        std::cout <<  "location " << _bodyLocation << std::endl;
+
+        if (data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 9 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 9) == -1)
+            _isMultiPart = true;
         else
             _isMultiPart = false;
     }
@@ -165,7 +165,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
                     else if (size == 0)
                     {
                         _state = clsBody::DONE_GOOD;
-                        return ;
+                        return;
                     }
                     readSize = false;
                     cur = t;
@@ -174,7 +174,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
             else
                 t++;
         }
-        // storing data 
+        // storing data
         else
         {
             while (t < ofset && size)
@@ -194,7 +194,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
                         break;
                     }
                     t += temp;
-                    size -= temp;                    
+                    size -= temp;
                 }
                 else if (_isMultiPart)
                 {
@@ -217,7 +217,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
         if (error)
         {
             _state = clsBody::DONE_WIHTERROR;
-            return ;
+            return;
         }
     }
 }
@@ -235,10 +235,14 @@ void clsBody::moveOffsetMulti(uint16_t &offset)
 
 void clsBody::shiftingData(char *src, int offset, int sizeShift)
 {
+    std::cout << "____________________\n";
+    std::cout << &src << std::endl;
     for (int i = 0; i < sizeShift; i++)
     {
         src[i] = src[offset + i];
     }
+    std::cout << &src << std::endl;
+    std::cout << "____________________\n";
 }
 
 void clsBody::normalBody(uint16_t &offset)
@@ -249,64 +253,70 @@ void clsBody::normalBody(uint16_t &offset)
         // 5asni ndir b7sab dik l3ayba dyal body ba9i f meta request
         if (_isChunk == false)
         {
-                if (_isMultiPart)
+            if (_isMultiPart)
+            {
+                _multipartLib.Parser(data.io_chunk, offset);
+                if (_multipartLib.getError())
+                    _state = clsBody::DONE_WIHTERROR;
+                else if (offset == writeSize)
                 {
-                    _multipartLib.Parser(data.io_chunk, offset);
-                    if (_multipartLib.getError())
-                        _state = clsBody::DONE_WIHTERROR;
-                    else if (offset == writeSize)
-                    {
-                        if (_multipartLib.hitEnd())
-                            _state = clsBody::DONE_GOOD;
-                        else
-                            _state = clsBody::DONE_WIHTERROR;
-                    }
+                    if (_multipartLib.hitEnd())
+                        _state = clsBody::DONE_GOOD;
                     else
-                        moveOffsetMulti(offset);
+                        _state = clsBody::DONE_WIHTERROR;
+                }
+                else
+                    moveOffsetMulti(offset);
+            }
+            else
+            {
+                std::cout << "data in disk\n" << std::endl;
+                int temp = write(this->fd, data.io_chunk, offset); // i will change this
+                if (temp == -1)
+                {
+                    this->_isError = true;
+                    return;
+                }
+                writeSize += temp;
+                offset -= temp;
+
+                if (offset > 0)
+                {
+                    shiftingData(data.io_chunk, temp, offset);
                 }
                 else
                 {
-                    int temp = write(this->fd, data.io_chunk, offset); // i will change this 
-                    if (temp == -1)
-                    {
-                        this->_isError = true;
-                        return ;
-                    }
-                    writeSize += temp;
-                    offset -= temp;
-
-                    if (offset)
-                    {
-                        shiftingData(data.io_chunk, temp, offset);
-                    }
-
-                    if (this->_Length == writeSize)
-                        _state = clsBody::DONE_GOOD;
+                    std::cout << "offset 0 \n" << std::endl;   
+                    offset = 0;
                 }
+
+                if (this->_Length == writeSize)
+                    _state = clsBody::DONE_GOOD;
+            }
         }
         else
             _handleChunk(offset); // still note done it very well
     }
     else if (_bodyLocation == clsBody::RAM)
     {
-            if (offset == _Length)
+        if (offset == _Length)
+        {
+            if (_isMultiPart)
             {
-                if (_isMultiPart)
-                {
-                    _multipartLib.Parser(data.io_chunk, offset);
-                    if (_multipartLib.getError()) // check is multipart hit end
-                        _state = clsBody::DONE_WIHTERROR;
-                    else
-                        _state = clsBody::DONE_GOOD;
-                }
-                _state = clsBody::DONE_GOOD;
+                _multipartLib.Parser(data.io_chunk, offset);
+                if (_multipartLib.getError()) // check is multipart hit end
+                    _state = clsBody::DONE_WIHTERROR;
+                else
+                    _state = clsBody::DONE_GOOD;
             }
+            _state = clsBody::DONE_GOOD;
+        }
     }
 
     if (_state == clsBody::DONE_GOOD || _state == clsBody::DONE_WIHTERROR)
     {
         if (fd != -1)
-            close (fd);
+            close(fd);
         fd = -1;
     }
 }

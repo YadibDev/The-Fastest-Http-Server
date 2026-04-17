@@ -28,9 +28,8 @@ clsClient &clsLinker::GetClientAt(int fd)
 
 void clsLinker::removeClient(int fd)
 {
-    cout << this->_clientsDB.at(fd).GetState() << " state \n";
-    this->_clientsDB.erase(fd);
     close(fd);
+    this->_clientsDB.erase(fd);
 }
 
 void clsLinker::insertClient(int fd, const sockaddr_in &addr, clsServerConfig &block)
@@ -38,7 +37,7 @@ void clsLinker::insertClient(int fd, const sockaddr_in &addr, clsServerConfig &b
     _clientsDB.insert(std::pair<int, clsClient>(fd, clsClient(addr, fd, block)));
 }
 
-// i will create it 
+// i will create it
 // void clsLinker::TimeOutClients()
 // {
 //     unsigned long long totalMs;
