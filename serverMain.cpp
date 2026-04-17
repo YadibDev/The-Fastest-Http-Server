@@ -99,8 +99,9 @@ int main()
                     std::cout << "EPOLLERR" << std::endl;
                 else
                     std::cout << "EPOLLHUP" << std::endl;
-                ClientsLinker.removeClient(fd);
                 std::cout << "Fd" << fd << std::endl;
+                if (ClientsLinker.isClient(fd))
+                    ClientsLinker.removeClient(fd);
                 continue;
             }
             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)

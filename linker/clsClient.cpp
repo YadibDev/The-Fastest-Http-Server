@@ -2,10 +2,9 @@
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
 
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
-                                                                                block(block),
-                                                                                _socket(fd), // must be not const
-                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()),  // must be not const
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : block(block),
+                                                                                _socket(fd),                                             // must be not const
+                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()), // must be not const
                                                                                 _addr(addr),
                                                                                 _dataForReq(),
                                                                                 RequestXconfig(_dataForReq),
@@ -142,25 +141,40 @@ void clsClient::ProcessRequest()
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
-        std::cout << "-----------------------------" << std::endl;
-        std::cout << "\n \033[32m the request completed \033[0m \n" << std::endl; // Green
-        std::cout << this->_theData.request_metadata << std::endl;
-        if (_Requester._body._bodyLocation == clsBody::DISK)
-            std::cout << "\nbody in disk\n" << std::endl;
-        else if (_Requester._body._bodyLocation == clsBody::RAM)
-            std::cout << "\nbody in RAM\n" << std::endl;
-        std::cout << "\nbody in \n" << _Requester._body._bodyLocation << std::endl;
 
-        if (this->_theData.read_body)
+        std::cout << "\n================= REQUEST DEBUG =================\n";
+
+        std::cout << "[STATUS] Request completed successfully\n";
+
+        std::cout << "\n[METADATA]\n";
+        std::cout << this->_theData.request_metadata << "\n";
+
+        std::cout << "\n[BODY STORAGE]\n";
+        if (_Requester._body._bodyLocation == clsBody::DISK)
+            std::cout << "Location : DISK\n";
+        else if (_Requester._body._bodyLocation == clsBody::RAM)
+            std::cout << "Location : RAM\n";
+        else
+            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
+
+        std::cout << "\n[BODY INFO]\n";
+        if (this->_theData.read_body > 0)
         {
-            std::cout << "\nbody size : " << this->_theData.read_body << std::endl << std::endl;
+            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
+            std::cout << "Content:\n";
+            std::cout << "----------------------------------------\n";
+
             for (int i = 0; i < _theData.read_body; i++)
-            {
                 std::cout << this->_theData.io_chunk[i];
-            }
-            std::cout << std::endl;
+
+            std::cout << "\n----------------------------------------\n";
         }
-        std::cout << "-----------------------------" << std::endl;
+        else
+        {
+            std::cout << "No body received\n";
+        }
+
+        std::cout << "========================================\n\n";
         return;
     }
 }
@@ -174,7 +188,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     {
         string chunkData;
 
-        // resize single time 
+        // resize single time
         chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);

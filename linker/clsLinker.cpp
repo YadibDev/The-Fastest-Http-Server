@@ -15,7 +15,7 @@ clsLinker::~clsLinker()
         ++it;
     }
 
-    this->_clientsDB.clear();
+    // this->_clientsDB.clear();
     std::cout << "-----------------------------------" << std::endl;
     std::cout << "clsLinker closed all clients fd" << std::endl;
     std::cout << "-----------------------------------" << std::endl;
@@ -28,6 +28,7 @@ clsClient &clsLinker::GetClientAt(int fd)
 
 void clsLinker::removeClient(int fd)
 {
+    cout << this->_clientsDB.at(fd).GetState() << " state \n";
     this->_clientsDB.erase(fd);
     close(fd);
 }

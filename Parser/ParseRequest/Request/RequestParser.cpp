@@ -1,19 +1,18 @@
 #include "RequestParser.hpp"
 
-RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler)
-	:
-	_request(request),
-	_offset(0),
-	_requestLine(),
-	_header(request),
-	_body(request),
-	_ServerConfig(ServerConfig),
-	_RequestHandler(RequestHandler),
-	_state(STATE_REQUEST_LINE)
+RequestParser::RequestParser(stPollRequest &request, clsServerConfig *ServerConfig, RequestHandler *RequestHandler)
+	: _request(request),
+	  _offset(0),
+	  _requestLine(),
+	  _header(request),
+	  _body(request),
+	  _ServerConfig(ServerConfig),
+	  _RequestHandler(RequestHandler),
+	  _state(STATE_REQUEST_LINE)
 {
 }
 
-void    RequestParser::init(uint16_t offset)
+void RequestParser::init(uint16_t offset)
 {
 	_state = STATE_REQUEST_LINE;
 	_offset = offset;
@@ -21,7 +20,7 @@ void    RequestParser::init(uint16_t offset)
 	_header.init(offset);
 }
 
-bool    RequestParser::LProcessRequestHandler()
+bool RequestParser::LProcessRequestHandler()
 {
 	ProcessRequestHandler::processRequest(_requestLine, _ServerConfig, _RequestHandler);
 	if (_RequestHandler->getError().isError())
@@ -32,7 +31,7 @@ bool    RequestParser::LProcessRequestHandler()
 	return true;
 }
 
-bool	RequestParser::ParseRequestLine(uint16_t size)
+bool RequestParser::ParseRequestLine(uint16_t size)
 {
 	_requestLine.parse(_request.request_metadata, size);
 	_offset = _requestLine.getOffset();
@@ -50,7 +49,7 @@ bool	RequestParser::ParseRequestLine(uint16_t size)
 	return true;
 }
 
-bool    RequestParser::ParseHeader(uint16_t size)
+bool RequestParser::ParseHeader(uint16_t size)
 {
 	_header.Parse(size);
 	_offset = _header.getOffset();
@@ -66,15 +65,14 @@ bool    RequestParser::ParseHeader(uint16_t size)
 	return true;
 }
 
-bool    RequestParser::ParseBody(uint16_t size)
+bool RequestParser::ParseBody(uint16_t size)
 {
-	if (_body.getState() ==  clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
+	if (_body.getState() == clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
 	{
-		if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash == -1
-			&& _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
+		if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash == -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
 		{
 			_error.setStatus(411, "Length Required");
-			return false; 
+			return false;
 		}
 		size++;
 		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - _offset);
@@ -91,7 +89,7 @@ bool    RequestParser::ParseBody(uint16_t size)
 	return true;
 }
 
-void    RequestParser::Parse(uint16_t size)
+void RequestParser::Parse(uint16_t size)
 {
 	while (_offset <= size)
 	{
@@ -103,9 +101,14 @@ void    RequestParser::Parse(uint16_t size)
 		else if (_state == STATE_HEADERS)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
+		{
 			ParseBody(size);
+		}
 		else
 			break;
+
+		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY)
+			_state = STATE_COMPLETE;
 
 		if (_state == STATE_COMPLETE || _error.isError())
 			break;
@@ -114,7 +117,7 @@ void    RequestParser::Parse(uint16_t size)
 	}
 }
 
-bool		RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
-bool		RequestParser::isError() const { return (_state == STATE_ERROR); }
-RequestLine	RequestParser::getRequestLine() const { return _requestLine; }
-HttpError	RequestParser::getError() const { return _error; }
+bool RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
+bool RequestParser::isError() const { return (_state == STATE_ERROR); }
+RequestLine RequestParser::getRequestLine() const { return _requestLine; }
+HttpError RequestParser::getError() const { return _error; }

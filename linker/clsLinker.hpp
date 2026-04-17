@@ -19,6 +19,10 @@ public:
     clsClient &GetClientAt(int fd);
     void TimeOutClients();
     void removeClient(int fd);
+    bool isClient(int fd)
+    {
+        return _clientsDB.count(fd);
+    };
     void insertClient(int fd, const sockaddr_in &addr, clsServerConfig &block);
 };
 
