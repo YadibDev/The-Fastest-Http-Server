@@ -22,11 +22,14 @@ enum clinetState
     CONNECTION_CLOSED
 };
 
-enum whereIsBody
+struct bodyPlaceEnum
 {
-    NONE,
-    RAM,
-    DISK_FILE
+    enum place
+    {
+        NONE,
+        RAM,
+        DISK
+    };
 };
 
 class clsClient
@@ -38,8 +41,8 @@ private:
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const sockaddr_in _addr;       // ip and port of the client
 
-    PollOfClient _theData;
     stPollRequest _dataForReq;
+    PollOfClient _theData;
     bool _resetReq;
 
     string respondBuffer;
@@ -50,7 +53,7 @@ private:
 
     clinetState _state;
     int _fdRespond;
-    whereIsBody _BodyPlace;
+    bodyPlaceEnum::place _BodyPlace;
 
     size_t _LastConnection; // update connection in ms
 

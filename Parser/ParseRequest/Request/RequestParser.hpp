@@ -11,17 +11,15 @@
 
 class RequestParser
 {
-private:
-
-
-	stPollRequest	&_request;
-	uint16_t		_offset;
-	RequestLine		_requestLine;
-	Header			_header;
-	clsBody			_body;
-	clsServerConfig	*_ServerConfig;
-	RequestHandler	*_RequestHandler;
-	HttpError		_error;
+public:// time to debug
+	stPollRequest &_request;
+	uint16_t _offset;
+	RequestLine _requestLine;
+	Header _header;
+	clsBody _body;
+	clsServerConfig *_ServerConfig;
+	RequestHandler *_RequestHandler;
+	HttpError _error;
 
 	bool	LProcessRequestHandler();
 	bool    HProcessRequestHandler();

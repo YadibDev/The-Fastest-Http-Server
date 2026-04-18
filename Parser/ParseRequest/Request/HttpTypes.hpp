@@ -43,7 +43,7 @@ struct s_header_slot {
 	s_view		key;
 	s_view		val;
 	uint8_t		next;
-	int32_t		Hash;
+	int32_t	Hash;
 	s_header_slot() : next(INVALID_INDEX), Hash(-1) {}
 };
 
@@ -68,6 +68,7 @@ struct stPollRequest {
 	s_header_slot	*unknown_headers;
 	uint8_t			sizeUnknownHeaders;
 	char			*io_chunk;
+	uint16_t		*read_body_ptr;
 };
 
 #endif

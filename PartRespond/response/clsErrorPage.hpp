@@ -40,14 +40,13 @@ class clsErrorPage
         void _Allow();
         void _RetryAfter();
         void _Transfer_Encoding();
-        void _StoredInFileOrStr()
     public:
         clsErrorPage();
         void SetBodySize(int BodySize);
         const std::string &GetHeaderField();
         const std::string &GetBody();
         const std::string &GetFileFromDisk();
-        const void ResponseError(int Status, const std::string &FilePageError);
+        void ResponseError(int Status, const std::string &FilePageError);
         ~clsErrorPage();
 };
 #endif

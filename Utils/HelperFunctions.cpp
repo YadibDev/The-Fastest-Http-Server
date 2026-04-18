@@ -202,47 +202,47 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 	return result;
 }
 
-s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
-{
+// s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
+// {
 
-	s_view result;
+// 	s_view result;
 
-	if (!view.Data || view.len == 0 || !set || *set == '\0')
-		return result;
+// 	if (!view.Data || view.len == 0 || !set || *set == '\0')
+// 		return result;
 
-	for (size_t i = 0; i < view.len; ++i) {
-		char current = view.Data[i];
-		for (const char* s = set; *s != '\0'; ++s) {
-			if (current == *s) {
-				result.Data = view.Data + i;
-				result.len = view.len - i;
-				return result;
-			}
-		}
-	}
-	return result;
-}
+// 	for (size_t i = 0; i < view.len; ++i) {
+// 		char current = view.Data[i];
+// 		for (const char* s = set; *s != '\0'; ++s) {
+// 			if (current == *s) {
+// 				result.Data = view.Data + i;
+// 				result.len = view.len - i;
+// 				return result;
+// 			}
+// 		}
+// 	}
+// 	return result;
+// }
 
-s_view	HelperFunctions::extract_between(s_view view, const char* start_set, const char* end_set)
-{
-	s_view result;
+// s_view	HelperFunctions::extract_between(s_view view, const char* start_set, const char* end_set)
+// {
+// 	s_view result;
 
-	s_view s_found = HelperFunctions::find_first_of_view(view, start_set);
-	if (!s_found.Data) return result;
+// 	s_view s_found = HelperFunctions::find_first_of_view(view, start_set);
+// 	if (!s_found.Data) return result;
 
-	s_view e_found;
-	e_found.Data = s_found.Data + 1;
-	e_found.len = view.len - (e_found.Data - view.Data);
+// 	s_view e_found;
+// 	e_found.Data = s_found.Data + 1;
+// 	e_found.len = view.len - (e_found.Data - view.Data);
 	
-	e_found = HelperFunctions::find_first_of_view(e_found, end_set);
-	if (!e_found.Data)
-		return result;
+// 	e_found = HelperFunctions::find_first_of_view(e_found, end_set);
+// 	if (!e_found.Data)
+// 		return result;
 
-	result.Data = s_found.Data + 1; 
-	result.len = e_found.Data - result.Data;
+// 	result.Data = s_found.Data + 1; 
+// 	result.len = e_found.Data - result.Data;
 
-	return result;
-}
+// 	return result;
+// }
 
 
 
@@ -471,35 +471,35 @@ int	HelperFunctions::len_int(int nb)
 	return (i);
 }
 
-void HelperFunction::NumToStr(int Number, std::string &Str)
-{
-    char Remainder = 0;
-    int NewNumbr = 0;
-    int Counter = 0;
-    if (Number < 0)
-    {
-        Number *= -1;
-        Str += '-';
-    }
-    while (Number)
-    {
-        NewNumbr =( NewNumbr * 10) + Number % 10;
-        Number /= 10;
-        Counter++;
-    }
-    while (NewNumbr)
-    {
-        Remainder = (NewNumbr % 10) + '0';
-        Str += Remainder;
-        NewNumbr /= 10;
-        Counter--;
-    }
-    while (Counter > 0)
-    {
-        Str += '0';
-        Counter--;
-    }
-}
+// void HelperFunction::NumToStr(int Number, std::string &Str)
+// {
+//     char Remainder = 0;
+//     int NewNumbr = 0;
+//     int Counter = 0;
+//     if (Number < 0)
+//     {
+//         Number *= -1;
+//         Str += '-';
+//     }
+//     while (Number)
+//     {
+//         NewNumbr =( NewNumbr * 10) + Number % 10;
+//         Number /= 10;
+//         Counter++;
+//     }
+//     while (NewNumbr)
+//     {
+//         Remainder = (NewNumbr % 10) + '0';
+//         Str += Remainder;
+//         NewNumbr /= 10;
+//         Counter--;
+//     }
+//     while (Counter > 0)
+//     {
+//         Str += '0';
+//         Counter--;
+//     }
+// }
 
 char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
 {

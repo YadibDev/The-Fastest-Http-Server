@@ -2,32 +2,42 @@
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
 
-
-
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
-                                                        RequestXconfig(_dataForReq),
-                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd),
-                                                        _Requester(_dataForReq,  &block, &RequestXconfig)
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : block(block),
+                                                                                _socket(fd),                                             // must be not const
+                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()), // must be not const
+                                                                                _addr(addr),
+                                                                                _dataForReq(),
+                                                                                RequestXconfig(_dataForReq),
+                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
+                                                                                _ResponderProecss(RequestXconfig)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
     this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
-
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _dataForReq(other._dataForReq),
-                                            RequestXconfig(other.RequestXconfig),
-                                            _Requester(other._Requester),
-                                            _addr(other._addr),
-                                            _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
-{
-    
+clsClient::clsClient(const clsClient &other) : block(other.block),
+                                               _socket(other._socket),
+                                               _FirstConnection(other._FirstConnection),
+                                               _addr(other._addr),
+                                               _dataForReq(),
+                                               RequestXconfig(_dataForReq),
+                                               _Requester(_dataForReq, &block, &RequestXconfig),
+                                               _ResponderProecss(RequestXconfig)
 
+{
+    this->_dataForReq.io_chunk = this->_theData.io_chunk;
+    this->_dataForReq.known_headers = this->_theData.known_headers;
+    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    _dataForReq.request_metadata = _theData.request_metadata;
+    this->_dataForReq.sizeUnknownHeaders = 25;
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -78,8 +88,8 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
-    if (_fdRespond > 0)
-        close(_fdRespond);
+    // if (_fdRespond > 0)
+    //     close(_fdRespond);
 }
 
 int clsClient::_ReadDataForReq()
@@ -131,6 +141,40 @@ void clsClient::ProcessRequest()
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
+
+        std::cout << "\n================= REQUEST DEBUG =================\n";
+
+        std::cout << "[STATUS] Request completed successfully\n";
+
+        std::cout << "\n[METADATA]\n";
+        std::cout << this->_theData.request_metadata << "\n";
+
+        std::cout << "\n[BODY STORAGE]\n";
+        if (_Requester._body._bodyLocation == clsBody::DISK)
+            std::cout << "Location : DISK\n";
+        else if (_Requester._body._bodyLocation == clsBody::RAM)
+            std::cout << "Location : RAM\n";
+        else
+            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
+
+        std::cout << "\n[BODY INFO]\n";
+        if (this->_theData.read_body > 0)
+        {
+            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
+            std::cout << "Content:\n";
+            std::cout << "----------------------------------------\n";
+
+            for (int i = 0; i < _theData.read_body; i++)
+                std::cout << this->_theData.io_chunk[i];
+
+            std::cout << "\n----------------------------------------\n";
+        }
+        else
+        {
+            std::cout << "No body received\n";
+        }
+
+        std::cout << "========================================\n\n";
         return;
     }
 }
@@ -140,11 +184,11 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     ssize_t s;
     ssize_t nBytes;
 
-    if (_BodyPlace == DISK_FILE)
+    if (_BodyPlace == bodyPlaceEnum::DISK)
     {
         string chunkData;
 
-        // resize single time 
+        // resize single time
         chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
@@ -169,7 +213,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     if (nBytes != -1)
         respondBuffer = &respondBuffer[nBytes];
 
-    if (respondBuffer.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+    if (respondBuffer.empty() && (_BodyPlace == bodyPlaceEnum::RAM || _state == LAST_CHUNKED))
     {
         _state = BEGIN;
         respondBuffer = "";
@@ -199,10 +243,10 @@ void clsClient::ProcessRespond()
         if (Respond.GetFileName().empty())
         {
             respondBuffer += Respond.GetBody();
-            _BodyPlace = RAM;
+            _BodyPlace = bodyPlaceEnum::RAM;
         }
         else
-            _BodyPlace = DISK_FILE;
+            _BodyPlace = bodyPlaceEnum::DISK;
     }
     _SendRespond(Respond);
 }
