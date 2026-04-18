@@ -60,6 +60,8 @@ private:
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
 
+    ssize_t bytesToSend;
+
 public:
     clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
     clsClient(const clsClient &other);

@@ -39,6 +39,7 @@ void clsErrorPage::_HeadersErrorResponse()
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
     _Server();
+
     _Date();
     if (_Status == 405)
        _Allow();

@@ -563,7 +563,6 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
         _PoinerType[0] = '\0';
         return _PoinerType;
     }
-    Pos++;
     while (i < 10 && Pos < Str.length())
     {
         _PoinerType[i] = Str[Pos];

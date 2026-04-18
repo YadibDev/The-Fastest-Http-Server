@@ -34,6 +34,10 @@ void function(int signal)
 
 int main()
 {
+    HelperFunctions::StoredDefaultType();
+    HelperFunctions::StoredBodys();
+    HelperFunctions::StoredMessage();
+    HelperFunctions::StoredMessage();
     signal(SIGINT, function);
     int fd = open("configs/default.conf", O_RDONLY);
     std::string configeData;

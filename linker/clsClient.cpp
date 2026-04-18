@@ -123,6 +123,10 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
+        _Requester._state = RequestParser::STATE_REQUEST_LINE;
+        _Requester._offset = 0;
+        // _Requester._header = Header();
+        _ResponderProecss.GetclsResponse().Reset();
         _state = REQUEST_MODE;
         _theData.Reset();
     }
@@ -211,7 +215,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 
     // start sending data
-    nBytes = send(_socket, respondBuffer.c_str(), respondBuffer.size(), MSG_DONTWAIT);
+    nBytes = send(_socket, respondBuffer.c_str(), bytesToSend, MSG_DONTWAIT);
     if (nBytes != -1)
         respondBuffer = &respondBuffer[nBytes];
 
@@ -234,20 +238,28 @@ void clsClient::ProcessRespond()
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
+        bytesToSend = 0;
         _state = RESPOND_MODE;
 
         // linke request with config
 
         this->_ResponderProecss.MainProcess(); // create respond
 
-        respondBuffer += Respond.GetHeaderFeild();
+        respondBuffer.resize(40000); // test
 
-        std::cout << "--------- size: " << respondBuffer.size() << endl;;
-        std::cout << respondBuffer;
-        std::cout << endl;
+        bytesToSend = Respond.GetHeaderFeild().size();
+        
+        memcpy(&respondBuffer[0], Respond.GetHeaderFeild().c_str(), bytesToSend);
+
         if (Respond.GetFileName().empty())
         {
-            respondBuffer += Respond.GetBody();
+            // std::cout << 
+            memcpy(&respondBuffer[bytesToSend], Respond.GetBody().c_str(), Respond.GetSizeBody());
+
+            // respondBuffer += Respond.GetBody();
+            
+            bytesToSend += Respond.GetSizeBody();
+
             _BodyPlace = bodyPlaceEnum::RAM;
         }
         else
