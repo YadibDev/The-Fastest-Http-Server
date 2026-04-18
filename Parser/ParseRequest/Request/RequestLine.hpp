@@ -20,13 +20,13 @@ private:
 	UriParser			_uriParser;
 	HttpError			_error;
 
-	const char	*methodName() const;
-	bool		selectMethod(const char *buffer, uint16_t size);
-	bool		parseMethod(const char *buffer, uint16_t size);
-	bool		parseUri(const char *buffer, uint16_t size);
-	bool		parseVersion(const char *buffer, uint16_t size);
-	bool		parseCR(const char *buffer, uint16_t size);
-	bool		parseLF(const char *buffer, uint16_t size);
+	const char			*methodName() const;
+	bool				selectMethod(const char *buffer, uint16_t size);
+	bool				parseMethod(const char *buffer, uint16_t size);
+	bool				parseUri(const char *buffer, uint16_t size);
+	bool				parseVersion(const char *buffer, uint16_t size);
+	bool				parseCR(const char *buffer, uint16_t size);
+	bool				parseLF(const char *buffer, uint16_t size);
 
 public:
 	RequestLine();

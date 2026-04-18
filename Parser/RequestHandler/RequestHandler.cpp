@@ -125,9 +125,9 @@ char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
 
-s_view RequestHandler::getQuery() const { return _query; }
+const s_view &RequestHandler::getQuery() const { return _query; }
 
-s_view RequestHandler::getVersion() const { return _version; }
+const s_view &RequestHandler::getVersion() const { return _version; }
 
 const s_view& RequestHandler::getPathInfo() const {
 	return _PathInfo;
@@ -144,7 +144,7 @@ const s_view& RequestHandler::getServerPort() const {
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
 
-HeaderTable    &RequestHandler::getHeader()
+const HeaderTable    &RequestHandler::getHeader()
 {
 	return _Header;
 }
@@ -154,6 +154,11 @@ const stErrorPagedata *RequestHandler::getErrorPage(short code) const {
 	if (it == _error_pages.end())
 		return _defaultErrorPage;
 	return &it->second;
+}
+
+const s_view	&RequestHandler::getScriptName() const
+{
+	return _ScriptName;
 }
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }
