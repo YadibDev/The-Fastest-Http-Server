@@ -1,14 +1,33 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 4096
-clsClient::clsClient(const sockaddr_in &addr, int fd) : _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd)
+#define CHUNK_LIMIT 2 * 1024 * 1024
+
+
+
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
+                                                        RequestXconfig(_dataForReq),
+                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd),
+                                                        _Requester(_dataForReq,  &block, &RequestXconfig)
 {
+    this->_dataForReq.io_chunk = this->_theData.io_chunk;
+    this->_dataForReq.known_headers = this->_theData.known_headers;
+    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
+
+    _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _addr(other._addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
+clsClient::clsClient(const clsClient &other) : _dataForReq(other._dataForReq),
+                                            RequestXconfig(other.RequestXconfig),
+                                            _Requester(other._Requester),
+                                            _addr(other._addr),
+                                            _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
+    
+
+    _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 }
@@ -58,126 +77,131 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
+    if (_fdRespond > 0)
+        close(_fdRespond);
+}
+
+int clsClient::_ReadDataForReq()
+{
+    int size = 0;
+
+    if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
+    {
+        uint16_t &idx = _theData.read_offset;
+        size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
+        if (size > 0)
+            idx += size;
+    }
+    else if (_Requester._state == RequestParser::STATE_BODY)
+    {
+        // add edge case if data still in request meta data
+        uint16_t &idx = _theData.read_body;
+        size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
+        if (size > 0)
+            idx += size;
+    }
+
+    if (size == 0)
+        _state = CONNECTION_CLOSED;
+
+    return size;
 }
 
 void clsClient::ProcessRequest()
 {
-    string buffer;
-
-    buffer.resize(4096);
-    int size = recv(this->_socket, &buffer[0], 4096, MSG_DONTWAIT);
-    if (size == 0)
+    // reset request in every new request from client
+    if (_state == BEGIN)
     {
-        _state = CONNECTION_CLOSED;
-        return ;
+        _state = REQUEST_MODE;
+        _theData.Reset();
     }
-    buffer.resize(size);
-    if (_state == BEGIN) _Requester._Buffer = "", _state = REQUEST_MODE;
-        // i must reset the requester
+
+    int size = _ReadDataForReq(); // reading data for request
+   
+    if (_state == CONNECTION_CLOSED || size == -1)
+        return ;
+
+    // if (_Requester._state == READING_BODY)
+    //     _Requester.parse(_theData.read_body);  // then pase it to parse
+    // else
+    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
     
-    _Requester.parse(buffer);
-    if (_Requester.getError().isError())
-    {
-        std::cout << _Requester.getError().getMsgError() << std::endl;
-        return ;
-    }
-
-    if (_Requester.isCompleted()) // is in error case also like this    
+    if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
         return ;
     }
 }
 
-// i should create the logic of this and improve it
 void clsClient::_SendRespond(const clsResponse &_Responder)
 {
-    string respond;
     ssize_t s;
-    ssize_t s_send;
+    ssize_t nBytes;
 
-    if (_DataLeft.empty() == false)
+    if (_BodyPlace == DISK_FILE)
     {
-        s_send = send(_socket, _DataLeft.c_str(), _DataLeft.size(), MSG_DONTWAIT);
-        // if s_send == -1 is it possible ? what should i do
-        _DataLeft = &_DataLeft[s_send];
-    }
-    else if (_BodyPlace == RAM)
-    {
-        _state = SEND_BODY;
-        respond = _Responder.GetBody();
-        std::cout << respond << std::endl;
-        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-        _DataLeft = &respond[s_send];
-    }
-    else if (_BodyPlace == DISK_FILE)
-    {
-        _state = SEND_BODY;
-        respond.resize(CHUNK_LIMIT);
+        string chunkData;
+
+        chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
-        {
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-            // if (_fdRespond == -1)
-            //     ; // we should handle this edge case
-        }
-
-        s = read(_fdRespond, &respond[0], CHUNK_LIMIT);
+        s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
+        // i woill work here for 
         if (s < CHUNK_LIMIT)
         {
-            if (s == 0)
-            {
-                _state = LAST_CHUNKED;
-                close(_fdRespond);
-            }
+            _state = LAST_CHUNKED;
+            chunkData.resize(s);
+            // if last respond we will add the end
+            _Responder.ChunkData(respondBuffer, chunkData, true);
+
         }
-        respond.resize(s);
-        respond = _Responder.ChunkData(respond);
-        s_send = send(_socket, respond.c_str(), respond.size(), MSG_DONTWAIT);
-        _DataLeft = &respond[s_send];
+        else
+        {
+            chunkData.resize(s);
+            _Responder.ChunkData(respondBuffer, chunkData, false);
+        }
     }
 
-    if (_DataLeft.empty() && ((_BodyPlace == RAM && _state == SEND_BODY) || _state == LAST_CHUNKED))
+    // start sending data
+    nBytes = send(_socket, respondBuffer.c_str(), respondBuffer.size(), MSG_DONTWAIT);
+    if (nBytes != -1)
+        respondBuffer = &respondBuffer[nBytes];
+
+    if (respondBuffer.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
     {
         _state = BEGIN;
+        respondBuffer = "";
         if (_Responder.GetIsConnection() == false)
             _state = CONNECTION_CLOSED;
+        if (_fdRespond > 0)
+        {
+            close(_fdRespond);
+            _fdRespond = 0;
+        }
+        
     }
 }
 
 void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
 {
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
     if (_state == START_RESPOND)
     {
-        // initialized the reponder
-        _fdRespond = 0;
-        _DataLeft = "";
-        string Header;
-        ssize_t s;
-        string fileName = "index.html";
-        const clsResponse & Respond = _ResponderProecss.GetclsResponse();
-        RequestHandler RequestXconfig;
-
-        // linke request with config
-        ProcessRequestHandler::processRequest(this->_Requester, serverConfig, RequestXconfig);
-
-        std::cout << "********************\n";
-        std::cout << RequestXconfig.getPhysicalPath() << std::endl;
-        std::cout << RequestXconfig.getError().getMsgError() << std::endl;
-        std::cout << "********************\n";
-        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
-
-        Header = Respond.GetHeaderFeild();
-        if (Respond.GetFileName().empty())
-            _BodyPlace = RAM;
-        else
-            _BodyPlace = DISK_FILE;
         _state = RESPOND_MODE;
 
-        // i must add pollhand
-        s = send(_socket, &Header[0], Header.size(), MSG_DONTWAIT);
-        std::cout << Header << std::endl;
-        this->_DataLeft = &Header[s];
-        // if s == -1 is it possible ?/
+        // linke request with config
+
+        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
+
+        respondBuffer += Respond.GetHeaderFeild();
+
+        if (Respond.GetFileName().empty())
+        {
+            respondBuffer += Respond.GetBody();
+            _BodyPlace = RAM;
+        }
+        else
+            _BodyPlace = DISK_FILE;
     }
-    _SendRespond(_ResponderProecss.GetclsResponse()); //
+    _SendRespond(Respond);
 }

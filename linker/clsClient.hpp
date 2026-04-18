@@ -6,11 +6,13 @@
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
 #include "../PartRespond/mainprocess/Webserv.hpp"
-#include "../Parser/ParseRequest/Request/Request.hpp"
 #include "../Parser/RequestHandler/RequestHandler.hpp"
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
+#include "../Parser/ParseRequest/Request/RequestParser.hpp"
 
 using namespace std;
+
+
 
 enum clinetState
 {
@@ -18,7 +20,6 @@ enum clinetState
     REQUEST_MODE,
     START_RESPOND,
     RESPOND_MODE,
-    SEND_BODY,
     LAST_CHUNKED,
     CONNECTION_CLOSED
 };
@@ -33,26 +34,30 @@ enum whereIsBody
 class clsClient
 {
 private:
-    // request object it will be here
-    size_t _BodyOfset;
-    string _DataLeft;
-    size_t _HeaderOfset;
-    
+// request object it will be here
+    PollOfClient _theData;
+    stPollRequest _dataForReq;
+    bool _resetReq;
+
+    string respondBuffer;
+
+    RequestHandler RequestXconfig;
     clsMainProcess _ResponderProecss;
-    clsRequest _Requester;
+    RequestParser _Requester;
 
     clinetState _state;
     int _fdRespond;
     whereIsBody _BodyPlace;
+    
     const sockaddr_in _addr;       // ip and port of the client
     size_t _LastConnection;        // update connection in ms
     const size_t _FirstConnection; // first established connection in ms mile seconds
     const int _socket;
-
+    
     void _SendRespond(const clsResponse &_Responder);
-    // void _ReadRequest();
+    int _ReadDataForReq();
 public:
-    clsClient(const sockaddr_in &addr, int fd); // initialize_state_by_begin
+    clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
     clsClient(const clsClient &other);
 
     ~clsClient();

@@ -22,8 +22,8 @@ public:
     clsEpollHandler();
     ~clsEpollHandler();
 
-    bool addServerSockets(clsServerSock &SocketsServer, int ability = EPOLLIN | EPOLLRDHUP);
-    bool addClient(int fd, int ability = EPOLLIN);
+    bool addServerSockets(clsServerSock &SocketsServer, int ability = EPOLLIN);
+    bool addClient(int fd, long long ability);
 
     void changeAbility(int fd, int newAbility);
     int tryPollNewClients(struct epoll_event *ClientBuffer, size_t size, int timeout);

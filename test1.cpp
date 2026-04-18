@@ -13,7 +13,7 @@ using namespace std;
 class HttpTables
 {
 public:
-	static const uint8_t INVALID_INDEX = 255;
+	static INVALID_INDEX = 255;
 
 	enum eMethod
 	{
@@ -103,7 +103,11 @@ struct s_header_slot
 	uint8_t		next;
 	uint32_t	Hash;
 
+<<<<<<< HEAD
 	s_header_slot() : next(HttpTables::INVALID_INDEX), Hash(-1) {}
+=======
+	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
+>>>>>>> Server
 };
 
 struct PollOfClient
@@ -155,15 +159,15 @@ static stPollRequest makeRequest(PollOfClient &client)
 	for (int i = 0; i < HttpTables::H_COUNT; i++)
 	{
 		req.known_headers[i] = s_header_slot();
-		req.known_headers[i].key.Offsets = HttpTables::INVALID_INDEX;
-		req.known_headers[i].next = HttpTables::INVALID_INDEX;
+		req.known_headers[i].key.Offsets = INVALID_INDEX;
+		req.known_headers[i].next = INVALID_INDEX;
 	}
 
 	for (int i = 0; i < req.sizeUnknownHeaders; i++)
 	{
 		req.unknown_headers[i] = s_header_slot();
-		req.unknown_headers[i].key.Offsets = HttpTables::INVALID_INDEX;
-		req.unknown_headers[i].next = HttpTables::INVALID_INDEX;
+		req.unknown_headers[i].key.Offsets = INVALID_INDEX;
+		req.unknown_headers[i].next = INVALID_INDEX;
 	}
 
 	return req;
@@ -857,12 +861,12 @@ private:
 		_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
 		_request.unknown_headers[_currentUnknownIndex].key.Offsets = _keyStart;
 		_request.unknown_headers[_currentUnknownIndex].key.len = (_offset - 1) - _keyStart;
-		_request.unknown_headers[_currentUnknownIndex].next = HttpTables::INVALID_INDEX;
+		_request.unknown_headers[_currentUnknownIndex].next = INVALID_INDEX;
 	}
 
 	void	makeKnownHeader()
 	{
-		if (_request.known_headers[_currentHeader].key.Offsets == HttpTables::INVALID_INDEX)
+		if (_request.known_headers[_currentHeader].key.Offsets == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].Hash = _hash;
 			_request.known_headers[_currentHeader].key.Offsets = _keyStart;
@@ -875,13 +879,13 @@ private:
 				return;
 
 			uint8_t next = _request.known_headers[_currentHeader].next;
-			if (next == HttpTables::INVALID_INDEX)
+			if (next == INVALID_INDEX)
 			{
 				_request.known_headers[_currentHeader].next = _currentUnknownIndex;
 			}
 			else
 			{
-				while (_request.unknown_headers[next].next != HttpTables::INVALID_INDEX)
+				while (_request.unknown_headers[next].next != INVALID_INDEX)
 					next = _request.unknown_headers[next].next;
 				_request.unknown_headers[next].next = _currentUnknownIndex;
 			}
@@ -891,7 +895,7 @@ private:
 	void	selectHeaderSlot()
 	{
 		_currentHeader = fromHash(_hash);
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 
 		if (_currentHeader != HttpTables::H_UNKNOWN)
 			makeKnownHeader();
@@ -910,7 +914,7 @@ private:
 		uint16_t valueLen = _offset - _valueStart;
 
 		if (_currentHeader != HttpTables::H_UNKNOWN &&
-			_currentUnknownIndex == HttpTables::INVALID_INDEX)
+			_currentUnknownIndex == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].val.Offsets = _valueStart;
 			_request.known_headers[_currentHeader].val.len = valueLen;
@@ -1028,7 +1032,7 @@ private:
 		_keyStart = _offset;
 		_hash = SEED;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_state = STATE_KEY;
 	}
 
@@ -1043,7 +1047,7 @@ public:
 		emptyLinePending = false;
 		skipSpaceAfterColon = false;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_indexUnknownHeaders = 0;
 	}
 
@@ -1056,7 +1060,7 @@ public:
 		emptyLinePending = false;
 		skipSpaceAfterColon = false;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_indexUnknownHeaders = 0;
 		_state = STATE_KEY;
 	}

@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/21 21:33:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/02 21:57:01 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 
-clsMainProcess::clsMainProcess(){}
+clsMainProcess::clsMainProcess() {}
 clsMainProcess::~clsMainProcess(){}
 
 void clsMainProcess::_PartRedirection()
 {
     std::cout << _DataRequest.getReturn().code << std::endl;
     _Response.SetStatus(_DataRequest.getReturn().code);
-    _Response.SetMod(REDIRECTION);
+    _Response.SetMod(stMod::REDIRECTION);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
@@ -27,7 +27,7 @@ void clsMainProcess::_PartRedirection()
 void clsMainProcess::_PartPermission()
 {
     _Response.SetStatus(403);
-    _Response.SetMod(RequestStatus::ERROR);
+    _Response.SetMod(stMod::ERROR);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
@@ -35,16 +35,16 @@ void clsMainProcess::_PartPermission()
 void clsMainProcess::_PartCGI()
 {
     _Response.SetStatus(200);
-    //Cgi hear 
+    //Cgi hear
 }
 
 void clsMainProcess::_PartDeleteMethod()
 {
-    _Response.SetMod(Methods::DELETE);
+    _Response.SetMod(stMod::DELETE);
     _Response.SetStatus(200);
     if (access(_DataRequest.getPhysicalPath().c_str(), R_OK))
     {
-        _Response.SetMod(RequestStatus::ERROR);
+        _Response.SetMod(stMod::ERROR);
         _Response.SetStatus(404);
         _Response.MakeResponse();
     }
@@ -56,14 +56,14 @@ void clsMainProcess::_PartDeleteMethod()
 void clsMainProcess::_PartPOSMethod()
 {
     _Response.SetStatus(200);
-    _Response.SetMod(UPLOAD);
+    _Response.SetMod(stMod::UPLOAD);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartGETMethod()
 {
-    _Response.SetMod(Methods::GET);
+    _Response.SetMod(stMod::GET);
     _Response.SetStatus(200);
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
@@ -71,7 +71,7 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-    _Response.SetMod(RequestStatus::ERROR);
+    _Response.SetMod(stMod::ERROR);
     _Response.SetStatus(_DataRequest.getError().getCodeStatus());
     _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
@@ -87,18 +87,18 @@ void clsMainProcess::MainProcess(const RequestHandler &DataRequest)
         _PartRedirection();
     else if (!_DataRequest.MethodAllowed())
         _PartPermission();
-    else if ((_DataRequest.getMethod() == "GET"))
+    else if ((_DataRequest.getMethod() == HttpTables::eMethod::M_GET))
         _PartGETMethod();
-    else if (_DataRequest.getPathCgi() != "")
+    else if (*_DataRequest.getPathCgi() != "")
         _PartCGI();
-    else if ((_DataRequest.getMethod() == "DELETE"))
+    else if ((_DataRequest.getMethod() == HttpTables::eMethod::M_GET))
         _PartDeleteMethod();
-    else if ((_DataRequest.getMethod() == "POST"))
+    else if (_DataRequest.getMethod() == HttpTables::eMethod::M_POST)
         _PartPOSMethod();
         
 }
 
-const clsResponse &clsMainProcess::GetclsResponse()
+clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
 }

@@ -1,11 +1,8 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98
+CPPFLAGS = -Wall -Wextra  -g --std=c++98
 NAME = webserv
 
-Header = Parser/ParseRequest/Request/Header.hpp Parser/ParseRequest/Request/HeaderTable.hpp Parser/ParseRequest/Request/HttpTypes.hpp Parser/ParseRequest/Request/RequestLine.hpp Parser/ParseRequest/Request/RequestParser.hpp \
-		Parser/ParseRequest/Request/Utils.hpp Parser/ParseRequest/URI/NUriParser.hpp Parser/ParseRequest/URI/URI.hpp Parser/ParseRequest/URI/URIParser.hpp
-
-# SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp main.cpp \
+SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
 				linker/clsLinker.cpp linker/clsClient.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpError.cpp \

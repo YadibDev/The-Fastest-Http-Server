@@ -1,12 +1,25 @@
 {
+<<<<<<< HEAD
+  "configurations": [
+  {
+    "type": "lldb",
+    "request": "launch",
+    "name": "Launch",
+    "program": "${workspaceFolder}/a.out",
+    "args": [],
+    "cwd": "${workspaceFolder}"
+  }
+  ]
+=======
     "configurations": [
     {
         "type": "lldb",
         "request": "launch",
         "name": "Launch",
-        "program": "/workspaces/The-Fastest-Http-Server/webserv",
+        "program": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server/PartRespond/cgi/CGI",
         "args": [],
         "cwd": "${workspaceFolder}"
     }
     ]
+>>>>>>> Respond
 }

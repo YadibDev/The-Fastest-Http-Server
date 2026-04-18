@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/15 09:39:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/13 10:32:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,76 @@
 # define CLS_PARSE_OUT_CGI_HPP
 
 #include "../mainprocess/librarys.hpp"
-
+// #include "../../Parser/RequestHandler/RequestHandler.hpp"
 #include "../response/clsErrorPage.hpp"
+
+struct stHeadersCGI
+{
+    enum eHeaders{CONTENT_TYPE,LOCATION,STATUS};
+};
 
 class clsParseOutCGI
 {
         std::string _Data;
-        short _Mod;
+        stMod::eMod _Mod[10];
+        stHeadersCGI::eHeaders _ExistHeaders[1];
         bool _FoundBody;
         int _Status;
         int _BytesBody;
-        int _SizeFile;
+        uint8_t _CounterCGI_Field;
+        bool _ProcessIsFinish;
         std::string _Body;
-        clsErrorPage ErrorPage;
+        std::string _NameHeader;
+        std::string _ValueHeader;
+        std::string _FileNameFromDisk;
+        clsErrorPage _ErrorPage;
+        // RequestHandler _DataRequest; use
+        short _CountSizeHeaders;
+        short _MaxSizeHeaders;
+        int _MaxSizeBody;
+        short _CountFileTemp;
         std::map <std::string, std::string> _HeadersField;
-        std::map <std::string, std::string> _SpecialHeaders;
-        std::vector <std::string> _BlackListHeaders;
-        int _FD;
+        std::string _HeadersFieldDuplicate;
+        std::string _HeadersFieldFinal;
+        std::string _Line;
+        std::string _NameFileBody;
+        bool _Erno;
+        int _Pipe_Fd;
+        int _Fdout;
+        bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);
+        void _ErrorRespnseHandling();
+        bool _LocationIsClientOrLocal(std::string &Location);
+        bool _ParseStatus(const std::string &StatusLineValue);
+        bool _MakeHeadersResponse(std::string &StatusLine);
+        bool _IsSpecialChar(char C);
+        bool _CheckValidValueHeader(std::string &HeaderValue, short Start, short End);
+        void _StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
+        bool _ValidHeaders(std::string &Str);
+        bool _ParseContentType(const std::string &ValueContentType);
+        void _Connection(bool Isclose);
+        void _BuilResponsedredirection();
+        void _HeaderResponseCGI();
+        void _Transfer_Encoding();
+        void _Date();
+        void _CachControl();
+        void _Server();
+        void _StatusNormal();
+        void _StatusRedirection();
+        void _ContentLength();
+        void _ReceivingHeaders(std::string &Data);
+        void _ReceivingBody(std::string &Data);
+        bool _StoredHeadersField(std::string &Str);
+        void _StoredInFileOrStr();
+        void _CreatFileTemp();
+        bool _IsValidHeaderValueChar(unsigned char C);
     public:
         clsParseOutCGI();
-        bool CheckValidNameHeader(std::string &Headrs);
+        const std::string &GetBody();
+        const std::string &GetFileNameBody();
+        const std::string &GetHeadersFieldFinal();
+        void SetPipe_Fd(int Pipe_Fd);
         void ReceivingData(std::string &Data);
-        bool LocationIsClientOrLocal(std::string &Location);
-	    bool ParseStatus(const std::string &StatusLineValue);
-	    bool MakeHeadersResponse(std::string &StatusLine);
-        bool IsSpecialChar(char C);
-        bool CheckValidValueHeader(std::string &HeaderValue);
-	    void StoredBlackListHeaders(std::vector <std::string> &BalckListHeader);
-        bool ValidHeaders(std::string &Str, std::vector <std::string> &Data);
-        bool StoredCleanHeaders(std::string &Str);
-        bool ParseContentType(const std::string &ValueContentType);
-        std::string Connection(bool Isclose);
-        std::string BuilResponsedredirection();
-        std::string HeaderResponseCGI();
+        void SetProcessIsFinish(bool ProcessIsFinish);
+        ~clsParseOutCGI();
 };
 #endif

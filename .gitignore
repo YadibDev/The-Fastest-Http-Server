@@ -1,2 +1,7 @@
 *.d
 *.o
+string.cpp
+test.cpp
+.vscode
+*.out
+Testers

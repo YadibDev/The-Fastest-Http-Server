@@ -73,7 +73,7 @@ void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
 {
 
     int fd;
-    for (size_t i = 0; i < listens.size(); i++)
+    for (int i = 0; i < listens.size(); i++)
     {
         try
         {

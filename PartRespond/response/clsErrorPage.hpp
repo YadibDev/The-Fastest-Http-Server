@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/02/18 19:12:17 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/03/04 21:33:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,12 @@ class clsErrorPage
 {
     private:
         int _Status;
-        std::map<short, short> _Mod;
+        stMod::eMod _Mod[10];
         std::string _Type;
-        std::map<int, std::string> _Message;
-        std::map<int, std::string> _Body;
         std::string _HeaderFeild;
         int _BodySize;
 
-        std::string HeadersErrorResponse();
+        std::string &HeadersErrorResponse();
         void StoredBodys();
         void StoredMessage();
         void Status();
@@ -43,11 +41,9 @@ class clsErrorPage
         clsErrorPage();
         void SetType(std::string Type);
         void SetBodySize(int BodySize);
-        void SetMod(const std::map<short, short> &Mod);
+        void SetMod(const stMod::eMod *Mod);
         std::string GetType();
-        std::string GetStatusMessage(int StatusCode);
-        std::string GetBody(int StatusCode);
-        std::string ResponseError(int Status);
+        std::string &ResponseError(int Status);
         ~clsErrorPage();
 };
 #endif

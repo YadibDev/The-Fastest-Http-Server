@@ -43,8 +43,8 @@ struct s_header_slot {
 	s_view		key;
 	s_view		val;
 	uint8_t		next;
-	uint32_t	Hash;
-	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
+	int32_t		Hash;
+	s_header_slot() : next(INVALID_INDEX), Hash(-1) {}
 };
 
 struct PollOfClient {
@@ -54,6 +54,12 @@ struct PollOfClient {
 	s_header_slot	unknown_headers[25];
 	char			Response_metadata[16384];
 	uint16_t		read_offset;
+	uint16_t read_body;
+    void Reset()
+    {
+        read_offset = 0;
+        read_body = 0;
+    }
 };
 
 struct stPollRequest {

@@ -71,8 +71,8 @@ struct stReturnData {
 };
 
 struct stErrorPagedata {
-	short       response;
-	std::string uri;
+	short		response;
+	std::string	uri;
 
 	stErrorPagedata() : response(-1), uri("") {}
 };
