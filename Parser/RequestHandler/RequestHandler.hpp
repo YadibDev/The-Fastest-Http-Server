@@ -62,7 +62,7 @@ public:
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 
 	// char*					getPhysicalPath();
-	const char*					getPhysicalPath();
+	const char*					getPhysicalPath() const;
 	bool					getAutoIndex() const;
 	s_view					getQuery() const;
 	s_view					getVersion() const;

@@ -28,12 +28,15 @@ class clsResponse
         int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
-        std::string _Body;
+        bool _ModTransferData;
         std::string _Type;
         clsErrorPage _ErrorPage;
+        std::string _Body;
         std::string _HeaderFeild;
-        std::string _FileName;
         std::string _FileFromDisk;
+        const std::string *_BodyPointer;
+        const std::string *_HeaderFeildPointer;
+        const std::string *_FileFromDiskPointer;
         const RequestHandler &_DataRequest;
 
         const std::string GetTypeData(const std::string &Type);
@@ -61,8 +64,13 @@ class clsResponse
         void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
+        bool GetErnoVar();
+        const std::string *GetBodyPointer();
+        const std::string *GetHeaderFeildPointer();
+        const std::string *GetFileFromDiskPointer();
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
-
+        void SetModTransferData(bool ModTransferData);
+        bool GetModTransferData() const;
         ~clsResponse();
 };
 #endif

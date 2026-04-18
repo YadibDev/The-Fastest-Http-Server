@@ -22,6 +22,8 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     
     _IsConnection = true;
     _SizeHeaders = 0;
+    _Erno = false;
+    _ModTransferData = false;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(_MaxSizeHeader);
     _Body.resize(_MaxSizeBody);
@@ -30,6 +32,7 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
+        _Erno = true;
         return ;
     }
     _FileFromDisk.clear();
@@ -40,9 +43,11 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
 
 void clsResponse::MakeResponse()
 {
+    if (_Erno)
+        return ;
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
-        // _FileFromDisk = _DataRequest.getPhysicalPath();
+        _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         _StoredInFileOrStr();
     }
@@ -97,9 +102,10 @@ void clsResponse::_ErrorRespnseHandling()
     }
     else
         _ErrorPage.ResponseError(_Status, "");
-    _Body = _ErrorPage.GetBody();
-    _HeaderFeild = _ErrorPage.GetHeaderField();
-    _FileFromDisk = _ErrorPage.GetFileFromDisk();
+    _ModTransferData = true;
+    _BodyPointer = &_ErrorPage.GetBody();
+    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
 }
 
 void clsResponse::_StatusLine()
@@ -169,14 +175,12 @@ void clsResponse::_StoredInFileOrStr()
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         return ;
     }
     _BodySize = MetaData.st_size;
     if (_BodySize > 40000)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
-        _FileName = _FileFromDisk;
         return ;
     }
     int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
@@ -184,14 +188,12 @@ void clsResponse::_StoredInFileOrStr()
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         return ;
     }
     if (read(FD,&_Body[0],40000) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        _Erno = true;
         close(FD);
         return ;
     }
@@ -235,7 +237,6 @@ void clsResponse::Reset()
 {
     _Status = 0;
     _BodySize = 0;
-    _FileName = "";
     _FileFromDisk = "";
     _Body = "";
     _HeaderFeild = "";
@@ -258,7 +259,31 @@ const std::string &clsResponse::GetBody() const
 
 const std::string &clsResponse::GetFileName() const
 {
-    return _FileName;
+    return _FileFromDisk;
 }
 
+const std::string *clsResponse::GetBodyPointer()
+{
+   return _BodyPointer;
+}
+const std::string *clsResponse::GetHeaderFeildPointer()
+{
+    return _HeaderFeildPointer;
+}
+const std::string *clsResponse::GetFileFromDiskPointer()
+{
+    return _FileFromDiskPointer;
+}
+bool clsResponse::GetErnoVar()
+{
+    return _Erno;
+}
+void clsResponse::SetModTransferData(bool ModTransferData)
+{
+    _ModTransferData = ModTransferData;
+}
+bool clsResponse::GetModTransferData() const
+{
+    return _ModTransferData;
+}
 clsResponse::~clsResponse(){}
