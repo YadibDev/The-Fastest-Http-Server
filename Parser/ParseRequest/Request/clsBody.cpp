@@ -37,7 +37,7 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
-    this->_fileName = "tmp/file_XXXXXX";
+    this->_fileName = "/tmp/file_XXXXXX";
     this->_bodyLocation = clsBody::NONE;
     this->_isError = false;
     this->_state = clsBody::SETTING_VARS;
@@ -101,7 +101,7 @@ void clsBody::bodyHandler(uint16_t *off)
         }
         std::cout <<  "location " << _bodyLocation << std::endl;
 
-        if (data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 9 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 9) == -1)
+        if (data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 10 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 10) == 0)
             _isMultiPart = true;
         else
             _isMultiPart = false;
