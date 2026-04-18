@@ -22,7 +22,7 @@
     _Body.resize(40000);
     if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
     {
-        _Mod[stMod::ERROR] == stMod::ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         return ;
     }
@@ -99,7 +99,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         _StoredInFileOrStr();
         if (_Erno)
         {
-            Type = ".html";
+            _Type = ".html";
             _FileFromDisk = "";
             _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
             _Body = HelperFunctions::GetBody(PrevStatus);
@@ -113,7 +113,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
             return ;
         }
     }
-    Type = ".html";
+    _Type = ".html";
     _FileFromDisk = "";
     _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(Status));
     _Body = HelperFunctions::GetBody(Status);
@@ -134,7 +134,7 @@ void clsErrorPage::_StatusLine()
     _HeaderFeild += "\r\n";
 }
 
-void clsErrorPage::ContentLength()
+void clsErrorPage::_ContentLength()
 {
     _HeaderFeild += "Content-Length: ";
     HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
@@ -154,7 +154,7 @@ void clsErrorPage::_Date()
     _HeaderFeild += "\r\n";     
 }
 
-void clsErrorPage::Server()
+void clsErrorPage::_Server()
 {
     _HeaderFeild += "Server: Name Server\r\n";
 }
@@ -162,10 +162,9 @@ void clsErrorPage::_RetryAfter()
 {
     _HeaderFeild += "Retey-After: ";
     HelperFunctions::NumToStr(120, _HeaderFeild);
-    _HeaderFeild += Number;
     _HeaderFeild += "\r\n";
 }
-void clsErrorPage::Allow()
+void clsErrorPage::_Allow()
 {
     _HeaderFeild += "Allow: GET, POST, DELETE\r\n";
 }
@@ -173,12 +172,6 @@ void clsErrorPage::Allow()
 void clsErrorPage::_Transfer_Encoding()
 {
    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
-}
-
-void clsErrorPage::SetMod(const stMod::eMod *Mod)
-{
-    for (int i = 0; i < 10; i++)
-        _Mod[i] = Mod[i];
 }
 
 void clsErrorPage::SetBodySize(int BodySize)
@@ -193,7 +186,7 @@ const std::string &clsErrorPage::GetHeaderField()
 
 const std::string &clsErrorPage::GetBody()
 {
-    return (_Body)
+    return (_Body);
 }
 const std::string &clsErrorPage::GetFileFromDisk()
 {

@@ -471,7 +471,7 @@ int	HelperFunctions::len_int(int nb)
 	return (i);
 }
 
-void HelperFunction::NumToStr(int Number, std::string &Str)
+void HelperFunctions::NumToStr(int Number, std::string &Str)
 {
     char Remainder = 0;
     int NewNumbr = 0;

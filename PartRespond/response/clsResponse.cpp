@@ -28,7 +28,7 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _Type.resize(500);
     if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
     {
-        _Mod[stMod::ERROR] == stMod::ERROR;
+        _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         return ;
     }
@@ -42,8 +42,7 @@ void clsResponse::MakeResponse()
 {
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
-        const char * Arr = _DataRequest.getPhysicalPath();
-        _FileFromDisk = Arr;
+        // _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         _StoredInFileOrStr();
     }
@@ -71,36 +70,36 @@ void clsResponse::_InitialHeaders()
     _Date();
     _CachControl();
     _Server();
-    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
-    {
-        if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
-            "close", _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->len))
-        {
-            _IsConnection = false;
-            _Connection(false);
-        }
-        else
-            _Connection(true);
-    }
-    else
+    // if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
+    // {
+    //     if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
+    //         "close", _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->len))
+    //     {
+    //         _IsConnection = false;
+    //         _Connection(false);
+    //     }
+    //     else
+    //         _Connection(true);
+    // }
+    // else
         _Connection(true);
 }
 
 void clsResponse::_ErrorRespnseHandling()
 {
-    stErrorPagedata &ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
 
-    if (ErrorPageConf.response)
+    if (ErrorPageConf->response)
     {
-        if (ErrorPageConf.response != -1)
-            _Status = ErrorPageConf.response;
-        _ErrorPage.ResponseError(_Status, ErrorPageConf.uri);
+        if (ErrorPageConf->response != -1)
+            _Status = ErrorPageConf->response;
+        _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
     }
     else
         _ErrorPage.ResponseError(_Status, "");
     _Body = _ErrorPage.GetBody();
-    _HeadersFieldFinal = _ErrorPage.GetHeaderField();
-    _FileNameFromDisk = _ErrorPage.GetFileFromDisk();
+    _HeaderFeild = _ErrorPage.GetHeaderField();
+    _FileFromDisk = _ErrorPage.GetFileFromDisk();
 }
 
 

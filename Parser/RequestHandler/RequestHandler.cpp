@@ -121,7 +121,7 @@ void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _file
 
 void    RequestHandler::setError(const HttpError &error) { _error = error; }
 
-char* RequestHandler::getPhysicalPath() { return _physicalPath; }
+const char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
 

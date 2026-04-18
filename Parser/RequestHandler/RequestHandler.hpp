@@ -60,7 +60,7 @@ public:
 	bool					ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
-	char*					getPhysicalPath();
+	const char*					getPhysicalPath();
 	bool					getAutoIndex() const;
 	s_view					getQuery() const;
 	s_view					getVersion() const;

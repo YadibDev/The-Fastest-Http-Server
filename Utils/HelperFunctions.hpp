@@ -23,6 +23,8 @@
 class HelperFunctions
 {
 public:
+    static s_view  find_first_of_view(s_view view, const char* set);
+    static s_view  extract_between(s_view view, const char* start_set, const char* end_set);
 	static void skipWhitespace(const std::string &str, size_t &pos);
 	static bool isCRLF(const std::string &str);
 	static long hexToDec(const std::string &hex);
@@ -86,7 +88,7 @@ private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
-    static const char _PoinerType[10];
+    static char _PoinerType[10];
     HelperFunctions() {}
 };
 
