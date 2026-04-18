@@ -137,8 +137,6 @@ void clsClient::ProcessRequest()
     else
         _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
 
-    std::cout << _Requester._state << " state " << endl;
-
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
