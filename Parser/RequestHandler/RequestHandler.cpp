@@ -19,6 +19,63 @@ RequestHandler::RequestHandler(stPollRequest& request)
 RequestHandler::~RequestHandler() {}
 
 
+bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
+{
+    if (!uri.Data || uri.len == 0) return false;
+
+    char* start = uri.Data;
+    char* end = uri.Data + uri.len;
+    char* current = start;
+
+    while (current < end)
+    {
+        if (*current == '.')
+        {
+            char* extStart = current;
+            char* extEnd = extStart;
+            while (extEnd < end && *extEnd != '/')
+                extEnd++;
+
+            size_t extLen = extEnd - extStart;
+            std::string extStr(extStart, extLen);
+
+            std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
+            if (it != cgi_pass.end())
+            {
+                _pathCgi = &it->second;
+
+                _ScriptName.Data = start;
+                _ScriptName.len = (uint16_t)(extEnd - start);
+
+                _PathInfo.Data = extEnd;
+                _PathInfo.len = (uint16_t)(end - extEnd);
+
+                return true;
+            }
+        }
+        current++;
+    }
+    return false;
+}
+
+void	RequestHandler::computePathTranslated(const std::string& rootPath)
+{
+	size_t totalSize = rootPath.size() + _PathInfo.len;
+
+	bool needSlash = (!rootPath.empty() && rootPath[rootPath.size() - 1] != '/' && _PathInfo.len > 0 && _PathInfo.Data[0] != '/');
+
+	if (needSlash)
+		totalSize += 1;
+
+	_PathTranslated.reserve(totalSize);
+	_PathTranslated.append(rootPath);
+
+	if (needSlash)
+		_PathTranslated += '/';
+
+	_PathTranslated.append(_PathInfo.Data, _PathInfo.len);
+}
+
 void    RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
 
 void    RequestHandler::setQuery(const s_view query) { _query = query; }
@@ -34,8 +91,9 @@ void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& er
 	_error_pages = errorPages;
 }
 
-void RequestHandler::setPathInfo(const s_view pathInfo) {
-	_PathInfo = pathInfo;
+void	RequestHandler::setDefaultErrorPage(const stErrorPagedata* defaultErrorPage)
+{
+	_defaultErrorPage = defaultErrorPage;
 }
 
 void RequestHandler::setPathTranslated(std::string pathTranslated) {
@@ -91,11 +149,11 @@ HeaderTable    &RequestHandler::getHeader()
 	return _Header;
 }
 
-stErrorPagedata RequestHandler::getErrorPage(short code) const {
+const stErrorPagedata *RequestHandler::getErrorPage(short code) const {
 	std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
 	if (it == _error_pages.end())
-		return stErrorPagedata();
-	return it->second;
+		return _defaultErrorPage;
+	return &it->second;
 }
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

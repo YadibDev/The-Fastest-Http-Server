@@ -2,14 +2,12 @@
 
 #define CHUNK_LIMIT 2 * 1024 * 1024
 
+
+
 clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
-                                                                                block(block),
-                                                                                RequestXconfig(_dataForReq),
-                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
-                                                                                _ResponderProecss(RequestXconfig),
-                                                                                _socket(fd),
-                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()),
-                                                                                _addr(addr)
+                                                        RequestXconfig(_dataForReq),
+                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd),
+                                                        _Requester(_dataForReq,  &block, &RequestXconfig)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
@@ -22,21 +20,14 @@ clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _dataForReq(),
-                                               block(other.block),
-                                               RequestXconfig(_dataForReq),
-                                               _Requester(_dataForReq, &block, &RequestXconfig),
-                                               _ResponderProecss(RequestXconfig),
-                                               _socket(other._socket),
-                                               _FirstConnection(other._FirstConnection),
-                                               _addr(other._addr)
-
+clsClient::clsClient(const clsClient &other) : _dataForReq(other._dataForReq),
+                                            RequestXconfig(other.RequestXconfig),
+                                            _Requester(other._Requester),
+                                            _addr(other._addr),
+                                            _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.sizeUnknownHeaders = 25;
+    
+
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -130,13 +121,13 @@ void clsClient::ProcessRequest()
     int size = _ReadDataForReq(); // reading data for request
 
     if (_state == CONNECTION_CLOSED || size == -1)
-        return;
+        return ;
 
-    if (_Requester._state == RequestParser::STATE_BODY)
-        _Requester.Parse(_theData.read_body); // then pase it to parse
-    else
-        _Requester.Parse(_theData.read_offset - 1); // then pase it to parse
-
+    // if (_Requester._state == READING_BODY)
+    //     _Requester.parse(_theData.read_body);  // then pase it to parse
+    // else
+    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
+    
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;

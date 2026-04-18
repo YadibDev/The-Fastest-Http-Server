@@ -13,7 +13,7 @@ using namespace std;
 class HttpTables
 {
 public:
-	static const uint8_t INVALID_INDEX = 255;
+	static INVALID_INDEX = 255;
 
 	enum eMethod
 	{
@@ -103,7 +103,7 @@ struct s_header_slot
 	uint8_t		next;
 	uint32_t	Hash;
 
-	s_header_slot() : next(HttpTables::INVALID_INDEX), Hash(0) {}
+	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
 };
 
 struct PollOfClient
@@ -155,15 +155,15 @@ static stPollRequest makeRequest(PollOfClient &client)
 	for (int i = 0; i < HttpTables::H_COUNT; i++)
 	{
 		req.known_headers[i] = s_header_slot();
-		req.known_headers[i].key.Offsets = HttpTables::INVALID_INDEX;
-		req.known_headers[i].next = HttpTables::INVALID_INDEX;
+		req.known_headers[i].key.Offsets = INVALID_INDEX;
+		req.known_headers[i].next = INVALID_INDEX;
 	}
 
 	for (int i = 0; i < req.sizeUnknownHeaders; i++)
 	{
 		req.unknown_headers[i] = s_header_slot();
-		req.unknown_headers[i].key.Offsets = HttpTables::INVALID_INDEX;
-		req.unknown_headers[i].next = HttpTables::INVALID_INDEX;
+		req.unknown_headers[i].key.Offsets = INVALID_INDEX;
+		req.unknown_headers[i].next = INVALID_INDEX;
 	}
 
 	return req;
@@ -411,7 +411,7 @@ private:
 	}
 
 public:
-	URIParser()
+	UriParser()
 	{
 		init(0);
 	}
@@ -521,10 +521,14 @@ private:
 	void	selectMethod(const char *buffer, uint16_t size)
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (_offset > size)
 =======
 		if (_offset >= size)
 >>>>>>> Respond
+=======
+		if (_offset >= size)
+>>>>>>> Request
 			return;
 
 		if (buffer[_offset] == 'G')
@@ -567,7 +571,7 @@ private:
 
 		if (expected[_methodIndex] != '\0')
 			return;
-		if (_offset > size)
+		if (_offset >= size)
 			return;
 		if (!isSpace(buffer[_offset]))
 		{
@@ -584,7 +588,7 @@ private:
 		if (!_uriReady)
 		{
 			skipSpaceLastIndex(buffer, size, _offset);
-			if (_offset > size)
+			if (_offset >= size)
 				return;
 			_uriParser.init(_offset);
 			_uriReady = true;
@@ -611,7 +615,7 @@ private:
 		if (!_versionReady)
 		{
 			skipSpaceLastIndex(buffer, size, _offset);
-			if (_offset > size)
+			if (_offset >= size)
 				return;
 			_version.Offsets = _offset;
 			_version.len = 0;
@@ -635,10 +639,14 @@ private:
 		if (!_versionMinorRead)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (_offset > size)
 =======
 			if (_offset >= size)
 >>>>>>> Respond
+=======
+			if (_offset >= size)
+>>>>>>> Request
 				return;
 			if (buffer[_offset] != '0' && buffer[_offset] != '1')
 			{
@@ -655,7 +663,7 @@ private:
 
 	void	parseCR(const char *buffer, uint16_t size)
 	{
-		if (_offset > size)
+		if (_offset >= size)
 			return;
 		if (buffer[_offset] != '\r')
 		{
@@ -668,7 +676,7 @@ private:
 
 	void	parseLF(const char *buffer, uint16_t size)
 	{
-		if (_offset > size)
+		if (_offset >= size)
 			return;
 		if (buffer[_offset] != '\n')
 		{
@@ -865,12 +873,12 @@ private:
 		_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
 		_request.unknown_headers[_currentUnknownIndex].key.Offsets = _keyStart;
 		_request.unknown_headers[_currentUnknownIndex].key.len = (_offset - 1) - _keyStart;
-		_request.unknown_headers[_currentUnknownIndex].next = HttpTables::INVALID_INDEX;
+		_request.unknown_headers[_currentUnknownIndex].next = INVALID_INDEX;
 	}
 
 	void	makeKnownHeader()
 	{
-		if (_request.known_headers[_currentHeader].key.Offsets == HttpTables::INVALID_INDEX)
+		if (_request.known_headers[_currentHeader].key.Offsets == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].Hash = _hash;
 			_request.known_headers[_currentHeader].key.Offsets = _keyStart;
@@ -883,13 +891,13 @@ private:
 				return;
 
 			uint8_t next = _request.known_headers[_currentHeader].next;
-			if (next == HttpTables::INVALID_INDEX)
+			if (next == INVALID_INDEX)
 			{
 				_request.known_headers[_currentHeader].next = _currentUnknownIndex;
 			}
 			else
 			{
-				while (_request.unknown_headers[next].next != HttpTables::INVALID_INDEX)
+				while (_request.unknown_headers[next].next != INVALID_INDEX)
 					next = _request.unknown_headers[next].next;
 				_request.unknown_headers[next].next = _currentUnknownIndex;
 			}
@@ -899,7 +907,7 @@ private:
 	void	selectHeaderSlot()
 	{
 		_currentHeader = fromHash(_hash);
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 
 		if (_currentHeader != HttpTables::H_UNKNOWN)
 			makeKnownHeader();
@@ -918,7 +926,7 @@ private:
 		uint16_t valueLen = _offset - _valueStart;
 
 		if (_currentHeader != HttpTables::H_UNKNOWN &&
-			_currentUnknownIndex == HttpTables::INVALID_INDEX)
+			_currentUnknownIndex == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].val.Offsets = _valueStart;
 			_request.known_headers[_currentHeader].val.len = valueLen;
@@ -1036,7 +1044,7 @@ private:
 		_keyStart = _offset;
 		_hash = SEED;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_state = STATE_KEY;
 	}
 
@@ -1051,7 +1059,7 @@ public:
 		emptyLinePending = false;
 		skipSpaceAfterColon = false;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_indexUnknownHeaders = 0;
 	}
 
@@ -1064,7 +1072,7 @@ public:
 		emptyLinePending = false;
 		skipSpaceAfterColon = false;
 		_currentHeader = HttpTables::H_UNKNOWN;
-		_currentUnknownIndex = HttpTables::INVALID_INDEX;
+		_currentUnknownIndex = INVALID_INDEX;
 		_indexUnknownHeaders = 0;
 		_state = STATE_KEY;
 	}
@@ -1157,6 +1165,7 @@ private:
 		}
 		if (_header.isComplete())
 		{
+
 			_state = STATE_COMPLETE;
 		}
 	}
@@ -1218,169 +1227,169 @@ public:
 
 
 
-#include "ProcessRequestHandler.hpp"
+// #include "ProcessRequestHandler.hpp"
 
 
 
 
-ProcessRequestHandler::ProcessRequestHandler()
-{
-}
+// ProcessRequestHandler::ProcessRequestHandler()
+// {
+// }
 
 
-const clsLocation* findBestLocation(
-	const std::vector<clsLocation>		&LocationExact,
-	const std::vector<clsLocation>		&LocationPrefix,
-	s_view &uri, const char *buffer)
-{
-	const clsLocation* best = NULL;
+// const clsLocation* findBestLocation(
+// 	const std::vector<clsLocation>		&LocationExact,
+// 	const std::vector<clsLocation>		&LocationPrefix,
+// 	s_view &uri, const char *buffer)
+// {
+// 	const clsLocation* best = NULL;
 
-	if (LocationExact.size() > 0)
-	{
-		for (size_t i = 0; i < LocationExact.size(); i++)
-		{
-			if (uri.len == LocationExact[i].getLocationData().uri.size())
-				if (!compare_view(uri, buffer, LocationExact[i].getLocationData().uri))
-					return &LocationExact[i];
-		}
-	}
+// 	if (LocationExact.size() > 0)
+// 	{
+// 		for (size_t i = 0; i < LocationExact.size(); i++)
+// 		{
+// 			if (uri.len == LocationExact[i].getLocationData().uri.size())
+// 				if (!compare_view(uri, buffer, LocationExact[i].getLocationData().uri))
+// 					return &LocationExact[i];
+// 		}
+// 	}
 
-	size_t maxLen = 0;
+// 	size_t maxLen = 0;
 
-	if (LocationPrefix.size() > 0)
-	{
-		const std::vector<clsLocation>& prefixVec = LocationPrefix;
+// 	if (LocationPrefix.size() > 0)
+// 	{
+// 		const std::vector<clsLocation>& prefixVec = LocationPrefix;
 
-		for (size_t i = 0; i < prefixVec.size(); i++)
-		{
-			const std::string& loc = prefixVec[i].getLocationData().uri;
+// 		for (size_t i = 0; i < prefixVec.size(); i++)
+// 		{
+// 			const std::string& loc = prefixVec[i].getLocationData().uri;
 
-			int com = compare_view(uri ,buffer, loc);
-			if (com == 1 || !com)
-			{
-				if (loc.size() > maxLen)
-				{
-					maxLen = loc.size();
-					best = &prefixVec[i];
-				}
-			}
-		}
-	}
+// 			int com = compare_view(uri ,buffer, loc);
+// 			if (com == 1 || !com)
+// 			{
+// 				if (loc.size() > maxLen)
+// 				{
+// 					maxLen = loc.size();
+// 					best = &prefixVec[i];
+// 				}
+// 			}
+// 		}
+// 	}
 
-	return best;
-}
+// 	return best;
+// }
 
-const std::string ProcessRequestHandler::getPathCgi(const std::string &uri, const std::map<std::string, std::string> &cgi_pass)
-{
-	const std::string empty = "";
-	size_t extension = uri.find_last_of('.');
-	if (extension == std::string::npos)
-		return empty;
-	std::string extensionStr = uri.substr(extension);
-	std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extensionStr);
+// const std::string ProcessRequestHandler::getPathCgi(const std::string &uri, const std::map<std::string, std::string> &cgi_pass)
+// {
+// 	const std::string empty = "";
+// 	size_t extension = uri.find_last_of('.');
+// 	if (extension == std::string::npos)
+// 		return empty;
+// 	std::string extensionStr = uri.substr(extension);
+// 	std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extensionStr);
 
-	if (it != cgi_pass.end())
-		return it->second;
-	return empty;
-}
+// 	if (it != cgi_pass.end())
+// 		return it->second;
+// 	return empty;
+// }
 
-std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
-	switch (method) {
-		case Methods::GET:
-			return "GET";
-		case Methods::POST:
-			return "POST";
-		case Methods::DELETE:
-			return "DELETE";
-		default:
-			return "UNKNOWN";
-	}
-}
+// std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
+// 	switch (method) {
+// 		case Methods::GET:
+// 			return "GET";
+// 		case Methods::POST:
+// 			return "POST";
+// 		case Methods::DELETE:
+// 			return "DELETE";
+// 		default:
+// 			return "UNKNOWN";
+// 	}
+// }
 
 
 
-bool    checkPath(const std::string &physicalPath)
-{
-	struct stat buffer;
+// bool    checkPath(const std::string &physicalPath)
+// {
+// 	struct stat buffer;
 	
-	if (!stat(physicalPath.c_str(), &buffer))
-	{
-		if (!access(physicalPath.c_str(), R_OK))
-			return (true);
-	}
-	return (false);
-}
+// 	if (!stat(physicalPath.c_str(), &buffer))
+// 	{
+// 		if (!access(physicalPath.c_str(), R_OK))
+// 			return (true);
+// 	}
+// 	return (false);
+// }
 
-std::string ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, HttpError &error)
-{
-	const std::vector<std::string> &vindex = bestLocation->getIndex();
-	std::string rootOrAlias = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
-	std::string physicalPath = "";
+// std::string ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, HttpError &error)
+// {
+// 	const std::vector<std::string> &vindex = bestLocation->getIndex();
+// 	std::string rootOrAlias = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
+// 	std::string physicalPath = "";
 
-	for (size_t i = 0; i < vindex.size(); i++)
-	{
-		physicalPath = rootOrAlias + "/" + vindex[i];
-		if (checkPath(physicalPath))
-			return physicalPath;
-	}
+// 	for (size_t i = 0; i < vindex.size(); i++)
+// 	{
+// 		physicalPath = rootOrAlias + "/" + vindex[i];
+// 		if (checkPath(physicalPath))
+// 			return physicalPath;
+// 	}
 
-	physicalPath = rootOrAlias + "/index.html";
-	if (checkPath(physicalPath))
-		return physicalPath;
+// 	physicalPath = rootOrAlias + "/index.html";
+// 	if (checkPath(physicalPath))
+// 		return physicalPath;
 
-	if (bestLocation->getAutoIndex())
-		return rootOrAlias;
+// 	if (bestLocation->getAutoIndex())
+// 		return rootOrAlias;
 
-	error.setStatus(403, "Forbidden");
-	return "";
-}
+// 	error.setStatus(403, "Forbidden");
+// 	return "";
+// }
 
-std::string ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, const std::string &uri, HttpError &error)
-{
-	std::string base = "";
+// std::string ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, const std::string &uri, HttpError &error)
+// {
+// 	std::string base = "";
 	
-	if (!uri.empty() && uri[uri.size() - 1] == '/')
-		return handleDirectory(bestLocation, error);
+// 	if (!uri.empty() && uri[uri.size() - 1] == '/')
+// 		return handleDirectory(bestLocation, error);
 
-	base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
+// 	base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
 
-	std::string physicalPath;
-	if (!bestLocation->getAlias().empty()) {
-		std::string subUri = uri.substr(bestLocation->getLocationData().uri.size());
-		physicalPath = base + ( (!subUri.empty() && subUri[0] != '/') ? "/" + subUri : subUri );
-	}
-	else
-		physicalPath = base + ( (!uri.empty() && uri[0] != '/') ? "/" + uri : uri );
+// 	std::string physicalPath;
+// 	if (!bestLocation->getAlias().empty()) {
+// 		std::string subUri = uri.substr(bestLocation->getLocationData().uri.size());
+// 		physicalPath = base + ( (!subUri.empty() && subUri[0] != '/') ? "/" + subUri : subUri );
+// 	}
+// 	else
+// 		physicalPath = base + ( (!uri.empty() && uri[0] != '/') ? "/" + uri : uri );
 
-	if (checkPath(physicalPath))
-		return physicalPath;
+// 	if (checkPath(physicalPath))
+// 		return physicalPath;
 
-	error.setStatus(404, "Not Found");
-	return "";
-}
+// 	error.setStatus(404, "Not Found");
+// 	return "";
+// }
 
-void ProcessRequestHandler::processRequest(const RequestParser& request, const clsServerConfig& serverConfigs, RequestHandler& handler)
-{
-	const clsLocation* bestLocation = findBestLocation(serverConfigs.getLocationExact(), serverConfigs.getLocationPrefix(), request._startLine.getPath());
-	HttpError error;
+// void ProcessRequestHandler::processRequest(const RequestParser& request, const clsServerConfig& serverConfigs, RequestHandler& handler)
+// {
+// 	const clsLocation* bestLocation = findBestLocation(serverConfigs.getLocationExact(), serverConfigs.getLocationPrefix(), request._startLine.getPath());
+// 	HttpError error;
 
-	if (bestLocation)
-	{
-		handler.setPhysicalPath(creatPhysicalPath(bestLocation, request.getRequestLine().getRequestURI(), error));
-		handler.setAutoIndex(bestLocation->getAutoIndex());
-		handler.setAllowMethod(request._startLine.getMethod() == (bestLocation->getAllowMethods() & request._startLine.getMethod()));
-		handler.setQuery(request._startLine.getQuery());
-		handler.setVersion(request._startLine.getVersion());
-		handler.setMethod(selectMethod(request._startLine.getMethod()));
-		handler.setHeaders(request._headerParser.getHeaderValues());
-		handler.setErrorPages(bestLocation->getErrorPages());
-		handler.setPathCgi(getPathCgi(request._startLine.getPath(), bestLocation->getCgiPass()));
-		handler.setReturn(bestLocation->getReturn());
-		handler.setUploadStore(bestLocation->getUploadStore());
-		handler.setError(error);
-	}
+// 	if (bestLocation)
+// 	{
+// 		handler.setPhysicalPath(creatPhysicalPath(bestLocation, request.getRequestLine().getRequestURI(), error));
+// 		handler.setAutoIndex(bestLocation->getAutoIndex());
+// 		handler.setAllowMethod(request._startLine.getMethod() == (bestLocation->getAllowMethods() & request._startLine.getMethod()));
+// 		handler.setQuery(request._startLine.getQuery());
+// 		handler.setVersion(request._startLine.getVersion());
+// 		handler.setMethod(selectMethod(request._startLine.getMethod()));
+// 		handler.setHeaders(request._headerParser.getHeaderValues());
+// 		handler.setErrorPages(bestLocation->getErrorPages());
+// 		handler.setPathCgi(getPathCgi(request._startLine.getPath(), bestLocation->getCgiPass()));
+// 		handler.setReturn(bestLocation->getReturn());
+// 		handler.setUploadStore(bestLocation->getUploadStore());
+// 		handler.setError(error);
+// 	}
 	
-}
+// }
 
 int main(void)
 {
@@ -1405,7 +1414,7 @@ int main(void)
 	{
 		parser.Parse(i);
 		if (parser.isComplete() || parser.isError())
-			break;
+			break ;
 	}
 
 	if (parser.isError())

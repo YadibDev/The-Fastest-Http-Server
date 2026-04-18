@@ -86,7 +86,7 @@ private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
-    static const char *_PoinerType[10];
+    static const char _PoinerType[10];
     HelperFunctions() {}
 };
 

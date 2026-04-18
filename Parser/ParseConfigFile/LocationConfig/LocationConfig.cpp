@@ -157,6 +157,7 @@ clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
 	_allow_methods = -1;
 	_autoindex = sAutoIndex;
 	_flags = Directives::D_NONE;
+	_defaultErrorPage = &_error_pages[1];
 }
 
 
@@ -234,3 +235,7 @@ const stlocation &clsLocation::getLocationData() const {
 	return _locationData;
 }
 
+const stErrorPagedata	*clsLocation::getDefaultErrorPage() const
+{
+	return _defaultErrorPage;
+}
