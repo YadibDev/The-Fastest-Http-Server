@@ -7,8 +7,7 @@ RequestParser::RequestParser(stPollRequest &request, clsServerConfig *ServerConf
 	  _header(request),
 	  _body(request),
 	  _ServerConfig(ServerConfig),
-	  _RequestHandler(RequestHandler),
-	  _state(STATE_REQUEST_LINE)
+	  _RequestHandler(RequestHandler)
 {
 }
 

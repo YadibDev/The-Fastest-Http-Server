@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 16:27:13 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/18 13:31:32 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,8 @@ clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
-    std::cout << _DataRequest.getReturn().code << std::endl;
     _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(stMod::REDIRECTION);
-    // modfier by yadib
-    // _Response.SetRequestHandler(_DataRequest);
-    _Response.MakeResponse();
-}
-
-void clsMainProcess::_PartPermission()
-{
-    _Response.SetStatus(403);
-    _Response.SetMod(stMod::ERROR);
-    // modfier by yadib
-    // _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
@@ -89,10 +77,8 @@ void clsMainProcess::MainProcess()
     // _DataRequest = DataRequest;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();
-    else if (_DataRequest.getReturn().value != "")
+    else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();
-    // else if (!_DataRequest.MethodAllowed()) // what you should do here achraf ?
-    //     _PartPermission();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
     // else if (_DataRequest.getPathCgi() != NULL && *(_DataRequest.getPathCgi()) != "") // PROBLEM HERE

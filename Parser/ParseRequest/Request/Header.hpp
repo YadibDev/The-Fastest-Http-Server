@@ -28,6 +28,7 @@ private:
 	bool	isHeaderKeyChar(char c);
 	bool	isHeaderValueChar(char c);
 	bool	canRead(uint16_t size) const;
+	bool	CheckHostAbsUri(s_view &HValue);
 	bool	makeUnknownHeader();
 	bool	makeKnownHeader();
 	bool	selectHeaderSlot();

@@ -23,7 +23,8 @@
 class HelperFunctions
 {
 public:
-	static std::string trim(const std::string &str);
+    static s_view  find_first_of_view(s_view view, const char* set);
+    static s_view  extract_between(s_view view, const char* start_set, const char* end_set);
 	static void skipWhitespace(const std::string &str, size_t &pos);
 	static bool isCRLF(const std::string &str);
 	static long hexToDec(const std::string &hex);
@@ -45,7 +46,7 @@ public:
     // achraf part
     static unsigned long getCurrentTimeInMs();
     static long getCurrentTimeInS();
-	static bool CmpWord(const std::string &BigStr, const std::string &Word, bool Switch);
+	static bool CmpWord(char *Str, const std::string &Word, short SizeStr);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
     static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
     static bool Iswhaitspace(char C);
@@ -63,7 +64,7 @@ public:
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex);
     static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
-    static std::string GetTypeDataFile(const std::string &Str);
+    static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(std::string &BigData, std::string &CleanLine , short *MaxHeader, bool *Flag);
     static char	*ft_itoa(int n);
     static char	*ft_itoa_negative(int n, char *int_char);
@@ -80,12 +81,14 @@ public:
     static size_t	ft_strlen(const char *s);
     static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
     static int Countword(const std::string &Str, const std::string &Sep);
+    static void NumToStr(int Number, std::string &Str);
 
 
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
+    static char _PoinerType[10];
     HelperFunctions() {}
 };
 

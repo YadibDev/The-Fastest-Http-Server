@@ -21,6 +21,7 @@ private:
 	std::string							_upload_store;
 	std::map<std::string, std::string>	_cgi_pass;
 	std::map<short, stErrorPagedata>	_error_pages;
+	const stErrorPagedata*				_defaultErrorPage;
 
 
 	bool	ParseRoot();
@@ -53,21 +54,21 @@ public:
 	clsLocation(s_parse_context& ctxs, const std::string &sRoot
 				, const std::vector<std::string>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
 
-	bool								parseLocation();
+	bool										parseLocation();
 	
 	const std::string							&getRoot() const;
 	const std::string							&getAlias() const;
-	const std::vector<std::string>			&getIndex() const;
-	bool								getAutoIndex() const;
-	short								getAllowMethods() const;
-	unsigned long long					getClientMaxBodySize() const;
-	const stReturnData						&getReturn() const;
+	const std::vector<std::string>				&getIndex() const;
+	bool										getAutoIndex() const;
+	short										getAllowMethods() const;
+	unsigned long long							getClientMaxBodySize() const;
+	const stReturnData							&getReturn() const;
 	const std::string							&getUploadStore() const;
 	const std::map<std::string, std::string>	&getCgiPass() const;
-	const std::map<short, stErrorPagedata>	&getErrorPages() const;
-
-	const stlocation						&getLocationData() const;
-	HttpError							getError() const;
+	const std::map<short, stErrorPagedata>		&getErrorPages() const;
+	const stErrorPagedata						*getDefaultErrorPage() const;
+	const stlocation							&getLocationData() const;
+	HttpError									getError() const;
 
 };
 

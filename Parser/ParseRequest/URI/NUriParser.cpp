@@ -140,7 +140,9 @@ void UriParser::parseScheme(const char* buffer, uint16_t size) {
 		++_shemaIndex;
 		++_offset;
 	}
-	if (_shemaIndex == 7) {
+	if (_shemaIndex == 7)
+	{
+		_AuthorityExist = true;
 		_state = STATE_AUTHORITY;
 		_shemaIndex = 0;
 	}
@@ -371,3 +373,4 @@ const s_view&			UriParser::getPath()		const { return _path; }
 const s_view&			UriParser::getQuery()		const { return _query; }
 const s_view&			UriParser::getFragment()	const { return _fragment; }
 const HttpError&		UriParser::getError()		const { return _error; }
+bool				UriParser::AuthorityExist() const { return _AuthorityExist; }

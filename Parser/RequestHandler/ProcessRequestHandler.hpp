@@ -7,14 +7,16 @@
 #include "../ParseRequest/Request/HttpTypes.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 
+#define INDEX_PATH_LEN 11
+
 class ProcessRequestHandler
 {
 	static void					getPathCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass, RequestHandler* handler);
 	static std::string			selectMethod(Methods::eMethods method);
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
 	static std::string			getIndex(const clsLocation* bestLocation, HttpError &error);
-	static const char* creatPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view &uri, HttpError &error);
-	static const char*			handleDirectory(const clsLocation* bestLocation, char *destBuffer, HttpError &error);
+	static bool					creatPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view &uri, HttpError &error);
+	static bool					handleDirectory(const clsLocation* bestLocation, char *destBuffer, HttpError &error);
 	static	const clsLocation* findBestLocation(
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
@@ -22,7 +24,7 @@ class ProcessRequestHandler
 
 	public:
 		ProcessRequestHandler();
-		static void processRequest(const RequestLine& StartLine, const clsServerConfig* serverConfig, RequestHandler* handler);
+		static bool processRequest(const RequestLine& StartLine, const clsServerConfig* serverConfig, RequestHandler* handler);
 };
 
 #endif

@@ -43,7 +43,7 @@ struct s_header_slot {
 	s_view		key;
 	s_view		val;
 	uint8_t		next;
-	int32_t	Hash;
+	int32_t		Hash;
 	s_header_slot() : next(INVALID_INDEX), Hash(-1) {}
 };
 

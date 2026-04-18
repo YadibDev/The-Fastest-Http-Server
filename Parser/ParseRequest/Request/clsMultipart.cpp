@@ -30,20 +30,20 @@ clsMultiHeader::clsMultiHeader()
 
 void clsMultiHeader::moveOffsetToDel(uint16_t &trav)
 {
-    while (trav < ofset)
-    {
-        if (Header[trav] == ';')
-            return;
-        else if (trav + 1 < ofset && Header[trav] == '\r' && Header[trav + 1] == '\n')
-            return;
-        trav++;
-    }
+	while (trav < ofset)
+	{
+		if (Header[trav] == ';')
+			return;
+		else if (trav + 1 < ofset && Header[trav] == '\r' && Header[trav + 1] == '\n')
+			return;
+		trav++;
+	}
 }
 
 void clsMultiHeader::skipWhiteSpaces(const char *str, uint16_t &trav, uint16_t size)
 {
-    while (trav < size && (str[trav] == ' ' || str[trav] == '\t'))
-        trav++;
+	while (trav < size && (str[trav] == ' ' || str[trav] == '\t'))
+		trav++;
 }
 
 // bool StoreValueAfterDelim(string &arr, uint16_t &trav, uint16_t &cur)
@@ -98,133 +98,133 @@ void clsMultiHeader::skipWhiteSpaces(const char *str, uint16_t &trav, uint16_t s
 
 char clsMultiHeader::sanitizeKey(char *arr, uint16_t start, uint16_t end, char del, int start_end[2])
 {
-    start_end[0] = start;
-    start_end[1] = -1;
+	start_end[0] = start;
+	start_end[1] = -1;
 
-    if (start == end)
-        return 'E';
-    while (start < end)
-    {
-        if (arr[start] == del)
-        {
-            start_end[1] = start;
-            return 'S';
-        }
-        else if (forbidden.count(arr[start]) || (arr[start] >= 0 && arr[start] <= 32) || arr[start] == 127)
-            return 'E';
-        arr[start] = std::tolower(arr[start]);
-        start++;
-    }
-    return 'E';
+	if (start == end)
+		return 'E';
+	while (start < end)
+	{
+		if (arr[start] == del)
+		{
+			start_end[1] = start;
+			return 'S';
+		}
+		else if (forbidden.count(arr[start]) || (arr[start] >= 0 && arr[start] <= 32) || arr[start] == 127)
+			return 'E';
+		arr[start] = std::tolower(arr[start]);
+		start++;
+	}
+	return 'E';
 }
 
 char clsMultiHeader::sanitizeVal(char *arr, uint16_t start, uint16_t end, int start_end[2])
 {
-    skipWhiteSpaces(Header, start, ofset);
-    if (start == end)
-        return 'E';
+	skipWhiteSpaces(Header, start, ofset);
+	if (start == end)
+		return 'E';
 
-    start_end[0] = start;
-    start_end[1] = -1;
+	start_end[0] = start;
+	start_end[1] = -1;
 
-    bool openQuotes = false;
-    bool closedQuotes = false;
-    bool backSlach = false;
-    bool getData = false;
-    bool done = false;
-    while (start < end)
-    {
-        if (arr[start] == '\\' && (openQuotes == true && closedQuotes == false))
-        {
-            backSlach = true;
-            start++;
-        }
-        else if (backSlach == false && arr[start] == '\"' && (openQuotes == false || closedQuotes == false))
-        {
-            if (getData == true && openQuotes == false)
-                return 'E';
-            else if (openQuotes == false)
-            {
-                start_end[0] = start + 1;
-                openQuotes = true;
-            }
-            else if (closedQuotes == false)
-            {
-                start_end[1] = start;
-                closedQuotes = true;
-            }
-            else
-                return 'E';
-            start++;
-        }
-        else
-        {
-            if ((arr[start] >= 0 && arr[start] <= 31) || arr[start] == 127)
-                return 'E';
-            else if ((closedQuotes == true || openQuotes == false) && forbidden.count(arr[start]))
-                return 'E';
-            else if ((closedQuotes == true || done == true) && arr[start] != ' ' && arr[start] != '\t')
-            {
-                return 'E';
-            }
-            else if ((closedQuotes == true || openQuotes == false) && (arr[start] == ' ' || arr[start] == '\t'))
-            {
-                if (done == false)
-                {
-                    start_end[1] = start;
-                    done = true;
-                }
-                skipWhiteSpaces(Header, start, ofset); // test this things and add algo taking key and value
-            }
-            else
-            {
-                start++;
-                getData = true;
-            }
-        }
-    }
-    if (openQuotes == true && closedQuotes == false)
-        return 'E';
-    if (done == false)
-    {
-        start_end[1] = start;
-        done = true;
-    }
-    return 'S';
+	bool openQuotes = false;
+	bool closedQuotes = false;
+	bool backSlach = false;
+	bool getData = false;
+	bool done = false;
+	while (start < end)
+	{
+		if (arr[start] == '\\' && (openQuotes == true && closedQuotes == false))
+		{
+			backSlach = true;
+			start++;
+		}
+		else if (backSlach == false && arr[start] == '\"' && (openQuotes == false || closedQuotes == false))
+		{
+			if (getData == true && openQuotes == false)
+				return 'E';
+			else if (openQuotes == false)
+			{
+				start_end[0] = start + 1;
+				openQuotes = true;
+			}
+			else if (closedQuotes == false)
+			{
+				start_end[1] = start;
+				closedQuotes = true;
+			}
+			else
+				return 'E';
+			start++;
+		}
+		else
+		{
+			if ((arr[start] >= 0 && arr[start] <= 31) || arr[start] == 127)
+				return 'E';
+			else if ((closedQuotes == true || openQuotes == false) && forbidden.count(arr[start]))
+				return 'E';
+			else if ((closedQuotes == true || done == true) && arr[start] != ' ' && arr[start] != '\t')
+			{
+				return 'E';
+			}
+			else if ((closedQuotes == true || openQuotes == false) && (arr[start] == ' ' || arr[start] == '\t'))
+			{
+				if (done == false)
+				{
+					start_end[1] = start;
+					done = true;
+				}
+				skipWhiteSpaces(Header, start, ofset); // test this things and add algo taking key and value
+			}
+			else
+			{
+				start++;
+				getData = true;
+			}
+		}
+	}
+	if (openQuotes == true && closedQuotes == false)
+		return 'E';
+	if (done == false)
+	{
+		start_end[1] = start;
+		done = true;
+	}
+	return 'S';
 }
 
 char clsMultiHeader::myComparaison(int st_end_key[2], bool parms)
 {
-    int size = st_end_key[1] - st_end_key[0];
-    int start = st_end_key[0];
+	int size = st_end_key[1] - st_end_key[0];
+	int start = st_end_key[0];
 
-    if (size == 19 && strncmp(&Header[start], "content-disposition", 19) == 0)
-        return CONTENT_DISPO;
-    else if (size == 12 && strncmp(&Header[start], "content-type", 19) == 0)
-        return CONTENT_TYPE;
-    else if (parms)
-    {
-        if (size == 4 && strncmp(&Header[start], "name", 4) == 0)
-            return NAME_PAR;
-        else if (size == 8 && strncmp(&Header[start], "filename", 4) == 0)
-            return FILENAME_PAR;
-    }
-    return 0;
+	if (size == 19 && strncmp(&Header[start], "content-disposition", 19) == 0)
+		return CONTENT_DISPO;
+	else if (size == 12 && strncmp(&Header[start], "content-type", 19) == 0)
+		return CONTENT_TYPE;
+	else if (parms)
+	{
+		if (size == 4 && strncmp(&Header[start], "name", 4) == 0)
+			return NAME_PAR;
+		else if (size == 8 && strncmp(&Header[start], "filename", 4) == 0)
+			return FILENAME_PAR;
+	}
+	return 0;
 }
 
 void clsMultiHeader::storeValue(int value_indexes[2], string &value)
 {
-    int size = value_indexes[1] - value_indexes[0];
-    int start = value_indexes[0];
+	int size = value_indexes[1] - value_indexes[0];
+	int start = value_indexes[0];
 
-    if (size <= 0)
-    {
-        value = "";
-        return;
-    }
+	if (size <= 0)
+	{
+		value = "";
+		return;
+	}
 
-    value.resize(size);
-    std::memcpy(&value[0], &Header[start], size);
+	value.resize(size);
+	std::memcpy(&value[0], &Header[start], size);
 }
 
 char clsMultiHeader::sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2], uint16_t start, uint16_t end, uint16_t temp)
@@ -245,71 +245,71 @@ char clsMultiHeader::sanitizeKeyAndValue(int st_end_key[2], int st_end_value[2],
 
 char clsMultiHeader::storeValues(int key_indexes[2], int value_indexes[2], short delTot)
 {
-    bool isParms = delTot > 0;
+	bool isParms = delTot > 0;
 
-    if (isParms && insideDisposition)
-    {
-        char whichPams = myComparaison(key_indexes, isParms);
-        if (whichPams == NAME_PAR)
-        {
-            if (this->nameVarEx)
-                return 'E';
-            this->nameVarEx = true;
-        }
-        else if (whichPams == FILENAME_PAR)
-        {
-            if (fileNameEx)
-                return 'E';
-            fileNameEx = true;
-            storeValue(value_indexes, fileNameValue);
-        }
-    }
-    else if (isParms == false)
-    {
-        insideDisposition = false; // reset it every time we check header key
+	if (isParms && insideDisposition)
+	{
+		char whichPams = myComparaison(key_indexes, isParms);
+		if (whichPams == NAME_PAR)
+		{
+			if (this->nameVarEx)
+				return 'E';
+			this->nameVarEx = true;
+		}
+		else if (whichPams == FILENAME_PAR)
+		{
+			if (fileNameEx)
+				return 'E';
+			fileNameEx = true;
+			storeValue(value_indexes, fileNameValue);
+		}
+	}
+	else if (isParms == false)
+	{
+		insideDisposition = false; // reset it every time we check header key
 
-        char whichPams = myComparaison(key_indexes);
-        if (whichPams == CONTENT_TYPE)
-        {
-            if (contentTypeEx)
-                return 'E';
-            contentTypeEx = true;
-            storeValue(value_indexes, contentTypeValue);
-        }
-        else if (whichPams == CONTENT_DISPO)
-        {
-            if (contentDispoEx)
-                return 'E';
-            contentDispoEx = true;
-            insideDisposition = true;
-            storeValue(value_indexes, contentDispoValue);
-            if (contentDispoValue != "form-data")
-                return 'E';
-        }
-    }
-    return 'S';
+		char whichPams = myComparaison(key_indexes);
+		if (whichPams == CONTENT_TYPE)
+		{
+			if (contentTypeEx)
+				return 'E';
+			contentTypeEx = true;
+			storeValue(value_indexes, contentTypeValue);
+		}
+		else if (whichPams == CONTENT_DISPO)
+		{
+			if (contentDispoEx)
+				return 'E';
+			contentDispoEx = true;
+			insideDisposition = true;
+			storeValue(value_indexes, contentDispoValue);
+			if (contentDispoValue != "form-data")
+				return 'E';
+		}
+	}
+	return 'S';
 }
 
 void clsMultiHeader::addChar(char c)
 {
-    if (ofset == 4000)
-    {
-        isError = true;
-        return;
-    }
-    Header[ofset++] = c;
+	if (ofset == 4000)
+	{
+		isError = true;
+		return;
+	}
+	Header[ofset++] = c;
 };
 bool clsMultiHeader::moveOffsetToDel(int &cur, int &trav)
 {
-    while (trav < this->ofset)
-    {
-        if (Header[trav] == ':')
-            return true;
-        else if (Header[trav] == '\n')
-            cur = trav + 1;
-        trav++;
-    }
-    return false;
+	while (trav < this->ofset)
+	{
+		if (Header[trav] == ':')
+			return true;
+		else if (Header[trav] == '\n')
+			cur = trav + 1;
+		trav++;
+	}
+	return false;
 }
 
 void clsMultiHeader::Parsing()
@@ -318,51 +318,51 @@ void clsMultiHeader::Parsing()
     uint16_t trav = 0;
     short delTot = 0;
 
-    int key_indexes[2];
-    int value_indexes[2];
+	int key_indexes[2];
+	int value_indexes[2];
 
-    while (trav < ofset)
-    {
-        moveOffsetToDel(trav);
+	while (trav < ofset)
+	{
+		moveOffsetToDel(trav);
 
-        if ((sanitizeKeyAndValue(key_indexes, value_indexes, cur, trav, delTot) == 'E') || (storeValues(key_indexes, value_indexes, delTot) == 'E'))
-        {
-            this->isError = true;
-            return ;
-        }
-        if (Header[trav] == ';')
-        {
-            ++delTot;
-            ++trav; // skip delimeter
-            cur = trav;
-        }
-        else
-        {
-            delTot = 0; // reset total delimiters in line
-            trav += 2;  // skip crlf
-            cur = trav;
-        }
-    }
-    if (this->nameVarEx == false)
-        this->isError = true;
+		if ((sanitizeKeyAndValue(key_indexes, value_indexes, cur, trav, delTot) == 'E') || (storeValues(key_indexes, value_indexes, delTot) == 'E'))
+		{
+			this->isError = true;
+			return ;
+		}
+		if (Header[trav] == ';')
+		{
+			++delTot;
+			++trav; // skip delimeter
+			cur = trav;
+		}
+		else
+		{
+			delTot = 0; // reset total delimiters in line
+			trav += 2;  // skip crlf
+			cur = trav;
+		}
+	}
+	if (this->nameVarEx == false)
+		this->isError = true;
 };
 
 string clsMultiHeader::getFileName()
 {
-    return fileNameValue;
+	return fileNameValue;
 };
 string clsMultiHeader::getContentType()
 {
-    return contentTypeValue;
+	return contentTypeValue;
 };
 bool clsMultiHeader::getError()
 {
-    return isError;
+	return isError;
 };
 void clsMultiHeader::Reset()
 {
-    ofset = 0;
-    isError = false;
+	ofset = 0;
+	isError = false;
 };
 
 // multipart functions
@@ -384,37 +384,37 @@ void clsMultiPart::InitializeMulti(char *boundary, short lenBound, uint16_t star
 
 whichBound clsMultiPart::isBoundary(char *arr, bool edgeCase)
 {
-    if (foundFirstBound == false || edgeCase == true)
-    {
-        if (strncmp(arr, boundary, lenBound) == 0)
-        {
-            arr += lenBound;
-            if (strncmp(arr, "\r\n", 2) == 0)
-            {
-                foundFirstBound = true;
-                return startBoundary;
-            }
-            else if (strncmp(arr, endFinal, 2) == 0)
-                return endBoundary;
-            else
-                return None;
-        }
-    }
-    else if (strncmp(arr, "\r\n", 2) == 0)
-    {
-        arr += 2;
-        if (strncmp(arr, boundary, lenBound) == 0)
-        {
-            arr += lenBound;
-            if (strncmp(arr, endFinal, 2) == 0)
-                return endBoundary;
-            else if (strncmp(arr, endNormal, 2) == 0)
-                return midBoundary;
-            else
-                return None;
-        }
-    }
-    return None;
+	if (foundFirstBound == false || edgeCase == true)
+	{
+		if (strncmp(arr, boundary, lenBound) == 0)
+		{
+			arr += lenBound;
+			if (strncmp(arr, "\r\n", 2) == 0)
+			{
+				foundFirstBound = true;
+				return startBoundary;
+			}
+			else if (strncmp(arr, endFinal, 2) == 0)
+				return endBoundary;
+			else
+				return None;
+		}
+	}
+	else if (strncmp(arr, "\r\n", 2) == 0)
+	{
+		arr += 2;
+		if (strncmp(arr, boundary, lenBound) == 0)
+		{
+			arr += lenBound;
+			if (strncmp(arr, endFinal, 2) == 0)
+				return endBoundary;
+			else if (strncmp(arr, endNormal, 2) == 0)
+				return midBoundary;
+			else
+				return None;
+		}
+	}
+	return None;
 };
 
 void clsMultiPart::Parser(char *arr, uint16_t &offset)
@@ -499,5 +499,5 @@ void clsMultiPart::Parser(char *arr, uint16_t &offset)
 }
 bool clsMultiPart::getError()
 {
-    return this->error;
+	return this->error;
 }

@@ -124,19 +124,20 @@ void clsClient::ProcessRequest()
     if (_state == BEGIN)
     {
         _state = REQUEST_MODE;
-        // reset state of request
         _theData.Reset();
     }
 
     int size = _ReadDataForReq(); // reading data for request
 
     if (_state == CONNECTION_CLOSED || size == -1)
-        return;
+        return ;
 
     if (_Requester._state == RequestParser::STATE_BODY)
-        _Requester.Parse(_theData.read_body); // then pase it to parse
+        _Requester.Parse(_theData.read_body);  // then pase it to parse
     else
-        _Requester.Parse(_theData.read_offset - 1); // then pase it to parse
+        _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
+
+    std::cout << _Requester._state << " state " << endl;
 
     if (_Requester.isComplete()) // add get error here
     {
