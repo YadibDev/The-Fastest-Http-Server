@@ -137,6 +137,9 @@ void clsClient::ProcessRequest()
     else
         _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
 
+    if (_Requester.isError())
+        std::cout << "Error while reading " << std::endl;
+
     if (_Requester.isComplete()) // add get error here
     {
         this->_state = START_RESPOND;
@@ -239,6 +242,9 @@ void clsClient::ProcessRespond()
 
         respondBuffer += Respond.GetHeaderFeild();
 
+        std::cout << "--------- size: " << respondBuffer.size() << endl;;
+        std::cout << respondBuffer;
+        std::cout << endl;
         if (Respond.GetFileName().empty())
         {
             respondBuffer += Respond.GetBody();

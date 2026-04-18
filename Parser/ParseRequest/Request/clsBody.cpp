@@ -215,6 +215,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
                     error = true;
                 else
                 {
+                    // add special case
                     t += 2;
                     cur = t;
                     readSize = true;
