@@ -61,6 +61,7 @@ public:
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 
+	// char*					getPhysicalPath();
 	const char*					getPhysicalPath();
 	bool					getAutoIndex() const;
 	s_view					getQuery() const;
@@ -69,7 +70,9 @@ public:
     const std::string&		getPathTranslated() const;
     const s_view&			getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
-	HeaderTable				&getHeader();
+	// modified achraf here
+	// HeaderTable				&getHeader() ;
+	const HeaderTable				&getHeader() const;
 	const stErrorPagedata	*getErrorPage(short code) const;
 	const std::string*		getPathCgi() const;
 	const stReturnData&		getReturn() const;

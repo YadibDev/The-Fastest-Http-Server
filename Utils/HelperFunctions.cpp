@@ -252,6 +252,7 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
+char HelperFunctions::_PoinerType[10] = {0};
 
 bool HelperFunctions::CmpWord(char *Str, const std::string &Word, short SizeStr) {
     short i = 0;

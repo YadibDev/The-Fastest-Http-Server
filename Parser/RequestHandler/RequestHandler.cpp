@@ -122,6 +122,7 @@ void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _file
 void    RequestHandler::setError(const HttpError &error) { _error = error; }
 
 // edited by achraf i add const 
+// char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 const char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
@@ -145,7 +146,9 @@ const s_view& RequestHandler::getServerPort() const {
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
 
-HeaderTable    &RequestHandler::getHeader()
+// modified achraf here
+// HeaderTable    &RequestHandler::getHeader()
+const HeaderTable    &RequestHandler::getHeader() const
 {
 	return _Header;
 }

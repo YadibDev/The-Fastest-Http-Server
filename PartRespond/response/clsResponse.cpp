@@ -70,18 +70,18 @@ void clsResponse::_InitialHeaders()
     _Date();
     _CachControl();
     _Server();
-    // if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
-    // {
-    //     if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Data,
-    //         "close", _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->len))
-    //     {
-    //         _IsConnection = false;
-    //         _Connection(false);
-    //     }
-    //     else
-    //         _Connection(true);
-    // }
-    // else
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
+    {
+        if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->val.Data,
+            "close", _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->val.len))
+        {
+            _IsConnection = false;
+            _Connection(false);
+        }
+        else
+            _Connection(true);
+    }
+    else
         _Connection(true);
 }
 
@@ -101,7 +101,6 @@ void clsResponse::_ErrorRespnseHandling()
     _HeaderFeild = _ErrorPage.GetHeaderField();
     _FileFromDisk = _ErrorPage.GetFileFromDisk();
 }
-
 
 void clsResponse::_StatusLine()
 {
