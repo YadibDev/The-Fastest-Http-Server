@@ -19,13 +19,13 @@ bool HeaderTable::_keysMatch(const s_view& k1, const s_view& k2) const {
     return (std::memcmp(k1.Data, k2.Data, k1.len) == 0);
 }
 
-s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) {
+const s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) {
     if (h >= HttpTables::H_UNKNOWN)
         return NULL;
     return &_request.known_headers[h];
 }
 
-s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) {
+const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) {
     if (index >= _request.sizeUnknownHeaders || index == INVALID_INDEX)
         return NULL;
     return &_request.unknown_headers[index];
