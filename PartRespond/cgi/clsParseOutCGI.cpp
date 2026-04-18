@@ -6,13 +6,13 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 21:08:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/18 10:55:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI()
+clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(DataRequest);
 {
     _BytesBody = 0;
     _FoundBody = false;
@@ -20,12 +20,9 @@ clsParseOutCGI::clsParseOutCGI()
     _MaxSizeHeaders = 4000;
     _CountSizeHeaders = 0;
     _MaxSizeBody = 40000;
-    _CountFileTemp = 0;
     _Fdout = -1;
-    _CounterCGI_Field = 0;
 
     _Body.resize(_MaxSizeBody);
-    _Body.clear();
     _HeadersFieldDuplicate.resize(_MaxSizeHeaders);
     _HeadersFieldDuplicate.clear();
     _Line.resize(_MaxSizeHeaders);
@@ -35,7 +32,7 @@ clsParseOutCGI::clsParseOutCGI()
     _ValueHeader.resize(_MaxSizeHeaders);
     _ValueHeader.clear();
 
-    HelperFunctions::ft_memset(_ExistHeaders, -1, 1);
+    HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
     HelperFunctions::ft_memset(_Mod, -1, 10);
 }
 
@@ -121,11 +118,7 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
         }
     }
     else if (Skeep != (int)_ValueHeader.length() && Skeep)
-    {
-        if (!_NameHeader.compare("content-type"))
-            _ExistHeaders[stHeadersCGI::CONTENT_TYPE] = stHeadersCGI::CONTENT_TYPE;
         _HeadersField[_NameHeader] = _ValueHeader;
-    }
     _NameHeader.clear();
     _ValueHeader.clear();
     return true;
@@ -151,8 +144,12 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
     if (!_NameHeader.compare("status"))
         if (!_ParseStatus(_ValueHeader))
             return false;
-    if (!_NameHeader.compare("location") || !_NameHeader.compare("status") || !_NameHeader.compare("content-type"))
-        _CounterCGI_Field++;
+    if (!_NameHeader.compare("content-type"))
+            _ExistHeaders[stHeadersCGI::CONTENT_TYPE] = stHeadersCGI::CONTENT_TYPE;
+    if (!_NameHeader.compare("location"))
+        _ExistHeaders[stHeadersCGI::LOCATION] = stHeadersCGI::LOCATION;
+    if (!_NameHeader.compare("status"))
+        _ExistHeaders[stHeadersCGI::STATUS] = stHeadersCGI::STATUS;
     else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
         || !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
     {
@@ -230,12 +227,20 @@ void clsParseOutCGI::_HeaderResponseCGI()
     _HeadersFieldFinal += "\r\n";
 }
 
+void clsParseOutCGI::_GeneratePhisiaclPath()
+{
+    _ValueHeader = _HeadersField["location"];
+    short Skeep = HelperFunctions::SkeeSep(_ValueHeader, " \t");
+    // _DataRequest.
+    
+}
+
 void clsParseOutCGI::_BuilResponsedredirection()
 {
     uint8_t CountValidHeader = 0;
-    if (_HeadersField.count("content-type"))
+    if (_ExistHeaders[stHeadersCGI::STATUS] == stHeadersCGI::STATUS)
         CountValidHeader++;
-    if (_HeadersField.count("status"))
+    if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE)
         CountValidHeader++;
     if (_LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 2 && _BytesBody)
         _HeaderResponseCGI();
@@ -250,14 +255,12 @@ void clsParseOutCGI::_BuilResponsedredirection()
             _ErrorRespnseHandling();
             return ;
         }
+        _GeneratePhisiaclPath();
         _StoredInFileOrStr();
-        //geting phisical path from config
-        //access file in config
-        //read file in config
+        _HeaderResponseCGI();
     }
     else
     {
-        //geting page error from RequestHandler from config
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 502;
         _ErrorRespnseHandling();
@@ -321,7 +324,9 @@ void clsParseOutCGI::_ReceivingBody(std::string &Data)
 {
     if (_FoundBody && _BytesBody < 40000)
     {
-        if (!_CounterCGI_Field)
+        if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
+             _ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
+              _ExistHeaders[stHeadersCGI::STATUS] != stHeadersCGI::STATUS)
         {
             _Status = 502;
             _Mod[stMod::ERROR] = stMod::ERROR;
