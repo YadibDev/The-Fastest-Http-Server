@@ -436,8 +436,8 @@ void clsMultiPart::Parser(char *arr, uint16_t &offset)
             }
             // else if (processIn == BODY);
             // write into the right file;
-            // tobe continue
-            // i must link headers with real path and and so forth
+            // to be continue
+            // i must link headers with real path and so forth
             trav++;
         }
         else

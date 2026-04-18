@@ -37,12 +37,12 @@ public: // time to debug
     stPollRequest &data;
     clsMultiPart _multipartLib;
     chunkVars chunkHelp;
-    
+    ssize_t writeSize;
     std::string _fileName;
     
     int fd;
     bool        _isError;
-    ssize_t     _Length;
+    ssize_t     _contentLength;
     bool _isMultiPart;
     bool _isChunk;
     void _handleChunk(uint16_t &ofset);
@@ -75,9 +75,12 @@ public:
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
     void bodyHandler(uint16_t *off);
-    void normalBody(uint16_t &offset);
+    void ParseBody(uint16_t &offset);
+    void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset();
     void moveOffsetMulti(uint16_t &offset);
+
+   void readSizeChunk(uint16_t &ofset, bool &error);
     void handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk);
 
 };

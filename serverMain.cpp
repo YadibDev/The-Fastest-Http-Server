@@ -101,17 +101,7 @@ int main()
                 else
                     std::cout << "EPOLLHUP" << std::endl;
                 std::cout << "Fd " << fd << std::endl;
-                try
-                {
-                    if (ClientsLinker.isClient(fd))
-                        ClientsLinker.removeClient(fd);
-                }
-                catch(std::exception &e)
-                {
-                    std::cout << "deb ----------------------\n" << std::endl;
-                    std::cout << e.what() << std::endl;
-                    std::cout << "--------------------------" << std::endl;
-                }
+                ClientsLinker.removeClient(fd);
                 std::cout << "Removed removed\n";
                 continue;
             }
