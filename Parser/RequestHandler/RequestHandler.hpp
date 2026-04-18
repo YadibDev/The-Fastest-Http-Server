@@ -41,9 +41,9 @@ public:
 	void					setAutoIndex(bool autoindex);
 	void					setQuery(const s_view query);
 	void					setVersion(const s_view version);
-    void					setPathInfo(s_view pathInfo);
-    void					setPathTranslated(std::string pathTranslated);
-    void					setServerPort(const s_view serverPort);
+	void					setPathInfo(s_view pathInfo);
+	void					setPathTranslated(std::string pathTranslated);
+	void					setServerPort(const s_view serverPort);
 	void					setMethod(HttpTables::eMethod method);
 	void					setAllowedMethods(uint8_t allowed);
 	void					setHeader(HeaderTable	_Header);
@@ -56,6 +56,7 @@ public:
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setError(const HttpError &error);
 
+	bool					ExtractScriptName(const s_view &uri, std::string &extensionStr);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	char*					getPhysicalPath();
@@ -67,7 +68,7 @@ public:
     const s_view&			getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	HeaderTable				&getHeader();
-	const stErrorPagedata	&getErrorPage(short code) const;
+	const stErrorPagedata	*getErrorPage(short code) const;
 	const std::string*		getPathCgi() const;
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;

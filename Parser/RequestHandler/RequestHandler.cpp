@@ -18,23 +18,46 @@ RequestHandler::RequestHandler(stPollRequest& request)
 
 RequestHandler::~RequestHandler() {}
 
+bool	RequestHandler::ExtractScriptName(const s_view &uri, std::string &extensionStr)
+{
+	s_view	extView;
+	s_view	Start = uri;
+	std::map<std::string, std::string>::const_iterator it;
+
+	do
+	{
+		extView = HelperFunctions::find_last_of_view(uri, ".");
+		Start.len = extView.len;
+		it = cgi_pass.find(extensionStr);
+
+		if (it != cgi_pass.end())
+		{
+			_pathCgi = &it->second;
+			return true;
+		}			 
+
+	} while (extView.Data);
+
+	// memcpy(&extensionStr[0], extView.Data, copyLen);
+
+}
+
 bool	RequestHandler::HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
 {
-	s_view extView = HelperFunctions::find_last_of_view(uri, ".");
-	_PathInfo = HelperFunctions::find_first_of_view(extView, "/");
+	// _PathInfo = HelperFunctions::find_first_of_view(extView, "/");
 	
-	if (!extView.Data || !extView.len || extView.len > 255)
-		return true;
+	// if (!extView.Data || !extView.len || extView.len > 255)
+	// 	return true;
 
-	char buffer[256];
-	size_t copyLen = extView.len - _PathInfo.len;
-	if (copyLen > 255)
-		return (_error.setStatus(414, "URI Too Long"), false);
+	
 
-	memcpy(buffer, extView.Data, copyLen);
-	buffer[copyLen] = '\0';
+	// size_t copyLen = extView.len - _PathInfo.len;
+	// if (copyLen > 255)
+	// 	return (_error.setStatus(414, "URI Too Long"), false);
+	std::string extensionStr;
 
-	std::string extensionStr(buffer);
+	ExtractScriptName(uri, extensionStr);
+
 	std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extensionStr);
 
 	if (it != cgi_pass.end())
@@ -133,11 +156,11 @@ HeaderTable    &RequestHandler::getHeader()
 	return _Header;
 }
 
-const stErrorPagedata &RequestHandler::getErrorPage(short code) const {
+const stErrorPagedata *RequestHandler::getErrorPage(short code) const {
 	std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
 	if (it == _error_pages.end())
-		return _error_pages[1];
-	return it->second;
+		return _defaultErrorPage;
+	return &it->second;
 }
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

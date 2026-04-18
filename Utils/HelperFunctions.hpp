@@ -37,6 +37,7 @@ public:
 	static short					isValidPath(const std::string& path, bool expectDir);
 	static s_view					find_last_of_view(s_view view, const char* set);
 	static s_view					find_first_of_view(s_view view, const char* set);
+	static s_view					extract_between(s_view view, const char* start_set, const char* end_set);
 
 
 

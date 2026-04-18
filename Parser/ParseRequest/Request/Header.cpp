@@ -298,7 +298,8 @@ void    Header::Parse(uint16_t size)
 		else if (_state == HttpTables::STATE_LF)
 		{
 			parseLF(size);
-			if (_state == HttpTables::STATE_DECISION && _emptyLinePending) _state = HttpTables::STATE_COMPLETE;
+			if (_state == HttpTables::STATE_DECISION && _emptyLinePending)
+				_state = HttpTables::STATE_COMPLETE;
 		}
 		else if (_state == HttpTables::STATE_DECISION) parseDecision(size);
 		else break;
