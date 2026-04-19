@@ -256,7 +256,8 @@ int main()
 	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
 	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
 	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
-	std::cout << "Path Cgi : " << *RequestHandler.getPathCgi() << std::cout << std::endl;
+	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
+	std::cout << "Path Cgi : " << cgi << std::endl;
 
 	HeaderTable headerTable = RequestHandler.getHeader();
 	const s_header_slot *Host = headerTable.getKnownHeader(HttpTables::H_HOST);
