@@ -588,6 +588,7 @@ void HelperFunctions::StoredDefaultType()
 {
 	if (_TypeContent.empty())
 	{
+		
 		_TypeContent[".html"] = "text/html";
 		_TypeContent[".htm"]  = "text/html";
 		_TypeContent[".css"]  = "text/css";
@@ -596,6 +597,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".jpeg"] = "image/jpeg";
 		_TypeContent[".png"]  = "image/png";
 		_TypeContent[".txt"]  = "text/plain";
+		_TypeContent[".mp4"]  = "application/mp4";
 	}
  }
 

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 21:15:39 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 18:28:45 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,6 @@ void clsResponse::_Server()
 void clsResponse::_StoredInFileOrStr()
 {
     struct stat MetaData;
-    _Body.clear();
     if (_FileFromDisk.empty())
         return ;
     if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
@@ -197,6 +196,7 @@ void clsResponse::_StoredInFileOrStr()
         close(FD);
         return ;
     }
+    _FileFromDisk.clear();
     close(FD);
 }
 

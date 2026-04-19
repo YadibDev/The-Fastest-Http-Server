@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 13:31:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 18:24:21 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ void clsMainProcess::_PartRedirection()
 
 void clsMainProcess::_PartCGI()
 {
-    _Response.SetStatus(200);
-    // Cgi hear
+   
 }
 
 void clsMainProcess::_PartDeleteMethod()
@@ -39,9 +38,6 @@ void clsMainProcess::_PartDeleteMethod()
         _Response.SetStatus(404);
         _Response.MakeResponse();
     }
-    // // delete file or folder any things
-    // modfier by yadib
-    // _Response.SetRequestHandler(_DataRequest);
     _Response.MakeResponse();
 }
 
@@ -73,16 +69,14 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess()
 {
-    // bool check = false;
-    // _DataRequest = DataRequest;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    // else if (_DataRequest.getPathCgi() != NULL && *(_DataRequest.getPathCgi()) != "") // PROBLEM HERE
-    //     _PartCGI();
+    else if (0)
+        _PartCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == HttpTables::M_POST))
