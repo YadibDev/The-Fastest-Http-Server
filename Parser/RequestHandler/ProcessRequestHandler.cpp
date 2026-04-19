@@ -220,4 +220,5 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 		handler->setUploadStore(&bestLocation->getUploadStore());
 		handler->setError(error);
 	}
+	return true;
 }

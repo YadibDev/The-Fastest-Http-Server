@@ -145,9 +145,6 @@ bool    Header::makeKnownHeader()
 		_request.known_headers[_currentHeader].Hash = _hash;
 		_request.known_headers[_currentHeader].key.Data = (char *)&_request.request_metadata[_keyStart];
 		_request.known_headers[_currentHeader].key.len = (_offset - 1) - _keyStart;
-		if (_request.known_headers[HttpTables::H_HOST].Hash != -1) // is exist
-			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
-				return false;
 	}
 	else
 	{
@@ -186,13 +183,16 @@ bool    Header::selectHeaderSlot()
 	return true;
 }
 
-void    Header::storeValue()
+bool    Header::storeValue()
 {
 	uint16_t valueLen = _offset - _valueStart;
 	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == INVALID_INDEX)
 	{
 		_request.known_headers[_currentHeader].val.Data = (char *)&_request.request_metadata[_valueStart];
 		_request.known_headers[_currentHeader].val.len = valueLen;
+		if (HttpTables::H_HOST == _currentHeader) // is exist
+			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
+				return false;
 	}
 	else
 	{
@@ -200,6 +200,7 @@ void    Header::storeValue()
 		_request.unknown_headers[_currentUnknownIndex].val.len = valueLen;
 		_indexUnknownHeaders++;
 	}
+	return true;
 }
 
 bool    Header::parseKey(uint16_t size)
@@ -239,7 +240,7 @@ bool    Header::parseValue(uint16_t size)
 		if (c == '\r')
 		{
 			_state = HttpTables::STATE_CR;
-			return (storeValue(), true);
+			return storeValue();
 		}
 		if (!isHeaderValueChar(c))
 			return (_error.setStatus(400, "Bad Request"), false);

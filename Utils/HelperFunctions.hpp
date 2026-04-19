@@ -63,7 +63,6 @@ public:
     static std::string Convert_Hex(const std::string &Str, int Num);
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex);
-    static void StoredType(std::map<std::string, std::string> &StoredType, const std::string &FileName);
     static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(std::string &BigData, std::string &CleanLine , short *MaxHeader, bool *Flag);
     static char	*ft_itoa(int n);

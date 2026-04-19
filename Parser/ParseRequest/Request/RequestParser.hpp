@@ -11,7 +11,7 @@
 
 class RequestParser
 {
-private:
+public: // testing
 
 
 	stPollRequest	&_request;
@@ -38,7 +38,7 @@ public:
 	void			Parse(uint16_t size);
 	bool			isComplete() const;
 	bool			isError() const;
-	RequestLine		getRequestLine() const;
+	RequestLine		getRequestLine() const; // refrence add
 	HttpError		getError() const;
 };
 

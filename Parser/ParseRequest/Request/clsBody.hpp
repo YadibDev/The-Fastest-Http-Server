@@ -5,36 +5,20 @@
 #include <string>
 #include "clsMultipart.hpp"
 #include "Header.hpp"
+#include <unistd.h>
 
 class clsRequest;
 
-enum bodyPlace
-{
-    NONE,
-    RAM,
-    DISK
-};
 
-
-
-
-enum bodySteps
-{
-    SETTING_VARS,
-    READING_HEADERS,
-    READING_BODY,
-    DONE_GOOD,
-    DONE_WIHTERROR,
-};
 
 struct chunkVars
 {
-    size_t size;
-    size_t cur;
-    size_t trav;
+    uint16_t size;
+    uint16_t cur;
+    uint16_t trav;
     bool readsize;
     char chunkMulti[8000];
-    size_t multiLength;
+    uint16_t multiLength;
     void Reset()
     {
         size = 0;
@@ -49,35 +33,55 @@ struct chunkVars
 
 class clsBody
 {
-private:
+public: // time to debug
     stPollRequest &data;
     clsMultiPart _multipartLib;
     chunkVars chunkHelp;
-    bodyPlace _bodyLocation;
-    bodySteps _state;
+    ssize_t writeSize;
     std::string _fileName;
     
     int fd;
     bool        _isError;
-    ssize_t     _Length;
+    ssize_t     _contentLength;
     bool _isMultiPart;
     bool _isChunk;
-    void _handleChunk(size_t ofset);
+    void _handleChunk(uint16_t &ofset);
 public:
+    enum place
+    {
+        NONE,
+        RAM,
+        DISK
+    };
+    enum step
+    {
+        SETTING_VARS,
+        READING_HEADERS,
+        READING_BODY,
+        DONE_GOOD,
+        DONE_WIHTERROR
+    };
+    place _bodyLocation;
+    step _state;
+
     // geters
     clsBody(stPollRequest &p);
     const std::string &getFileName() const;
     const char *getBodyInRam() const;
-    const bodyPlace &getBodyLocation() const; // is in ram or disk
+    place getBodyLocation() const; // is in ram or disk
     const bool &getIsError() const;
-    const bodySteps &getState() const;
+    step getState() const;
+    void shiftingData(char *src, int offset, int sizeShift);
     // methods
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
-    void bodyHandler(size_t &offset);
-    void normalBody(size_t &offset);
+    void bodyHandler(uint16_t *off);
+    void ParseBody(uint16_t &offset);
+    void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset();
-    void moveOffsetMulti();
-    void handleMultiChunk(size_t &t, size_t offset, size_t &size, char *io_chunk);
+    void moveOffsetMulti(uint16_t &offset);
+
+   void readSizeChunk(uint16_t &ofset, bool &error);
+    void handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk);
 
 };
 

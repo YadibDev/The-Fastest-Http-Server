@@ -68,6 +68,7 @@ struct stPollRequest {
 	s_header_slot	*unknown_headers;
 	uint8_t			sizeUnknownHeaders;
 	char			*io_chunk;
+	uint16_t		*read_body_ptr;
 };
 
 #endif

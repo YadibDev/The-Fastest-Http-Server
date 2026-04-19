@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 11:21:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 18:36:44 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char **clsCGI::_MakeEnv()
         }
     }
     ENV[Variables.size()] = NULL;
-    return ENV;
+        return ENV;
     return 0;
 }
 

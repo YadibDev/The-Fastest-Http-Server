@@ -28,11 +28,16 @@ using namespace std;
 
 void function(int signal)
 {
+    (void)signal;
     exit(1);
 }
 
 int main()
 {
+    HelperFunctions::StoredDefaultType();
+    HelperFunctions::StoredBodys();
+    HelperFunctions::StoredMessage();
+    HelperFunctions::StoredMessage();
     signal(SIGINT, function);
     int fd = open("configs/default.conf", O_RDONLY);
     std::string configeData;
@@ -99,22 +104,27 @@ int main()
                     std::cout << "EPOLLERR" << std::endl;
                 else
                     std::cout << "EPOLLHUP" << std::endl;
+                std::cout << "Fd " << fd << std::endl;
                 ClientsLinker.removeClient(fd);
-                std::cout << "Fd" << fd << std::endl;
+                std::cout << "Removed removed\n";
                 continue;
             }
             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
             {
                 newClient = server.tryAcceptNewClient(fd, &addr);
+                
+
                 if (newClient == -1)
                 {
                     if (newClient == -1)
                         std::cerr << "Accept Fail" << std::endl;
-                    continue;
+                    continue ;
                 }
                 else if (newClient > 0)
                 {
                     // flow of accept new client
+                    std::cout << "accepted\n";
+                    std::cout << newClient << std::endl;
                     ClientsLinker.insertClient(newClient, addr, Block);
                     epoll.addClient(newClient, EPOLLIN);
                 }
@@ -127,8 +137,9 @@ int main()
                     client.ProcessRequest();
                     if (client.GetState() == CONNECTION_CLOSED)
                     {
+                        std::cout << "Removed\n";
                         ClientsLinker.removeClient(newClient);
-                        continue;
+                        continue ;
                     }
                     if (client.GetState() == START_RESPOND)
                     {
@@ -149,6 +160,7 @@ int main()
                 {
                     std::cout << "Removed\n";
                     ClientsLinker.removeClient(newClient);
+                    std::cout << newClient << std::endl;
                     continue;
                 }
             }

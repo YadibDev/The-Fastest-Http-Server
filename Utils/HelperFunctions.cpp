@@ -477,6 +477,11 @@ void HelperFunctions::NumToStr(int Number, std::string &Str)
     char Remainder = 0;
     int NewNumbr = 0;
     int Counter = 0;
+	if (Number == 0)
+	{
+		Str += '0';
+		return ;
+	}
     if (Number < 0)
     {
         Number *= -1;
@@ -558,7 +563,6 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
         _PoinerType[0] = '\0';
         return _PoinerType;
     }
-    Pos++;
     while (i < 10 && Pos < Str.length())
     {
         _PoinerType[i] = Str[Pos];

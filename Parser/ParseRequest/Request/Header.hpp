@@ -32,7 +32,7 @@ private:
 	bool	makeUnknownHeader();
 	bool	makeKnownHeader();
 	bool	selectHeaderSlot();
-	void	storeValue();
+	bool	storeValue();
 	bool	parseKey(uint16_t size);
 	bool	parseValue(uint16_t size);
 	bool	parseCR(uint16_t size);

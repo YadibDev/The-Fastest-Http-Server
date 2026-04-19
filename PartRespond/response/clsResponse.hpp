@@ -71,6 +71,7 @@ class clsResponse
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
         bool GetModTransferData() const;
+        int GetSizeBody() const;
         ~clsResponse();
 };
 #endif

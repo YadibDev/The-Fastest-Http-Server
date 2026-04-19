@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 18:28:45 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 18:41:29 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void clsResponse::MakeResponse()
     if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
+
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         _StoredInFileOrStr();
     }
@@ -134,9 +135,9 @@ void clsResponse::_ContentType()
 void clsResponse::_Connection(bool Isclose)
 {
     if (Isclose)
-        _HeaderFeild += "Connection: keep-alive";
+        _HeaderFeild += "Connection: keep-alive\r\n";
     else
-        _HeaderFeild += "Connection: Close";
+        _HeaderFeild += "Connection: Close\r\n";
 }
 void clsResponse::_Transfer_Encoding()
 {
@@ -241,6 +242,7 @@ void clsResponse::Reset()
     _Body = "";
     _HeaderFeild = "";
     _IsConnection = false;
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
 }
 
 bool clsResponse::GetIsConnection() const
@@ -285,5 +287,9 @@ void clsResponse::SetModTransferData(bool ModTransferData)
 bool clsResponse::GetModTransferData() const
 {
     return _ModTransferData;
+}
+int clsResponse::GetSizeBody() const
+{
+    return (_BodySize);
 }
 clsResponse::~clsResponse(){}
