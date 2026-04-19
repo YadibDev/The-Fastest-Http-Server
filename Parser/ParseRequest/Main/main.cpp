@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-		"POST /cgi-bin/script.txt.js/ls.py HTTP/1.1\r\n"
+		"POST /cgi-bin/script.txt.js/ls.py/info HTTP/1.1\r\n"
 		"Host: localhost\r\n"
 		"\r\n\0";
 

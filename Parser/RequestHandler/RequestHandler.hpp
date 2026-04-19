@@ -57,7 +57,7 @@ public:
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setError(const HttpError &error);
 
-	bool					ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
+	bool					ExtractCgiMetadata(const char *uri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	char*					getPhysicalPath();
