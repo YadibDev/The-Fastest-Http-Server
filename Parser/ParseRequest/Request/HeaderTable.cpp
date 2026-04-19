@@ -26,14 +26,14 @@ const s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) {
 }
 
 const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) {
-    if (index >= _request.sizeUnknownHeaders || index == INVALID_INDEX)
+    if (index >= SIZE_UNKNOW_HEADER || index == INVALID_INDEX)
         return NULL;
     return &_request.unknown_headers[index];
 }
 
 void HeaderTable::linkThisHeader(uint8_t newIndex, uint8_t currentIndex)
 {
-    if (newIndex >= _request.sizeUnknownHeaders)
+    if (newIndex >= SIZE_UNKNOW_HEADER)
         return;
 
     s_header_slot& newHdr = _request.unknown_headers[newIndex];
@@ -63,7 +63,7 @@ void HeaderTable::linkThisHeader(uint8_t newIndex, uint8_t currentIndex)
 }
 
 bool HeaderTable::isDuplicate(uint8_t index) {
-    for (uint8_t i = 0; i < _request.sizeUnknownHeaders; ++i) {
+    for (uint8_t i = 0; i < SIZE_UNKNOW_HEADER; ++i) {
         if (i != index && _request.unknown_headers[i].next == index)
             return true;
     }

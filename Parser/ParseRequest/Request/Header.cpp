@@ -122,9 +122,6 @@ bool	Header::CheckHostAbsUri(s_view &VHost)
 
 bool    Header::makeUnknownHeader()
 {
-	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
-		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
-
 	_currentUnknownIndex = _indexUnknownHeaders;
 	_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
 	
@@ -186,8 +183,6 @@ bool    Header::selectHeaderSlot()
 
 bool    Header::storeValue()
 {
-	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
-		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
 	uint16_t valueLen = _offset - _valueStart;
 	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == INVALID_INDEX)
 	{
@@ -203,10 +198,13 @@ bool    Header::storeValue()
 		_request.unknown_headers[_currentUnknownIndex].val.len = valueLen;
 		_indexUnknownHeaders++;
 	}
+	return true;
 }
 
 bool    Header::parseKey(uint16_t size)
 {
+	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
+		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
 	while (canRead(size) && _state == HttpTables::STATE_KEY)
 	{
 		char c = _request.request_metadata[_offset];

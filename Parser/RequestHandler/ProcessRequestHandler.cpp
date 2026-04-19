@@ -70,11 +70,11 @@ std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
 }
 
 
-bool checkPath(const char *str, short acces)
+bool checkPath(const char *str)
 {
 	struct stat buffer;
 
-	return (stat(str, &buffer) == 0 && (buffer.st_mode & acces));
+	return (stat(str, &buffer) == 0 && (buffer.st_mode & S_IRUSR));
 }
 
 
@@ -98,7 +98,7 @@ bool	ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, cha
 		if (currentPos + idxLen < MAX_PATH_LEN) {
 			memcpy(destBuffer + currentPos, vindex[i].c_str(), idxLen);
 			destBuffer[currentPos + idxLen] = '\0';
-			if (checkPath(destBuffer, S_IRUSR))
+			if (checkPath(destBuffer))
 				return true;
 		}
 	}
@@ -108,7 +108,7 @@ bool	ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, cha
 		size_t currentPos = baseLen;
 		if (currentPos > 0 && destBuffer[currentPos - 1] != '/') destBuffer[currentPos++] = '/';
 		memcpy(destBuffer + currentPos, "index.html", INDEX_PATH_LEN);
-		if (checkPath(destBuffer, S_IRUSR))
+		if (checkPath(destBuffer))
 			return true;
 	}
 	if (bestLocation->getAutoIndex()) {
@@ -181,7 +181,7 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 
 	destBuffer[currentPos] = '\0';
 
-	if (checkPath(destBuffer, S_IRUSR))
+	if (checkPath(destBuffer))
 		return true;
 
 	return (error.setStatus(404, "Not Found"), false);

@@ -105,6 +105,7 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 	}
 
 	_uriParser.parse(buffer, size);
+	_offset = _uriParser.getOffset();
 
 	if (_uriParser.isError())
 	{
@@ -114,7 +115,6 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 	if (!_uriParser.isComplete())
 		return true;
 
-	_offset = _uriParser.getOffset();
 	_state = STATE_VERSION;
 	return true;
 }
