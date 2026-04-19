@@ -49,7 +49,7 @@ struct s_header_slot {
 
 struct PollOfClient {
 	char			request_metadata[16384];
-	char			io_chunk[8192];
+	char			io_chunk[10000];
 	s_header_slot	known_headers[HttpTables::H_COUNT];
 	s_header_slot	unknown_headers[25];
 	char			Response_metadata[16384];

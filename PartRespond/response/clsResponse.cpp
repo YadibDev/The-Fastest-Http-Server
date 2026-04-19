@@ -18,7 +18,7 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _Status = 0;
     _BodySize = 0;
     _MaxSizeHeader = 4000;
-    _MaxSizeBody = 40000;
+    _MaxSizeBody = 6000; // change by adib from 30000 to 6000
     
     _IsConnection = true;
     _SizeHeaders = 0;
@@ -178,7 +178,7 @@ void clsResponse::_StoredInFileOrStr()
         return ;
     }
     _BodySize = MetaData.st_size;
-    if (_BodySize > 40000)
+    if (_BodySize > _MaxSizeBody)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
@@ -190,7 +190,7 @@ void clsResponse::_StoredInFileOrStr()
         _Status = 500;
         return ;
     }
-    if (read(FD,&_Body[0],40000) == -1)
+    if (read(FD,&_Body[0],_MaxSizeBody) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -241,7 +241,8 @@ void clsResponse::Reset()
     _FileFromDisk = "";
     _Body = "";
     _HeaderFeild = "";
-    _IsConnection = false;
+    _IsConnection = true;
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
 }
 
 bool clsResponse::GetIsConnection() const
