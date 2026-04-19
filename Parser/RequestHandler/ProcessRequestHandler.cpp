@@ -221,6 +221,8 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 	const clsLocation* bestLocation = findBestLocation(serverConfig->getLocationExact(), serverConfig->getLocationPrefix()
 									, StartLine.getRequestURI().getPath());
 
+	HttpError error;
+
 	if (bestLocation)
 	{
 		if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), StartLine.getRequestURI().getPath(), error))
@@ -243,4 +245,5 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 		handler->setUploadStore(&bestLocation->getUploadStore());
 		handler->setError(error);
 	}
+	return true;
 }

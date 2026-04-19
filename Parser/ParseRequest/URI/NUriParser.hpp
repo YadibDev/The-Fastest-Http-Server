@@ -35,7 +35,7 @@ public:
 	const s_view&       getQuery() const;
 	const s_view&       getFragment() const;
 	const HttpError&    getError() const;
-	const bool			AuthorityExist() const;
+	bool				AuthorityExist();
 
 private:
 	State			_state;

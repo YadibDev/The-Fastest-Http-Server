@@ -7,17 +7,16 @@
 #include "../../ParseConfigFile/ServerConfig/ServerConfig.hpp"
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "HeaderTable.hpp"
-#include "clsBody.hpp"
+// #include "clsBody.hpp"
 
 class RequestParser {
 private:
-
 
 	stPollRequest	&_request;
 	uint16_t		_offset;
 	RequestLine		_requestLine;
 	Header			_header;
-	clsBody			_body;
+	// clsBody			_body;
 	clsServerConfig	*_ServerConfig;
 	RequestHandler	*_RequestHandler;
 	HttpError		_error;
@@ -26,7 +25,7 @@ private:
 	bool    HProcessRequestHandler();
 	bool	ParseRequestLine(uint16_t size);
 	bool	ParseHeader(uint16_t size);
-	bool	ParseBody(uint16_t);
+	bool	ParseBody();
 
 public:
 	enum State { STATE_REQUEST_LINE, STATE_HEADERS, STATE_BODY, STATE_COMPLETE, STATE_ERROR };
@@ -34,7 +33,7 @@ public:
 
 	RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler);
 	void			init(uint16_t offset = 0);
-	void			Parse(uint16_t size);
+	bool			Parse(uint16_t size);
 	bool			isComplete() const;
 	bool			isError() const;
 	RequestLine		getRequestLine() const;

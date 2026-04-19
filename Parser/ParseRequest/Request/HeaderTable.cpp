@@ -71,7 +71,7 @@ bool HeaderTable::isDuplicate(uint8_t index) {
 }
 
 uint8_t HeaderTable::countOccurrences(HttpTables::eKnownHeader h) {
-    s_header_slot* current = getKnownHeader(h);
+    const s_header_slot* current = getKnownHeader(h);
     if (!current || current->key.Data == NULL)
         return 0;
     

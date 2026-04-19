@@ -16,7 +16,7 @@ RequestLine::RequestLine()
 	_version.len = 0;
 }
 
-void    RequestLine::reset(uint16_t startOffset)
+void    RequestLine::init(uint16_t startOffset)
 {
 	_state = STATE_START;
 	_methodType = HttpTables::M_UNKNOWN;
@@ -26,12 +26,12 @@ void    RequestLine::reset(uint16_t startOffset)
 	_versionMinorRead = false;
 	_methodIndex = 0;
 	_versionIndex = 0;
-	
 	_method.Data = NULL;
 	_method.len = 0;
 	_version.Data = NULL;
 	_version.len = 0;
 	
+	_error.setStatus(0, "");
 	_uriParser.init(startOffset);
 }
 
@@ -188,14 +188,11 @@ bool    RequestLine::parseLF(const char *buffer, uint16_t size)
 
 bool    RequestLine::parse(const char *buffer, uint16_t size)
 {
-	if (_state == STATE_COMPLETE || _state == STATE_ERROR)
+	if (_state == STATE_COMPLETE)
 		return true;
 
 	while (_offset <= size)
 	{
-		uint16_t oldOffset = _offset;
-		State oldState = _state;
-
 		if (_state == STATE_START)
 			selectMethod(buffer, size);
 		else if (_state == STATE_METHOD)
@@ -211,16 +208,16 @@ bool    RequestLine::parse(const char *buffer, uint16_t size)
 		else
 			break;
 
-		if (_state == STATE_COMPLETE || _error.isError())
+		if (_state == STATE_COMPLETE)
 			break;
-		if (_offset == oldOffset && _state == oldState)
-			break;
+		else if (_error.isError())
+			return false;
 	}
 	return true;
 }
 
 bool				RequestLine::isComplete() const { return (_state == STATE_COMPLETE); }
-bool				RequestLine::isError() const { return (_state == STATE_ERROR); }
+bool				RequestLine::isError() const { return _error.isError(); }
 HttpTables::eMethod	RequestLine::getMethod() const { return _methodType; }
 s_view				RequestLine::getVersion() const { return _version; }
 const UriParser		&RequestLine::getRequestURI() const { return _uriParser; }

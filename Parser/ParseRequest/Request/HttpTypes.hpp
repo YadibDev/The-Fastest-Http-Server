@@ -6,6 +6,8 @@
 #include <vector>
 
 #define INVALID_INDEX 255
+#define SIZE_BUFFER 16384
+#define SIZE_UNKNOW_HEADER 25
 	
 struct s_view
 {
@@ -39,34 +41,48 @@ public:
 	}
 };
 
-struct s_header_slot {
+struct s_header_slot
+{
 	s_view		key;
 	s_view		val;
 	uint8_t		next;
 	int32_t		Hash;
+
 	s_header_slot() : next(INVALID_INDEX), Hash(-1) {}
+
+	void reset()
+	{
+		next = INVALID_INDEX;
+		Hash = -1;
+	}
 };
 
-struct PollOfClient {
-	char			request_metadata[16384];
+struct PollOfClient
+{
+	char			request_metadata[SIZE_BUFFER];
 	char			io_chunk[8192];
 	s_header_slot	known_headers[HttpTables::H_COUNT];
-	s_header_slot	unknown_headers[25];
-	char			Response_metadata[16384];
+	s_header_slot	unknown_headers[SIZE_UNKNOW_HEADER];
+	char			Response_metadata[SIZE_BUFFER];
 	uint16_t		read_offset;
 	uint16_t read_body;
-    void Reset()
-    {
-        read_offset = 0;
-        read_body = 0;
-    }
+	void Reset()
+	{
+		read_offset = 0;
+		read_body = 0;
+
+		for (int i = 0; i < HttpTables::H_COUNT; ++i)
+			known_headers[i].reset();
+
+		for (int i = 0; i < SIZE_UNKNOW_HEADER; ++i)
+			unknown_headers[i].reset();
+	}
 };
 
 struct stPollRequest {
 	char			*request_metadata;
 	s_header_slot	*known_headers;
 	s_header_slot	*unknown_headers;
-	uint8_t			sizeUnknownHeaders;
 	char			*io_chunk;
 };
 

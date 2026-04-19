@@ -424,7 +424,13 @@ unsigned long HelperFunctions::getCurrentTimeInS()
 
 size_t	HelperFunctions::ft_strlen(const char *s)
 {
-	size_t	i;
+	size_t	i = 0;
+ 
+	if (!s)
+		return 0;
+	while (s[i])
+		i++;
+	return i;
 }
 
 

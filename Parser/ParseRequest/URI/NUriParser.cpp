@@ -373,4 +373,4 @@ const s_view&			UriParser::getPath()		const { return _path; }
 const s_view&			UriParser::getQuery()		const { return _query; }
 const s_view&			UriParser::getFragment()	const { return _fragment; }
 const HttpError&		UriParser::getError()		const { return _error; }
-const bool				UriParser::AuthorityExist() const { return _AuthorityExist; }
+	bool				UriParser::AuthorityExist()			{ return _AuthorityExist; }

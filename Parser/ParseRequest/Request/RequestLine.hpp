@@ -30,7 +30,7 @@ private:
 
 public:
 	RequestLine();
-	void				reset(uint16_t startOffset = 0);
+	void				init(uint16_t startOffset);
 	bool				parse(const char *buffer, uint16_t size);
 	bool				isComplete() const;
 	bool				isError() const;
