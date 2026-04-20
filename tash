@@ -1,0 +1,1333 @@
+[33mcommit 6d0cde0dea222695f7b9e180a38285b977179505[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mServer[m[33m, [m[1;31morigin/Server[m[33m)[m
+Author: Yassine Adib <yadib@e1r9p7.1337.ma>
+Date:   Mon Apr 20 06:39:06 2026 +0100
+
+    i need to reset respond and request with the right way
+
+[33mcommit 3972ae5873b2b4dfda3f1cdcd3d3414837b3a372[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sun Apr 19 20:25:53 2026 +0000
+
+    debuging chunked
+
+[33mcommit 0094d850c06f3e352346daf99f078707bf8fe507[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 20:23:53 2026 +0000
+
+    i need to solve the problem
+
+[33mcommit 90672dd6e52836668ac9f587d0c4231b47fee7b9[m
+Merge: a5d063c 926c654
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 20:21:42 2026 +0000
+
+    handle disk with the new algo
+
+[33mcommit a5d063c14f298930f364e484cd3274296198349a[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 19:05:02 2026 +0000
+
+    debug request by mosaab
+
+[33mcommit 926c6548536f42dd83a07a4fdd2b76a2a13ac9f5[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 18:05:30 2026 +0000
+
+    edit in response
+
+[33mcommit 728eba161536998aeb0c03b6ab650fe64458c04a[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 17:06:22 2026 +0000
+
+    local changes
+
+[33mcommit f404d6a21eb7464088c883192b274f4e7ffe2fa2[m
+Merge: c411b9f 2dbb416
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 15:47:35 2026 +0000
+
+    merge server with respond request still has issuess
+
+[33mcommit c411b9fb1342527d7d9441c3a9a677cf92eac798[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:38:35 2026 +0000
+
+    test
+
+[33mcommit 2dbb416eb19ae84e4099a87d63d53f2a2cf463ee[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:38:03 2026 +0000
+
+    finsh merging with mossabe in response
+
+[33mcommit 2b8c207fc0741dd56e2048450b70f5e9ecfa058e[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:25:58 2026 +0000
+
+    workingk_on_improving_chunk_readability_and_logic
+
+[33mcommit cceb6e82ecef096a4180cfd1f4faf78c3006da94[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:22:43 2026 +0000
+
+    edit in part mossabe
+
+[33mcommit 19a998f67c7e276035abcfe05d1f6d6bf821a68a[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:07:15 2026 +0000
+
+    edit in request handler
+
+[33mcommit af58bf26d8b38c6edd76f830ff6e73b66959ece8[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 14:05:22 2026 +0000
+
+    edit in request handler
+
+[33mcommit 346cf8a1fe88342ab534b6d41642a2439b538cef[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 13:45:05 2026 +0000
+
+    nothing just mini change
+
+[33mcommit 8d1b79a6d2d0e3939065fa5dfe670351009e5916[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sat Apr 18 13:40:17 2026 +0000
+
+    handle error mkstemp
+
+[33mcommit 0a96074080168dfade7154382bbcecb3e1a2ce06[m
+Merge: 1c71ea0 8ad2073
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Sat Apr 18 14:14:07 2026 +0100
+
+    merging with mossabe
+
+[33mcommit 1c71ea07960a711ddcdbb63e63bf140cad941c55[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Sat Apr 18 13:25:46 2026 +0100
+
+    optimize parse CGI
+
+[33mcommit 8ad207367dd0be5670c80c9b179d98efc1d47128[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Sat Apr 18 10:43:18 2026 +0000
+
+    finish
+
+[33mcommit 2ccec39fbb5482b1b221092ee86fcf5422638b12[m
+Merge: bef8164 aa6dcfc
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Sat Apr 18 10:41:28 2026 +0000
+
+    finish
+
+[33mcommit aa6dcfc1e5b431fbdd304e4b064ed6836329c0a1[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Sat Apr 18 09:27:55 2026 +0000
+
+    نقل التعديلات لفرع ريكويست
+
+[33mcommit e6b30b1313fd5a11c770753ce059b6ce534459cb[m
+Author: Yassine Adib <yadib@e1r4p6.1337.ma>
+Date:   Fri Apr 17 17:42:00 2026 +0100
+
+    still debuging
+
+[33mcommit 8bdba3773a872c700ef0bd2abff12b0e1c306b99[m
+Author: Yassine Adib <yadib@e1r3p9.1337.ma>
+Date:   Fri Apr 17 12:20:02 2026 +0100
+
+    debuging
+
+[33mcommit d89bb5297df56532c1d8fd091e3d9cca65cb40cf[m
+Author: Achraf Hamdaoui <achamdao@e3r8p5.1337.ma>
+Date:   Thu Apr 16 21:21:04 2026 +0100
+
+    handling some error and optimize all classes in error management
+
+[33mcommit fbac17753416bf513d140c9c3df244fd257e5587[m
+Author: Yassine Adib <yadib@e1r3p7.1337.ma>
+Date:   Thu Apr 16 21:19:42 2026 +0100
+
+    debug_large_body_with_content_length
+
+[33mcommit cdf83cc186d423e9ab0abde27df0039c60920b30[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Thu Apr 16 18:01:17 2026 +0000
+
+    testing body
+
+[33mcommit 91f6bc114d62d0edc01739e9770b9c2827832a97[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Thu Apr 16 17:43:38 2026 +0000
+
+    new Apdate
+
+[33mcommit 68685c4ae88ea6f9dc9c69452610dcb486015017[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Thu Apr 16 16:45:06 2026 +0100
+
+    handel error response
+
+[33mcommit 1f701df0fe1a278749f8069155fe566553ac1e8b[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Thu Apr 16 15:42:43 2026 +0000
+
+    working on debugging body
+
+[33mcommit 0167d0a70abdf71fa1ceda3a3e0852d68782625a[m
+Author: 777ACHRAF <achrafhamdaoui315@gmail.com>
+Date:   Thu Apr 16 09:11:22 2026 +0000
+
+    linking mosabe with response
+
+[33mcommit 84bf7367f4f0fd616cfa39f4737800399023bfde[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 20:21:51 2026 +0000
+
+    working
+
+[33mcommit c86596bc6e328be0acc11da6988124820afca079[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 18:33:05 2026 +0000
+
+    erros handling
+
+[33mcommit 26435690340eead3df523cc1e742242328871cb7[m
+Merge: 420d60b a928bf9
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Wed Apr 15 19:32:32 2026 +0100
+
+    new response
+
+[33mcommit f7293a82559c5be11757468c2d0f2ddcea0cb659[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Wed Apr 15 18:32:01 2026 +0000
+
+    test 7:30
+
+[33mcommit 69636573360cb8b68915909d7db400280ea6b23a[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 17:36:44 2026 +0000
+
+    clean a little bit workspace
+
+[33mcommit a928bf972420ff0d5089f493a4e381bdeae9cd7f[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Wed Apr 15 18:35:31 2026 +0100
+
+    server change in Respond
+
+[33mcommit 420d60b6c946a69d988cd674e598276cb6b8b0d2[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Wed Apr 15 18:31:58 2026 +0100
+
+    save new respond
+
+[33mcommit 7515327b4bd80418f51ce476dc311aaa020e0acf[m
+Merge: a2f46ec 4e9eaad
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 17:21:05 2026 +0000
+
+    update server and merge it with achraf branch
+
+[33mcommit a2f46ec868b0e9d699ba3fbb957df566021794cc[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 16:06:04 2026 +0000
+
+    last merge
+
+[33mcommit 14b9f13c006dc3216606b1917abf19699f4c3296[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Tue Apr 14 17:06:01 2026 +0000
+
+    changes
+
+[33mcommit 4e9eaad63748d89a71caa43df2a900b6492bd153[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Wed Apr 15 15:46:51 2026 +0000
+
+    testing
+
+[33mcommit 30f91ceb77165b623458dadc43115c986bb33090[m
+Author: Yassine Adib <yadib@e2r9p5.1337.ma>
+Date:   Wed Apr 15 16:34:17 2026 +0100
+
+    debugging
+
+[33mcommit 12894b3e6e2d7919c42977bd4913e1c96b242fad[m
+Merge: a24030b 1107f0f
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Tue Apr 14 21:19:52 2026 +0000
+
+    working on removing error and warnings
+
+[33mcommit a24030bcf15493ef37833cc17fb653c3764d3129[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Tue Apr 14 21:07:40 2026 +0000
+
+    working
+
+[33mcommit 885a9569d310b6719d4c2c9304aee593f8c817e6[m
+Author: yadib <yassedme17@gmai.com>
+Date:   Tue Apr 14 19:18:48 2026 +0100
+
+    link_manual_server_with_request
+
+[33mcommit bef8164306606625b41d3a0c9ec8b4d89b0be6d0[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Tue Apr 14 18:12:20 2026 +0000
+
+    last
+
+[33mcommit b22f03f10544ee4433233c1620d7731460498d12[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Tue Apr 14 17:04:55 2026 +0000
+
+    Last Version
+
+[33mcommit 98b5244c74c089332f6b75e517cea785a13aaf91[m
+Author: mosabejaouchi3-hash <mosabejaouchi3@gmail.com>
+Date:   Tue Apr 14 15:12:15 2026 +0000
+
+    error
+
+[33mcommit 96934dc8549ec4ad8643c3a9c0d2bb5568f4edbe[m
+Author: Yassine Adib <yadib@e1r3p9.1337.ma>
+Date:   Tue Apr 14 14:54:49 2026 +0100
+
+    push_multipart_and_merge_it_with_body
+
+[33mcommit 1107f0f5c3498ba398b072e9fb407563844f4d09[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Tue Apr 14 14:53:03 2026 +0100
+
+    finish CGI Parsing and testing
+
+[33mcommit 854fe2d7db4707bbb9be8df8fee5e936bb1f3457[m
+Author: Moussaab Jaouchi <mjaouchi@e3r8p9.1337.ma>
+Date:   Tue Apr 14 14:35:04 2026 +0100
+
+    last V
+
+[33mcommit 6e769c6d3fe3e1a8eddf92d20a38a6959daf226d[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Mon Apr 13 23:01:59 2026 +0100
+
+    part Response
+
+[33mcommit 501d12193bdba02aeec432cfec811bb8e6407fb2[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Sun Apr 12 16:39:45 2026 +0100
+
+    testing
+
+[33mcommit 0b9273c96b43e9ae3734de56b5e9a2fe6a3d217a[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Apr 11 13:28:58 2026 +0000
+
+    push_new_things
+
+[33mcommit 62fd9b11baea551e7884958988dd76231e6713b2[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Fri Apr 10 21:04:41 2026 +0100
+
+    cgi out
+
+[33mcommit e9bbed5d1a852b9047369220d965a94840c4c195[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Wed Apr 8 21:18:28 2026 +0100
+
+    finish CGI
+
+[33mcommit dfe3a4caba6ebb217e6e5a495c7acfe6a3c31de4[m
+Merge: f80acc5 91c07f6
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Apr 7 12:21:42 2026 +0000
+
+    workin on hanle body i done maybe 70%
+
+[33mcommit 58636198e2a9e34d2c309dedc20633b6a715a76e[m
+Author: Moussaab Jaouchi <mjaouchi@e3r8p9.1337.ma>
+Date:   Tue Apr 7 11:25:22 2026 +0100
+
+    LAST V
+
+[33mcommit 66c76797f0ec456fdc54908f42e2689c77e715fb[m
+Author: Moussaab Jaouchi <mjaouchi@e3r8p9.1337.ma>
+Date:   Tue Apr 7 11:23:55 2026 +0100
+
+    LAST V
+
+[33mcommit 506ac36856da7a19ce177f4202267233a20b17f3[m
+Author: Achraf Hamdaoui <achamdao@e3r7p8.1337.ma>
+Date:   Thu Apr 2 20:33:31 2026 +0100
+
+    testing
+
+[33mcommit f80acc5a9aaa5a03796086042ba6b3fc77de53f9[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Wed Apr 1 13:18:00 2026 +0000
+
+    some_changes
+
+[33mcommit 23dd88b5c4535b71dbdca3b0e138e4f77e37048e[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Mar 31 15:05:20 2026 +0000
+
+    working on body and multipart
+
+[33mcommit 91c07f6fc0c216c366473c3a694c616559e97655[m
+Author: Moussaab Jaouchi <>
+Date:   Tue Mar 31 12:21:29 2026 +0100
+
+    ADD NEW
+
+[33mcommit 244cca1062beacce8636efc4c87cd193308e2b2b[m
+Author: Moussaab Jaouchi <>
+Date:   Mon Mar 30 18:28:09 2026 +0100
+
+    finish Request Parse Optimize
+
+[33mcommit 684d6361c214b4b4d68b3e766911ef67c3f820be[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Sat Mar 14 22:01:41 2026 +0000
+
+    resting CGI
+
+[33mcommit b657801917961f83b0eb808dbca297682654db73[m
+Author: Achraf Hamdaoui <achamdao@e3r7p8.1337.ma>
+Date:   Wed Mar 11 22:25:50 2026 +0000
+
+    split code CGI processe
+
+[33mcommit 5f84928a17f7c2e653a132b3d6c6393bf82afb80[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Tue Mar 10 17:30:30 2026 +0000
+
+    add code in parse CGI
+
+[33mcommit 2a8e5d5814200d284f18ce6c7b924a9467e6e4fc[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Mon Mar 9 22:23:07 2026 +0000
+
+    handel and optemising parse
+
+[33mcommit 9c706c8cde9ea715400d7697d6b5811018155302[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Sun Mar 8 22:15:53 2026 +0000
+
+    optimizing and check rule CGI and parsing
+
+[33mcommit d92900c8996dc9b4fe17796173fc6ddff04e3de4[m
+Author: Achraf Hamdaoui <achamdao@e3r8p8.1337.ma>
+Date:   Sat Mar 7 22:13:52 2026 +0000
+
+    handel error page in response
+
+[33mcommit f0089089ca3009079c93ec4ca9d0cef561fd551e[m
+Author: Achraf Hamdaoui <achamdao@e3r8p8.1337.ma>
+Date:   Sat Mar 7 22:13:19 2026 +0000
+
+    handel error page
+
+[33mcommit 4ba7f29b7b1106d836e62963ccd96152e9e848e1[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Sat Mar 7 14:31:06 2026 +0000
+
+    working on chunk
+
+[33mcommit 246b8e3f1c13ba1c1a6adec43ee6ef319d0e2639[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Thu Mar 5 22:00:56 2026 +0000
+
+    convert to pointer
+
+[33mcommit fe8373c5ddcd26ff0cf559e75f4dae5e26e1c622[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Wed Mar 4 21:57:12 2026 +0000
+
+    optimised response
+
+[33mcommit 6154042ec1477a92a32e22c94658ac778b300fcb[m
+Merge: f4c44ae d33f8bc
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Wed Mar 4 13:50:41 2026 +0000
+
+    working on merging
+
+[33mcommit 2c6266816042f3fee5e641fc6547f1507acef133[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Tue Mar 3 21:56:30 2026 +0000
+
+    add type static
+
+[33mcommit d33f8bc402ad47644a538b5020eed4ce44f46ebe[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Tue Mar 3 16:36:29 2026 +0000
+
+    handle reading in response
+
+[33mcommit 222f7976a895236f801721c0680637a2c35fc3bf[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Mon Mar 2 22:13:01 2026 +0000
+
+    optimise response write code
+
+[33mcommit f4c44aeefef09b63e0ad211bed8ed81604f2d4e4[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Mon Mar 2 15:59:16 2026 +0000
+
+    workingOnAlgoBodyu
+
+[33mcommit aed5832a695347ef52872a7440f635d0116135bb[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Mon Mar 2 03:46:58 2026 +0000
+
+    finish parse CGI just remaind more info for complete solid parse
+
+[33mcommit b9d61a918550ad56731da6ae7335858428baf6e8[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Sat Feb 28 22:31:07 2026 +0000
+
+    handel logic response
+
+[33mcommit 9ea6ba3a115e5b8248930a11c7e7e732990a810d[m
+Merge: e732fae 8154df9
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Fri Feb 27 21:26:41 2026 +0000
+
+    upgrade function chunk
+
+[33mcommit 49eed07eef6e1e0d3b899858c7d98c935c39b9a8[m[33m ([m[1;32mmain[m[33m)[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Fri Feb 27 15:43:11 2026 +0000
+
+    add mp4 and testCase with a simpsimple website
+
+[33mcommit 90b15fcd012954ee6c41184efb165757b5cf7c5f[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Fri Feb 27 15:35:42 2026 +0000
+
+    push testcase mini website
+
+[33mcommit 1aef965b5a2ae1baa1a14d48f72db72173ddda72[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Fri Feb 27 15:31:50 2026 +0000
+
+    server part improved by yadib
+
+[33mcommit b8d4364b1eadaa016170066279b0bc727daf9d80[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Fri Feb 27 02:11:23 2026 +0000
+
+    best version of server until now
+
+[33mcommit 3024baf59efcd411da00826ba196d813ecd10e15[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Fri Feb 27 01:16:53 2026 +0000
+
+    add seconds get time
+
+[33mcommit 60f96ccefebea9d102c1a466a2c495a135ebabc3[m
+Merge: 70d8d65 46e0253
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Thu Feb 26 16:45:00 2026 +0000
+
+    Merge branch 'Respond' into Server cgi
+
+[33mcommit 70d8d6548e8fdaa4b8d01bc6680cda6172181f83[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Thu Feb 26 16:44:37 2026 +0000
+
+    change algo of respodn
+
+[33mcommit e732faede8138dc2f7a14c740f2a392b444f5155[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Thu Feb 26 16:36:25 2026 +0000
+
+    new
+
+[33mcommit 8154df90bfb73bdc8514b4188fcc8df05aee838c[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Feb 26 16:32:19 2026 +0000
+
+    Header
+
+[33mcommit 4f7436f4441bd4e0c4e7f8201e8ac61607d3b249[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Thu Feb 26 15:55:40 2026 +0000
+
+    modifier in home
+
+[33mcommit ce92d487e72d4f1123743112eb8ccac40827ea87[m
+Author: Yassine Adib <yadib@e1r4p10.1337.ma>
+Date:   Wed Feb 25 22:15:04 2026 +0000
+
+    debuging
+
+[33mcommit 35e7ac19442c12384100b86397d5ddb059662e0d[m
+Author: moussaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 25 18:00:36 2026 +0000
+
+    header
+
+[33mcommit 0db190d9235439a99f544cb495c826272be8db01[m
+Author: moussaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 25 17:41:35 2026 +0000
+
+    Header Update
+
+[33mcommit 9dd1dd6fc18848dc3c340aa3f1a3cb2a194d3ed3[m
+Author: moussaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 25 15:59:30 2026 +0000
+
+    finish configefile
+
+[33mcommit a4fe6bc6a16ad23ee5ea350e97f929682134746c[m[33m ([m[1;31morigin/codespace-refactored-trout-jjqwxrp64wpqh4jx[m[33m)[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 25 12:17:58 2026 +0000
+
+    last version
+
+[33mcommit 46e0253c4e99cfb6595ea7701f0ac0ce8f65cede[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Tue Feb 24 22:06:44 2026 +0000
+
+    finish class CGI in writing code but not tested
+
+[33mcommit 87b4eafebb811c8b530deb3be1e4b4174b2fb87e[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Tue Feb 24 21:59:53 2026 +0000
+
+    finish class CGI in writing code but not tested
+
+[33mcommit 64894dd21afda802b625947d9a3b19951bfc22b2[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Tue Feb 24 21:56:28 2026 +0000
+
+    finish class CGI in writing code but not tested
+
+[33mcommit 4e40fd1bbf600cff189f9175618dfea63a77581d[m
+Author: Achraf Hamdaoui <achamdao@e3r7p4.1337.ma>
+Date:   Tue Feb 24 20:33:44 2026 +0000
+
+    env
+
+[33mcommit 0c160176af318bb7b6ae5c02bcb9d920efe0ee30[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Tue Feb 24 19:14:41 2026 +0000
+
+    env
+
+[33mcommit b61ac11f89122688c3760c193ecdd446231384c3[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Tue Feb 24 17:54:38 2026 +0000
+
+    build function env
+
+[33mcommit de5879cf72bb58dcd37395329e8dd9ea313d21bc[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Tue Feb 24 16:30:18 2026 +0000
+
+    CGI helperfunction
+
+[33mcommit b44781b5072720eee486b4e503b4ed9a913453f1[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Tue Feb 24 15:52:43 2026 +0000
+
+    CGI
+
+[33mcommit a47b2629031c05a49151e66cb91a12fa81367dd5[m
+Merge: 7b608fa fc2ddd8
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Mon Feb 23 18:03:26 2026 +0000
+
+    test
+
+[33mcommit b9fab15a7ed6c3998fa03a30cbca99b1fbdf8a11[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Mon Feb 23 17:47:46 2026 +0000
+
+    handle index and autoindex and Syntax Errors
+
+[33mcommit 7b608fa59732eed55a02d009b21cf422451df19a[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Mon Feb 23 14:53:42 2026 +0000
+
+    working on improving server
+
+[33mcommit fc2ddd8991e7e6f6ff5bbec6d83a024b47123924[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sun Feb 22 21:12:14 2026 +0000
+
+    delete variable
+
+[33mcommit ab23981dc87d4218f5e0cf355a25143beb878c73[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sun Feb 22 18:04:38 2026 +0000
+
+    handle redirection and smoull probleme in header
+
+[33mcommit cd12c606fad2e459e51970e150ac8b20df81482e[m
+Merge: 8d6ab39 e6a2dd9
+Author: Yassine Adib <yadib@e1r3p7.1337.ma>
+Date:   Sun Feb 22 15:36:58 2026 +0000
+
+    merge with ashraf
+
+[33mcommit 8d6ab3921a8096a450869d33c50b9ef313b03e05[m
+Author: Yassine Adib <yadib@e1r3p7.1337.ma>
+Date:   Sun Feb 22 15:33:58 2026 +0000
+
+    finish server beta version 0.5
+
+[33mcommit e6a2dd928ea5c31ff814a17487ea65f3e60e6b47[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Sun Feb 22 15:32:54 2026 +0000
+
+    i write function GetIsConnection
+
+[33mcommit 664abb819eee8df9d53e5af77a64e985c1533c2f[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 22:23:10 2026 +0000
+
+    merge_respond_request_server
+
+[33mcommit 40014954b72cedfc2d56e638c820e70cb109b6c1[m
+Merge: 885cc3d f0ec215
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 21:37:29 2026 +0000
+
+    Merge branch 'Respond' into Server
+
+[33mcommit 885cc3d58222addfca91817d1598eaba787ac9a6[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 21:36:34 2026 +0000
+
+    working on process request
+
+[33mcommit f0ec215836dee197215917915cb973955bc19500[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Sat Feb 21 21:34:39 2026 +0000
+
+    i handle  my part
+
+[33mcommit 2a0a24cdb50e0095cb75b51c8adb501819bf71e5[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Sat Feb 21 18:10:56 2026 +0000
+
+    i handle main process class
+
+[33mcommit 49a4cf6a93d127502ba219852f74db042d4e6adb[m
+Merge: cd6f655 2ef1ab8
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:44:41 2026 +0000
+
+    Merge branch 'Request' into Server
+
+[33mcommit cd6f655b90540a6746cbb8b8c29dacc0cb93db7b[m
+Merge: 78b4a11 f9e23e3
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:43:45 2026 +0000
+
+    response
+
+[33mcommit 2ef1ab8bed3337a215ab119733513af5262d82b3[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sat Feb 21 17:42:25 2026 +0000
+
+                    headerMap[HelperFunctions::ConvertStringToLower(headerField)].push_back(values[i]);
+
+[33mcommit 78b4a119a250efeef8fdb4bec1a152e326fddda7[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:32:00 2026 +0000
+
+    debuging
+
+[33mcommit f9e23e302eb4ce564a4077b8df789666c6fac62d[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sat Feb 21 17:29:54 2026 +0000
+
+    alise added
+
+[33mcommit 634d8cba80e2619cc93717b9db73432bc44640ca[m
+Merge: 5aee049 2664ae4
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:10:15 2026 +0000
+
+    Merge branch 'Respond' into Server
+
+[33mcommit 5aee0492ad5200aad40c907b68c3b236dd579aba[m
+Merge: bbf163f 3e70bed
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:09:54 2026 +0000
+
+    merging
+
+[33mcommit 2664ae487394206724c41ba38f10172ca1ec7cff[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Sat Feb 21 17:09:16 2026 +0000
+
+    handle error in response
+
+[33mcommit bbf163f07ea58ee02abdee7c5900b4614ebe8ba0[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 17:04:31 2026 +0000
+
+    improve code a little bit
+
+[33mcommit 3e70beda2bd7ca474ac53355807550ffeb301e9f[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sat Feb 21 17:03:15 2026 +0000
+
+    finish
+
+[33mcommit 73869bf57d09a9bf7618caf4734630bfe136863b[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sat Feb 21 16:56:51 2026 +0000
+
+    finish 80%
+
+[33mcommit 99d0cf532fac0fc3329752c60cdffb172d086e1d[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 15:28:03 2026 +0000
+
+    add main process to makefile
+
+[33mcommit 1c8d82d0a5f9c380225298d25d167c9664c648b3[m
+Merge: 17f41a7 be6ae0e
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 21 15:18:24 2026 +0000
+
+    Merge branch 'Respond' into Server to update
+    Respond and mainprocess
+
+[33mcommit 17f41a709383f1a28449f3f03a19e939c9624c91[m
+Author: Yassine Adib <yadib@e1r4p10.1337.ma>
+Date:   Sat Feb 21 14:40:10 2026 +0000
+
+    debugi respond chunked
+
+[33mcommit 9cd917d458e9c7e93466694e95bcee8535c7ea1e[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sat Feb 21 12:32:34 2026 +0000
+
+    70% from RequestHandler complate
+
+[33mcommit dfedd9d2dbfbeb2092457ea065eac0cc1f5034f9[m
+Author: Yassine Adib <yadib@e1r4p10.1337.ma>
+Date:   Sat Feb 21 02:21:19 2026 +0000
+
+    testing and working on server
+
+[33mcommit be6ae0eedfb21a19cd96dbf276ab883719f9d4fa[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Fri Feb 20 22:12:31 2026 +0000
+
+    i m handle probleme in error page
+
+[33mcommit eef44dd248345fe0c5119ef972157bc0a591e739[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Fri Feb 20 22:10:09 2026 +0000
+
+    i m handle probleme in error page
+
+[33mcommit b8748dbbb3de307e3848a185d54cd6a2a7acd481[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Fri Feb 20 22:08:04 2026 +0000
+
+    i m handle probleme in error page
+
+[33mcommit e59c19deb829596612ee28e06ed9f0388ace5591[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Fri Feb 20 19:34:58 2026 +0000
+
+    Yomkinoka 3amale Make laken mzala mnti9e RequestHandler rayer Kamel
+
+[33mcommit 90f06955711831c89d25d71a28474dcc9a779ee4[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Fri Feb 20 17:52:09 2026 +0000
+
+    no update just clean folders
+
+[33mcommit 548a79a1acc59b40297ca422b01d8e7884c904e0[m
+Author: Achraf Hamdaoui <achamdao@e3r8p4.1337.ma>
+Date:   Fri Feb 20 17:29:36 2026 +0000
+
+    i write code clsMainProcess
+
+[33mcommit a5d9e34dc1dff02719e25dd509a13485f81bc405[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Fri Feb 20 17:19:42 2026 +0000
+
+    no update just clean folders
+
+[33mcommit bb936d4d9dfa4d4c37a48079a4e48890db929165[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Fri Feb 20 14:05:48 2026 +0000
+
+    Request Parse finish It's not perfect, I'm still optimizing it, but it's ready for GET testing
+
+[33mcommit 3b8e0c3e47e68c4cb13c53cc471e69758a0d1f51[m
+Author: Yassine Adib <yadib@e1r4p9.1337.ma>
+Date:   Fri Feb 20 14:00:02 2026 +0000
+
+    localy-changes
+
+[33mcommit c4d377f948574e1159dda162fa10b69810b8e816[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 19 17:24:45 2026 +0000
+
+    add
+
+[33mcommit 6e950ced91670c8e0a37fe64c114f2b0a7b1faff[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Thu Feb 19 15:51:43 2026 +0000
+
+    i m in process main
+
+[33mcommit d040de32689bb807445ff7cca198ce2ef194426c[m
+Merge: 57241f7 f97c27b
+Author: Yassine Adib <yadib@e1r10p12.1337.ma>
+Date:   Thu Feb 19 13:37:31 2026 +0000
+
+    test
+
+[33mcommit 57241f78180cf4047b548c9b6df9a022dd90e491[m
+Author: Yassine Adib <yadib@e1r10p12.1337.ma>
+Date:   Thu Feb 19 13:31:16 2026 +0000
+
+    change_some_docs
+
+[33mcommit f97c27bbbf5b54055e501956801963c45f79909e[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 19 11:52:08 2026 +0000
+
+    Tm icmale configue bi najahe
+
+[33mcommit a494da36d2759ff939081a7b74eff2ca2c086746[m
+Merge: 373d726 a27865b
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 19 11:21:20 2026 +0000
+
+    new Apdat
+
+[33mcommit 373d726f1010934ca36e75b10962b342d0027f2f[m
+Merge: b84f560 bde4eb1
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 22:29:28 2026 +0000
+
+    nice
+
+[33mcommit fd0e4dbb45dc1e4df0183e216d82c963dbf01fbe[m
+Author: Achraf Hamdaoui <achamdao@e3r8p1.1337.ma>
+Date:   Wed Feb 18 22:29:12 2026 +0000
+
+    response handle error page from config
+
+[33mcommit a27865b95c1bff1c608753e8125063046b1a6c02[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Wed Feb 18 22:18:02 2026 +0000
+
+    debugin and solving problems of the config file
+
+[33mcommit b84f560e87ccc263a15ee0e0afe6153d5f536a16[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 15:46:44 2026 +0000
+
+    test
+
+[33mcommit bde4eb12ae8a57d5fb684ef5b69f05e81b35f431[m
+Merge: 2d0e488 10a645e
+Author: yassine <yassedme17@gmail.com>
+Date:   Wed Feb 18 15:44:52 2026 +0000
+
+    working on solving errors
+
+[33mcommit 10a645e074ffca8168258c3dff5a7ea7b9b0c638[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 15:31:59 2026 +0000
+
+    Utlis
+
+[33mcommit 6047a75cb7feaa721925dfa8bac3a6b584179424[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 15:28:05 2026 +0000
+
+    test configue
+
+[33mcommit 2d0e48839e142ab42b448a85e7b5c3d2d880ac3e[m
+Author: yassine <yassedme17@gmail.com>
+Date:   Wed Feb 18 12:06:03 2026 +0000
+
+    working_on_linker
+
+[33mcommit f9df1bf05a00dd2b774db7732f6c21f151f8c022[m
+Merge: 51b95cb 9dc3ff5
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 11:31:07 2026 +0000
+
+    I finish ParseConfigue File
+
+[33mcommit 51b95cb89b3f0fbfb9ec6bb3c32e97b813de46f7[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 11:07:23 2026 +0000
+
+    Finish Configue file
+
+[33mcommit c72b103d03e2f29e49a03f74a1b919e3b61f639a[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Wed Feb 18 11:03:24 2026 +0000
+
+    Finish Configue file
+
+[33mcommit a6dd7595086b299ea6835da08dd4cfeb1e039ef3[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Tue Feb 17 19:41:14 2026 +0000
+
+    build function reset and close some FD
+
+[33mcommit 814db22429f55acf3903205567e0cba58a760803[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Feb 17 19:26:49 2026 +0000
+
+    change
+
+[33mcommit e73d6242c89cbde319bc9408cd5d8bf3e62d53a1[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Feb 17 18:15:22 2026 +0000
+
+    testing mode
+
+[33mcommit 9f9c3354d39286994dbbd405d42c4c9b18a76a80[m
+Merge: 434991e ceee214
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Feb 17 17:44:25 2026 +0000
+
+    Merge branch 'main' into Server , (the part of
+    respond)
+
+[33mcommit ceee214c426ec9aeb7c4f1c35928a7090eb800be[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Tue Feb 17 17:43:11 2026 +0000
+
+    add helper string functions
+
+[33mcommit d1f02ecb4fb798446fe40880172b5f40ea015bec[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Tue Feb 17 17:41:16 2026 +0000
+
+    i merge my part in main branch
+
+[33mcommit 434991eae4b0cd27cb37ed0ae759ae77d054fd14[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Tue Feb 17 17:38:07 2026 +0000
+
+    mini_makefile added and miniserver
+
+[33mcommit e950b66840701c70d6c767e2bb33abea5668e0b9[m
+Merge: 048f54d 3b58f21
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Tue Feb 17 17:23:46 2026 +0000
+
+    Merge branch 'main' into Respond
+
+[33mcommit 048f54d0d72454b416a61b239dfa1fdd25ee3eb1[m
+Author: Achraf Hamdaoui <achamdao@e3r7p2.1337.ma>
+Date:   Tue Feb 17 17:20:26 2026 +0000
+
+    i push my part in the repositry of my team
+
+[33mcommit 9dc3ff5628fad117c577117d6346d5edcb7d84bf[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Mon Feb 16 16:36:32 2026 +0000
+
+    Delete .DS_Store
+
+[33mcommit f3168511e45fa86b2b939319ff28e07b57776e65[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Mon Feb 16 16:35:41 2026 +0000
+
+    Clean Files Just remove file I dont want
+
+[33mcommit 71c34251876e4ea0c32f87107407eb01129e3a28[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Mon Feb 16 15:20:01 2026 +0000
+
+    localy
+
+[33mcommit 0004dd238625f61edd311602732b9e7b8c68f9d1[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Mon Feb 16 12:13:28 2026 +0000
+
+    finish store Header Reaquest
+
+[33mcommit 3448f0badcd6e612b5749a59e4071c9592e25a9e[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sun Feb 15 21:38:05 2026 +0000
+
+    test
+
+[33mcommit c6424508fc892cfca847d49460b3f67e18391cae[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sun Feb 15 20:50:19 2026 +0000
+
+    parseHeader
+
+[33mcommit 572005f061b4a3c5fbb4722879a5ce7e4868f23d[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sun Feb 15 18:17:42 2026 +0000
+
+    Build more function in Header.cpp
+
+[33mcommit 069704a979d03507b4e84cae94060a4388ab3907[m
+Merge: 2c4a6b3 3b58f21
+Author: Moussaab Jaouchi <>
+Date:   Sun Feb 15 15:51:03 2026 +0000
+
+    Merge branch 'main' into Request
+
+[33mcommit 2c4a6b309ea0467bb18a1587dcb7e1a08c24ab37[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Sun Feb 15 15:23:02 2026 +0000
+
+    test
+
+[33mcommit 3b58f21069e8f806666310b8c147f55a0de35c65[m
+Author: achamdao <hamdaouia770@gmail.com>
+Date:   Sun Feb 15 15:22:45 2026 +0000
+
+    helperString/achamdao
+
+[33mcommit 2087ca0e5b5973db8d1508edfa60eb61da587611[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Feb 14 10:17:48 2026 +0000
+
+     working on linker and timeout
+
+[33mcommit e87e27c09118c9516cb53cdbf0f64b191eb96359[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 12 21:49:22 2026 +0000
+
+    finish configue
+
+[33mcommit 6dff0e21610c4d691461d5d9970c4ae7c12051f3[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 12 15:45:18 2026 +0000
+
+    Update in ParseConfigFile
+
+[33mcommit 415f335f064eeee2b34ad3c5f2819490c15500e9[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 12 12:36:12 2026 +0000
+
+    ParseLocationConfig.cpp
+
+[33mcommit 078370b0dd075a634db294d179c58e619428f325[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Feb 12 11:11:57 2026 +0000
+
+    add listen.cpp
+
+[33mcommit bc368dc99e3faa2ac7da2b3ce6d873bc7cc4fbb9[m
+Author: Moussaab Jaouchi <>
+Date:   Wed Feb 11 17:20:27 2026 +0100
+
+    build block server
+
+[33mcommit 58246c17496687f0adf11c7b874100dd06c55e32[m
+Author: Moussaab Jaouchi <>
+Date:   Mon Feb 9 17:38:44 2026 +0100
+
+    s
+
+[33mcommit 6a98a0150c762efe98946943516bc1f741835e6e[m
+Author: Moussaab Jaouchi <>
+Date:   Mon Feb 9 15:49:02 2026 +0100
+
+    finish Lexer
+
+[33mcommit 4c33367f7d198023867ac76db793c3092caaddb3[m
+Merge: aab0ad7 e5f7ead
+Author: Yassine Adib <yadib@e1r5p1.1337.ma>
+Date:   Mon Feb 9 12:56:15 2026 +0100
+
+    merge_server_with_respond
+
+[33mcommit e5f7ead0a17bca5eab588428a740c0f3aca14eeb[m
+Author: Yassine Adib <yadib@e1r5p1.1337.ma>
+Date:   Mon Feb 9 12:53:22 2026 +0100
+
+    add-docs
+
+[33mcommit 4f4c906a4e2f41e22c7af39453ce3a1ca02d5c2e[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Mon Feb 9 10:57:22 2026 +0000
+
+    push-things
+
+[33mcommit aab0ad7984931c414c810720f3a8d06803d75f80[m
+Author: Moussaab Jaouchi <>
+Date:   Mon Feb 9 08:31:53 2026 +0100
+
+    add folder Utils and work about LocationConfig
+
+[33mcommit 80aa4aea574012eabec2ef3fa28b17c8f17ae25e[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 18 11:34:35 2026 +0000
+
+    push some file of linker and client
+
+[33mcommit 7292151d57df74ef66f28a8b0a19d0e85b351e30[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sat Jan 17 16:10:03 2026 +0000
+
+    working on the linker and new things
+
+[33mcommit a1bd6ab67ad5b16fb07c482593125735cabfec2d[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Thu Jan 15 17:47:46 2026 +0000
+
+    working_on_epoll_handler
+
+[33mcommit 2af1bb6d0d492fd69b55f2aac62c922351ebc32f[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 18:24:35 2026 +0100
+
+    s
+
+[33mcommit ecddf4be1246c62fd859d4a9b46765cd720229c0[m
+Merge: bdef2a7 bdcbc01
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 17:47:55 2026 +0100
+
+    Finish merge and resolve conflicts
+
+[33mcommit bdef2a7701676a4c8cf5f369bcfc5b3bfacc3897[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 17:41:24 2026 +0100
+
+    Desing Error Flow in URIParser
+
+[33mcommit 1f4cbac9f175533e9a1daa29571b12f4bf971981[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Thu Jan 15 12:42:31 2026 +0000
+
+    working_on_epoll_handler
+
+[33mcommit a171004bd30e69f51dec57bd9e5793c2929a2c13[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 13:13:58 2026 +0100
+
+    make fclean
+
+[33mcommit bdcbc0189cc2c7df8182fdf39af190b2d4113b5d[m
+Author: mossaab-jaouchi <mosabejaouchi3@gmail.com>
+Date:   Thu Jan 15 13:11:01 2026 +0100
+
+    Delete .DS_Store
+
+[33mcommit b1ff3517fb5ff029b9b9ad906cb3944af86962aa[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 13:10:29 2026 +0100
+
+    rm a.out and file
+
+[33mcommit e269c03d21d75788ba0501bf4be3b2a61db48d9a[m
+Author: Moussaab Jaouchi <>
+Date:   Thu Jan 15 13:08:25 2026 +0100
+
+    this is a folder of Parsing Request Just start Line
+
+[33mcommit 84321d059e55348a857d4034159c45c32c8343c4[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Wed Jan 14 12:12:33 2026 +0000
+
+    create server socket manager done 90%
+
+[33mcommit f4726e57a289b8c2260cf3a69c05117357f20efd[m
+Merge: 84188cd fd49e83
+Author: Achraf Hamdaoui <achamdao@e1r5p8.1337.ma>
+Date:   Tue Jan 13 18:19:01 2026 +0100
+
+    Merge branch 'main' into Respond
+    merge main and respon
+
+[33mcommit fd49e83ac252e4f051a04fc8648aa793815d3ad4[m
+Merge: 32141f6 269aedb
+Author: Achraf Hamdaoui <achamdao@e1r5p8.1337.ma>
+Date:   Tue Jan 13 18:18:37 2026 +0100
+
+    Merge branch 'Server'
+    first merge
+
+[33mcommit 269aedb595aa23752d7be47e3b19acbac9d47aaf[m
+Author: Yassine Adib <yadib@e1r4p9.1337.ma>
+Date:   Tue Jan 13 18:06:40 2026 +0100
+
+    workin_on_sockets_server
+
+[33mcommit 32141f6b3ee7d082c4372b651ff2247147d44ce5[m
+Merge: 35bf997 994de64
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 18:26:06 2026 +0100
+
+    Merge pull request #6 from YadibDev/Server
+    
+    Merge pull request #5 from YadibDev/main
+
+[33mcommit 994de644b43e92d64e553ba9bc0e2aba6701fffd[m
+Merge: 3b9a4dd 35bf997
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 18:25:50 2026 +0100
+
+    Merge pull request #5 from YadibDev/main
+    
+    request
+
+[33mcommit 84188cd05958622b5d9cac4653c4294b0f21a99a[m
+Merge: 3b9a4dd 35bf997
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 18:24:53 2026 +0100
+
+    Merge pull request #3 from YadibDev/main
+    
+    reqeust to take new things
+
+[33mcommit 35bf99714cbff313ef490245f9763dabaa541108[m
+Merge: b070609 d14cf7c
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 18:23:54 2026 +0100
+
+    Merge pull request #2 from YadibDev/Request
+    
+    Merge pull request #1 from YadibDev/main
+
+[33mcommit d14cf7cce2e0ade73a31507daa49444e8de5df89[m
+Merge: 3b9a4dd b070609
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 18:23:32 2026 +0100
+
+    Merge pull request #1 from YadibDev/main
+    
+     a simple structer of the project by yadib
+
+[33mcommit b0706098ccb6fe87887074a32bfe4ad3dba1b47f[m
+Author: Yassine Adib <yadib@e1r4p7.1337.ma>
+Date:   Sun Jan 11 18:19:25 2026 +0100
+
+     a simple structer of the project by yadib
+
+[33mcommit 3b9a4dd1405240e86701ee09785ec93d0eeec014[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 15:59:38 2026 +0100
+
+    Update README.md
+
+[33mcommit 6629ec5e577a2e22b30269dcf170aba52d9810bc[m
+Author: yassine adib <143830649+YadibDev@users.noreply.github.com>
+Date:   Sun Jan 11 15:59:05 2026 +0100
+
+    Initial commit
