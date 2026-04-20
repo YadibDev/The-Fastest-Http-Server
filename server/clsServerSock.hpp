@@ -26,9 +26,8 @@ private:
     size_t _totalInterfaces;
     set<int> _Sockets;
     size_t _totalSocks;
-    HttpError _statusError;
     struct sockaddr_in temp;
-
+    bool closeAtEnd;
     int _buildSingleSocket(sockaddr_in &temp);
     // void _initializeSockaffr(unsigned short, unsigned int);
     bool _isServerSocket(int);
@@ -37,6 +36,7 @@ public:
     clsServerSock();
     ~clsServerSock();
 
+    void disableCloseAtEnd();
     bool isServerIp(unsigned int ip, unsigned int port);
     void buildSockets(std::vector<sockaddr_in> listens);
     void removeSocket(int);

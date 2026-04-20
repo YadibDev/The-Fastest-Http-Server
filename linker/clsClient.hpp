@@ -36,18 +36,16 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    // request object it will be here
-    clsServerConfig &block;
-    const int _socket;
-    const size_t _FirstConnection; // first established connection in ms mile seconds
-    const sockaddr_in _addr;       // ip and port of the client
+    clsServerConfig *block;
+    int _socket;
+    size_t _FirstConnection; // first established connection in ms mile seconds
+    sockaddr_in _addr;       // ip and port of the client
 
     stPollRequest _dataForReq;
     PollOfClient _theData;
     bool _resetReq;
 
-
-    RequestHandler RequestXconfig;
+    RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
 
@@ -64,8 +62,9 @@ private:
     ssize_t bytesToSend;
 
 public:
-    clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
-    clsClient(const clsClient &other);
+    clsClient();
+    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
+    // freeRessources();
 
     ~clsClient();
 

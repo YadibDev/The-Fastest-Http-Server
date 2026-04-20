@@ -2,44 +2,55 @@
 
 #define CHUNK_LIMIT 10000
 
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : block(block),
-                                                                                _socket(fd),                                             // must be not const
-                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()), // must be not const
-                                                                                _addr(addr),
-                                                                                _dataForReq(),
-                                                                                RequestXconfig(_dataForReq),
-                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
-                                                                                _ResponderProecss(RequestXconfig)
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig &block) 
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.read_body_ptr = &_theData.read_body;
-    _fdRespond = 0;
+    
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : block(other.block),
-                                               _socket(other._socket),
-                                               _FirstConnection(other._FirstConnection),
-                                               _addr(other._addr),
-                                               _dataForReq(),
-                                               RequestXconfig(_dataForReq),
-                                               _Requester(_dataForReq, &block, &RequestXconfig),
-                                               _ResponderProecss(RequestXconfig)
-
+clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, NULL, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    _dataForReq.io_chunk = _theData.io_chunk;
+    _dataForReq.known_headers = _theData.known_headers;
+    _dataForReq.unknown_headers = _theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.read_body_ptr = &_theData.read_body;
+    _dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
+    _state = BEGIN;
+}
+
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block) 
+{
+    _theData.Reset();
+    _fdRespond = 0;
+    _FirstConnection = HelperFunctions::getCurrentTimeInMs();
+    _socket = fd;
+    _addr = addr,
+    this->block = block;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 }
+
+// clsClient::clsClient(const clsClient &other) : block(other.block),
+//                                                _socket(other._socket),
+//                                                _FirstConnection(other._FirstConnection),
+//                                                _addr(other._addr),
+//                                                _dataForReq(),
+//                                                RequestXconfig(_dataForReq),
+//                                                _Requester(_dataForReq, &block, &RequestXconfig),
+//                                                _ResponderProecss(RequestXconfig)
+
+// {
+//     this->_dataForReq.io_chunk = this->_theData.io_chunk;
+//     this->_dataForReq.known_headers = this->_theData.known_headers;
+//     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+//     _dataForReq.request_metadata = _theData.request_metadata;
+//     this->_dataForReq.read_body_ptr = &_theData.read_body;
+//     _fdRespond = 0;
+//     _LastConnection = _FirstConnection;
+//     _state = BEGIN;
+// }
 
 const clinetState &clsClient::GetState() const
 {

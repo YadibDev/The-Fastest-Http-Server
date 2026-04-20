@@ -131,6 +131,13 @@ void function(int signal)
 int main()
 {
     clsFlow flow;
-
-    flow._createBlocksServers();
+    try
+    {
+        flow._createBlocksServers();
+        flow._createServers();
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }

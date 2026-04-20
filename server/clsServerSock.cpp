@@ -11,9 +11,15 @@ clsServerSock::clsServerSock() : _totalInterfaces(0), _totalSocks(0)
 {
 }
 
+void clsServerSock::disableCloseAtEnd()
+{
+    closeAtEnd = false;
+}
 // free all data and closing all the fds of socket
 clsServerSock::~clsServerSock()
 {
+    if (closeAtEnd == false)
+        return;
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
@@ -22,10 +28,6 @@ clsServerSock::~clsServerSock()
         close(*it);
         it++;
     }
-
-    std::cout << "-------------------------\n";
-    std::cout << "--- clsServerSock closed ---\n";
-    std::cout << "-------------------------" << std::endl;
 }
 
 void clsServerSock::removeSocket(int fd)
@@ -122,7 +124,6 @@ int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        _statusError.setStatus(NOT_SOCKET_SERVER);
         std::cout << "Not server socket \n";
         return 0;
     }
@@ -133,7 +134,6 @@ int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
-        _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }
 
