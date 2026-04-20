@@ -48,6 +48,7 @@ class clsErrorPage
         const std::string &GetBody();
         const std::string &GetFileFromDisk();
         void ResponseError(int Status, const std::string &FilePageError);
+        void Reset();
         ~clsErrorPage();
 };
 #endif

@@ -14,6 +14,7 @@
 
  clsErrorPage::clsErrorPage()
 {
+    // add define header for size max
     _Status = 0;
     _BodySize = 0;
     _Type.resize(500);
@@ -39,7 +40,6 @@ void clsErrorPage::_HeadersErrorResponse()
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
     _Server();
-
     _Date();
     if (_Status == 405)
        _Allow();
@@ -100,7 +100,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         _StoredInFileOrStr();
         if (_Erno)
         {
-            _Type = ".html";
+            _Type = HelperFunctions::GetType(".html"); 
             _FileFromDisk = "";
             _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
             _Body = HelperFunctions::GetBody(PrevStatus);
@@ -114,7 +114,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
             return ;
         }
     }
-    _Type = ".html";
+    _Type = HelperFunctions::GetType(".html");
     _FileFromDisk = "";
     _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(Status));
     _Body = HelperFunctions::GetBody(Status);
@@ -157,7 +157,7 @@ void clsErrorPage::_Date()
 
 void clsErrorPage::_Server()
 {
-    _HeaderFeild += "Server: Name Server\r\n";
+    _HeaderFeild += "Server: HTTP1.1\r\n";
 }
 void clsErrorPage::_RetryAfter()
 {
@@ -200,6 +200,17 @@ clsErrorPage::~clsErrorPage()
     _HeaderFeild = "";
     _BodySize = 0;
     _Status = 0;
+}
+
+void clsErrorPage::Reset()
+{
+    _Type = "";
+    _HeaderFeild = "";
+    _BodySize = 0;
+    _Status = 0;
+    _Erno = false;
+    _FileFromDisk = "";
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
 int clsErrorPage::GetBodySize() const
