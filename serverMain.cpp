@@ -32,97 +32,105 @@ void function(int signal)
     exit(1);
 }
 
+// int main()
+// {
+
+//     clsEpollHandler epoll;
+//     epoll_event ClientBuffer[100];
+
+//     clsServerSock server;
+//     clsLinker ClientsLinker;
+
+//     server.buildSockets(Block.getListens());
+//     epoll.addServerSockets(server);
+
+//     string respond = "";
+
+//     int n = 0;
+//     while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
+//     {
+//         for (int i = 0; i < n; i++)
+//         {
+
+//             int fd = ClientBuffer[i].data.fd;
+//             sockaddr_in addr;
+//             memset(&addr, 0, sizeof(addr));
+//             int newClient;
+//             if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
+//             {
+//                 if (ClientBuffer[i].events & EPOLLRDHUP)
+//                     std::cout << "EPOLLRDHUP" << std::endl;
+//                 else if (ClientBuffer[i].events & EPOLLERR)
+//                     std::cout << "EPOLLERR" << std::endl;
+//                 else
+//                     std::cout << "EPOLLHUP" << std::endl;
+//                 std::cout << "Fd " << fd << std::endl;
+//                 ClientsLinker.removeClient(fd);
+//                 std::cout << "Removed removed\n";
+//                 continue;
+//             }
+//             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
+//             {
+//                 newClient = server.tryAcceptNewClient(fd, &addr);
+
+//                 if (newClient == -1)
+//                 {
+//                     if (newClient == -1)
+//                         std::cerr << "Accept Fail" << std::endl;
+//                     continue ;
+//                 }
+//                 else if (newClient > 0)
+//                 {
+//                     // flow of accept new client
+//                     std::cout << "accepted\n";
+//                     std::cout << newClient << std::endl;
+//                     ClientsLinker.insertClient(newClient, addr, Block);
+//                     epoll.addClient(newClient, EPOLLIN);
+//                 }
+//                 else
+//                 {
+//                     newClient = fd;
+
+//                     clsClient &client = ClientsLinker.GetClientAt(newClient);
+
+//                     client.ProcessRequest();
+//                     if (client.GetState() == CONNECTION_CLOSED)
+//                     {
+//                         std::cout << "Removed\n";
+//                         ClientsLinker.removeClient(newClient);
+//                         continue ;
+//                     }
+//                     if (client.GetState() == START_RESPOND)
+//                     {
+//                         epoll.changeAbility(newClient, EPOLLOUT);
+//                     }
+//                 }
+//             }
+//             else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
+//             {
+//                 newClient = fd;
+
+//                 clsClient &client = ClientsLinker.GetClientAt(newClient);
+
+//                 client.ProcessRespond();
+//                 if (client.GetState() == BEGIN)
+//                     epoll.changeAbility(newClient, EPOLLIN);
+//                 else if (client.GetState() == CONNECTION_CLOSED)
+//                 {
+//                     std::cout << "Removed\n";
+//                     ClientsLinker.removeClient(newClient);
+//                     std::cout << newClient << std::endl;
+//                     continue;
+//                 }
+//             }
+//         }
+//     }
+// }
+#include "linker/clsFlow.hpp"
+
 int main()
 {
-    
-    clsEpollHandler epoll;
-    epoll_event ClientBuffer[100];
+    clsFlow flow;
 
-    clsServerSock server;
-    clsLinker ClientsLinker;
-
-    server.buildSockets(Block.getListens());
-    epoll.addServerSockets(server);
-
-    string respond = "";
-
-    int n = 0;
-    while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
-    {
-        for (int i = 0; i < n; i++)
-        {
-
-            int fd = ClientBuffer[i].data.fd;
-            sockaddr_in addr;
-            memset(&addr, 0, sizeof(addr));
-            int newClient;
-            if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
-            {
-                if (ClientBuffer[i].events & EPOLLRDHUP)
-                    std::cout << "EPOLLRDHUP" << std::endl;
-                else if (ClientBuffer[i].events & EPOLLERR)
-                    std::cout << "EPOLLERR" << std::endl;
-                else
-                    std::cout << "EPOLLHUP" << std::endl;
-                std::cout << "Fd " << fd << std::endl;
-                ClientsLinker.removeClient(fd);
-                std::cout << "Removed removed\n";
-                continue;
-            }
-            else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
-            {
-                newClient = server.tryAcceptNewClient(fd, &addr);
-
-                if (newClient == -1)
-                {
-                    if (newClient == -1)
-                        std::cerr << "Accept Fail" << std::endl;
-                    continue ;
-                }
-                else if (newClient > 0)
-                {
-                    // flow of accept new client
-                    std::cout << "accepted\n";
-                    std::cout << newClient << std::endl;
-                    ClientsLinker.insertClient(newClient, addr, Block);
-                    epoll.addClient(newClient, EPOLLIN);
-                }
-                else
-                {
-                    newClient = fd;
-
-                    clsClient &client = ClientsLinker.GetClientAt(newClient);
-
-                    client.ProcessRequest();
-                    if (client.GetState() == CONNECTION_CLOSED)
-                    {
-                        std::cout << "Removed\n";
-                        ClientsLinker.removeClient(newClient);
-                        continue ;
-                    }
-                    if (client.GetState() == START_RESPOND)
-                    {
-                        epoll.changeAbility(newClient, EPOLLOUT);
-                    }
-                }
-            }
-            else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
-            {
-                newClient = fd;
-
-                clsClient &client = ClientsLinker.GetClientAt(newClient);
-
-                client.ProcessRespond();
-                if (client.GetState() == BEGIN)
-                    epoll.changeAbility(newClient, EPOLLIN);
-                else if (client.GetState() == CONNECTION_CLOSED)
-                {
-                    std::cout << "Removed\n";
-                    ClientsLinker.removeClient(newClient);
-                    std::cout << newClient << std::endl;
-                    continue;
-                }
-            }
-        }
-    }
+    flow._createBlocksServers();
 }

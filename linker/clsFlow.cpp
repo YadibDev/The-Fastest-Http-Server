@@ -19,7 +19,7 @@ void clsFlow::_createBlocksServers()
     std::string configeData;
     configeData.resize(10000);
     int sizeRead = read(fd, &configeData[0], 9999);
-    if (sizeRead == 0 read(fd, &configeData[9999], 1))
+    if (sizeRead == 0 || read(fd, &configeData[9999], 1) > 0)
         throw std::runtime_error("config file too large or empty file");
     configeData.resize(sizeRead);
 
@@ -35,23 +35,41 @@ void clsFlow::_createBlocksServers()
     clsParseConfigueFile ConfigFile(Data);
 
     ConfigFile.ParseConfigue();
-    if (!ConfigFile.getServers().size())
+    if (ConfigFile.getServers().size() == 0)
     {
         std::cout << ConfigFile.getError().getMsgError() << std::endl;
         std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
         throw std::runtime_error("0 block server");
     }
 
-    allBlocks = &ConfigFile.getServers();
+    _allBlocks = &ConfigFile.getServers();
+
+    // debug
+    std::cout << "servers blocks create by success\n";
 }
 
 void clsFlow::_createServers()
 {
     totalServers = 0;
-    std::vector<clsServerConfig> &servers = _allBlocks->getServers();
 
-    for (int i = 0; i < servers.size(); i++)
+    for (size_t i = 0; i < _allBlocks->size(); i++)
     {
-        _allServers
+        clsServerSock serv;
+        try
+        {
+            serv.buildSockets(_allBlocks->at(i).getListens());
+            _allServers.push_back(serv);
+            totalServers++;
+        }
+        catch (std::exception &e)
+        {
+            std::cout << "can't build server Number " << i + 1 << std::endl;
+            std::cout << e.what() << std::endl;
+        }
     }
+    if (totalServers == 0)
+        throw std::runtime_error("ther is no server or there is a problem in all the servers");
+    
+    // debug
+    std::cout << "total servers created [" << totalServers << "]" << std::endl; 
 }
