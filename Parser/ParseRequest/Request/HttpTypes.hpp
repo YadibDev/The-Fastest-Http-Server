@@ -23,8 +23,7 @@ public:
 	enum State { STATE_KEY, STATE_VALUE, STATE_CR, STATE_LF, STATE_DECISION, STATE_COMPLETE, STATE_ERROR };
 	enum eKnownHeader {
 		H_HOST, H_CONTENT_LENGTH, H_TRANSFER_ENCODING, H_CONTENT_TYPE,
-		H_CONNECTION, H_EXPECT, H_AUTHORIZATION, H_COOKIE,
-		H_ACCEPT_ENCODING, H_COUNT, H_UNKNOWN
+		H_CONNECTION, H_COOKIE, H_COUNT, H_UNKNOWN
 	};
 
 	static const char **methods() {
@@ -35,7 +34,7 @@ public:
 	static const char **headers() {
 		static const char *arr[H_COUNT] = {
 			"Host", "Content-Length", "Transfer-Encoding", "Content-Type",
-			"Connection", "Expect", "Authorization", "Cookie", "Accept-Encoding"
+			"Connection", "Cookie"
 		};
 		return arr;
 	}

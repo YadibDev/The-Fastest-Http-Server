@@ -231,7 +231,7 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 			return (error.setStatus(405, "Method Not Allowed"), handler->setError(error), false);
 
 		handler->ExtractCgiMetadata(handler->getPhysicalPath(), bestLocation->getCgiPass());
-		if (!checkExcute(handler->getScriptName()))
+		if (handler->getScriptName().len && !checkExcute(handler->getScriptName()))
 			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
 
 		if (handler->getPathCgi() && !handler->getPathCgi()->empty())
