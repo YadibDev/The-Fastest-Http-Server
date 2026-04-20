@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 19:02:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/20 14:32:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void clsErrorPage::_ConnectionClose()
 void clsErrorPage::_StatusLine()
 {
     _HeaderFeild += "HTTP/1.1 ";
-    HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
+    HelperFunctions::NumToStr(_Status, _HeaderFeild);
     _HeaderFeild +=  " ";
     _HeaderFeild += HelperFunctions::GetStatusMessage(_Status) ;
     _HeaderFeild += "\r\n";

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/20 10:21:55 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/20 14:32:11 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _FileFromDisk.clear();
     _HeaderFeild.clear();
     _Type.clear();
-    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY,sizeof(_Mod));
 }
 
 void clsResponse::MakeResponse()
