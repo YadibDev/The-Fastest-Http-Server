@@ -8,6 +8,7 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stack>
 #include "../server/clsEpollHandler.hpp"
 #include "../server/clsServerSock.hpp"
 #include "clsLinker.hpp"
@@ -22,17 +23,20 @@
 
 class clsFlow
 {
-    public:
+public:
     epoll_event _clientsEvents[EVENTS_MAX];
     clsEpollHandler _epoll;
     std::vector<clsServerConfig> *_allBlocks;
     std::vector<clsServerSock> _allServers;
+    std::map<short, short> clientIdByFd;
     clsClient *_clientsArr;
+    std::stack<short> _clientsAvailable;
     size_t _totalServers;
 
     void _initializeStatics();
     void _createBlocksServers();
     void _createServers();
     void _initializeDataBase();
-
+    short _getClient();
+    void _pushClient(short clientId);
 };

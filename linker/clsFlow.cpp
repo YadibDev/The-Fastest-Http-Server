@@ -71,3 +71,24 @@ void clsFlow::_createServers()
     std::cout << "total servers created [" << totalServers << "]" << std::endl; 
 }
 
+
+void clsFlow::_initializeDataBase()
+{
+    _clientsArr = new clsClient[EVENTS_MAX];
+    for (int i = 0; i < EVENTS_MAX; i++)
+        _clientsAvailable.push(i);
+}
+
+short clsFlow::_getClient()
+{
+    if (_clientsAvailable.size() == 0)
+        return -1;
+    short id = _clientsAvailable.top();
+    _clientsAvailable.pop();
+    return id;
+}
+
+void clsFlow::_pushClient(short clientId)
+{
+    _clientsAvailable.push(clientId);
+}
