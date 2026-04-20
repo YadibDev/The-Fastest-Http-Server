@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/20 14:32:11 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/20 14:36:49 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,9 @@ void clsResponse::_ErrorRespnseHandling()
     else
         _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
-    _Body = _ErrorPage.GetBody();
-    _BodySize =  _ErrorPage.GetBodySize();
-    _HeaderFeild = _ErrorPage.GetHeaderField();
+    _BodyPointer = &_ErrorPage.GetBody();
+    _BodySizePointer =  &_ErrorPage.GetBodySize();
+    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
     _FileFromDisk = _ErrorPage.GetFileFromDisk();
 }
 
