@@ -6,20 +6,21 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 18:41:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 21:22:00 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 
+
 clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
 {
     _Status = 0;
     _BodySize = 0;
     _MaxSizeHeader = 4000;
-    _MaxSizeBody = 40000;
-    
+    _MaxSizeBody = 6000;
+
     _IsConnection = true;
     _SizeHeaders = 0;
     _Erno = false;

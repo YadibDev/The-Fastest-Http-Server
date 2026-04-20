@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 18:36:44 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/19 21:16:54 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,12 @@ char **clsCGI::_MakeEnv()
 {
     char **ENV = NULL;
 
-    for (it = Header.begin(); it != Header.end(); it++)
-    {
-        if (_WhiteBlakHeaders.count(it->first))
-            if (!_WhiteBlakHeaders[it->first])
-                continue;
-        Variables.push_back(_BuildVarEnv(it->first, _ConcatonateValue(it->second)));
-    }
-    ENV = new char*[Variables.size() + 1];
+    ENV = new char*[17 + 31 + 1];
     if (!ENV)
         return (NULL);
-    for (size_t i = 0; i < Variables.size(); i++)
-    {
-        ENV[i] = HelperFunctions::ft_strdup(Variables[i].c_str());
-        if (!ENV[i])
-        {
-            HelperFunctions::free_matrex(&ENV);
-            return (NULL);
-        }
-    }
-    ENV[Variables.size()] = NULL;
-        return ENV;
-    return 0;
+    
+    ENV[17 + 31 + 1] = NULL;
+    return ENV;
 }
 
 char **clsCGI::_StoredArgs()
