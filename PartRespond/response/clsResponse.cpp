@@ -234,36 +234,6 @@ void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool la
         NewStr += "0\r\n\r\n";
 }
 
-<<<<<<< HEAD
-const std::string clsResponse::GetTypeData(const std::string &Type)
-{
-    if (_TypeContent.count(Type))
-            return  _TypeContent[Type];
-    return "application/octet-stream";
-}
-
-void GetType(char *Type)
-{
-    
-}
-
-void clsResponse::StoredDefaultType()
-{
-    if (_TypeContent.empty())
-    {
-        _TypeContent[".html"] = "text/html";
-        _TypeContent[".htm"]  = "text/html";
-        _TypeContent[".css"]  = "text/css";
-        _TypeContent[".js"]   = "text/javascript";
-        _TypeContent[".jpg"]  = "image/jpeg";
-        _TypeContent[".jpeg"] = "image/jpeg";
-        _TypeContent[".png"]  = "image/png";
-        _TypeContent[".txt"]  = "text/plain";
-        _TypeContent[".mp4"]  = "video/mp4";
-    }
- }
-=======
->>>>>>> Respond
  const std::string &clsResponse::GetBody() const
 {
     return 0;
