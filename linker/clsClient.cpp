@@ -15,7 +15,6 @@ clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : 
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
     this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
@@ -36,7 +35,6 @@ clsClient::clsClient(const clsClient &other) : block(other.block),
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.sizeUnknownHeaders = 25;
     this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
@@ -110,8 +108,8 @@ int clsClient::_ReadDataForReq()
         size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
-    }
-
+    }   
+    std::cout << _theData.request_metadata << endl;
     if (size == 0)
         _state = CONNECTION_CLOSED;
 
@@ -123,9 +121,7 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
-        _Requester._state = RequestParser::STATE_REQUEST_LINE;
-        _Requester._offset = 0;
-        // _Requester._header = Header();
+        _Requester.init();
         _state = REQUEST_MODE;
         _theData.Reset();
     }
@@ -141,9 +137,11 @@ void clsClient::ProcessRequest()
         _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
 
     if (_Requester.isError())
-        std::cout << "Error while reading " << std::endl;
-
-    if (_Requester.isComplete()) // add get error here
+    {
+        this->_state = START_RESPOND;
+        return ;
+    }
+    else if (_Requester.isComplete())
     {
         this->_state = START_RESPOND;
 

@@ -403,14 +403,13 @@ long HelperFunctions::getCurrentTimeInS()
 
 size_t	HelperFunctions::ft_strlen(const char *s)
 {
-	size_t	i;
-
-	i = 0;
+	size_t	i = 0;
+ 
 	if (!s)
-		return (0);
+		return 0;
 	while (s[i])
 		i++;
-	return (i);
+	return i;
 }
 
 char	*HelperFunctions::ft_strdup(const char *src)
@@ -595,7 +594,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".html"] = "text/html";
 		_TypeContent[".htm"]  = "text/html";
 		_TypeContent[".css"]  = "text/css";
-		_TypeContent[".js"]   = "text/javascript";
+		_TypeContent[".js"	]   = "text/javascript";
 		_TypeContent[".jpg"]  = "image/jpeg";
 		_TypeContent[".jpeg"] = "image/jpeg";
 		_TypeContent[".png"]  = "image/png";

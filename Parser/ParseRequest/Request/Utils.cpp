@@ -26,16 +26,17 @@ stPollRequest makeRequest(PollOfClient &client) {
     req.request_metadata = client.request_metadata;
     req.known_headers = client.known_headers;
     req.unknown_headers = client.unknown_headers;
-    req.sizeUnknownHeaders = 25;
     req.io_chunk = client.io_chunk;
 
-    for (int i = 0; i < HttpTables::H_COUNT; i++) {
+    for (int i = 0; i < HttpTables::H_COUNT; i++)
+    {
         req.known_headers[i] = s_header_slot();
         req.known_headers[i].key.Data = NULL;
         req.known_headers[i].key.len = 0;
         req.known_headers[i].next = INVALID_INDEX;
     }
-    for (int i = 0; i < (int)req.sizeUnknownHeaders; i++) {
+    for (int i = 0; i < SIZE_UNKNOW_HEADER; i++)
+    {
         req.unknown_headers[i] = s_header_slot();
         req.unknown_headers[i].key.Data = NULL;
         req.unknown_headers[i].key.len = 0;

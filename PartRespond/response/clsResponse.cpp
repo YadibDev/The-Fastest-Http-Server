@@ -99,8 +99,8 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
-
-    if (ErrorPageConf->response)
+    
+    if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;

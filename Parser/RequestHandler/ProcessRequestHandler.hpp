@@ -6,6 +6,7 @@
 #include "RequestHandler.hpp"
 #include "../ParseRequest/Request/HttpTypes.hpp"
 #include "../../Utils/HelperFunctions.hpp"
+#include <sys/stat.h>
 
 #define INDEX_PATH_LEN 11
 

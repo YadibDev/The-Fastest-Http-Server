@@ -70,10 +70,11 @@ std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
 }
 
 
-bool checkPath(const std::string &physicalPath) {
+bool checkPath(const char *str)
+{
 	struct stat buffer;
 
-	return (stat(physicalPath.c_str(), &buffer) == 0 && (buffer.st_mode & S_IRUSR));
+	return (stat(str, &buffer) == 0 && (buffer.st_mode & S_IRUSR));
 }
 
 
@@ -110,7 +111,6 @@ bool	ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, cha
 		if (checkPath(destBuffer))
 			return true;
 	}
-
 	if (bestLocation->getAutoIndex()) {
 		memcpy(destBuffer, base.c_str(), baseLen);
 		destBuffer[baseLen] = '\0';
@@ -181,11 +181,32 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 
 	destBuffer[currentPos] = '\0';
 
-	if (checkPath(destBuffer))
-		return true;
 
-	return (error.setStatus(404, "Not Found"), false);
+
+	return true;
 }
+
+bool	checkExcute(s_view Path)
+{
+	char path[4096];
+	struct stat st;
+	if (Path.len < 4096)
+	{
+    	memcpy(path, Path.Data, Path.len);
+    	path[Path.len] = '\0';
+
+   		if (stat(path, &st) != 0)
+   		    return false;
+
+   		if (!S_ISREG(st.st_mode))
+   		    return false;
+
+   		return (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH));
+	}
+
+	return false;
+}
+
 
 bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods)
 {
@@ -198,6 +219,7 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 {
 	const clsLocation* bestLocation = findBestLocation(serverConfig->getLocationExact(), serverConfig->getLocationPrefix()
 									, StartLine.getRequestURI().getPath());
+
 	HttpError error;
 
 	if (bestLocation)
@@ -206,16 +228,22 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 			return (false);
 		handler->setAutoIndex(bestLocation->getAutoIndex());
 		if (!isMethodAllowed(StartLine.getMethod(), bestLocation->getAllowMethods()))
-			return (error.setStatus(405, "Method Not Allowed"), false);
+			return (error.setStatus(405, "Method Not Allowed"), handler->setError(error), false);
 
+		handler->ExtractCgiMetadata(handler->getPhysicalPath(), bestLocation->getCgiPass());
+		if (handler->getScriptName().len && !checkExcute(handler->getScriptName()))
+			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
+
+		if (handler->getPathCgi() && !handler->getPathCgi()->empty())
+			handler->computePathTranslated(serverConfig->getRoot());
+		if (!handler->getPathCgi() && !checkPath(handler->getPhysicalPath()))
+				return (error.setStatus(404, "Not Found"), false);
+	
 		handler->setQuery(StartLine.getRequestURI().getQuery());
 		handler->setVersion(StartLine.getVersion());
 		handler->setMethod(StartLine.getMethod());
 		handler->setErrorPages(bestLocation->getErrorPages());
 		handler->setDefaultErrorPage(bestLocation->getDefaultErrorPage());
-		handler->ExtractCgiMetadata(StartLine.getRequestURI().getPath(), bestLocation->getCgiPass());
-		if (handler->getPathCgi() && !handler->getPathCgi()->empty())
-			handler->computePathTranslated(serverConfig->getRoot());
 		handler->setReturn(bestLocation->getReturn());
 		handler->setUploadStore(&bestLocation->getUploadStore());
 		handler->setError(error);

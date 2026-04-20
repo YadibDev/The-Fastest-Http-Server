@@ -28,6 +28,7 @@ void    Header::init(uint16_t offset)
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
 	_state = HttpTables::STATE_KEY;
+	_error.setStatus(0, "");
 }
 
 void	Header::hashStep(char c)
@@ -121,9 +122,6 @@ bool	Header::CheckHostAbsUri(s_view &VHost)
 
 bool    Header::makeUnknownHeader()
 {
-	if (_indexUnknownHeaders >= _request.sizeUnknownHeaders)
-		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
-
 	_currentUnknownIndex = _indexUnknownHeaders;
 	_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
 	
@@ -190,7 +188,7 @@ bool    Header::storeValue()
 	{
 		_request.known_headers[_currentHeader].val.Data = (char *)&_request.request_metadata[_valueStart];
 		_request.known_headers[_currentHeader].val.len = valueLen;
-		if (HttpTables::H_HOST == _currentHeader) // is exist
+		if (_currentHeader == HttpTables::H_HOST)
 			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
 				return false;
 	}
@@ -205,6 +203,8 @@ bool    Header::storeValue()
 
 bool    Header::parseKey(uint16_t size)
 {
+	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
+		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
 	while (canRead(size) && _state == HttpTables::STATE_KEY)
 	{
 		char c = _request.request_metadata[_offset];
@@ -291,25 +291,23 @@ void    Header::Parse(uint16_t size)
 {
 	while (canRead(size))
 	{
-		uint16_t oldOffset = _offset;
-		uint8_t oldState = _state;
 		if (_state == HttpTables::STATE_KEY) parseKey(size);
 		else if (_state == HttpTables::STATE_VALUE) parseValue(size);
-		else if (_state == HttpTables::STATE_CR) parseCR(size);
+		else if (_state == HttpTables::STATE_CR) parseCR(size); // \r
 		else if (_state == HttpTables::STATE_LF)
 		{
-			parseLF(size);
+			parseLF(size); // \n
 			if (_state == HttpTables::STATE_DECISION && _emptyLinePending)
 				_state = HttpTables::STATE_COMPLETE;
 		}
 		else if (_state == HttpTables::STATE_DECISION) parseDecision(size);
 		else break;
-		if (_error.isError() || _state == HttpTables::STATE_COMPLETE) break;
-		if (_offset == oldOffset && _state == oldState) break;
+		if (_error.isError() || _state == HttpTables::STATE_COMPLETE)
+			break;
 	}
 }
 
 uint16_t    Header::getOffset() const { return _offset; }
-bool        Header::isError() const { return (_state == HttpTables::STATE_ERROR); }
+bool        Header::isError() const { return _error.isError(); }
 bool        Header::isComplete() const { return (_state == HttpTables::STATE_COMPLETE); }
 HttpError	Header::getError() const { return _error; }

@@ -1,13 +1,15 @@
 #include "RequestParser.hpp"
 
-RequestParser::RequestParser(stPollRequest &request, clsServerConfig *ServerConfig, RequestHandler *RequestHandler)
-	: _request(request),
+RequestParser::RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler)
+	: _request(request),  
 	  _offset(0),
 	  _requestLine(),
 	  _header(request),
 	  _body(request),
 	  _ServerConfig(ServerConfig),
-	  _RequestHandler(RequestHandler)
+	  _RequestHandler(RequestHandler),
+	  _state(STATE_REQUEST_LINE)
+	//   _body(request)
 {
 }
 
@@ -15,8 +17,9 @@ void RequestParser::init(uint16_t offset)
 {
 	_state = STATE_REQUEST_LINE;
 	_offset = offset;
-	_requestLine.reset(offset);
+	_requestLine.init(offset);
 	_header.init(offset);
+	_error.setStatus(0, "");
 }
 
 bool RequestParser::LProcessRequestHandler()
@@ -41,7 +44,8 @@ bool RequestParser::ParseRequestLine(uint16_t size)
 	}
 	if (_requestLine.isComplete())
 	{
-		LProcessRequestHandler();
+		if (!LProcessRequestHandler())
+			return false;
 		_state = STATE_HEADERS;
 		_header.init(_offset);
 	}
@@ -88,35 +92,34 @@ bool RequestParser::ParseBody(uint16_t size)
 	return true;
 }
 
-void RequestParser::Parse(uint16_t size)
+bool RequestParser::Parse(uint16_t size)
 {
+	if (size >= SIZE_BUFFER)
+		return (_error.setStatus(413, "Content Too Large"), false);
+
 	while (_offset <= size)
 	{
-		uint16_t oldOffset = _offset;
-		State oldState = _state;
-
 		if (_state == STATE_REQUEST_LINE)
 			ParseRequestLine(size);
 		else if (_state == STATE_HEADERS)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
-		{
 			ParseBody(size);
-		}
 		else
 			break;
 
 		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
 			_state = STATE_COMPLETE;
 
-		if (_state == STATE_COMPLETE || _error.isError())
-			break;
-		if (_offset == oldOffset && _state == oldState)
-			break;
+		if (_state == STATE_COMPLETE)
+			return true;
+		else if (_error.isError())
+			return false;
 	}
+	return true;
 }
 
-bool RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
-bool RequestParser::isError() const { return (_state == STATE_ERROR); }
-RequestLine RequestParser::getRequestLine() const { return _requestLine; }
-HttpError RequestParser::getError() const { return _error; }
+bool		RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
+bool		RequestParser::isError() const { return _error.isError(); }
+RequestLine	RequestParser::getRequestLine() const { return _requestLine; }
+HttpError	RequestParser::getError() const { return _error; }

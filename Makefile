@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra  -g --std=c++98
+CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
@@ -19,7 +19,7 @@ REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Reque
 				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp \
 				Parser/ParseRequest/Request/clsBody.cpp Parser/ParseRequest/Request/clsMultipart.cpp Parser/ParseRequest/Request/clsMultipart.cpp
 
-ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES)
+ALL_FILES +=  $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES) $(SERVER_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

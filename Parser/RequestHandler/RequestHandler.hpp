@@ -57,22 +57,21 @@ public:
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setError(const HttpError &error);
 
-	bool					ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
+	bool					ExtractCgiMetadata(const char *uri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 
-	char*					getPhysicalPath();
+	char*					getPhysicalPath() ;
 	const char*					getPhysicalPath() const;
 	bool					getAutoIndex() const;
-	s_view					getQuery() const;
-	s_view					getVersion() const;
+	const s_view&			getQuery() const;
+	const s_view&			getVersion() const;
+	const s_view&			getScriptName() const;
 	const s_view&			getPathInfo() const;
     const std::string&		getPathTranslated() const;
     const s_view&			getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
-	// modified achraf here
-	// HeaderTable				&getHeader() ;
-	const HeaderTable				&getHeader() const;
+	const HeaderTable		&getHeader() const;
 	const stErrorPagedata	*getErrorPage(short code) const;
 	const std::string*		getPathCgi() const;
 	const stReturnData&		getReturn() const;
