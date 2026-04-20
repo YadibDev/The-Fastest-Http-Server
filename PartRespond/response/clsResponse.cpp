@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 21:22:00 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/20 10:21:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,17 @@ void clsResponse::MakeResponse()
 {
     if (_Erno)
         return ;
-    if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
+    if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-
+        std::cout  << "------------> file input <--------------- "<<_FileFromDisk << std::endl;
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
+        std::cout  << "------------> type <--------------- "<<_Type << std::endl;
         _StoredInFileOrStr();
+        std::cout  << "------------> size <--------------- "<<_BodySize << std::endl;
+        std::cout  << "------------> body <--------------- "<<_Body << std::endl;
+        std::cout  << "------------> file output <--------------- "<<_FileFromDisk << std::endl;
+
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
@@ -94,20 +99,28 @@ void clsResponse::_InitialHeaders()
 
 void clsResponse::_ErrorRespnseHandling()
 {
+    _ErrorPage.Reset();
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
-
-    if (ErrorPageConf->response)
+    
+    std::cout << "-----status--------\n";
+        std::cout << _Status << std::endl;
+        std::cout << "-----status END--------\n";
+    if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;
+        std::cout << "-----status--------\n";
+        std::cout << _Status << std::endl;
+        std::cout << "-----status END--------\n";
         _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
     }
     else
         _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    _Body = _ErrorPage.GetBody();
+    _BodySize =  _ErrorPage.GetBodySize();
+    _HeaderFeild = _ErrorPage.GetHeaderField();
+    _FileFromDisk = _ErrorPage.GetFileFromDisk();
 }
 
 void clsResponse::_StatusLine()
@@ -179,7 +192,7 @@ void clsResponse::_StoredInFileOrStr()
         return ;
     }
     _BodySize = MetaData.st_size;
-    if (_BodySize > 40000)
+    if (_BodySize > _MaxSizeBody)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
@@ -191,7 +204,7 @@ void clsResponse::_StoredInFileOrStr()
         _Status = 500;
         return ;
     }
-    if (read(FD,&_Body[0],40000) == -1)
+    if (read(FD,&_Body[0],_MaxSizeBody) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -240,10 +253,13 @@ void clsResponse::Reset()
     _Status = 0;
     _BodySize = 0;
     _FileFromDisk = "";
-    _Body = "";
     _HeaderFeild = "";
-    _IsConnection = false;
-    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
+    _ModTransferData = false;
+    _Erno = false;
+    _SizeHeaders = 0;
+    _Type = "";
+    _IsConnection = true;
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
 bool clsResponse::GetIsConnection() const

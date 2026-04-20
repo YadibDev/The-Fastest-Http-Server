@@ -19,43 +19,49 @@ RequestHandler::RequestHandler(stPollRequest& request)
 RequestHandler::~RequestHandler() {}
 
 
-bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(const char *uri, const std::map<std::string, std::string> &cgi_pass)
 {
-    if (!uri.Data || uri.len == 0) return false;
+	if (!uri)
+		return false;
 
-    char* start = uri.Data;
-    char* end = uri.Data + uri.len;
-    char* current = start;
+	const char* start = uri;
+	const char* current = start;
 
-    while (current < end)
-    {
-        if (*current == '.')
-        {
-            char* extStart = current;
-            char* extEnd = extStart;
-            while (extEnd < end && *extEnd != '/')
-                extEnd++;
+	const char* end = &uri[HelperFunctions::ft_strlen(uri) - 1];
 
-            size_t extLen = extEnd - extStart;
-            std::string extStr(extStart, extLen);
+	while (*current)
+	{
+		if (*current == '.')
+		{
+			const char* extStart = current;
+			const char* extEnd = extStart;
+			size_t extLen = 0;
+			while (*extEnd && *extEnd != '/')
+			{
+				extEnd++;
+				extLen++;
+			}
 
-            std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
-            if (it != cgi_pass.end())
-            {
-                _pathCgi = &it->second;
+			std::string extStr(extStart, extLen);
 
-                _ScriptName.Data = start;
-                _ScriptName.len = (uint16_t)(extEnd - start);
+			std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
+			if (it != cgi_pass.end())
+			{
+				_pathCgi = &it->second;
 
-                _PathInfo.Data = extEnd;
-                _PathInfo.len = (uint16_t)(end - extEnd);
+				_ScriptName.Data = (char *)start;
+				_ScriptName.len = (uint16_t)(extEnd - start);
 
-                return true;
-            }
-        }
-        current++;
-    }
-    return false;
+				_PathInfo.Data = (char *)extEnd;
+				_PathInfo.len = (uint16_t)(end - extEnd) + 1;
+				if (!*extEnd)
+					_PathInfo.len = 0;
+				return true;
+			}
+		}
+		current++;
+	}
+	return false;
 }
 
 void	RequestHandler::computePathTranslated(const std::string& rootPath)
@@ -128,9 +134,9 @@ char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
 
-s_view RequestHandler::getQuery() const { return _query; }
+const s_view &RequestHandler::getQuery() const { return _query; }
 
-s_view RequestHandler::getVersion() const { return _version; }
+const s_view &RequestHandler::getVersion() const { return _version; }
 
 const s_view& RequestHandler::getPathInfo() const {
 	return _PathInfo;
@@ -147,8 +153,6 @@ const s_view& RequestHandler::getServerPort() const {
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
 
-// modified achraf here
-// HeaderTable    &RequestHandler::getHeader()
 const HeaderTable    &RequestHandler::getHeader() const
 {
 	return _Header;
@@ -159,6 +163,11 @@ const stErrorPagedata *RequestHandler::getErrorPage(short code) const {
 	if (it == _error_pages.end())
 		return _defaultErrorPage;
 	return &it->second;
+}
+
+const s_view	&RequestHandler::getScriptName() const
+{
+	return _ScriptName;
 }
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

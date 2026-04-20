@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra  -g --std=c++98
+CPPFLAGS = -Wall -Wextra -g --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
@@ -9,7 +9,8 @@ UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpEr
 		Utils/Lexer.cpp
 
 
-RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp PartRespond/response/clsResponse.cpp 
+RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp PartRespond/response/clsResponse.cpp \
+
 
 CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
 				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
@@ -19,7 +20,7 @@ REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Reque
 				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp \
 				Parser/ParseRequest/Request/clsBody.cpp Parser/ParseRequest/Request/clsMultipart.cpp Parser/ParseRequest/Request/clsMultipart.cpp
 
-ALL_FILES += $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES)
+ALL_FILES +=  $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES) $(SERVER_FILES)
 
 OBJ = $(ALL_FILES:.cpp=.o)
 DEP = $(OBJ:%.o=%.d)

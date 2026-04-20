@@ -112,7 +112,6 @@ int main()
             else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
             {
                 newClient = server.tryAcceptNewClient(fd, &addr);
-                
 
                 if (newClient == -1)
                 {

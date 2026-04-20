@@ -173,7 +173,6 @@ void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* ra
 	req.request_metadata = client.request_metadata;
 	req.known_headers    = client.known_headers;
 	req.unknown_headers  = client.unknown_headers;
-	req.sizeUnknownHeaders = sizeof(client.unknown_headers) / sizeof(client.unknown_headers[0]);
 	req.io_chunk         = client.io_chunk;
 }
 
@@ -184,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-		"POST /test HTTP/1.1\r\n"
+		"POST /cgi-bin/script.txt.js/ls.py/info HTTP/1.1\r\n"
 		"Host: localhost\r\n"
 		"\r\n\0";
 
@@ -231,8 +230,22 @@ int main()
 	RequestParser Parser(req, &ServerConfig, &RequestHandler);
 
 
-	Parser.Parse(strlen(http_request));
-	
+	int size = strlen(http_request);
+	for (int i = 0; i < size; i++)
+	{
+		if (!Parser.Parse(i))
+			break ;
+	}
+
+	if (Parser.isComplete())
+		std::cout << "\nIsComplete\n\n";
+
+	if (Parser.isError())
+	{
+		std::cout << "Status Code : " << Parser.getError().getCodeStatus() << std::endl;
+		std::cout << "Msg Error : " << Parser.getError().getMsgError() << std::endl;
+		return 1;
+	}
 	RequestLine requestLine = Parser.getRequestLine();
 
 	std::string Method = (requestLine.getMethod() == 0) ? "GET" : "POST";
@@ -241,6 +254,13 @@ int main()
 	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
 	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
 	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
+	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
+	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
+	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
+	std::cout << "Path Cgi : " << cgi << std::endl;
 
+	HeaderTable headerTable = RequestHandler.getHeader();
+	const s_header_slot *Host = headerTable.getKnownHeader(HttpTables::H_HOST);
+	std::cout << "Host : " ; print_view(Host->val); std::cout << std::endl;
 	return 0;
 }

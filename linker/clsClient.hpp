@@ -2,6 +2,7 @@
 #define ___CLIENT_HPP___
 
 #include <iostream>
+#include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
@@ -45,7 +46,6 @@ private:
     PollOfClient _theData;
     bool _resetReq;
 
-    string respondBuffer;
 
     RequestHandler RequestXconfig;
     RequestParser _Requester;
@@ -54,11 +54,12 @@ private:
     clinetState _state;
     int _fdRespond;
     bodyPlaceEnum::place _BodyPlace;
-
+    ssize_t bodyLimit;
     size_t _LastConnection; // update connection in ms
 
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
+    ssize_t _addSizeChunkToStr();
 
     ssize_t bytesToSend;
 
