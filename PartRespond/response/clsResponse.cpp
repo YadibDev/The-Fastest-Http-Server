@@ -45,12 +45,17 @@ void clsResponse::MakeResponse()
 {
     if (_Erno)
         return ;
-    if (_Mod[stMod::ERROR] != stMod::ERROR&& _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
+    if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-
+        std::cout  << "------------> file input <--------------- "<<_FileFromDisk << std::endl;
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
+        std::cout  << "------------> type <--------------- "<<_Type << std::endl;
         _StoredInFileOrStr();
+        std::cout  << "------------> size <--------------- "<<_BodySize << std::endl;
+        std::cout  << "------------> body <--------------- "<<_Body << std::endl;
+        std::cout  << "------------> file output <--------------- "<<_FileFromDisk << std::endl;
+
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
@@ -104,9 +109,10 @@ void clsResponse::_ErrorRespnseHandling()
     else
         _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    _Body = _ErrorPage.GetBody();
+    _BodySize =  _ErrorPage.GetBodySize();
+    _HeaderFeild = _ErrorPage.GetHeaderField();
+    _FileFromDisk = _ErrorPage.GetFileFromDisk();
 }
 
 void clsResponse::_StatusLine()

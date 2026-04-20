@@ -126,7 +126,6 @@ void clsClient::ProcessRequest()
         _Requester._state = RequestParser::STATE_REQUEST_LINE;
         _Requester._offset = 0;
         // _Requester._header = Header();
-        _ResponderProecss.GetclsResponse().Reset();
         _state = REQUEST_MODE;
         _theData.Reset();
     }

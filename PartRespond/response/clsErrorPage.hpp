@@ -43,6 +43,7 @@ class clsErrorPage
     public:
         clsErrorPage();
         void SetBodySize(int BodySize);
+        int GetBodySize() const;
         const std::string &GetHeaderField();
         const std::string &GetBody();
         const std::string &GetFileFromDisk();

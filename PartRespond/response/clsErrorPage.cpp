@@ -201,3 +201,8 @@ clsErrorPage::~clsErrorPage()
     _BodySize = 0;
     _Status = 0;
 }
+
+int clsErrorPage::GetBodySize() const
+{
+    return this->_BodySize;
+}
