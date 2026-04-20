@@ -19,49 +19,51 @@ RequestHandler::RequestHandler(stPollRequest& request)
 RequestHandler::~RequestHandler() {}
 
 
-bool	RequestHandler::ExtractCgiMetadata(const char *uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(s_view uri, const std::map<std::string, std::string> &cgi_pass)
 {
-	if (!uri)
-		return false;
+    if (!uri.Data || uri.len == 0)
+        return false;
 
-	const char* start = uri;
-	const char* current = start;
+    char* start = uri.Data;
+    char* current = start;
+    char* end = start + uri.len - 1;
 
-	const char* end = &uri[HelperFunctions::ft_strlen(uri) - 1];
+    while (current <= end)
+    {
+        if (*current == '.')
+        {
+            char* extStart = current;
+            char* extEnd = extStart;
 
-	while (*current)
-	{
-		if (*current == '.')
-		{
-			const char* extStart = current;
-			const char* extEnd = extStart;
-			size_t extLen = 0;
-			while (*extEnd && *extEnd != '/')
-			{
-				extEnd++;
-				extLen++;
-			}
+            while (extEnd <= end && *extEnd != '/')
+                ++extEnd;
 
-			std::string extStr(extStart, extLen);
+            std::string extStr(extStart, extEnd);
 
-			std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
-			if (it != cgi_pass.end())
-			{
-				_pathCgi = &it->second;
+            std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
+            if (it != cgi_pass.end())
+            {
+                _pathCgi = &it->second;
 
-				_ScriptName.Data = (char *)start;
-				_ScriptName.len = (uint16_t)(extEnd - start);
+                _ScriptName.Data = start;
+                _ScriptName.len = static_cast<uint16_t>(extEnd - start);
 
-				_PathInfo.Data = (char *)extEnd;
-				_PathInfo.len = (uint16_t)(end - extEnd) + 1;
-				if (!*extEnd)
-					_PathInfo.len = 0;
-				return true;
-			}
-		}
-		current++;
-	}
-	return false;
+                if (extEnd <= end && *extEnd == '/')
+                {
+                    _PathInfo.Data = extEnd;
+                    _PathInfo.len = static_cast<uint16_t>(end - extEnd + 1);
+                }
+                else
+                {
+                    _PathInfo.Data = NULL;
+                    _PathInfo.len = 0;
+                }
+                return true;
+            }
+        }
+        ++current;
+    }
+    return false;
 }
 
 void	RequestHandler::computePathTranslated(const std::string& rootPath)
@@ -127,6 +129,9 @@ void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _file
 
 void    RequestHandler::setError(const HttpError &error) { _error = error; }
 
+// edited by achraf i add const 
+// char* RequestHandler::getPhysicalPath() const { return _physicalPath; }
+const char* RequestHandler::getPhysicalPath() const{ return _physicalPath; }
 char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
@@ -150,7 +155,7 @@ const s_view& RequestHandler::getServerPort() const {
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
 
-const HeaderTable    &RequestHandler::getHeader()
+const HeaderTable    &RequestHandler::getHeader() const
 {
 	return _Header;
 }

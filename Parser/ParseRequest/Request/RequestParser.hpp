@@ -3,14 +3,16 @@
 
 #include "RequestLine.hpp"
 #include "Header.hpp"
+#include "clsBody.hpp"
 #include "../../RequestHandler/RequestHandler.hpp"
 #include "../../ParseConfigFile/ServerConfig/ServerConfig.hpp"
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "HeaderTable.hpp"
 // #include "clsBody.hpp"
 
-class RequestParser {
-private:
+class RequestParser
+{
+public: // testing
 
 	stPollRequest	&_request;
 	uint16_t		_offset;
@@ -25,8 +27,7 @@ private:
 	bool    HProcessRequestHandler();
 	bool	ParseRequestLine(uint16_t size);
 	bool	ParseHeader(uint16_t size);
-	bool	ParseBody();
-
+	bool	ParseBody(uint16_t size);
 public:
 	enum State { STATE_REQUEST_LINE, STATE_HEADERS, STATE_BODY, STATE_COMPLETE, STATE_ERROR };
 	State			_state;
@@ -36,9 +37,8 @@ public:
 	bool			Parse(uint16_t size);
 	bool			isComplete() const;
 	bool			isError() const;
-	RequestLine		getRequestLine() const;
+	RequestLine		getRequestLine() const; // refrence add
 	HttpError		getError() const;
 };
 
 #endif
-

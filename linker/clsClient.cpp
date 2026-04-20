@@ -1,32 +1,41 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 2 * 1024 * 1024
+#define CHUNK_LIMIT 10000
 
-
-
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : _dataForReq(),
-                                                        RequestXconfig(_dataForReq),
-                                                        _addr(addr), _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(fd),
-                                                        _Requester(_dataForReq,  &block, &RequestXconfig)
+clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : block(block),
+                                                                                _socket(fd),                                             // must be not const
+                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()), // must be not const
+                                                                                _addr(addr),
+                                                                                _dataForReq(),
+                                                                                RequestXconfig(_dataForReq),
+                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
+                                                                                _ResponderProecss(RequestXconfig)
 {
     this->_dataForReq.io_chunk = this->_theData.io_chunk;
     this->_dataForReq.known_headers = this->_theData.known_headers;
     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
-
+    _dataForReq.request_metadata = _theData.request_metadata;
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
 };
 
-clsClient::clsClient(const clsClient &other) : _dataForReq(other._dataForReq),
-                                            RequestXconfig(other.RequestXconfig),
-                                            _Requester(other._Requester),
-                                            _addr(other._addr),
-                                            _FirstConnection(HelperFunctions::getCurrentTimeInMs()), _socket(other._socket)
-{
-    
+clsClient::clsClient(const clsClient &other) : block(other.block),
+                                               _socket(other._socket),
+                                               _FirstConnection(other._FirstConnection),
+                                               _addr(other._addr),
+                                               _dataForReq(),
+                                               RequestXconfig(_dataForReq),
+                                               _Requester(_dataForReq, &block, &RequestXconfig),
+                                               _ResponderProecss(RequestXconfig)
 
+{
+    this->_dataForReq.io_chunk = this->_theData.io_chunk;
+    this->_dataForReq.known_headers = this->_theData.known_headers;
+    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    _dataForReq.request_metadata = _theData.request_metadata;
+    this->_dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
@@ -77,8 +86,8 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
-    if (_fdRespond > 0)
-        close(_fdRespond);
+    // if (_fdRespond > 0)
+    //     close(_fdRespond);
 }
 
 int clsClient::_ReadDataForReq()
@@ -99,8 +108,8 @@ int clsClient::_ReadDataForReq()
         size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
-    }
-
+    }   
+    std::cout << _theData.request_metadata << endl;
     if (size == 0)
         _state = CONNECTION_CLOSED;
 
@@ -112,65 +121,128 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
+        _Requester.init();
         _state = REQUEST_MODE;
         _theData.Reset();
     }
 
     int size = _ReadDataForReq(); // reading data for request
-   
+
     if (_state == CONNECTION_CLOSED || size == -1)
         return ;
 
-    // if (_Requester._state == READING_BODY)
-    //     _Requester.parse(_theData.read_body);  // then pase it to parse
-    // else
-    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
-    
-    if (_Requester.isComplete()) // add get error here
+    if (_Requester._state == RequestParser::STATE_BODY)
+        _Requester.Parse(_theData.read_body);  // then pase it to parse
+    else
+        _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
+
+    if (_Requester.isError())
     {
         this->_state = START_RESPOND;
         return ;
     }
+    else if (_Requester.isComplete())
+    {
+        this->_state = START_RESPOND;
+
+        std::cout << "\n================= REQUEST DEBUG =================\n";
+
+        std::cout << "[STATUS] Request completed successfully\n";
+
+        std::cout << "\n[METADATA]\n";
+        std::cout << this->_theData.request_metadata << "\n";
+
+        std::cout << "\n[BODY STORAGE]\n";
+        if (_Requester._body._bodyLocation == clsBody::DISK)
+            std::cout << "Location : DISK\n";
+        else if (_Requester._body._bodyLocation == clsBody::RAM)
+            std::cout << "Location : RAM\n";
+        else
+            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
+
+        std::cout << "\n[BODY INFO]\n";
+        if (this->_theData.read_body > 0)
+        {
+            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
+            std::cout << "Content:\n";
+            std::cout << "----------------------------------------\n";
+
+            for (int i = 0; i < _theData.read_body; i++)
+                std::cout << this->_theData.io_chunk[i];
+
+            std::cout << "\n----------------------------------------\n";
+        }
+        else
+        {
+            std::cout << "No body received\n";
+        }
+
+        std::cout << "========================================\n\n";
+        return;
+    }
+}
+ssize_t clsClient::_addSizeChunkToStr()
+{
+    ssize_t byteCanSend = CHUNK_LIMIT - bytesToSend - 8 - 2;
+    char *respondBuffer = this->_theData.io_chunk;
+
+    if (byteCanSend <= 0)
+        return 0;
+    if (bodyLimit == 0)
+    {
+        memcpy(&respondBuffer[bytesToSend], "0\r\n\r\n", 5);
+        std::cout << "cr---------------lf\n";
+        std::cout << "0-r-r-r-n" << endl;
+        _state = LAST_CHUNKED;
+        bytesToSend += 5;
+        return 0;
+    }
+    byteCanSend = min(byteCanSend, bodyLimit);
+
+    std::string lengthHex =  HelperFunctions::Convert_Hex("0123456789abcdef", byteCanSend);
+    lengthHex += "\r\n";
+
+    memcpy(&respondBuffer[bytesToSend], lengthHex.c_str(), lengthHex.size());
+    bytesToSend += lengthHex.size();
+    bodyLimit -= byteCanSend;
+    return byteCanSend;
 }
 
 void clsClient::_SendRespond(const clsResponse &_Responder)
 {
-    ssize_t s;
+    ssize_t s = 0;
     ssize_t nBytes;
 
-    if (_BodyPlace == DISK_FILE)
+    char *respondBuffer = this->_theData.io_chunk;
+
+    if (_BodyPlace == bodyPlaceEnum::DISK)
     {
-        string chunkData;
-
-        chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
-            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-        s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
-        // i woill work here for 
-        if (s < CHUNK_LIMIT)
-        {
-            _state = LAST_CHUNKED;
-            chunkData.resize(s);
-            // if last respond we will add the end
-            _Responder.ChunkData(respondBuffer, chunkData, true);
+            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
 
-        }
-        else
+        int sizeToRead = _addSizeChunkToStr();
+        if (sizeToRead)
         {
-            chunkData.resize(s);
-            _Responder.ChunkData(respondBuffer, chunkData, false);
+            
+            s = read(_fdRespond, &respondBuffer[bytesToSend], sizeToRead);
+            bytesToSend += s;
+            memcpy(&respondBuffer[bytesToSend], "\r\n", 2);
+            bytesToSend += 2;
         }
     }
 
-    // start sending data
-    nBytes = send(_socket, respondBuffer.c_str(), respondBuffer.size(), MSG_DONTWAIT);
+    nBytes = send(_socket, respondBuffer, bytesToSend, MSG_DONTWAIT);
+    
     if (nBytes != -1)
-        respondBuffer = &respondBuffer[nBytes];
+    {
+        if (nBytes < bytesToSend)
+            memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
+        bytesToSend -= nBytes;
+    }
 
-    if (respondBuffer.empty() && (_BodyPlace == RAM || _state == LAST_CHUNKED))
+    if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0))
     {
         _state = BEGIN;
-        respondBuffer = "";
         if (_Responder.GetIsConnection() == false)
             _state = CONNECTION_CLOSED;
         if (_fdRespond > 0)
@@ -178,30 +250,42 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
             close(_fdRespond);
             _fdRespond = 0;
         }
-        
     }
 }
 
-void clsClient::ProcessRespond(const clsServerConfig &serverConfig)
+void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
+
+    char *respondBuffer = this->_theData.io_chunk;
+
     if (_state == START_RESPOND)
     {
+        bytesToSend = 0;
         _state = RESPOND_MODE;
 
         // linke request with config
+        Respond.Reset();
+        this->_ResponderProecss.MainProcess(); // create respond
 
-        this->_ResponderProecss.MainProcess(RequestXconfig); // create respond
-
-        respondBuffer += Respond.GetHeaderFeild();
+        bytesToSend = Respond.GetHeaderFeild().size();
+        
+        memcpy(&respondBuffer[0], Respond.GetHeaderFeild().c_str(), bytesToSend);
 
         if (Respond.GetFileName().empty())
         {
-            respondBuffer += Respond.GetBody();
-            _BodyPlace = RAM;
+            _BodyPlace = bodyPlaceEnum::RAM;
+            memcpy(&respondBuffer[bytesToSend], Respond.GetBody().c_str(), Respond.GetSizeBody());
+            bytesToSend += Respond.GetSizeBody();
         }
         else
-            _BodyPlace = DISK_FILE;
+        {
+            bodyLimit = Respond.GetSizeBody();
+            cout << "size body bellow \n\n";
+            cout << bodyLimit << std::endl;
+            _BodyPlace = bodyPlaceEnum::DISK;
+        }
     }
     _SendRespond(Respond);
+    cout << this->bodyLimit << std::endl;
 }

@@ -56,6 +56,9 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
 
     const sockaddr *addr = reinterpret_cast<const sockaddr *>(&temp);
 
+    int enable = 1;
+    setsockopt(fdSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)); // i must read about SOL_SOCKET
+
     if (bind(fdSock, addr, sizeof(sockaddr_in)) == -1)
         throw std::runtime_error("bind system call fail");
 
@@ -73,7 +76,7 @@ void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
 {
 
     int fd;
-    for (int i = 0; i < listens.size(); i++)
+    for (size_t i = 0; i < listens.size(); i++)
     {
         try
         {

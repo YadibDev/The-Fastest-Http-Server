@@ -6,46 +6,42 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/11 22:42:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/18 11:21:33 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
 
-clsCGI::clsCGI()
+clsCGI::clsCGI(const RequestHandler DataRequest) : _DataRequest(DataRequest)
 {
     _IsRunCGI = false;
 }
 
 char **clsCGI::_MakeEnv()
 {
-    // std::map<std::string, std::vector<std::string> >::iterator it;
-    // std::map<std::string, std::vector<std::string> > Header;
-    // char **ENV = NULL;
-    // std::vector<std::string> Variables;
+    char **ENV = NULL;
 
-    // _BuildBasicVar(Variables);
-    // for (it = Header.begin(); it != Header.end(); it++)
-    // {
-    //     if (_WhiteBlakHeaders.count(it->first))
-    //         if (!_WhiteBlakHeaders[it->first])
-    //             continue;
-    //     Variables.push_back(_BuildVarEnv(it->first, _ConcatonateValue(it->second)));
-    // }
-    // ENV = new char*[Variables.size() + 1];
-    // if (!ENV)
-    //     return (NULL);
-    // for (size_t i = 0; i < Variables.size(); i++)
-    // {
-    //     ENV[i] = HelperFunctions::ft_strdup(Variables[i].c_str());
-    //     if (!ENV[i])
-    //     {
-    //         HelperFunctions::free_matrex(&ENV);
-    //         return (NULL);
-    //     }
-    // }
-    // ENV[Variables.size()] = NULL;
-    // return ENV;
+    for (it = Header.begin(); it != Header.end(); it++)
+    {
+        if (_WhiteBlakHeaders.count(it->first))
+            if (!_WhiteBlakHeaders[it->first])
+                continue;
+        Variables.push_back(_BuildVarEnv(it->first, _ConcatonateValue(it->second)));
+    }
+    ENV = new char*[Variables.size() + 1];
+    if (!ENV)
+        return (NULL);
+    for (size_t i = 0; i < Variables.size(); i++)
+    {
+        ENV[i] = HelperFunctions::ft_strdup(Variables[i].c_str());
+        if (!ENV[i])
+        {
+            HelperFunctions::free_matrex(&ENV);
+            return (NULL);
+        }
+    }
+    ENV[Variables.size()] = NULL;
+    return ENV;
     return 0;
 }
 

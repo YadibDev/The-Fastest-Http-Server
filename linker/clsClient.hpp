@@ -2,6 +2,7 @@
 #define ___CLIENT_HPP___
 
 #include <iostream>
+#include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>
 #include "../Utils/HelperFunctions.hpp"
@@ -11,8 +12,6 @@
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
 
 using namespace std;
-
-
 
 enum clinetState
 {
@@ -24,38 +23,46 @@ enum clinetState
     CONNECTION_CLOSED
 };
 
-enum whereIsBody
+struct bodyPlaceEnum
 {
-    NONE,
-    RAM,
-    DISK_FILE
+    enum place
+    {
+        NONE,
+        RAM,
+        DISK
+    };
 };
 
 class clsClient
 {
 private:
-// request object it will be here
-    PollOfClient _theData;
+    // request object it will be here
+    clsServerConfig &block;
+    const int _socket;
+    const size_t _FirstConnection; // first established connection in ms mile seconds
+    const sockaddr_in _addr;       // ip and port of the client
+
     stPollRequest _dataForReq;
+    PollOfClient _theData;
     bool _resetReq;
 
-    string respondBuffer;
 
     RequestHandler RequestXconfig;
-    clsMainProcess _ResponderProecss;
     RequestParser _Requester;
+    clsMainProcess _ResponderProecss;
 
     clinetState _state;
     int _fdRespond;
-    whereIsBody _BodyPlace;
-    
-    const sockaddr_in _addr;       // ip and port of the client
-    size_t _LastConnection;        // update connection in ms
-    const size_t _FirstConnection; // first established connection in ms mile seconds
-    const int _socket;
-    
+    bodyPlaceEnum::place _BodyPlace;
+    ssize_t bodyLimit;
+    size_t _LastConnection; // update connection in ms
+
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
+    ssize_t _addSizeChunkToStr();
+
+    ssize_t bytesToSend;
+
 public:
     clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
     clsClient(const clsClient &other);
@@ -78,7 +85,7 @@ public:
 
     // the flow of request and respnd
     void ProcessRequest(); // will be
-    void ProcessRespond(const clsServerConfig &serverConfig);
+    void ProcessRespond();
     // void ProcessBoth();
 };
 

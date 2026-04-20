@@ -1,20 +1,4 @@
 #include "HelperFunctions.hpp"
-std::map<int, std::string> HelperFunctions::_Message; 
-std::map<std::string, std::string> HelperFunctions::_TypeContent;
-std::map<int, std::string> HelperFunctions::_Body;;
-std::string HelperFunctions::trim(const std::string& str) {
-	const std::string whitespace = " \t";
-	
-	size_t first = str.find_first_not_of(whitespace);
-	
-	if (first == std::string::npos) {
-		return "";
-	}
-	
-	size_t last = str.find_last_not_of(whitespace);
-	
-	return str.substr(first, (last - first + 1));
-}
 
 void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
@@ -45,7 +29,6 @@ long HelperFunctions::hexToDec(const std::string& hex)
 		
 		decimalValue = (decimalValue << 4) | digit;
 	}
-	
 	return decimalValue;
 }
 
@@ -264,28 +247,23 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 
 
 
-
-
 // Achraf
 
-bool HelperFunctions::CmpWord(const std::string &BigStr, const std::string &Word, bool Switch) {
-	int i = 0;
-	int lenghtBigStr = BigStr.size();
-	int lenghtWord = Word.size();
+std::map<int, std::string> HelperFunctions::_Message; 
+std::map<std::string, std::string> HelperFunctions::_TypeContent;
+std::map<int, std::string> HelperFunctions::_Body;
+char HelperFunctions::_PoinerType[10] = {0};
 
-	if (Switch) {
-		while (i < lenghtBigStr && i < lenghtWord) {
-			if (BigStr[i] != Word[i])
-				return false;
-			i++;
-		}
-	} else {
-		while (lenghtBigStr > 0 && lenghtWord > 0) {
-			if (BigStr[--lenghtBigStr] != Word[--lenghtWord])
-				return false;
-		}
-	}
-	return (!lenghtWord || (Switch && lenghtWord == i));
+bool HelperFunctions::CmpWord(char *Str, const std::string &Word, short SizeStr) {
+    short i = 0;
+
+    while (i < SizeStr && i < (short)Word.length())
+    {
+        if (std::tolower(Str[i]) != Word[i])
+            return false;
+        i++;
+    }
+    return (true);
 }
 
 bool HelperFunctions::IsStringDigit(const std::string &StringDigit, short Start, short End)
@@ -304,22 +282,18 @@ bool HelperFunctions::Iswhaitspace(char C) {
 	return (C == ' ' || C == '\t');
 }
 
-std::string HelperFunctions::TrimStr(std::string Str, const std::string &Sep) {
-	if (Str.empty()) return Str;
-	size_t Start = 0;
-	size_t End = Str.length() - 1;
-	while (Start < Str.length() && Ischar(Sep, Str[Start]))
-		Start++;
-	while (End > Start && Ischar(Sep, Str[End]))
-		End--;
-	return Str.substr(Start, End - Start + 1);
-}
-
 void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
 {
 	for (short i = 0; i < (short)Str.size() && i < Size; i++)
 		if (std::isalpha(Str[i]))
 			Str[i] = std::tolower(Str[i]);
+}
+std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
+    for (size_t i = 0; i < Str.size(); i++) {
+        if (std::isalpha(Str[i]))
+            Str[i] = std::toupper(Str[i]);
+    }
+    return Str;
 }
 
 bool HelperFunctions::Ischar(const std::string &Sep, char C) {
@@ -415,7 +389,12 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
 	return (Result);
 }
 
-unsigned long HelperFunctions::getCurrentTimeInS()
+unsigned long HelperFunctions::getCurrentTimeInMs()
+{
+    return getCurrentTimeInS() * 1000;
+}
+
+long HelperFunctions::getCurrentTimeInS()
 {
 	long Time;
 	Time = time(0);
@@ -432,8 +411,6 @@ size_t	HelperFunctions::ft_strlen(const char *s)
 		i++;
 	return i;
 }
-
-
 
 char	*HelperFunctions::ft_strdup(const char *src)
 {
@@ -494,6 +471,41 @@ int	HelperFunctions::len_int(int nb)
 	return (i);
 }
 
+void HelperFunctions::NumToStr(int Number, std::string &Str)
+{
+    char Remainder = 0;
+    int NewNumbr = 0;
+    int Counter = 0;
+	if (Number == 0)
+	{
+		Str += '0';
+		return ;
+	}
+    if (Number < 0)
+    {
+        Number *= -1;
+        Str += '-';
+    }
+    while (Number)
+    {
+        NewNumbr =( NewNumbr * 10) + Number % 10;
+        Number /= 10;
+        Counter++;
+    }
+    while (NewNumbr)
+    {
+        Remainder = (NewNumbr % 10) + '0';
+        Str += Remainder;
+        NewNumbr /= 10;
+        Counter--;
+    }
+    while (Counter > 0)
+    {
+        Str += '0';
+        Counter--;
+    }
+}
+
 char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
 {
 	long	num;
@@ -541,12 +553,23 @@ char	*HelperFunctions::ft_itoa(int n)
 	return ((int_char));
 }
 
-std::string HelperFunctions::GetTypeDataFile(const std::string &Str)
+const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
-	size_t Pos;
-	if ((Pos = Str.find('.')) == std::string::npos)
-		return "";
-	return (Str.substr(Pos, Str.size()));
+    size_t Pos;
+    short i = 0;
+    if ((Pos = Str.find('.')) == std::string::npos)
+    {
+        _PoinerType[0] = '\0';
+        return _PoinerType;
+    }
+    while (i < 10 && Pos < Str.length())
+    {
+        _PoinerType[i] = Str[Pos];
+        Pos++;
+        i++;
+    }
+    _PoinerType[i] = '\0';
+    return (_PoinerType);
 }
 
 void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
@@ -571,7 +594,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".html"] = "text/html";
 		_TypeContent[".htm"]  = "text/html";
 		_TypeContent[".css"]  = "text/css";
-		_TypeContent[".js"]   = "text/javascript";
+		_TypeContent[".js"	]   = "text/javascript";
 		_TypeContent[".jpg"]  = "image/jpeg";
 		_TypeContent[".jpeg"] = "image/jpeg";
 		_TypeContent[".png"]  = "image/png";
@@ -665,14 +688,14 @@ void HelperFunctions::CopyStr(const std::string &Str_src, std::string &Str_new, 
 
 short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep, short Start)
 {
-	short i = Start;
-	short count = 0;
-	while(i < (short)Str.length())
-	{
-		if (Ischar(Sep, Str[i]))
-			return (count);
-		count++;
-		i++;
-	}
-	return (count);
+    short i = Start;
+    short count = 0;
+    while(i < (short)Str.length())
+    {
+        if (Ischar(Sep, Str[i]))
+            return (count);
+        count++;
+        i++;
+    }
+    return (count);
 }

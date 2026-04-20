@@ -103,11 +103,7 @@ struct s_header_slot
 	uint8_t		next;
 	uint32_t	Hash;
 
-<<<<<<< HEAD
-	s_header_slot() : next(HttpTables::INVALID_INDEX), Hash(-1) {}
-=======
 	s_header_slot() : next(INVALID_INDEX), Hash(0) {}
->>>>>>> Server
 };
 
 struct PollOfClient
@@ -524,7 +520,15 @@ private:
 
 	void	selectMethod(const char *buffer, uint16_t size)
 	{
+<<<<<<< HEAD
+<<<<<<< HEAD
+		if (_offset > size)
+=======
 		if (_offset >= size)
+>>>>>>> Respond
+=======
+		if (_offset >= size)
+>>>>>>> Request
 			return;
 
 		if (buffer[_offset] == 'G')
@@ -634,7 +638,15 @@ private:
 
 		if (!_versionMinorRead)
 		{
+<<<<<<< HEAD
+<<<<<<< HEAD
+			if (_offset > size)
+=======
 			if (_offset >= size)
+>>>>>>> Respond
+=======
+			if (_offset >= size)
+>>>>>>> Request
 				return;
 			if (buffer[_offset] != '0' && buffer[_offset] != '1')
 			{

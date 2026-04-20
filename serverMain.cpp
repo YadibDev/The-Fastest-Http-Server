@@ -28,129 +28,141 @@ using namespace std;
 
 void function(int signal)
 {
+    (void)signal;
     exit(1);
 }
 
 int main()
 {
-    // signal(SIGINT, function);
-    // std::string Data;
-    // int fd = open("configs/default.conf", O_RDONLY);
-    // if (fd == -1)
-    // {
-    //     std::cerr << "Error: Could not open config file." << std::endl;
-    //     return 1;
-    // }
+    HelperFunctions::StoredDefaultType();
+    HelperFunctions::StoredBodys();
+    HelperFunctions::StoredMessage();
+    HelperFunctions::StoredMessage();
+    signal(SIGINT, function);
+    int fd = open("configs/default.conf", O_RDONLY);
+    std::string configeData;
+    configeData.resize(1025);
 
-    // ssize_t Size = 10000;
-    // HelperFunctions::ReadData(fd, Data, Size);
-    // close(fd);
+    read(fd, &configeData[0], 1024);
 
-    // LexerConfig<TokenType> cfg(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
-    // cfg.addCommentRule("#", "\n");
-    // cfg.addSeparatorToken('{', TOKEN_LBRACE);
-    // cfg.addSeparatorToken('}', TOKEN_RBRACE);
-    // cfg.addSeparatorToken(';', TOKEN_SEMICOLON);
-    // cfg.addSeparatorToken('\n', TOKEN_JOUJNO9ATE);
-    // cfg.addWithSpace(" \t");
+    // fd, configeData, 1024
 
-    // GenericLexer<TokenType> Lexer(Data, cfg);
-    // std::vector<Token<TokenType> > Tokens = Lexer.tokenize();
-    // clsParse<TokenType> Parse(Tokens, TOKEN_EOF);
+    LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
 
-    // clsParseConfigueFile configFile(Parse);
-    // configFile.ParseConfigue();
-    // if (configFile.getServers().empty())
-    // {
-    //     std::cout << "SEGFAULT HNA 58 main server\n";
-    //     return 1;
-    // }
-    // clsServerConfig Block = configFile.getServers()[0];
+    lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
+    lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
+    lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
 
-    // clsEpollHandler epoll;
-    // epoll_event ClientBuffer[100];
+    lexerConfig.addCommentRule("#", "\n");
+    lexerConfig.addWithSpace(" \t\n");
 
-    // clsServerSock server;
-    // clsLinker ClientsLinker;
+    GenericLexer<TokenType> lexer(configeData, lexerConfig);
 
-    // server.buildSockets(Block.getListens());
-    // epoll.addServerSockets(server);
+    std::vector<Token<TokenType> > Lexer = lexer.tokenize();
 
-    // string respond = "";
+    clsParse<TokenType> Data(Lexer, TOKEN_EOF);
+    clsParseConfigueFile ConfigueFile(Data);
 
-    // int n = 0;
-    // while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
-    // {
-    //     for (int i = 0; i < n; i++)
-    //     {
+    ConfigueFile.ParseConfigue();
+    if (!ConfigueFile.getServers().size())
+    {
+        std::cout << ConfigueFile.getError().getMsgError() << std::endl;
+        std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
+        std::cout << "Block Server ZERO\n"
+                  << std::endl;
+        return 1;
+    }
 
-    //         int fd = ClientBuffer[i].data.fd;
-    //         sockaddr_in addr;
-    //         memset(&addr, 0, sizeof(addr));
-    //         int newClient;
-    //         if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
-    //         {
-    //             if (ClientBuffer[i].events & EPOLLRDHUP)
-    //                 std::cout << "EPOLLRDHUP"  << std::endl;
-    //             else if (ClientBuffer[i].events & EPOLLERR)
-    //                 std::cout << "EPOLLERR"  << std::endl;
-    //             else    
-    //                 std::cout << "EPOLLHUP"  << std::endl;
-    //             ClientsLinker.removeClient(fd);
-    //             std::cout << "Fd" << fd << std::endl;
-    //             continue;
-    //         }
-    //         else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
-    //         {
-    //             newClient = server.tryAcceptNewClient(fd, &addr);
-    //             if (newClient == -1)
-    //             {
-    //                 if (newClient == -1)
-    //                     std::cerr << "Accept Fail" << std::endl;
-    //                 continue;
-    //             }
-    //             else if (newClient > 0)
-    //             {
-    //                 // flow of accept new client
-    //                 ClientsLinker.insertClient(newClient, addr);
-    //                 epoll.addClient(newClient, EPOLLIN);
-    //             }
-    //             else
-    //             {
-    //                 newClient = fd;
+    clsServerConfig Block = ConfigueFile.getServers()[0];
 
-    //                 clsClient &client = ClientsLinker.GetClientAt(newClient);
+    clsEpollHandler epoll;
+    epoll_event ClientBuffer[100];
 
-    //                 client.ProcessRequest();
-    //                 if (client.GetState() == CONNECTION_CLOSED)
-    //                 {
-    //                     ClientsLinker.removeClient(newClient);
-    //                     continue;
-    //                 }
-    //                 if (client.GetState() == START_RESPOND)
-    //                 {
-    //                     epoll.changeAbility(newClient, EPOLLOUT);
-    //                 }
-    //             }
-    //         }
-    //         else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
-    //         {
-    //             newClient = fd;
+    clsServerSock server;
+    clsLinker ClientsLinker;
 
-    //             clsClient & client = ClientsLinker.GetClientAt(newClient);
+    server.buildSockets(Block.getListens());
+    epoll.addServerSockets(server);
 
-    //             client.ProcessRespond(Block);
-    //             if (client.GetState() == BEGIN)
-    //                 epoll.changeAbility(newClient, EPOLLIN);
-    //             else if (client.GetState() == CONNECTION_CLOSED)
-    //             {
-    //                 std::cout << "Removed\n";
-    //                 ClientsLinker.removeClient(newClient);
-    //                 continue;
-    //             }
+    string respond = "";
 
-    //         }
-        
-    //     }
-    // }
+    int n = 0;
+    while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
+    {
+        for (int i = 0; i < n; i++)
+        {
+
+            int fd = ClientBuffer[i].data.fd;
+            sockaddr_in addr;
+            memset(&addr, 0, sizeof(addr));
+            int newClient;
+            if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
+            {
+                if (ClientBuffer[i].events & EPOLLRDHUP)
+                    std::cout << "EPOLLRDHUP" << std::endl;
+                else if (ClientBuffer[i].events & EPOLLERR)
+                    std::cout << "EPOLLERR" << std::endl;
+                else
+                    std::cout << "EPOLLHUP" << std::endl;
+                std::cout << "Fd " << fd << std::endl;
+                ClientsLinker.removeClient(fd);
+                std::cout << "Removed removed\n";
+                continue;
+            }
+            else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
+            {
+                newClient = server.tryAcceptNewClient(fd, &addr);
+
+                if (newClient == -1)
+                {
+                    if (newClient == -1)
+                        std::cerr << "Accept Fail" << std::endl;
+                    continue ;
+                }
+                else if (newClient > 0)
+                {
+                    // flow of accept new client
+                    std::cout << "accepted\n";
+                    std::cout << newClient << std::endl;
+                    ClientsLinker.insertClient(newClient, addr, Block);
+                    epoll.addClient(newClient, EPOLLIN);
+                }
+                else
+                {
+                    newClient = fd;
+
+                    clsClient &client = ClientsLinker.GetClientAt(newClient);
+
+                    client.ProcessRequest();
+                    if (client.GetState() == CONNECTION_CLOSED)
+                    {
+                        std::cout << "Removed\n";
+                        ClientsLinker.removeClient(newClient);
+                        continue ;
+                    }
+                    if (client.GetState() == START_RESPOND)
+                    {
+                        epoll.changeAbility(newClient, EPOLLOUT);
+                    }
+                }
+            }
+            else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
+            {
+                newClient = fd;
+
+                clsClient &client = ClientsLinker.GetClientAt(newClient);
+
+                client.ProcessRespond();
+                if (client.GetState() == BEGIN)
+                    epoll.changeAbility(newClient, EPOLLIN);
+                else if (client.GetState() == CONNECTION_CLOSED)
+                {
+                    std::cout << "Removed\n";
+                    ClientsLinker.removeClient(newClient);
+                    std::cout << newClient << std::endl;
+                    continue;
+                }
+            }
+        }
+    }
 }

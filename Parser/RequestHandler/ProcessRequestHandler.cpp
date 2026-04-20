@@ -181,30 +181,20 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 
 	destBuffer[currentPos] = '\0';
 
-
-
+	if (!checkPath(destBuffer))
+		return (error.setStatus(404, "Not Found"), false);
 	return true;
 }
 
-bool	checkExcute(s_view Path)
+bool	checkExcute(char *path)
 {
-	char path[4096];
 	struct stat st;
-	if (Path.len < 4096)
-	{
-    	memcpy(path, Path.Data, Path.len);
-    	path[Path.len] = '\0';
 
-   		if (stat(path, &st) != 0)
-   		    return false;
-
-   		if (!S_ISREG(st.st_mode))
-   		    return false;
-
-   		return (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH));
-	}
-
-	return false;
+   	if (stat(path, &st) != 0)
+   	    return false;
+   	if (!S_ISREG(st.st_mode))
+   	    return false;
+   	return (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH));
 }
 
 
@@ -224,20 +214,25 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 
 	if (bestLocation)
 	{
-		if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), StartLine.getRequestURI().getPath(), error))
-			return (false);
 		handler->setAutoIndex(bestLocation->getAutoIndex());
 		if (!isMethodAllowed(StartLine.getMethod(), bestLocation->getAllowMethods()))
 			return (error.setStatus(405, "Method Not Allowed"), handler->setError(error), false);
 
-		handler->ExtractCgiMetadata(handler->getPhysicalPath(), bestLocation->getCgiPass());
-		if (handler->getScriptName().len && !checkExcute(handler->getScriptName()))
-			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
+		handler->ExtractCgiMetadata(StartLine.getRequestURI().getPath(), bestLocation->getCgiPass());
 
-		if (handler->getPathCgi() && !handler->getPathCgi()->empty())
+		if (handler->getScriptName().len)
+		{
+			if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), handler->getScriptName(), error))
+				return (false);
+			if (!checkExcute(handler->getPhysicalPath()))
+				return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
+		}
+		else
+			if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), StartLine.getRequestURI().getPath(), error))
+				return (false);
+
+		if (handler->getPathInfo().len)
 			handler->computePathTranslated(serverConfig->getRoot());
-		if (!handler->getPathCgi() && !checkPath(handler->getPhysicalPath()))
-				return (error.setStatus(404, "Not Found"), false);
 	
 		handler->setQuery(StartLine.getRequestURI().getQuery());
 		handler->setVersion(StartLine.getVersion());

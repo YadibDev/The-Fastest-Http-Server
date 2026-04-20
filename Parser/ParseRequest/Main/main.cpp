@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET / HTTP/1.1\r\n"
+    	"GET /cgi-bin/script.txt.js/ls/ HTTP/1.1\r\n"
     	"Host: 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
@@ -267,6 +267,7 @@ int main()
 	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
 	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
 	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
+	std::cout << "Path Translated : " << RequestHandler.getPathTranslated() << std::endl;
 	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
 	std::cout << "Path Cgi : " << cgi << std::endl;
 
