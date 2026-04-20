@@ -37,7 +37,7 @@ class clsParseOutCGI
         std::string _ValueHeader;
         std::string _FileNameFromDisk;
         clsErrorPage _ErrorPage;
-        RequestHandler &_DataRequest;
+        const RequestHandler &_DataRequest;
         short _CountSizeHeaders;
         short _MaxSizeHeaders;
         int _MaxSizeBody;
@@ -46,6 +46,10 @@ class clsParseOutCGI
         std::string _HeadersFieldFinal;
         std::string _Line;
         std::string _NameFileBody;
+        const std::string *_BodyPointer;
+        const std::string *_HeaderFeildPointer;
+        const std::string *_FileFromDiskPointer;
+        bool _ModTransferData;
         int _Pipe_Fd;
         int _Fdout;
         bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);
@@ -80,9 +84,13 @@ class clsParseOutCGI
         const std::string &GetBody();
         const std::string &GetFileNameBody();
         const std::string &GetHeadersFieldFinal();
+        const std::string *GetBodyPointer();
+        const std::string *GetHeaderFeildPointer();
+        const std::string *GetFileFromDiskPointer();
         void SetPipe_Fd(int Pipe_Fd);
         void ReceivingData(std::string &Data);
         void SetProcessIsFinish(bool ProcessIsFinish);
+        bool GetModTransferData() const;
         ~clsParseOutCGI();
 };
 #endif

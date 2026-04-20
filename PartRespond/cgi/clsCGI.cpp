@@ -12,47 +12,59 @@
 
 #include "clsCGI.hpp"
 
-clsCGI::clsCGI(const RequestHandler DataRequest) : _DataRequest(DataRequest)
+clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
     _IsRunCGI = false;
+    _ARG = NULL;
+    _ENV = NULL;
 }
 
-char **clsCGI::_MakeEnv()
+bool clsCGI::_MakeEnv()
 {
-    char **ENV = NULL;
-
-    ENV = new char*[17 + 31 + 1];
-    if (!ENV)
-        return (NULL);
-    
-    ENV[17 + 31 + 1] = NULL;
-    return ENV;
+    _ENV = new char*[17 + 31 + 1];
+    if (!_ENV)
+        return (false);
+    if (!(_ENV[0] = HelperFunctions::ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1")))
+        return (false);
+    if (!(_ENV[1] = HelperFunctions::ft_strdup("SERVER_NAME=FastServer")))
+        return (false);
+    if (!(_ENV[2] = HelperFunctions::ft_strdup("SERVER_PROTOCOL=HTTP/1.1")))
+        return (false);
+    if (!(_ENV[3] = HelperFunctions::ft_strdup("GATEWAY_INTERFACE=CGI/1.1")))
+        return (false);
+    if (!(_ENV[4] = HelperFunctions::ft_strdup("REMOTE_IDENT=\"\"")))
+        return (false);
+    if (!(_ENV[5] = HelperFunctions::ft_strdup("REMOTE_HOST=\"\"")))
+        return (false);
+    if (!(_ENV[6] = HelperFunctions::ft_strdup(" ")))
+        return (false);
+    if (!(_ENV[7] = HelperFunctions::ft_strdup(" ")))
+        return (false);
+    if (!(_ENV[8] = HelperFunctions::ft_strdup(" ")))
+        return (false);
+    _ENV[17 + 31 + 1] = NULL;
+    return (true);
 }
 
-char **clsCGI::_StoredArgs()
+bool clsCGI::_StoredArgs()
 {
-    char **ARG = NULL;
-    ARG = new(std::nothrow) char*[3];
-    if (!ARG)
-        return (NULL);
-    ARG[0] = HelperFunctions::ft_strdup("/usr/bin/php");
-    if (!ARG[0])
-        return (NULL);
-    ARG[1] = HelperFunctions::ft_strdup("file.php");
-    if (!ARG[1])
-    {
-        HelperFunctions::free_matrex(&ARG);
-        return (NULL);
-    }
-    ARG[2] = NULL;
-    return (ARG);
+    _ARG = new(std::nothrow) char*[3];
+    if (!_ARG)
+        return (false);
+    _ARG[0] = HelperFunctions::ft_strdup("/usr/bin/php");
+    if (!_ARG[0])
+        return (false);
+    _ARG[1] = HelperFunctions::ft_strdup("file.php");
+    if (!_ARG[1])
+        return (false);
+    _ARG[2] = NULL;
+    return (true);
 }
 
-bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
+bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
-    close(pip[0]);
-    ENV = NULL;
+    close(_pip[0]);
     // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
     // if (Fd < 0)
     // {
@@ -63,76 +75,77 @@ bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
     // }
     // if (dup2(Fd, 0) == -1)
     //     return (close(Fd), close(pip[1]), true);
-    if (dup2(pip[1], 1) == -1)
-        return (close(Fd), close(pip[1]), true);
+    if (dup2(_pip[1], 1) == -1)
+        return (close(Fd), close(_pip[1]), true);
     
-    close(pip[1]);
+    close(_pip[1]);
     close(Fd);
-    execve("/usr/bin/php", ARG, NULL);
+    execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
-int clsCGI::_ParentProcesse(char **ENV, char **ARG, int pip[2])
+int clsCGI::_ParentProcesse()
 {
     int status;
     int exit_code;
-    close(pip[1]);
+    close(_pip[1]);
     exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
     if (exit_code < 0)
     {
-        HelperFunctions::free_matrex(&ENV);
-        close(pip[0]);
+        close(_pip[0]);
+        HelperFunctions::free_matrex(&_ARG);
+        HelperFunctions::free_matrex(&_ENV);
         return (-1);
     }
     else if (WEXITSTATUS(status) == 1)
     {
-        HelperFunctions::free_matrex(&ARG);
-        close(pip[0]);
+        close(_pip[0]);
+        HelperFunctions::free_matrex(&_ARG);
+        HelperFunctions::free_matrex(&_ENV);
         return (-1);
     }
     else if (exit_code > 0)
     {
-        HelperFunctions::free_matrex(&ARG);
-        return (pip[0]);
+        _IsRunCGI = true;
+        HelperFunctions::free_matrex(&_ARG);
+        HelperFunctions::free_matrex(&_ENV);
+        return (_pip[0]);
     }
     _IsRunCGI = true;
-    HelperFunctions::free_matrex(&ARG);
-    return (pip[0]);
+    HelperFunctions::free_matrex(&_ARG);
+    HelperFunctions::free_matrex(&_ENV);
+    return (_pip[0]);
 }
-bool clsCGI::_InintialVar(char **ENV, char ***ARG, int pip[2])
+bool clsCGI::_InintialVar()
 {
-    ENV = NULL;
-    // if (!(ENV = _MakeEnv()))
-    //     return (true);
-    if (!((*ARG) = _StoredArgs()))
-        return (true);
-    if (pipe(pip) == -1)
-        return (true);
-    return (false);
+    if (!_MakeEnv())
+        return (false);
+    if (!_StoredArgs())
+        return (false);
+    if (pipe(_pip) == -1)
+        return (false);
+    return (true);
 }
 int clsCGI::RunCGI()
 {
-    char **ENV = NULL;
-    char **ARG = NULL;
-    int pip[2] = {-1,-1};
-    if (_InintialVar(ENV, &ARG, pip))
+    if (!_InintialVar())
         return (-1);
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
     {
-        close(pip[0]);
-        close(pip[1]);
-        HelperFunctions::free_matrex(&ENV);
+        close(_pip[0]);
+        close(_pip[1]);
+        HelperFunctions::free_matrex(&_ENV);
         return (-1);
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
     {
-        if (_childeProcesse(ENV, ARG, pip))
+        if (_childeProcesse())
             return (-1);
     }
     else
-        return (_ParentProcesse(ENV, ARG, pip));
+        return (_ParentProcesse());
     return 0;
 }
 

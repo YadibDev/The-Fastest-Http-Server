@@ -14,8 +14,8 @@
 #define CLS_MAIN_PROCESS_HPP
 
 #include "../response/clsResponse.hpp"
-// #include "../cgi/clsParseOutCGI.hpp"
-// #include "../cgi/clsCGI.hpp"
+#include "../cgi/clsParseOutCGI.hpp"
+#include "../cgi/clsCGI.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
 class clsMainProcess
@@ -23,7 +23,7 @@ class clsMainProcess
 private:
     clsResponse _Response;
     
-    // clsCGI _CGI;
+    clsCGI _CGI;
     RequestHandler &_DataRequest;
     void _PartRedirection();
     void _PartPermission();

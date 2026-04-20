@@ -24,16 +24,19 @@ class clsCGI
         bool _IsRunCGI;
         long long _StartTime;
         int _FD;
-        RequestHandler &_DataRequest;
+        const RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
+        char **_ENV;
+        char **_ARG;
+        int _pip[2];
         std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
-        bool _childeProcesse(char **ENV, char **ARG, int pip[2]);
-        int _ParentProcesse(char **ENV, char **ARG, int pip[2]);
-        bool _InintialVar(char **ENV, char ***ARG, int pip[2]);
-        char **_StoredArgs();
-        char **_MakeEnv();
+        bool _childeProcesse();
+        int _ParentProcesse();
+        bool _InintialVar();
+        bool _StoredArgs();
+        bool _MakeEnv();
     public:
-        clsCGI(const RequestHandler DataRequest);
+        clsCGI(const RequestHandler &DataRequest);
         bool GetIsRunCGI();
         clsParseOutCGI &GetclsParseOutCGI();
         int RunCGI();

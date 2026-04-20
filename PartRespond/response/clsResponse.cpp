@@ -293,10 +293,7 @@ const std::string *clsResponse::GetFileFromDiskPointer()
 {
     return _FileFromDiskPointer;
 }
-bool clsResponse::GetErnoVar()
-{
-    return _Erno;
-}
+
 void clsResponse::SetModTransferData(bool ModTransferData)
 {
     _ModTransferData = ModTransferData;
@@ -308,5 +305,9 @@ bool clsResponse::GetModTransferData() const
 int clsResponse::GetSizeBody() const
 {
     return (_BodySize);
+}
+bool clsResponse::GetErnoVar()
+{
+    return _Erno;
 }
 clsResponse::~clsResponse(){}

@@ -10,6 +10,7 @@ UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpEr
 
 
 RESPOND_FILES =	 PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp PartRespond/response/clsResponse.cpp \
+					PartRespond/cgi/clsCGI.cpp PartRespond/cgi/clsParseOutCGI.cpp
 
 
 CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp \
