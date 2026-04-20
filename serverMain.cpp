@@ -34,47 +34,7 @@ void function(int signal)
 
 int main()
 {
-    HelperFunctions::StoredDefaultType();
-    HelperFunctions::StoredBodys();
-    HelperFunctions::StoredMessage();
-    HelperFunctions::StoredMessage();
-    signal(SIGINT, function);
-    int fd = open("configs/default.conf", O_RDONLY);
-    std::string configeData;
-    configeData.resize(1025);
-
-    read(fd, &configeData[0], 1024);
-
-    // fd, configeData, 1024
-
-    LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
-
-    lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
-    lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
-    lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
-
-    lexerConfig.addCommentRule("#", "\n");
-    lexerConfig.addWithSpace(" \t\n");
-
-    GenericLexer<TokenType> lexer(configeData, lexerConfig);
-
-    std::vector<Token<TokenType> > Lexer = lexer.tokenize();
-
-    clsParse<TokenType> Data(Lexer, TOKEN_EOF);
-    clsParseConfigueFile ConfigueFile(Data);
-
-    ConfigueFile.ParseConfigue();
-    if (!ConfigueFile.getServers().size())
-    {
-        std::cout << ConfigueFile.getError().getMsgError() << std::endl;
-        std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
-        std::cout << "Block Server ZERO\n"
-                  << std::endl;
-        return 1;
-    }
-
-    clsServerConfig Block = ConfigueFile.getServers()[0];
-
+    
     clsEpollHandler epoll;
     epoll_event ClientBuffer[100];
 

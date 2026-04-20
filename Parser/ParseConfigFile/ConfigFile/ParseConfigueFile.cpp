@@ -60,7 +60,7 @@ bool clsParseConfigueFile::ParseConfigue()
 }
 
 
-std::vector<clsServerConfig> clsParseConfigueFile::getServers() const
+std::vector<clsServerConfig> &clsParseConfigueFile::getServers() const
 {
     return (_servers);
 }

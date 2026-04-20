@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstring>
 #include <unistd.h>
+#include <exception>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <poll.h>
@@ -18,5 +19,14 @@
 
 class clsFlow
 {
-    
+    void _initializeStatics();
+    void _createBlocksServers();
+    void _createServers();
+    size_t totalServers;
+    clsParseConfigueFile *_allBlocks;
+    std::vector<clsServerSock> _allServers;
+    clsEpollHandler _epoll;
+
+    clsServerSock server;
+   
 }
