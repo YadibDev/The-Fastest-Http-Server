@@ -22,6 +22,17 @@ void RequestParser::init(uint16_t offset)
 	_error.setStatus(0, "");
 }
 
+void RequestParser::init(clsServerConfig *block, uint16_t offset)
+{
+	_state = STATE_REQUEST_LINE;
+	_offset = offset;
+	_requestLine.init(offset);
+	_header.init(offset);
+	_error.setStatus(0, "");
+	_ServerConfig = block;
+}
+
+
 bool RequestParser::LProcessRequestHandler()
 {
 	ProcessRequestHandler::processRequest(_requestLine, _ServerConfig, _RequestHandler);

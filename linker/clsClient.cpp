@@ -24,6 +24,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     this->block = block;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
+    _Requester.init(block);
     // add request
 }
 
@@ -92,8 +93,10 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
-    // if (_fdRespond > 0)
-    //     close(_fdRespond);
+    if (_fdRespond > 0)
+        close(_fdRespond);
+    if (this->_socket > 0)
+        close(this->_socket);
 }
 
 int clsClient::_ReadDataForReq()
@@ -303,4 +306,11 @@ void clsClient::ProcessBoth(uint32_t events)
         ProcessRequest();
     else if ((events & EPOLLOUT) == EPOLLOUT)
         ProcessRespond();
+}
+
+void clsClient::freeRessources()
+{
+    if (this->_socket > 0)
+        close(this->_socket);
+    _socket = -1;
 }

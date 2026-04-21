@@ -23,7 +23,7 @@ void clsFlow::_createBlocksServers()
         throw std::runtime_error("Error can be on of the following reasons :\n- config file too large \n- empty file\n");
     configeData.resize(sizeRead);
 
-    LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
+    static LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
     lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
     lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
     lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
@@ -57,7 +57,6 @@ void clsFlow::_createServers()
             serv.buildSockets(_allBlocks->at(i).getListens());
             serv.setBlock(&_allBlocks->at(i));
             _allServers.push_back(serv);
-            serv.disableCloseAtEnd();
             _totalServers++;
         }
         catch (std::exception &e)
@@ -92,7 +91,8 @@ void clsFlow::_freeClient(short clientFd)
 {
     short index = _clientIdByFd[clientFd];
     _clientIdByFd.erase(clientFd);
-    // _clientsArr[index].freeRessources()
+
+    _clientsArr[index].freeRessources();
     _clientsAvailable.push(index);
 }
 
@@ -104,16 +104,23 @@ void clsFlow::_registerServersSockets()
         try
         {
             clsServerSock &server = _allServers[i - Erase];
-            _epoll.addServerSockets(server);
+            if (_epoll.addServerSockets(server, EPOLLIN) == false)
+                throw std::runtime_error("Error\nservers can't add his socket to epoll");
         }
-        catch (...)
+        catch(std::exception &e)
         {
+            std::cout << e.what() << std::endl;
             _allServers.erase(_allServers.begin() + (i - Erase));
             Erase++;
         }
     }
+
     if (_allServers.size() == 0)
-        throw("Error\ncan't register all servers sockets");
+        throw(std::runtime_error("Error\ncan't register all servers sockets"));
+
+    for (size_t i = 0; i < _allServers.size(); i++)
+        _allServers[i].enableCloseAtEnd();
+
     std::cout << "Register Server Sockets by success\n";
 }
 
@@ -163,7 +170,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 {
     int blockId = this->_getClient();
     if (blockId == -1)
-        return false;
+        return false; // can't add client 
     clsClient &client = _clientsArr[blockId];
     _clientIdByFd[newClient] = blockId;
 
@@ -177,12 +184,13 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 {
     int index = _clientIdByFd[fd];
     clsClient &client = _clientsArr[index];
+
     client.ProcessBoth(event);
     const clinetState &status = client.GetState();
 
     if (status == CONNECTION_CLOSED)
         _freeClient(fd);
-    else if (status == RESPOND_MODE)
+    else if (status == START_RESPOND)
     {
         _epoll.changeAbility(fd, EPOLLOUT);
     }

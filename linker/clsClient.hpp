@@ -63,7 +63,7 @@ private:
 public:
     clsClient();
     void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
-    // freeRessources();
+    void freeRessources();
 
     ~clsClient();
 

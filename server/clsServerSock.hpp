@@ -38,7 +38,7 @@ public:
     clsServerSock();
     ~clsServerSock();
 
-    void disableCloseAtEnd();
+    void enableCloseAtEnd();
     bool isServerIp(unsigned int ip, unsigned int port);
     void buildSockets(std::vector<sockaddr_in> listens);
     void removeSocket(int);

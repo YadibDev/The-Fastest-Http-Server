@@ -9,13 +9,14 @@ enum StatusError
 
 clsServerSock::clsServerSock() : _totalInterfaces(0), _totalSocks(0)
 {
+    closeAtEnd = false;
+}
+
+void clsServerSock::enableCloseAtEnd()
+{
     closeAtEnd = true;
 }
 
-void clsServerSock::disableCloseAtEnd()
-{
-    closeAtEnd = false;
-}
 // free all data and closing all the fds of socket
 clsServerSock::~clsServerSock()
 {
@@ -24,6 +25,8 @@ clsServerSock::~clsServerSock()
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
+    std::cout << "------- DEBUG ---------\n" << std::endl;
+    std::cout << "------- " << _Sockets.size() << std::endl;
     while (it != end)
     {
         close(*it);
