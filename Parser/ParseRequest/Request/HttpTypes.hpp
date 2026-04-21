@@ -14,6 +14,12 @@ struct s_view
 	char *Data;
 	uint16_t len;
 	s_view() : Data(NULL), len(0) {}
+
+	void reset()
+	{
+		Data = NULL;
+		len = 0;
+	}
 };
 
 class HttpTables {

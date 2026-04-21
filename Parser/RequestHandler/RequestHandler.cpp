@@ -16,54 +16,83 @@ RequestHandler::RequestHandler(stPollRequest& request)
 	_version.len = 0;
 }
 
+void RequestHandler::reset()
+{
+	_physicalPath[0] = '\0';
+
+	_autoindex = false;
+
+	_query.reset();
+	_version.reset();
+	_PathInfo.reset();
+	_ScriptName.reset();
+	_ServerPort.reset();
+
+	_PathTranslated.clear();
+	_body.clear();
+	_filePathBody.clear();
+
+	_method = HttpTables::METHOD_UNKNOWN;
+	_allowMethods = 0;
+
+	_error_pages.clear();
+
+	_defaultErrorPage = NULL;
+	_pathCgi = NULL;
+	_upload_store = NULL;
+
+	_error = HttpError();
+}
+
+
 RequestHandler::~RequestHandler() {}
 
 
 bool	RequestHandler::ExtractCgiMetadata(s_view uri, const std::map<std::string, std::string> &cgi_pass)
 {
-    if (!uri.Data || uri.len == 0)
-        return false;
+	if (!uri.Data || uri.len == 0)
+		return false;
 
-    char* start = uri.Data;
-    char* current = start;
-    char* end = start + uri.len - 1;
+	char* start = uri.Data;
+	char* current = start;
+	char* end = start + uri.len - 1;
 
-    while (current <= end)
-    {
-        if (*current == '.')
-        {
-            char* extStart = current;
-            char* extEnd = extStart;
+	while (current <= end)
+	{
+		if (*current == '.')
+		{
+			char* extStart = current;
+			char* extEnd = extStart;
 
-            while (extEnd <= end && *extEnd != '/')
-                ++extEnd;
+			while (extEnd <= end && *extEnd != '/')
+				++extEnd;
 
-            std::string extStr(extStart, extEnd);
+			std::string extStr(extStart, extEnd);
 
-            std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
-            if (it != cgi_pass.end())
-            {
-                _pathCgi = &it->second;
+			std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
+			if (it != cgi_pass.end())
+			{
+				_pathCgi = &it->second;
 
-                _ScriptName.Data = start;
-                _ScriptName.len = static_cast<uint16_t>(extEnd - start);
+				_ScriptName.Data = start;
+				_ScriptName.len = static_cast<uint16_t>(extEnd - start);
 
-                if (extEnd <= end && *extEnd == '/')
-                {
-                    _PathInfo.Data = extEnd;
-                    _PathInfo.len = static_cast<uint16_t>(end - extEnd + 1);
-                }
-                else
-                {
-                    _PathInfo.Data = NULL;
-                    _PathInfo.len = 0;
-                }
-                return true;
-            }
-        }
-        ++current;
-    }
-    return false;
+				if (extEnd <= end && *extEnd == '/')
+				{
+					_PathInfo.Data = extEnd;
+					_PathInfo.len = static_cast<uint16_t>(end - extEnd + 1);
+				}
+				else
+				{
+					_PathInfo.Data = NULL;
+					_PathInfo.len = 0;
+				}
+				return true;
+			}
+		}
+		++current;
+	}
+	return false;
 }
 
 void	RequestHandler::computePathTranslated(const std::string& rootPath)

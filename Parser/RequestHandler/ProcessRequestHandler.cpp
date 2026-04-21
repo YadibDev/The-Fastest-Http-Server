@@ -116,7 +116,7 @@ bool	ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, cha
 		destBuffer[baseLen] = '\0';
 		return true;
 	}
-	return (error.setStatus(400, "Physical Path Is Large"), false);
+	return (error.setStatus(404, "Not Found"), false);
 }
 
 size_t PercentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
@@ -139,9 +139,6 @@ size_t PercentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
 bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view &uri, HttpError &error) {
 
 	char    CleanUri[MAX_PATH_LEN];
-
-	if (uri.len > 0 && uri.Data[uri.len - 1] == '/')
-		return handleDirectory(bestLocation, destBuffer, error);
 
 	const std::string &base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
 	size_t currentPos = base.size();
@@ -228,8 +225,12 @@ bool    ProcessRequestHandler::processRequest(const RequestLine& StartLine, cons
 				return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
 		}
 		else
+		{
 			if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), StartLine.getRequestURI().getPath(), error))
 				return (false);
+			if (uri.len && uri.Data[uri.len - 1] == '/')
+				return handleDirectory(bestLocation, handler->getPhysicalPath(), error);
+		}
 
 		if (handler->getPathInfo().len)
 			handler->computePathTranslated(serverConfig->getRoot());
