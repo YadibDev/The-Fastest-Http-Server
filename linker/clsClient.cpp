@@ -118,7 +118,6 @@ int clsClient::_ReadDataForReq()
         if (size > 0)
             idx += size;
     }   
-    std::cout << _theData.request_metadata << endl;
     if (size == 0)
         _state = CONNECTION_CLOSED;
 
@@ -201,8 +200,6 @@ ssize_t clsClient::_addSizeChunkToStr()
     if (bodyLimit == 0)
     {
         memcpy(&respondBuffer[bytesToSend], "0\r\n\r\n", 5);
-        std::cout << "cr---------------lf\n";
-        std::cout << "0-r-r-r-n" << endl;
         _state = LAST_CHUNKED;
         bytesToSend += 5;
         return 0;
@@ -291,13 +288,10 @@ void clsClient::ProcessRespond()
         else
         {
             bodyLimit = Respond.GetSizeBody();
-            cout << "size body bellow \n\n";
-            cout << bodyLimit << std::endl;
             _BodyPlace = bodyPlaceEnum::DISK;
         }
     }
     _SendRespond(Respond);
-    cout << this->bodyLimit << std::endl;
 }
 
 void clsClient::ProcessBoth(uint32_t events)

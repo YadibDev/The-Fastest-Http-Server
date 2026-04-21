@@ -100,7 +100,6 @@ void clsBody::bodyHandler(uint16_t *off)
             }
             _state = clsBody::READING_BODY;
         }
-        std::cout <<  "location " << _bodyLocation << std::endl;
 
         if (data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 10 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 10) == 0)
             _isMultiPart = true;
@@ -244,8 +243,7 @@ void clsBody::moveOffsetMulti(uint16_t &offset)
 
 void clsBody::shiftingData(char *src, int offset, int sizeShift)
 {
-    std::cout << "____________________\n";
-    std::cout << &src << std::endl;
+
     for (int i = 0; i < sizeShift; i++)
     {
         src[i] = src[offset + i];

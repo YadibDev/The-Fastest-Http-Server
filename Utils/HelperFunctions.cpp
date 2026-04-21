@@ -599,6 +599,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".jpeg"] = "image/jpeg";
 		_TypeContent[".png"]  = "image/png";
 		_TypeContent[".txt"]  = "text/plain";
+		_TypeContent[".mp4"]  = "video/mp4";
 	}
  }
 
