@@ -78,7 +78,7 @@ public:
     void ParseBody(uint16_t &offset);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
-    void Reset();
+    void Reset(); 
     void moveOffsetMulti(uint16_t &offset);
 
    void readSizeChunk(uint16_t &ofset, bool &error);

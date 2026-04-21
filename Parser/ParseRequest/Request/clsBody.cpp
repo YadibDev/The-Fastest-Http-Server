@@ -82,7 +82,7 @@ void clsBody::bodyHandler(uint16_t *off)
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
         {
             // debug
-            std::cout << "----- body start\n" << std::endl;
+            std::cout <<    "----- body start\n" << std::endl;
             _isChunk = false;
             const char *content_leng = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data; //
             _contentLength = std::atol(content_leng);                                                    // maybe handle overflow and add check if he  is more than the limit in config fie
@@ -274,6 +274,7 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     else
     {
         // debug
+
         for (int i = 0; i < offset; i++)
             cout << data.io_chunk[i];
         int temp = write(this->fd, data.io_chunk, offset); // i will change this
@@ -308,6 +309,9 @@ void clsBody::ParseBody(uint16_t &offset)
     {
         if (offset == _contentLength)
         {
+            // debug ram
+            for (int i = 0; i < offset; i++)
+                    cout << data.io_chunk[i];
             if (_isMultiPart)
             {
                 _multipartLib.Parser(data.io_chunk, offset);
