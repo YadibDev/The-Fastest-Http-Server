@@ -39,8 +39,6 @@ class clsParseOutCGI
         clsErrorPage _ErrorPage;
         const RequestHandler &_DataRequest;
         short _CountSizeHeaders;
-        short _MaxSizeHeaders;
-        int _MaxSizeBody;
         std::map <std::string, std::string> _HeadersField;
         std::string _HeadersFieldDuplicate;
         std::string _HeadersFieldFinal;

@@ -13,6 +13,10 @@
 # ifndef LIBRARYS_HPP
 # define LIBRARYS_HPP
 
+
+# define MAX_HEADERS  2000
+# define MAX_BODY  8192 - MAX_HEADERS
+
 enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
 struct stMod

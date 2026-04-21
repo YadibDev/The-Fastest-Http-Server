@@ -66,7 +66,7 @@ public:
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex);
     static const char *GetTypeDataFile(const std::string &Str);
-    static void GetCleanLineHeader(std::string &BigData, std::string &CleanLine , short *MaxHeader, bool *Flag);
+    static void GetCleanLineHeader(char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
     static char	*ft_itoa(int n);
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);

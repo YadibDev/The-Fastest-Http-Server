@@ -331,27 +331,25 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 	return SizeByte;
 }
 
-void HelperFunctions::GetCleanLineHeader(std::string &BigData, std::string &CleanLine ,short *MaxSizeHeader, bool *Flag)
+void HelperFunctions::GetCleanLineHeader(char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
-	short i = 0;
-
-	while(i < (short)BigData.length() && BigData[i] != '\n')
+	// 123\n45
+	while(i < LengthData && BigData[i] != '\n')
 	{
-		(*MaxSizeHeader)++;
-		if ((*MaxSizeHeader) > 4000)
+		(MaxSizeHeader)++;
+		if ((MaxSizeHeader) > 4000)
 			return ;
 		CleanLine += BigData[i];
 		i++;
 	}
 	if (BigData[i] == '\n')
 	{
-		(*MaxSizeHeader)++;
+		(MaxSizeHeader)++;
 		CleanLine += BigData[i];
-		BigData.erase(0, (++i));
-		(*Flag) = true;
+		(Flag) = true;
+		i++;
 	}
-	else
-		BigData.erase(0, (++i));
+	
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT)

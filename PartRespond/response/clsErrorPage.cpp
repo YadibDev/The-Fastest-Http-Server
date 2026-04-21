@@ -14,13 +14,12 @@
 
  clsErrorPage::clsErrorPage()
 {
-    // add define header for size max
     _Status = 0;
     _BodySize = 0;
     _Type.resize(500);
     _FileFromDisk.resize(1000);
-    _HeaderFeild.resize(4000);
-    _Body.resize(40000);
+    _HeaderFeild.resize(MAX_HEADERS);
+    _Body.resize(MAX_BODY);
     if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -65,7 +64,7 @@ void clsErrorPage::_StoredInFileOrStr()
         return ;
     }
     _BodySize = MetaData.st_size;
-    if (_BodySize > 40000)
+    if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
@@ -78,7 +77,7 @@ void clsErrorPage::_StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (read(FD,&_Body[0],40000) == -1)
+    if (read(FD,&_Body[0],MAX_BODY) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;

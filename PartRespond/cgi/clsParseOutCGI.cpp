@@ -17,20 +17,18 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _BytesBody = 0;
     _FoundBody = false;
     _ProcessIsFinish = false;
-    _MaxSizeHeaders = 4000;
     _CountSizeHeaders = 0;
-    _MaxSizeBody = 40000;
     _Fdout = -1;
     _ModTransferData = false;
 
-    _Body.resize(_MaxSizeBody);
-    _HeadersFieldDuplicate.resize(_MaxSizeHeaders);
+    _Body.resize(MAX_BODY);
+    _HeadersFieldDuplicate.resize(MAX_HEADERS);
     _HeadersFieldDuplicate.clear();
-    _Line.resize(_MaxSizeHeaders);
+    _Line.resize(MAX_HEADERS);
     _Line.clear();
-    _NameHeader.resize(_MaxSizeHeaders);
+    _NameHeader.resize(MAX_HEADERS);
     _NameHeader.clear();
-    _ValueHeader.resize(_MaxSizeHeaders);
+    _ValueHeader.resize(MAX_HEADERS);
     _ValueHeader.clear();
 
     HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
@@ -278,13 +276,14 @@ void clsParseOutCGI::_BuilResponsedredirection()
     }
 }
 
-void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
+void clsParseOutCGI::_ReceivingHeaders(std::string &Data) // add arg length and char pointer from CGI
 {
     if (_FoundBody)
         return ;
     bool Flag = false;
-    HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
-    if (_CountSizeHeaders > _MaxSizeHeaders)
+    short Counter = 0;
+    HelperFunctions::GetCleanLineHeader(Data, _Line, _CountSizeHeaders, Flag, Counter);
+    if (_CountSizeHeaders > MAX_HEADERS)
     {
         _Status = 413;
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -293,13 +292,13 @@ void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
     while(Flag)
     {
         Flag = false;
-        if (_CountSizeHeaders > _MaxSizeHeaders)
+        if (_CountSizeHeaders > MAX_HEADERS)
         {
             _Status = 413;
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-        if (_Line != "\r\n")
+        if (_Line.compare("\r\n"))
         {
             if (!_ValidHeaders(_Line))
             {
@@ -314,7 +313,7 @@ void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
+        HelperFunctions::GetCleanLineHeader(Data, _Line, _CountSizeHeaders, Flag, Counter); // add arg length from CGI
     }
 }
 
@@ -331,7 +330,7 @@ void clsParseOutCGI::_CreatFileTemp()
     _FileNameFromDisk =  Arr;
 }
 
-void clsParseOutCGI::_ReceivingBody(std::string &Data)
+void clsParseOutCGI::_ReceivingBody(std::string &Data) // edit for add char pointer 
 {
     if (_FoundBody && _BytesBody < 40000)
     {
@@ -350,7 +349,7 @@ void clsParseOutCGI::_ReceivingBody(std::string &Data)
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       if (_BytesBody > _MaxSizeBody)
+       if (_BytesBody > MAX_BODY)
        {
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             _CreatFileTemp();
@@ -367,13 +366,12 @@ void clsParseOutCGI::_ReceivingBody(std::string &Data)
            Data.clear();
        }
     }
-    else if (_BytesBody > _MaxSizeBody)
+    else if (_BytesBody > MAX_BODY)
     {
         write(_Fdout, &Data[0], Data.size());
         Data.clear();
     }
 }
-
 
 void clsParseOutCGI::_StoredInFileOrStr()
 {
@@ -385,7 +383,7 @@ void clsParseOutCGI::_StoredInFileOrStr()
         return ;
     }
     _BytesBody = MetaData.st_size;
-    if (_BytesBody > _MaxSizeBody)
+    if (_BytesBody > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
@@ -414,6 +412,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     _HeadersField.clear();
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
+    kill(-4555,SIGKILL);
     close(_Pipe_Fd);
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
     if (ErrorPageConf->response)
@@ -430,7 +429,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
 }
 
-void clsParseOutCGI::ReceivingData(std::string &Data)
+void clsParseOutCGI::ReceivingData(std::string &Data,)
 {
     if (_Mod[stMod::ERROR] == stMod::ERROR)
         return ;

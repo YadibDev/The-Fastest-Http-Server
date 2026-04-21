@@ -18,8 +18,8 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
 {
     _Status = 0;
     _BodySize = 0;
-    _MaxSizeHeader = 4000;
-    _MaxSizeBody = 6000;
+    _MaxSizeHeader = 2000;
+    _MaxSizeBody = 8192 - _MaxSizeHeader;
 
     _IsConnection = true;
     _SizeHeaders = 0;
