@@ -46,7 +46,9 @@ private:
     void _clientFlow(short clientId);
     fdTypes _fdType(int fd);
 
+    void _clientProcess(int fd, uint32_t event);
     bool _eventsEroorHandle(epoll_event &client);
+    void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
 public:
     clsFlow();
     void EventLoop();

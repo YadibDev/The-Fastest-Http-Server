@@ -155,21 +155,47 @@ clsFlow::fdTypes clsFlow::_fdType(int fd)
     {
         return PIPE;
     }
-    else if (getpeername(fd, reinterpret_cast<sockaddr *>(&addr), &size) == -1)
-    {
+    else
         return SERVER_SOCK;
-    }
-    return CLIENT_SOCK;
 }
 
 // bool clsFlow::tryPushClient()
 // {
 
 // }
+void clsFlow::_clientProcess(int fd, uint32_t event)
+{
+    int index = clientIdByFd[fd];
+    clsClient &client = _clientsArr[index];
+    client.ProcessBoth(event);
+    const clinetState &status = client.GetState();
+
+    if (status == CONNECTION_CLOSED)
+        _pushClient(fd);
+    else if (status == RESPOND_MODE)
+    {
+        _epoll.changeAbility(fd, EPOLLOUT);
+    }
+    else if (status == BEGIN)
+    {
+        _epoll.changeAbility(fd, EPOLLIN);
+    }
+}
+
+void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
+{
+    if (TypeFd == CLIENT_SOCK)
+        _clientProcess(fd, _clientsEvents[indexEvent]);
+    else if (TypeFd == SERVER_SOCK)
+        // i will create it
+    // else if (TypeFd == PIPE)
+        // cgi work here
+}
 
 void clsFlow::EventLoop()
 {
     int nFds = 0;
+    fdTypes TypeFd;
     while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, -1)))
     {
         for (int i = 0; i < nFds; i++)
@@ -178,18 +204,13 @@ void clsFlow::EventLoop()
                 continue ;
             else
             {
-                if (_fdType(_clientsEvents[i].data.fd) == CLIENT_SOCK)
-                    std::cout << "client sock" << endl;
-                else if (_fdType(_clientsEvents[i].data.fd) == SERVER_SOCK)
-                {
-                    std::cout << "SERVER_SOCK" << endl;
-                    int fd[2];
-                    pipe(fd);
-                    std::cout << _fdType(accept(_clientsEvents[i].data.fd, NULL, NULL)) << endl;;
-                    std::cout << _fdType(fd[0]) << endl;;
-                }
+                int fd = (_clientsEvents[i].data.fd);
+                if (clientIdByFd.count(fd))
+                    TypeFd = CLIENT_SOCK;
                 else
-                    std::cout << "PIPE" << endl;
+                    TypeFd = _fdType(fd);
+
+                _flowProcess(fd, TypeFd, i);
             }
         }
     }

@@ -298,8 +298,8 @@ void clsClient::ProcessRespond()
 
 void clsClient::ProcessBoth(uint32_t events)
 {
-    if (events & EPOLLIN == EPOLLIN)
+    if ((events & EPOLLIN) == EPOLLIN)
         ProcessRequest();
-    else if (events & EPOLLOUT == EPOLLOUT)
+    else if ((events & EPOLLOUT) == EPOLLOUT)
         ProcessRespond();
 }
