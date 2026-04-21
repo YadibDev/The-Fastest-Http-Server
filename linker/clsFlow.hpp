@@ -33,7 +33,7 @@ private:
     epoll_event _clientsEvents[EVENTS_MAX];
     clsEpollHandler _epoll;
     std::vector<clsServerSock> _allServers;
-    std::map<short, short> clientIdByFd;
+    std::map<short, short> _clientIdByFd;
     std::stack<short> _clientsAvailable;
 
     void _initializeStatics();
@@ -42,13 +42,13 @@ private:
     void _initializeDataBase();
     void _registerServersSockets();
     short _getClient();
-    void _pushClient(short clientFd);
-    void _clientFlow(short clientId);
+    void _freeClient(short clientFd);
     fdTypes _fdType(int fd);
-
+    void _newClientProcess(int serverFd);
     void _clientProcess(int fd, uint32_t event);
     bool _eventsEroorHandle(epoll_event &client);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
+    bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
 public:
     clsFlow();
     void EventLoop();

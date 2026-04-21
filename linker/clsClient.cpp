@@ -24,6 +24,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     this->block = block;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
+    // add request
 }
 
 // clsClient::clsClient(const clsClient &other) : block(other.block),

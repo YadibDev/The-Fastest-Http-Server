@@ -49,13 +49,13 @@ void clsFlow::_createBlocksServers()
 void clsFlow::_createServers()
 {
     _totalServers = 0;
-
     for (size_t i = 0; i < _allBlocks->size(); i++)
     {
         clsServerSock serv;
         try
         {
             serv.buildSockets(_allBlocks->at(i).getListens());
+            serv.setBlock(&_allBlocks->at(i));
             _allServers.push_back(serv);
             serv.disableCloseAtEnd();
             _totalServers++;
@@ -88,10 +88,10 @@ short clsFlow::_getClient()
     return id;
 }
 
-void clsFlow::_pushClient(short clientFd)
+void clsFlow::_freeClient(short clientFd)
 {
-    short index = clientIdByFd[clientFd];
-    clientIdByFd.erase(clientFd);
+    short index = _clientIdByFd[clientFd];
+    _clientIdByFd.erase(clientFd);
     // _clientsArr[index].freeRessources()
     _clientsAvailable.push(index);
 }
@@ -99,7 +99,7 @@ void clsFlow::_pushClient(short clientFd)
 void clsFlow::_registerServersSockets()
 {
     int Erase = 0;
-    for (size_t i = 0; i < _allServers.size(); i++)
+    for (size_t i = 0; i < _allServers.size() + Erase; i++)
     {
         try
         {
@@ -108,8 +108,8 @@ void clsFlow::_registerServersSockets()
         }
         catch (...)
         {
+            _allServers.erase(_allServers.begin() + (i - Erase));
             Erase++;
-            _allServers.erase(_allServers.begin() + i);
         }
     }
     if (_allServers.size() == 0)
@@ -139,7 +139,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client)
             std::cout << "EPOLLHUP" << std::endl;
         // if (getsockname)
             // ClientsLinker.removeClient(fd);
-        _pushClient(fd);
+        _freeClient(fd);
         return true;
     }
     return false;
@@ -159,19 +159,29 @@ clsFlow::fdTypes clsFlow::_fdType(int fd)
         return SERVER_SOCK;
 }
 
-// bool clsFlow::tryPushClient()
-// {
+bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block)
+{
+    int blockId = this->_getClient();
+    if (blockId == -1)
+        return false;
+    clsClient &client = _clientsArr[blockId];
+    _clientIdByFd[newClient] = blockId;
 
-// }
+    if (_epoll.addClient(newClient, EPOLLIN) == false)
+        return false; // watch by epoll
+    client.initializeClient(addr, newClient, block);
+    return true;
+}
+
 void clsFlow::_clientProcess(int fd, uint32_t event)
 {
-    int index = clientIdByFd[fd];
+    int index = _clientIdByFd[fd];
     clsClient &client = _clientsArr[index];
     client.ProcessBoth(event);
     const clinetState &status = client.GetState();
 
     if (status == CONNECTION_CLOSED)
-        _pushClient(fd);
+        _freeClient(fd);
     else if (status == RESPOND_MODE)
     {
         _epoll.changeAbility(fd, EPOLLOUT);
@@ -182,12 +192,31 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     }
 }
 
+void clsFlow::_newClientProcess(int serverFd)
+{
+    for (size_t i = 0; i < _allServers.size(); i++)
+    {
+        clsServerSock &server = _allServers[i];
+        sockaddr_in addr;
+
+        int newClient = server.tryAcceptNewClient(serverFd, &addr);
+        if (newClient > 0)
+        {
+            _insertClient(newClient, addr, server.getBlock());
+            break ;
+        }
+        else if (newClient == -1)
+            break;
+    }
+}
+
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
     if (TypeFd == CLIENT_SOCK)
-        _clientProcess(fd, _clientsEvents[indexEvent]);
+        _clientProcess(fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)
-        // i will create it
+        _newClientProcess(fd);
+
     // else if (TypeFd == PIPE)
         // cgi work here
 }
@@ -205,7 +234,7 @@ void clsFlow::EventLoop()
             else
             {
                 int fd = (_clientsEvents[i].data.fd);
-                if (clientIdByFd.count(fd))
+                if (_clientIdByFd.count(fd))
                     TypeFd = CLIENT_SOCK;
                 else
                     TypeFd = _fdType(fd);

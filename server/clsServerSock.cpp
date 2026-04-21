@@ -74,7 +74,15 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     _totalInterfaces++;
     return fdSock;
 }
+void clsServerSock::setBlock(clsServerConfig *block)
+{
+    this->block = block;
+}
 
+clsServerConfig *clsServerSock::getBlock()
+{
+    return block;
+}
 // builds sockets that exist in vector
 void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
 {
@@ -121,7 +129,7 @@ bool clsServerSock::isServerIp(unsigned int ip, unsigned int port)
 
     return false;
 }
-#include <stdio.h>
+
 int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
