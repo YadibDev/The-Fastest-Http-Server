@@ -76,6 +76,7 @@ public:
     bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
     void bodyHandler(uint16_t *off);
     void ParseBody(uint16_t &offset);
+    ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset();
     void moveOffsetMulti(uint16_t &offset);

@@ -96,7 +96,9 @@ bool RequestParser::ParseBody(uint16_t size)
 	_body.bodyHandler(_request.read_body_ptr);
 
 	if (_body.getState() == clsBody::DONE_GOOD)
+	{
 		_state = STATE_COMPLETE;
+	}
 	else if (_body.getState() == clsBody::DONE_WIHTERROR)
 		_state = STATE_ERROR;
 
