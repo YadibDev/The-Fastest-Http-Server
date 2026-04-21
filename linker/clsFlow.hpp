@@ -13,7 +13,8 @@
 #include "../server/clsServerSock.hpp"
 #include "clsLinker.hpp"
 
-#define EVENTS_MAX 200
+#define EVENTS_MAX 150
+#define MAX_CLIENTS 500
 
 // #include <vector>
 // #include "PartRespond/mainprocess/Webserv.hpp"
@@ -23,20 +24,26 @@
 
 class clsFlow
 {
-public:
+private:
+    size_t _totalServers;
+    clsClient *_clientsArr;
+    std::vector<clsServerConfig> *_allBlocks;
     epoll_event _clientsEvents[EVENTS_MAX];
     clsEpollHandler _epoll;
-    std::vector<clsServerConfig> *_allBlocks;
     std::vector<clsServerSock> _allServers;
     std::map<short, short> clientIdByFd;
-    clsClient *_clientsArr;
     std::stack<short> _clientsAvailable;
-    size_t _totalServers;
 
     void _initializeStatics();
     void _createBlocksServers();
     void _createServers();
     void _initializeDataBase();
+    void _registerServersSockets();
     short _getClient();
     void _pushClient(short clientId);
+    void _clientFlow(short clientId);
+    void _eventsEroorHandle()
+public:
+    clsFlow();
+    void EventLoop(epoll_event &client);
 };

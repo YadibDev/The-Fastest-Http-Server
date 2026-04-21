@@ -9,6 +9,7 @@ enum StatusError
 
 clsServerSock::clsServerSock() : _totalInterfaces(0), _totalSocks(0)
 {
+    closeAtEnd = true;
 }
 
 void clsServerSock::disableCloseAtEnd()
@@ -33,6 +34,7 @@ clsServerSock::~clsServerSock()
 void clsServerSock::removeSocket(int fd)
 {
     this->_Sockets.erase(fd);
+    this->_totalSocks--;
     close(fd);
 }
 

@@ -21,13 +21,13 @@ using namespace std;
 class clsServerSock
 {
 private:
-    vector<unsigned int> _allIps;
-    vector<unsigned short> _allPorts;
-    size_t _totalInterfaces;
-    set<int> _Sockets;
-    size_t _totalSocks;
     struct sockaddr_in temp;
     bool closeAtEnd;
+    size_t _totalInterfaces;
+    size_t _totalSocks;
+    set<int> _Sockets;
+    vector<unsigned int> _allIps;
+    vector<unsigned short> _allPorts;
     int _buildSingleSocket(sockaddr_in &temp);
     // void _initializeSockaffr(unsigned short, unsigned int);
     bool _isServerSocket(int);

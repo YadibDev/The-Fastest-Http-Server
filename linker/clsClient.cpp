@@ -1,13 +1,7 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 10000
+#define CHUNK_LIMIT 8192
 
-void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig &block) 
-{
-    
-    _LastConnection = _FirstConnection;
-    _state = BEGIN;
-};
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, NULL, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
 {
@@ -132,9 +126,9 @@ void clsClient::ProcessRequest()
     // reset request in every new request from client
     if (_state == BEGIN)
     {
+        _theData.Reset();
         _Requester.init();
         _state = REQUEST_MODE;
-        _theData.Reset();
     }
 
     int size = _ReadDataForReq(); // reading data for request
@@ -192,6 +186,7 @@ void clsClient::ProcessRequest()
         return;
     }
 }
+
 ssize_t clsClient::_addSizeChunkToStr()
 {
     ssize_t byteCanSend = CHUNK_LIMIT - bytesToSend - 8 - 2;
@@ -299,4 +294,12 @@ void clsClient::ProcessRespond()
     }
     _SendRespond(Respond);
     cout << this->bodyLimit << std::endl;
+}
+
+void clsClient::ProcessBoth(uint32_t events)
+{
+    if (events & EPOLLIN == EPOLLIN)
+        ProcessRequest();
+    else if (events & EPOLLOUT == EPOLLOUT)
+        ProcessRespond();
 }

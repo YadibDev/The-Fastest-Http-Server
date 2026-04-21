@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <sys/epoll.h>
 #include "../Utils/HelperFunctions.hpp"
 #include "../PartRespond/mainprocess/Webserv.hpp"
 #include "../Parser/RequestHandler/RequestHandler.hpp"
@@ -36,34 +37,32 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    clsServerConfig *block;
+    bool _resetReq;
     int _socket;
+    int _fdRespond;
+    ssize_t bytesToSend;
+    ssize_t bodyLimit;
+    size_t _LastConnection; // update connection in ms
     size_t _FirstConnection; // first established connection in ms mile seconds
-    sockaddr_in _addr;       // ip and port of the client
-
     stPollRequest _dataForReq;
     PollOfClient _theData;
-    bool _resetReq;
-
+    sockaddr_in _addr;       // ip and port of the client
+    clsServerConfig *block;
     RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
 
     clinetState _state;
-    int _fdRespond;
     bodyPlaceEnum::place _BodyPlace;
-    ssize_t bodyLimit;
-    size_t _LastConnection; // update connection in ms
 
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
     ssize_t _addSizeChunkToStr();
 
-    ssize_t bytesToSend;
 
 public:
     clsClient();
-    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
+    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
     // freeRessources();
 
     ~clsClient();
@@ -85,7 +84,7 @@ public:
     // the flow of request and respnd
     void ProcessRequest(); // will be
     void ProcessRespond();
-    // void ProcessBoth();
+    void ProcessBoth(uint32_t events);
 };
 
 #endif

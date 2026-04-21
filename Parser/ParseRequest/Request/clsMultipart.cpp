@@ -292,7 +292,7 @@ char clsMultiHeader::storeValues(int key_indexes[2], int value_indexes[2], short
 
 void clsMultiHeader::addChar(char c)
 {
-	if (ofset == 4000)
+	if (ofset == MAX_HEADER_MULTI)
 	{
 		isError = true;
 		return;
