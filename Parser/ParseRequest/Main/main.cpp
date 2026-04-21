@@ -183,9 +183,24 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-		"POST /cgi-bin/script.txt.js/ls.py/info HTTP/1.1\r\n"
-		"Host: localhost\r\n"
-		"\r\n\0";
+    	"GET /cgi-bin/script.txt.js/ HTTP/1.1\r\n"
+    	"Host: 127.0.0.1:8081\r\n"
+    	"Connection: keep-alive\r\n"
+    	"Cache-Control: max-age=0\r\n"
+    	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
+    	"sec-ch-ua-mobile: ?0\r\n"
+    	"sec-ch-ua-platform: \"macOS\"\r\n"
+    	"Upgrade-Insecure-Requests: 1\r\n"
+    	"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
+    	"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\n"
+    	"Sec-GPC: 1\r\n"
+    	"Accept-Language: en-US,en\r\n"
+    	"Sec-Fetch-Site: none\r\n"
+    	"Sec-Fetch-Mode: navigate\r\n"
+    	"Sec-Fetch-User: ?1\r\n"
+    	"Sec-Fetch-Dest: document\r\n"
+    	"Accept-Encoding: gzip, deflate, br\r\n"
+    	"\r\n\0";
 
 	setPollRequestData(req, client, http_request);
 
@@ -227,16 +242,12 @@ int main()
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
 
-	RequestParser Parser(req, &ServerConfig, &RequestHandler);
+	RequestParser Parser(req, &RequestHandler);
+	Parser.init(&ServerConfig);
 
 
 	int size = strlen(http_request);
-	for (int i = 0; i < size; i++)
-	{
-		if (!Parser.Parse(i))
-			break ;
-	}
-
+	Parser.Parse(size);
 	if (Parser.isComplete())
 		std::cout << "\nIsComplete\n\n";
 
@@ -256,6 +267,7 @@ int main()
 	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
 	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
 	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
+	std::cout << "Path Translated : " << RequestHandler.getPathTranslated() << std::endl;
 	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
 	std::cout << "Path Cgi : " << cgi << std::endl;
 

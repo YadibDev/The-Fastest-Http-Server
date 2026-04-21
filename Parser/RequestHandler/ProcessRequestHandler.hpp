@@ -17,11 +17,17 @@ class ProcessRequestHandler
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
 	static std::string			getIndex(const clsLocation* bestLocation, HttpError &error);
 	static bool					creatPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view &uri, HttpError &error);
-	static bool					handleDirectory(const clsLocation* bestLocation, char *destBuffer, HttpError &error);
+	static bool					handleDirectory(const clsLocation* bestLocation, RequestHandler* handler, char *destBuffer, HttpError &error);
 	static	const clsLocation* findBestLocation(
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
 	s_view							uri);
+	static bool					handlePath(const clsLocation* bestLocation,
+									RequestHandler* handler,
+									const s_view &requestUri,
+									HttpError	error);
+	static bool					indexCgi(const clsLocation* bestLocation, RequestHandler* handler,
+												const s_view &requestUri, char *PhysicalPath);
 
 	public:
 		ProcessRequestHandler();

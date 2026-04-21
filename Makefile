@@ -1,9 +1,9 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -g --std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -g --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
-				linker/clsLinker.cpp linker/clsClient.cpp linker/clsFlow.cpp
+				 linker/clsClient.cpp linker/clsFlow.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpError.cpp \
 		Utils/Lexer.cpp
@@ -17,8 +17,7 @@ CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/Pa
 
 REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
 				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp \
-				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp \
-				Parser/ParseRequest/Request/clsBody.cpp Parser/ParseRequest/Request/clsMultipart.cpp Parser/ParseRequest/Request/clsMultipart.cpp
+				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp Parser/ParseRequest/Request/clsBody.cpp Parser/ParseRequest/Request/clsMultipart.cpp\
 
 ALL_FILES +=  $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES) $(SERVER_FILES)
 

@@ -215,7 +215,11 @@ void ConfigDirectiveParser::ParseCGI(s_parse_context& ctx, std::map<std::string,
 	}
 	const std::string binPath = ctx.parser.peek().value;
 
-	if (HelperFunctions::isValidPath(binPath, false) != 200) return;
+	if (HelperFunctions::isValidPath(binPath, false) != 200)
+	{
+		ctx.error.setStatus(400, "No such file 'Executable Path'");
+		return;
+	}
 
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {

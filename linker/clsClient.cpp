@@ -3,7 +3,7 @@
 #define CHUNK_LIMIT 8192
 
 
-clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, NULL, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
+clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
 {
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;

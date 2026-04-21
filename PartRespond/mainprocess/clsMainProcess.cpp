@@ -13,7 +13,7 @@
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
-clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _DataRequest(RequestLinker), _Response(RequestLinker) {}
+clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _Response(RequestLinker),  _DataRequest(RequestLinker) {}
 clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
