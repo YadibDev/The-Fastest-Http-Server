@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET /cgi-bin/script.txt.js/ls/ HTTP/1.1\r\n"
+    	"GET /cgi-bin/script.txt.js/ HTTP/1.1\r\n"
     	"Host: 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
@@ -242,12 +242,12 @@ int main()
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
 
-	RequestParser Parser(req, &ServerConfig, &RequestHandler);
+	RequestParser Parser(req, &RequestHandler);
+	Parser.init(&ServerConfig);
 
 
 	int size = strlen(http_request);
 	Parser.Parse(size);
-
 	if (Parser.isComplete())
 		std::cout << "\nIsComplete\n\n";
 

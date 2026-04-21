@@ -28,7 +28,7 @@ public:
 	static void skipWhitespace(const std::string &str, size_t &pos);
 	static bool isCRLF(const std::string &str);
 	static long hexToDec(const std::string &hex);
-	static long	hexToDecS_view(char *buf, int len);
+	static long	hexToDecS_view(const char *buf, int len);
 	static bool is_numeric(const std::string &str);
 	static bool is_CTLsString(const std::string &str);
 	static bool checkIfTheFirstWord(std::string str, std::string Start, size_t POS);

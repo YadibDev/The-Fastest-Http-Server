@@ -32,7 +32,7 @@ long HelperFunctions::hexToDec(const std::string& hex)
 	return decimalValue;
 }
 
-long HelperFunctions::hexToDecS_view(char *buf, int len)
+long HelperFunctions::hexToDecS_view(const char *buf, int len)
 {
 	long decimalValue = 0;
 	

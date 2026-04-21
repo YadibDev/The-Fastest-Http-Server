@@ -11,7 +11,7 @@
 	
 struct s_view
 {
-	char *Data;
+	const char *Data;
 	uint16_t len;
 	s_view() : Data(NULL), len(0) {}
 

@@ -32,7 +32,7 @@ void RequestHandler::reset()
 	_body.clear();
 	_filePathBody.clear();
 
-	_method = HttpTables::METHOD_UNKNOWN;
+	_method = HttpTables::M_UNKNOWN;
 	_allowMethods = 0;
 
 	_error_pages.clear();
@@ -48,21 +48,21 @@ void RequestHandler::reset()
 RequestHandler::~RequestHandler() {}
 
 
-bool	RequestHandler::ExtractCgiMetadata(s_view uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
 {
 	if (!uri.Data || uri.len == 0)
 		return false;
 
-	char* start = uri.Data;
-	char* current = start;
-	char* end = start + uri.len - 1;
+	const char* start = uri.Data;
+	const char* current = start;
+	const char* end = start + uri.len - 1;
 
 	while (current <= end)
 	{
 		if (*current == '.')
 		{
-			char* extStart = current;
-			char* extEnd = extStart;
+			const char* extStart = current;
+			const char* extEnd = extStart;
 
 			while (extEnd <= end && *extEnd != '/')
 				++extEnd;

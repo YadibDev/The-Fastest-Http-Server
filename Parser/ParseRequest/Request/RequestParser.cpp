@@ -6,21 +6,22 @@ RequestParser::RequestParser(stPollRequest &request, RequestHandler	*requestHand
 	  _requestLine(),
 	  _header(request),
 	//   _body(request),
-	  _ServerConfig(ServerConfig),
+	  _ServerConfig(NULL),
 	  _RequestHandler(requestHandler),
 	  _state(STATE_REQUEST_LINE)
 	//   _body(request)
 {
 }
 
-void RequestParser::init(uint16_t offset, clsServerConfig	*ServerConfig)
+void RequestParser::init(clsServerConfig	*ServerConfig, uint16_t offset)
 {
 	_state = STATE_REQUEST_LINE;
+	_ServerConfig = ServerConfig;
 	_offset = offset;
 	_requestLine.init(offset);
 	_header.init(offset);
 	_error.setStatus(0, "");
-	_RequestHandler->init();
+	_RequestHandler->reset();
 }
 
 bool RequestParser::LProcessRequestHandler()
@@ -120,7 +121,7 @@ bool RequestParser::Parse(uint16_t size)
 	return true;
 }
 
-bool		RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
-bool		RequestParser::isError() const { return _error.isError(); }
-RequestLine	RequestParser::getRequestLine() const { return _requestLine; }
-HttpError	RequestParser::getError() const { return _error; }
+bool				RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
+bool				RequestParser::isError() const { return _error.isError(); }
+const RequestLine	&RequestParser::getRequestLine() const { return _requestLine; }
+HttpError			RequestParser::getError() const { return _error; }
