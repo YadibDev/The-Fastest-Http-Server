@@ -12,6 +12,7 @@
 #include "../server/clsEpollHandler.hpp"
 #include "../server/clsServerSock.hpp"
 #include "clsLinker.hpp"
+#include <unistd.h>
 
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500
@@ -25,6 +26,7 @@
 class clsFlow
 {
 private:
+    enum fdTypes {SERVER_SOCK, CLIENT_SOCK, PIPE};
     size_t _totalServers;
     clsClient *_clientsArr;
     std::vector<clsServerConfig> *_allBlocks;
@@ -40,10 +42,12 @@ private:
     void _initializeDataBase();
     void _registerServersSockets();
     short _getClient();
-    void _pushClient(short clientId);
+    void _pushClient(short clientFd);
     void _clientFlow(short clientId);
-    void _eventsEroorHandle()
+    fdTypes _fdType(int fd);
+
+    bool _eventsEroorHandle(epoll_event &client);
 public:
     clsFlow();
-    void EventLoop(epoll_event &client);
+    void EventLoop();
 };

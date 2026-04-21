@@ -130,14 +130,10 @@ void function(int signal)
 
 int main()
 {
-    clsFlow flow;
     try
     {
-        flow._initializeStatics();
-        flow._createBlocksServers();
-        flow._createServers();
-        flow._initializeDataBase();
-        flow._registerServersSockets();
+        clsFlow flow;
+        flow.EventLoop();
     }
     catch (std::exception &e)
     {
