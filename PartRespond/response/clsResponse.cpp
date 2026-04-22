@@ -107,9 +107,9 @@ void clsResponse::_ErrorRespnseHandling()
         _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
     _BodySize =  _ErrorPage.GetBodySize();
-    _Body = _ErrorPage.GetBody();
-    _HeaderFeild = _ErrorPage.GetHeaderField();
-    _FileFromDisk = _ErrorPage.GetFileFromDisk();
+    _BodyPointer = &_ErrorPage.GetBody();
+    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
 }
 
 void clsResponse::_StatusLine()
