@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET /cgi-bin/script.txt.js/ HTTP/1.1\r\n"
+    	"GET /cgi-bin/script.php.py HTTP/1.1\r\n"
     	"Host : 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
@@ -239,6 +239,9 @@ int main()
 		return 1;
 	}
 	HttpError error;
+	stErrorPagedata	defaultErrorPage;
+	defaultErrorPage.uri = "YES";
+
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
 	RequestParser Parser(req, &RequestHandler);
@@ -252,7 +255,11 @@ int main()
 
 	if (Parser.isError())
 	{
-		ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error);
+		if (!ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error))
+		{
+			RequestHandler.setDefaultErrorPage(&defaultErrorPage);
+			std::cout << "Default Error Page\n";
+		}
 	}
 	RequestLine requestLine = Parser.getRequestLine();
 
@@ -267,6 +274,10 @@ int main()
 	std::cout << "Path Translated : " << RequestHandler.getPathTranslated() << std::endl;
 	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
 	std::cout << "Path Cgi : " << cgi << std::endl;
+	std::cout << "code Error : " << RequestHandler.getStatusError() << std::endl;
+	std::cout << "Default Error Page : " 
+          << (RequestHandler.getDefaultErrorPage() ? RequestHandler.getDefaultErrorPage()->uri : "(NULL)") 
+          << std::endl;
 
 	HeaderTable headerTable = RequestHandler.getHeader();
 	const s_header_slot *Host = headerTable.getKnownHeader(HttpTables::H_HOST);

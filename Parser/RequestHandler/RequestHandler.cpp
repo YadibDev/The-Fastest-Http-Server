@@ -191,6 +191,9 @@ const s_view	&RequestHandler::getScriptName() const
 	return _ScriptName;
 }
 
+const stErrorPagedata*	RequestHandler::getDefaultErrorPage() { return _defaultErrorPage; }
+
+
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }
 
 const stReturnData& RequestHandler::getReturn() const { return _return; }

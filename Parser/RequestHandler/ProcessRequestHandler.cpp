@@ -302,9 +302,10 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 
 	std::map<short, stErrorPagedata>::const_iterator it = ErrorPagedata.find(originalCode); // learn this 
 
+	handler->reset();
+
 	if (it == ErrorPagedata.end())
 	{
-		handler->reset();
 	    finalizeErrorState(handler, originalCode, stErrorPagedata());
 	    return false;
 	}
@@ -320,14 +321,15 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		serverConfig->getLocationPrefix(),
 		errorUri
 	);
-
-	if (!handlePath(bestLocation, handler, errorUri, error))
+	if (bestLocation)
+		handler->setReturn(bestLocation->getReturn());
+	if (!bestLocation || !handlePath(bestLocation, handler, errorUri, error))
 	{
-		handler->reset();
 		finalizeErrorState(handler, originalCode, foundData);
 		return false;
 	}
 
+	// handler->setReturn(bestLocation->getReturn());
 	finalizeErrorState(handler, originalCode, foundData);
 	return true;
 }

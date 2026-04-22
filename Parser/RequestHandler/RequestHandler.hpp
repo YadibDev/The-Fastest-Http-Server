@@ -74,6 +74,7 @@ public:
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
 	const std::string*		getPathCgi() const;
+	const stErrorPagedata*	getDefaultErrorPage();
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
 	const std::string&		getBody() const;
