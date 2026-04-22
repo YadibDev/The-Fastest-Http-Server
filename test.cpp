@@ -68,6 +68,16 @@ int main() {
 
     } else { // --- PARENT PROCESS ---
         // Close the write end of the pipe (parent only reads)
+        int test = fcntl(pipefd[1], F_GETFL);
+        int fd2 = open("Utils/HttpError.cpp", O_WRONLY);
+        int test3 = fcntl(fd2, F_GETFL);
+
+
+        std::cout << test << std::endl;;
+        std::cout << test3 << std::endl;;
+
+
+
         close(pipefd[1]);
 
         char buffer[128];
@@ -77,7 +87,7 @@ int main() {
 
         // Read from the pipe until it's empty/closed
         std::cout << fcntl(pipefd[0], F_GETFD) << std::endl;;
-        O_RDONLY
+       
         while ((bytesRead = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0) {
             buffer[bytesRead] = '\0';
             std::cout << buffer;

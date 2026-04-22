@@ -324,7 +324,7 @@ void clsCGI::RunCGI()
     if (!_InintialVar())
     {
         _Erno = true;
-       _FD = -1;
+        _FD = -1;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -338,7 +338,7 @@ void clsCGI::RunCGI()
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            return ;
+            exit(1) ;
     }
     else
        _ParentProcesse();

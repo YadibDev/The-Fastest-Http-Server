@@ -725,7 +725,8 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
         }
         else if (WIFSIGNALED(status) || exit_code == -1)
     		return stEventProcess::END_UNKNOW;
-		return stEventProcess::THE_END;
+		else
+			return stEventProcess::THE_END;
 	}
 	return stEventProcess::RUNINNG;
 }

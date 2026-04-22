@@ -30,7 +30,7 @@ stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
     return this->_eventProcess;
 }
-void clsMainProcess::setEventProcess(stEventProcess::eEventProcess &ev)
+void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 {
     this->_eventProcess = ev;
 }
@@ -69,6 +69,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
+    std::cout << "initialize cgi\n" << std::endl;;
     if (!RunCGI)
     {
         _CGI.RunCGI();
@@ -127,7 +128,7 @@ void clsMainProcess::MainProcess()
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    else if (!_DataRequest.getPathCgi())
+    else if (_DataRequest.getPathCgi())
         _InitializeCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();

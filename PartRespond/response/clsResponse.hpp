@@ -17,6 +17,7 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
+
 class clsResponse
 {
     private:

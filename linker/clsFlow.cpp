@@ -183,6 +183,8 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
+    if (_epoll.addClient(pipe, EPOLLIN) == false)
+        return ; // watch by epoll
     _IdByPipe[pipe] = indexClient;
 }
 

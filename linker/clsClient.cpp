@@ -334,11 +334,11 @@ void    clsClient::monitorCgi(int fd)
 {
     stEventProcess::eEventProcess eventProcess = _ResponderProecss.getEventProcess();
     int pid = _ResponderProecss.GetclsCGI().GetPid();
+    
 
 
-
-    short length = _ReadData(fd); // 
-    HelperFunctions::checkProcessStatus();
+    short length = _ReadData(fd);
+    _ResponderProecss.setEventProcess(HelperFunctions::checkProcessStatus(pid));
     _ResponderProecss.ParseCGI(_theData.io_chunk, length);
 
     if (eventProcess == stEventProcess::RUNINNG && _ResponderProecss.getEventProcess() != stEventProcess::RUNINNG)
