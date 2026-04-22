@@ -34,6 +34,7 @@ public:
 
 	RequestParser(stPollRequest &request, RequestHandler	*RequestHandler);
 	void				init(clsServerConfig *ServerConfig, uint16_t offset = 0);
+	void				init(uint16_t offset = 0);
 	bool				Parse(uint16_t size);
 	bool				isComplete() const;
 	bool				isError() const;

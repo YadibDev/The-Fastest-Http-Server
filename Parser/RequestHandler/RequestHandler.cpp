@@ -35,7 +35,6 @@ void RequestHandler::reset()
 	_method = HttpTables::M_UNKNOWN;
 	_allowMethods = 0;
 
-	_error_pages.clear();
 
 	_defaultErrorPage = NULL;
 	_pathCgi = NULL;
@@ -123,10 +122,6 @@ void    RequestHandler::setMethod(HttpTables::eMethod method) { _method = method
 
 void    RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = allowed; }
 
-void    RequestHandler::setErrorPages(const std::map<short, stErrorPagedata>& errorPages)
-{
-	_error_pages = errorPages;
-}
 
 void	RequestHandler::setDefaultErrorPage(const stErrorPagedata* defaultErrorPage)
 {
@@ -155,6 +150,8 @@ void    RequestHandler::setUploadStore(const std::string* uploadStore) { _upload
 void    RequestHandler::setBody(const std::string& body) { _body = body; }
 
 void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _filePathBody = filePathBody; }
+
+void	RequestHandler::setStatusError(short statusError) { _statusError = statusError; }
 
 void    RequestHandler::setError(const HttpError &error) { _error = error; }
 
@@ -189,13 +186,6 @@ const HeaderTable    &RequestHandler::getHeader() const
 	return _Header;
 }
 
-const stErrorPagedata *RequestHandler::getErrorPage(short code) const {
-	std::map<short, stErrorPagedata>::const_iterator it = _error_pages.find(code);
-	if (it == _error_pages.end())
-		return _defaultErrorPage;
-	return &it->second;
-}
-
 const s_view	&RequestHandler::getScriptName() const
 {
 	return _ScriptName;
@@ -210,5 +200,7 @@ const std::string* RequestHandler::getUploadStore() const { return _upload_store
 const std::string& RequestHandler::getBody() const { return _body; }
 
 const std::string& RequestHandler::getFilePathBody() const { return _filePathBody; }
+
+short				RequestHandler::getStatusError() { return _statusError; }
 
 const HttpError& RequestHandler::getError() const { return _error; }

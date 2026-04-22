@@ -135,7 +135,7 @@ bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
 			continue;
 		index.Data = vindex[i].c_str();
 		index.len = vindex[i].size();
-		if (indexCgi(bestLocation, handler, index, handler->getPhysicalPath()) && handler->getScriptName().len)
+		if (HandleCgi(bestLocation, handler, index, handler->getPhysicalPath()) && handler->getScriptName().len)
 			return true;
 		else if (handler->getScriptName().len)
 			return false;
@@ -241,22 +241,30 @@ bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t 
 	return (methodBit == (allowedMethods & methodBit));
 }
 
+bool	ProcessRequestHandler::HandleCgi(const clsLocation* bestLocation, RequestHandler* handler, const s_view &requestUri, char *PhysicalPath)
+{
+	HttpError	error;
+	handler->ExtractCgiMetadata(requestUri, bestLocation->getCgiPass());
+
+	if (handler->getScriptName().len)
+	{
+		if (!creatPhysicalPath(bestLocation, PhysicalPath,
+							   handler->getScriptName(), error))
+			return (handler->setError(error), false);
+
+		if (!checkExcute(PhysicalPath))
+			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
+	}
+	return true;
+}
+
 bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 						RequestHandler* handler,
 						const s_view &requestUri, HttpError	error)
 {
 
-	handler->ExtractCgiMetadata(requestUri, bestLocation->getCgiPass());
-
-	if (handler->getScriptName().len)
-	{
-		if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(),
-							   handler->getScriptName(), error))
-			return (false);
-
-		if (!checkExcute(handler->getPhysicalPath()))
-			return (error.setStatus(403, "Forbidden"), false);
-	}
+	if (!HandleCgi(bestLocation, handler, requestUri, handler->getPhysicalPath()))
+			return false;
 	else
 	{
 		if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(),
@@ -276,27 +284,53 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 	return true;
 }
 
-bool	ProcessRequestHandler::indexCgi(const clsLocation* bestLocation, RequestHandler* handler, const s_view &requestUri, char *PhysicalPath)
+void ProcessRequestHandler::finalizeErrorState(RequestHandler* handler, 
+                                               int originalCode, 
+                                               const stErrorPagedata& errorData) 
 {
-	HttpError	error;
-	handler->ExtractCgiMetadata(requestUri, bestLocation->getCgiPass());
+    int finalCode = (errorData.response != -1) ? errorData.response : originalCode;
 
-	if (handler->getScriptName().len)
-	{
-		if (!creatPhysicalPath(bestLocation, PhysicalPath,
-							   handler->getScriptName(), error))
-			return (handler->setError(error), false);
-
-		if (!checkExcute(PhysicalPath))
-			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
-	}
-	return true;
+    handler->setStatusError(finalCode);
 }
 
-// bool	ProcessRequestHandler::errorPageCgi()
-// {
+bool ProcessRequestHandler::generateErrorPath(short originalCode,
+											const clsServerConfig* serverConfig,
+											RequestHandler* handler,
+											HttpError &error)
+{
+	const map<short, stErrorPagedata> &ErrorPagedata = serverConfig->getErrorPages();
 
-// }
+	std::map<short, stErrorPagedata>::const_iterator it = ErrorPagedata.find(originalCode); // learn this 
+
+	if (it == ErrorPagedata.end())
+	{
+		handler->reset();
+	    finalizeErrorState(handler, originalCode, stErrorPagedata());
+	    return false;
+	}
+
+	const stErrorPagedata &foundData = it->second;
+	s_view errorUri;
+	
+	errorUri.len = foundData.uri.length();
+	errorUri.Data = foundData.uri.c_str();
+
+	const clsLocation* bestLocation = findBestLocation(
+		serverConfig->getLocationExact(),
+		serverConfig->getLocationPrefix(),
+		errorUri
+	);
+
+	if (!handlePath(bestLocation, handler, errorUri, error))
+	{
+		handler->reset();
+		finalizeErrorState(handler, originalCode, foundData);
+		return false;
+	}
+
+	finalizeErrorState(handler, originalCode, foundData);
+	return true;
+}
 
 bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 										   const clsServerConfig* serverConfig,
@@ -323,15 +357,11 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	}
 
 	if (!handlePath(bestLocation, handler, startLine.getRequestURI().getPath(), error))
-	{
-		handler->setError(error);
-		return false;
-	}
+		return (handler->setError(error), false);
 
 	handler->setQuery(startLine.getRequestURI().getQuery());
 	handler->setVersion(startLine.getVersion());
 	handler->setMethod(startLine.getMethod());
-	handler->setErrorPages(bestLocation->getErrorPages());
 	handler->setDefaultErrorPage(bestLocation->getDefaultErrorPage());
 	handler->setReturn(bestLocation->getReturn());
 	handler->setUploadStore(&bestLocation->getUploadStore());

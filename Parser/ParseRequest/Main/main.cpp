@@ -184,7 +184,7 @@ int main()
 
 	const char* http_request = 
     	"GET /cgi-bin/script.txt.js/ HTTP/1.1\r\n"
-    	"Host: 127.0.0.1:8081\r\n"
+    	"Host : 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
     	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
@@ -238,10 +238,9 @@ int main()
 		std::cout << "Block Server ZERO\n" << std::endl;
 		return 1;
 	}
-
+	HttpError error;
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
-
 	RequestParser Parser(req, &RequestHandler);
 	Parser.init(&ServerConfig);
 
@@ -253,9 +252,7 @@ int main()
 
 	if (Parser.isError())
 	{
-		std::cout << "Status Code : " << Parser.getError().getCodeStatus() << std::endl;
-		std::cout << "Msg Error : " << Parser.getError().getMsgError() << std::endl;
-		return 1;
+		ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error);
 	}
 	RequestLine requestLine = Parser.getRequestLine();
 

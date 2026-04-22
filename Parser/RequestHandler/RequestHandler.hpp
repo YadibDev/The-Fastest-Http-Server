@@ -14,25 +14,25 @@
 class RequestHandler {
 private:
 
+	uint8_t								_allowMethods;
 	char								_physicalPath[MAX_PATH_LEN];
 	bool								_autoindex;
 	s_view								_query;
 	s_view								_version;
 	s_view								_PathInfo;
 	s_view								_ScriptName;
-	std::string							_PathTranslated;
 	s_view								_ServerPort;
-	HttpTables::eMethod					_method;
-	uint8_t								_allowMethods;
-	HeaderTable							_Header;
-	std::map<short, stErrorPagedata>	_error_pages;
-	const stErrorPagedata*				_defaultErrorPage;
-	const std::string*					_pathCgi;
-	const std::string*					_upload_store;
+	std::string							_PathTranslated;
 	stReturnData						_return;
 	std::string							_body;
 	std::string							_filePathBody;
+	HttpTables::eMethod					_method;
+	HeaderTable							_Header;
+	const stErrorPagedata*				_defaultErrorPage;
+	const std::string*					_pathCgi;
+	const std::string*					_upload_store;
 	HttpError							_error;
+	short								_statusError;
 
 public:
 	RequestHandler(stPollRequest& request);
@@ -49,13 +49,13 @@ public:
 	void					setMethod(HttpTables::eMethod method);
 	void					setAllowedMethods(uint8_t allowed);
 	void					setHeader(HeaderTable	_Header);
-	void					setErrorPages(const std::map<short, stErrorPagedata>& errorPages);
 	void					setDefaultErrorPage(const stErrorPagedata* defaultErrorPage);
 	void					setPathCgi(const std::string* pathCgi);
 	void					setReturn(const stReturnData& returnData);
 	void					setUploadStore(const std::string* uploadStore);
 	void					setBody(const std::string& body);
 	void					setFilePathBody(const std::string& filePathBody);
+	void					setStatusError(short statusError);
 	void					setError(const HttpError &error);
 
 	bool					ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
@@ -73,12 +73,12 @@ public:
     const s_view&			getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
-	const stErrorPagedata	*getErrorPage(short code) const;
 	const std::string*		getPathCgi() const;
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
 	const std::string&		getBody() const;
 	const std::string&		getFilePathBody() const;
+	short					getStatusError();
 	const HttpError&		getError() const;
 };
 

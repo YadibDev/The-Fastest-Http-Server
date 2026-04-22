@@ -98,12 +98,19 @@ void clsResponse::_InitialHeaders()
 
 void clsResponse::_ErrorRespnseHandling()
 {
+    _ErrorPage.Reset();
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
     
+    std::cout << "-----status--------\n";
+        std::cout << _Status << std::endl;
+        std::cout << "-----status END--------\n";
     if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;
+        std::cout << "-----status--------\n";
+        std::cout << _Status << std::endl;
+        std::cout << "-----status END--------\n";
         _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
     }
     else
@@ -245,10 +252,13 @@ void clsResponse::Reset()
     _Status = 0;
     _BodySize = 0;
     _FileFromDisk = "";
-    _Body = "";
     _HeaderFeild = "";
+    _ModTransferData = false;
+    _Erno = false;
+    _SizeHeaders = 0;
+    _Type = "";
     _IsConnection = true;
-    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, 10);
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
 bool clsResponse::GetIsConnection() const

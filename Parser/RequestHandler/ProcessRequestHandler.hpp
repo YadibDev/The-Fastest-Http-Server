@@ -12,6 +12,9 @@
 
 class ProcessRequestHandler
 {
+	static void					finalizeErrorState(RequestHandler* handler, 
+															int originalCode, 
+											   				const stErrorPagedata& errorData);
 	static void					getPathCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass, RequestHandler* handler);
 	static std::string			selectMethod(Methods::eMethods method);
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
@@ -26,12 +29,17 @@ class ProcessRequestHandler
 									RequestHandler* handler,
 									const s_view &requestUri,
 									HttpError	error);
-	static bool					indexCgi(const clsLocation* bestLocation, RequestHandler* handler,
+	static bool					HandleCgi(const clsLocation* bestLocation, RequestHandler* handler,
 												const s_view &requestUri, char *PhysicalPath);
+
 
 	public:
 		ProcessRequestHandler();
-		static bool processRequest(const RequestLine& StartLine, const clsServerConfig* serverConfig, RequestHandler* handler);
+		static bool					processRequest(const RequestLine& StartLine, const clsServerConfig* serverConfig, RequestHandler* handler);
+		static bool 				generateErrorPath(short originalCode,
+											const clsServerConfig* serverConfig,
+											 RequestHandler* handler, 
+											 HttpError &error);
 };
 
 #endif

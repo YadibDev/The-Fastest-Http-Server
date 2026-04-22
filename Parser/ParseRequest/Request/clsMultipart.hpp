@@ -10,7 +10,7 @@
 #define CONTENT_DISPO 2
 #define NAME_PAR 3
 #define FILENAME_PAR 4
-
+#define MAX_HEADER_MULTI 500
 using namespace std;
 
 enum whereAmI
@@ -32,7 +32,7 @@ enum whichBound
 class clsMultiHeader
 {
 private:
-    char Header[4000];
+    char Header[MAX_HEADER_MULTI];
     int ofset;
     bool isError;
 
