@@ -13,7 +13,7 @@
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
-clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _DataRequest(RequestLinker), _Response(RequestLinker), _CGI(RequestLinker)
+clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _Response(RequestLinker), _CGI(RequestLinker) ,_DataRequest(RequestLinker) 
 {
     RunCGI = false;
 }
@@ -132,6 +132,11 @@ void clsMainProcess::MainProcess()
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == HttpTables::M_POST))
         _PartPOSMethod();
+}
+
+clsCGI &clsMainProcess::GetclsCGI()
+{
+    return _CGI;
 }
 
 clsResponse &clsMainProcess::GetclsResponse()

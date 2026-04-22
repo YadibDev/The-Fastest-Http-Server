@@ -43,12 +43,11 @@ private:
 public:
     
     void MainProcess();
-    // yadib modifier this part of achraf
     void ParseCGI(const char *Buffer, short Length);
     clsMainProcess(RequestHandler &RequestLinker);
     stEventProcess::eEventProcess &getEventProcess();
     void setEventProcess(stEventProcess::eEventProcess &ev);
-
+    clsCGI &GetclsCGI();
     clsResponse &GetclsResponse();
     ~clsMainProcess();
 };
