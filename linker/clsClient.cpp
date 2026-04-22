@@ -260,6 +260,22 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 }
 
+void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond)
+{
+    memcpy(&respondBuffer[0], Headers, bytesToSend);
+
+    if (Respond.GetFileName().empty())
+    {
+        _BodyPlace = bodyPlaceEnum::RAM;
+        memcpy(&respondBuffer[bytesToSend], Body, Respond.GetSizeBody());
+        bytesToSend += Respond.GetSizeBody();
+    }
+    else
+    {
+        bodyLimit = Respond.GetSizeBody();
+        _BodyPlace = bodyPlaceEnum::DISK;
+    }
+}
 void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
@@ -276,20 +292,20 @@ void clsClient::ProcessRespond()
         this->_ResponderProecss.MainProcess(); // create respond
 
         bytesToSend = Respond.GetHeaderFeild().size();
-        
-        memcpy(&respondBuffer[0], Respond.GetHeaderFeild().c_str(), bytesToSend);
 
-        if (Respond.GetFileName().empty())
+        const char *Header;
+        const char *Body;
+        if (Respond.GetModTransferData())
         {
-            _BodyPlace = bodyPlaceEnum::RAM;
-            memcpy(&respondBuffer[bytesToSend], Respond.GetBody().c_str(), Respond.GetSizeBody());
-            bytesToSend += Respond.GetSizeBody();
+            Header = Respond.GetHeaderFeildPointer()->c_str();
+            Body = Respond.GetBodyPointer()->c_str();
         }
         else
         {
-            bodyLimit = Respond.GetSizeBody();
-            _BodyPlace = bodyPlaceEnum::DISK;
+            Header = Respond.GetHeaderFeild().c_str();
+            Body = Respond.GetBody().c_str();
         }
+        _initalizeRespondBuffer(respondBuffer, Header, Body, Respond);
     }
     _SendRespond(Respond);
 }

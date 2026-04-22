@@ -155,7 +155,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client)
 clsFlow::fdTypes clsFlow::_fdType(int fd)
 {
     sockaddr_in addr;
-    socklen_t size;
+    socklen_t size = sizeof(addr);
 
     std::memset(&addr, 0, sizeof(addr));
     if (getsockname(fd, reinterpret_cast<sockaddr *>(&addr), &size) == -1)
@@ -226,7 +226,7 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
         _newClientProcess(fd);
 
     // else if (TypeFd == PIPE)
-        // cgi work here
+    //     cgi work here
 }
 
 void clsFlow::EventLoop()
