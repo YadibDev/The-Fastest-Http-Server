@@ -32,13 +32,14 @@ public:
 	enum State { STATE_REQUEST_LINE, STATE_HEADERS, STATE_BODY, STATE_COMPLETE, STATE_ERROR };
 	State			_state;
 
-	RequestParser(stPollRequest &request, clsServerConfig	*ServerConfig, RequestHandler	*RequestHandler);
-	void			init(uint16_t offset = 0);
-	bool			Parse(uint16_t size);
-	bool			isComplete() const;
-	bool			isError() const;
-	RequestLine		getRequestLine() const; // refrence add
-	HttpError		getError() const;
+	RequestParser(stPollRequest &request, RequestHandler	*RequestHandler);
+	void				init(clsServerConfig *ServerConfig, uint16_t offset = 0);
+	void				init(uint16_t offset = 0);
+	bool				Parse(uint16_t size);
+	bool				isComplete() const;
+	bool				isError() const;
+	const RequestLine	&getRequestLine() const; // refrence add
+	HttpError			getError() const;
 };
 
 #endif

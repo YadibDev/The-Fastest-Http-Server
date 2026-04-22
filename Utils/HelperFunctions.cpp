@@ -32,7 +32,7 @@ long HelperFunctions::hexToDec(const std::string& hex)
 	return decimalValue;
 }
 
-long HelperFunctions::hexToDecS_view(char *buf, int len)
+long HelperFunctions::hexToDecS_view(const char *buf, int len)
 {
 	long decimalValue = 0;
 	
@@ -254,7 +254,7 @@ std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 char HelperFunctions::_PoinerType[10] = {0};
 
-bool HelperFunctions::CmpWord(char *Str, const std::string &Word, short SizeStr) {
+bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
 
     while (i < SizeStr && i < (short)Word.length())

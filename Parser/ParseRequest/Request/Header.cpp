@@ -47,10 +47,7 @@ HttpTables::eKnownHeader Header::fromHash(uint32_t h)
 		case 0x41141d0c: return HttpTables::H_TRANSFER_ENCODING;
 		case 0xc947e5d0: return HttpTables::H_CONTENT_TYPE;
 		case 0x8fd8a976: return HttpTables::H_CONNECTION;
-		case 0x8210d858: return HttpTables::H_EXPECT;
-		case 0x60f97fde: return HttpTables::H_AUTHORIZATION;
 		case 0x4def559a: return HttpTables::H_COOKIE;
-		case 0xa13e549b: return HttpTables::H_ACCEPT_ENCODING;
 		default: return HttpTables::H_UNKNOWN;
 	}
 }

@@ -9,28 +9,35 @@ enum StatusError
 
 clsServerSock::clsServerSock() : _totalInterfaces(0), _totalSocks(0)
 {
+    closeAtEnd = false;
+}
+
+void clsServerSock::enableCloseAtEnd()
+{
+    closeAtEnd = true;
 }
 
 // free all data and closing all the fds of socket
 clsServerSock::~clsServerSock()
 {
+    if (closeAtEnd == false)
+        return;
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
+    std::cout << "------- DEBUG ---------\n" << std::endl;
+    std::cout << "------- " << _Sockets.size() << std::endl;
     while (it != end)
     {
         close(*it);
         it++;
     }
-
-    std::cout << "-------------------------\n";
-    std::cout << "--- clsServerSock closed ---\n";
-    std::cout << "-------------------------" << std::endl;
 }
 
 void clsServerSock::removeSocket(int fd)
 {
     this->_Sockets.erase(fd);
+    this->_totalSocks--;
     close(fd);
 }
 
@@ -70,7 +77,15 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     _totalInterfaces++;
     return fdSock;
 }
+void clsServerSock::setBlock(clsServerConfig *block)
+{
+    this->block = block;
+}
 
+clsServerConfig *clsServerSock::getBlock()
+{
+    return block;
+}
 // builds sockets that exist in vector
 void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
 {
@@ -117,12 +132,11 @@ bool clsServerSock::isServerIp(unsigned int ip, unsigned int port)
 
     return false;
 }
-#include <stdio.h>
+
 int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        _statusError.setStatus(NOT_SOCKET_SERVER);
         std::cout << "Not server socket \n";
         return 0;
     }
@@ -133,7 +147,6 @@ int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 
     if ((fd = accept(sockServer, castIt, &temp)) == -1)
     {
-        _statusError.setStatus(ACCEPT_FAIL);
         return -1;
     }
 

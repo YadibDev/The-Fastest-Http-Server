@@ -49,13 +49,9 @@ void clsResponse::MakeResponse()
     if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-        std::cout  << "------------> file input <--------------- "<<_FileFromDisk << std::endl;
+
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
-        std::cout  << "------------> type <--------------- "<<_Type << std::endl;
         _StoredInFileOrStr();
-        std::cout  << "------------> size <--------------- "<<_BodySize << std::endl;
-        std::cout  << "------------> body <--------------- "<<_Body << std::endl;
-        std::cout  << "------------> file output <--------------- "<<_FileFromDisk << std::endl;
 
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
@@ -101,17 +97,10 @@ void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    
-    std::cout << "-----status--------\n";
-    std::cout << _Status << std::endl;
-    std::cout << "-----status END--------\n";
     if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;
-        std::cout << "-----status--------\n";
-        std::cout << _Status << std::endl;
-        std::cout << "-----status END--------\n";
         _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
     }
     else

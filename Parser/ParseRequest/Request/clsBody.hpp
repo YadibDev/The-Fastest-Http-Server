@@ -37,12 +37,12 @@ public: // time to debug
     stPollRequest &data;
     clsMultiPart _multipartLib;
     chunkVars chunkHelp;
-    ssize_t writeSize;
+    size_t writeSize;
     std::string _fileName;
     
     int fd;
-    bool        _isError;
-    ssize_t     _contentLength;
+    int  _isError;
+    size_t     _contentLength;
     bool _isMultiPart;
     bool _isChunk;
     void _handleChunk(uint16_t &ofset);
@@ -69,15 +69,15 @@ public:
     const std::string &getFileName() const;
     const char *getBodyInRam() const;
     place getBodyLocation() const; // is in ram or disk
-    const bool &getIsError() const;
+    const int &getIsError() const;
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
     // methods
-    bool thereIsAline(const std::string &buffer, size_t &start, char c = '\n', char after = '\r');
-    void bodyHandler(uint16_t *off);
-    void ParseBody(uint16_t &offset);
+    void bodyHandler(uint16_t *off, const size_t &maxBodySize);
+    void ParseBody(uint16_t &offset, const size_t &maxBodySize);
+    ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
-    void Reset();
+    void Reset(); 
     void moveOffsetMulti(uint16_t &offset);
 
    void readSizeChunk(uint16_t &ofset, bool &error);

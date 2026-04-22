@@ -7,9 +7,10 @@
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
     fd = -1;
+    _isError = 0;
 }
 
-const bool &clsBody::getIsError() const
+const int &clsBody::getIsError() const
 {
     return _isError;
 }
@@ -39,29 +40,20 @@ void clsBody::Reset()
 {
     this->_fileName = "/tmp/file_XXXXXX";
     this->_bodyLocation = clsBody::NONE;
-    this->_isError = false;
+    this->_isError = 0;
     this->_state = clsBody::SETTING_VARS;
     this->_isMultiPart = false;
     this->_isChunk = false;
     this->_contentLength = 0;
     writeSize = 0;
     chunkHelp.Reset();
+    if (fd != -1)
+        close (fd);
     fd = -1;
 }
 
-bool clsBody::thereIsAline(const std::string &buffer, size_t &start, char c, char after)
-{
-    size_t len = buffer.size();
-    if (len < start)
-        return false;
-    while (start < len && buffer[start] != c)
-        start++;
-    if (start < len - 1 && buffer[start] == c && buffer[start + 1] == after)
-        return true;
-    return false;
-}
 // working on normal body without chunk
-void clsBody::bodyHandler(uint16_t *off)
+void clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
 {
     uint16_t &offset = *off;
     // i must handle left data in `request meta data` case
@@ -75,22 +67,27 @@ void clsBody::bodyHandler(uint16_t *off)
             fd = mkstemp(&_fileName[0]);
             if (fd == -1)
             {
-                this->_isError = true;
+                this->_isError = 500;
                 return;
             }
         }
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
         {
             _isChunk = false;
-            const char *content_leng = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data; //
-            _contentLength = std::atol(content_leng);                                                    // maybe handle overflow and add check if he  is more than the limit in config fie
+            const char *content_leng = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
+            _contentLength = std::atol(content_leng); // use sttol in future
+            if (_contentLength > maxBodySize)
+            {
+                this->_isError = 413;
+                return;
+            }
             if (_contentLength > MAX_BODY_RAM)
             {
                 _bodyLocation = clsBody::DISK;
                 fd = mkstemp(&_fileName[0]);
                 if (fd == -1)
                 {
-                    this->_isError = true;
+                    this->_isError = 500;
                     return;
                 }
             }
@@ -100,14 +97,13 @@ void clsBody::bodyHandler(uint16_t *off)
             }
             _state = clsBody::READING_BODY;
         }
-        std::cout <<  "location " << _bodyLocation << std::endl;
 
         if (data.known_headers[HttpTables::H_CONTENT_TYPE].Hash != -1 && data.known_headers[HttpTables::H_CONTENT_TYPE].val.len >= 10 && strncmp(data.known_headers[HttpTables::H_CONTENT_TYPE].val.Data, "multipart/", 10) == 0)
             _isMultiPart = true;
         else
             _isMultiPart = false;
     }
-    ParseBody(offset); // i must change name of it
+    ParseBody(offset, maxBodySize); // i must change name of it
 }
 
 void clsBody::handleMultiChunk(uint16_t &t, uint16_t offset, uint16_t &size, char *io_chunk)
@@ -244,8 +240,7 @@ void clsBody::moveOffsetMulti(uint16_t &offset)
 
 void clsBody::shiftingData(char *src, int offset, int sizeShift)
 {
-    std::cout << "____________________\n";
-    std::cout << &src << std::endl;
+
     for (int i = 0; i < sizeShift; i++)
     {
         src[i] = src[offset + i];
@@ -273,7 +268,10 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     }
     else
     {
-        std::cout << "data in disk\n" << std::endl;
+        // debug
+
+        for (int i = 0; i < offset; i++)
+            cout << data.io_chunk[i];
         int temp = write(this->fd, data.io_chunk, offset); // i will change this
         if (temp == -1)
         {
@@ -291,8 +289,9 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     }
 }
 
-void clsBody::ParseBody(uint16_t &offset)
+void clsBody::ParseBody(uint16_t &offset, const size_t &maxBodySize)
 {
+    (void) maxBodySize; // unused right now
     if (_bodyLocation == clsBody::DISK)
     {
         if (_isChunk == false)
@@ -306,6 +305,9 @@ void clsBody::ParseBody(uint16_t &offset)
     {
         if (offset == _contentLength)
         {
+            // debug ram
+            for (int i = 0; i < offset; i++)
+                    cout << data.io_chunk[i];
             if (_isMultiPart)
             {
                 _multipartLib.Parser(data.io_chunk, offset);
@@ -327,3 +329,10 @@ void clsBody::ParseBody(uint16_t &offset)
     }
 }
 
+ssize_t clsBody::getBodySize()
+{
+    if (this->_bodyLocation == DISK)
+        return writeSize;
+    else
+        return _contentLength;
+}

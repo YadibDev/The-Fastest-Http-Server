@@ -34,7 +34,7 @@ void clsLinker::removeClient(int fd)
 
 void clsLinker::insertClient(int fd, const sockaddr_in &addr, clsServerConfig &block)
 {
-    _clientsDB.insert(std::pair<int, clsClient>(fd, clsClient(addr, fd, block)));
+    // _clientsDB.insert(std::pair<int, clsClient>(fd, clsClient(addr, fd, block)));
 }
 
 // i will create it

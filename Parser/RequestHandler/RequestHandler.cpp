@@ -16,50 +16,81 @@ RequestHandler::RequestHandler(stPollRequest& request)
 	_version.len = 0;
 }
 
+void RequestHandler::reset()
+{
+	_physicalPath[0] = '\0';
+
+	_autoindex = false;
+
+	_query.reset();
+	_version.reset();
+	_PathInfo.reset();
+	_ScriptName.reset();
+	_ServerPort.reset();
+
+	_PathTranslated.clear();
+	_body.clear();
+	_filePathBody.clear();
+
+	_method = HttpTables::M_UNKNOWN;
+	_allowMethods = 0;
+
+	_error_pages.clear();
+
+	_defaultErrorPage = NULL;
+	_pathCgi = NULL;
+	_upload_store = NULL;
+
+	_error = HttpError();
+}
+
+
 RequestHandler::~RequestHandler() {}
 
 
-bool	RequestHandler::ExtractCgiMetadata(const char *uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
 {
-	if (!uri)
+	if (!uri.Data || uri.len == 0)
 		return false;
 
-	const char* start = uri;
+	const char* start = uri.Data;
 	const char* current = start;
+	const char* end = start + uri.len - 1;
 
-	const char* end = &uri[HelperFunctions::ft_strlen(uri) - 1];
-
-	while (*current)
+	while (current <= end)
 	{
 		if (*current == '.')
 		{
 			const char* extStart = current;
 			const char* extEnd = extStart;
-			size_t extLen = 0;
-			while (*extEnd && *extEnd != '/')
-			{
-				extEnd++;
-				extLen++;
-			}
 
-			std::string extStr(extStart, extLen);
+			while (extEnd <= end && *extEnd != '/')
+				++extEnd;
+
+			std::string extStr(extStart, extEnd);
 
 			std::map<std::string, std::string>::const_iterator it = cgi_pass.find(extStr);
 			if (it != cgi_pass.end())
 			{
 				_pathCgi = &it->second;
 
-				_ScriptName.Data = (char *)start;
-				_ScriptName.len = (uint16_t)(extEnd - start);
+				_ScriptName.Data = start;
+				_ScriptName.len = static_cast<uint16_t>(extEnd - start);
 
-				_PathInfo.Data = (char *)extEnd;
-				_PathInfo.len = (uint16_t)(end - extEnd) + 1;
-				if (!*extEnd)
+				if (extEnd <= end && *extEnd == '/')
+				{
+					_PathInfo.Data = extEnd;
+					_PathInfo.len = static_cast<uint16_t>(end - extEnd + 1);
+				}
+				else
+				{
+					_PathInfo.Data = NULL;
 					_PathInfo.len = 0;
+				}
 				return true;
 			}
 		}
-		current++;
+		++current;
 	}
 	return false;
 }
