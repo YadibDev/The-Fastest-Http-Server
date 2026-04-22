@@ -34,6 +34,7 @@ private:
     clsEpollHandler _epoll;
     std::vector<clsServerSock> _allServers;
     std::map<short, short> _clientIdByFd;
+    std::map<short, short> _IdByPipe;
     std::stack<short> _clientsAvailable;
 
     void _initializeStatics();
@@ -49,6 +50,10 @@ private:
     bool _eventsEroorHandle(epoll_event &client);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
     bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
+    void _popPipe(short pipe);
+    void _pushPipe(short pipe, short indexClient);
+    void _pipeFlow(int fd);
+
 public:
     clsFlow();
     ~clsFlow();

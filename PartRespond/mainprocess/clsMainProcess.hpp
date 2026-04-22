@@ -47,6 +47,7 @@ public:
     clsMainProcess(RequestHandler &RequestLinker);
     stEventProcess::eEventProcess &getEventProcess();
     void setEventProcess(stEventProcess::eEventProcess &ev);
+    bool isRunCgi();
     clsCGI &GetclsCGI();
     clsResponse &GetclsResponse();
     ~clsMainProcess();

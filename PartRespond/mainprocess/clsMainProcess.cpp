@@ -120,6 +120,7 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess()
 {
+    RunCGI = false;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
@@ -142,4 +143,9 @@ clsCGI &clsMainProcess::GetclsCGI()
 clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
+}
+
+bool clsMainProcess::isRunCgi()
+{
+    return RunCGI;
 }

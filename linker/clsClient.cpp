@@ -278,6 +278,11 @@ void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers
     }
 }
 
+int clsClient::getPipeCgi()
+{
+    return _ResponderProecss.GetclsCGI().GetFdPipe();
+}
+
 void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
@@ -293,24 +298,51 @@ void clsClient::ProcessRespond()
         Respond.Reset();
         this->_ResponderProecss.MainProcess(); // create respond
 
-        if (_ResponderProecss.)
-        bytesToSend = Respond.GetHeaderFeild().size();
+        if (this->_ResponderProecss.isRunCgi())
+        {
+            _state = CGI_START;
+            return ;
+        }
 
         const char *Header;
         const char *Body;
         if (Respond.GetModTransferData())
         {
+            bytesToSend +=  Respond.GetHeaderFeildPointer()->size();
             Header = Respond.GetHeaderFeildPointer()->c_str();
             Body = Respond.GetBodyPointer()->c_str();
         }
         else
         {
+            bytesToSend +=  Respond.GetHeaderFeild().size();
             Header = Respond.GetHeaderFeild().c_str();
             Body = Respond.GetBody().c_str();
         }
         _initalizeRespondBuffer(respondBuffer, Header, Body, Respond);
     }
+    else if (_state == CGI_RUNING)
+        return ;
     _SendRespond(Respond);
+}
+
+short    clsClient::_ReadData(int fd)
+{
+    return read(fd, this->_theData.io_chunk, sizeof(_theData.io_chunk));
+}
+
+void    clsClient::monitorCgi(int fd)
+{
+    stEventProcess::eEventProcess eventProcess = _ResponderProecss.getEventProcess();
+    int pid = _ResponderProecss.GetclsCGI().GetPid();
+
+
+
+    short length = _ReadData(fd); // 
+    HelperFunctions::checkProcessStatus();
+    _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+
+    if (eventProcess == stEventProcess::RUNINNG && _ResponderProecss.getEventProcess() != stEventProcess::RUNINNG)
+        _state = RESPOND_MODE;
 }
 
 void clsClient::ProcessBoth(uint32_t events)
