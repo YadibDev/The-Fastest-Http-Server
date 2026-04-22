@@ -293,7 +293,6 @@ void clsClient::ProcessRespond()
         Respond.Reset();
         this->_ResponderProecss.MainProcess(); // create respond
 
-        if (_ResponderProecss.)
         bytesToSend = Respond.GetHeaderFeild().size();
 
         const char *Header;

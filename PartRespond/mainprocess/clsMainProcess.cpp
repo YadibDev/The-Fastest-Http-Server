@@ -15,7 +15,7 @@
 // yadib modifier this part of achraf
 clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _Response(RequestLinker), _CGI(RequestLinker) ,_DataRequest(RequestLinker) 
 {
-    RunCGI = false;
+    _RunCGI = false;
 }
 clsMainProcess::~clsMainProcess() {} // free right way
 
@@ -52,14 +52,17 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
             _Response.SetModTransferData(true);
         }
-        _Response.SetBodyPointer(&parseCgi.GetBody());
-        _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
-        _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
-        _Response.SetModTransferData(true);
+        else
+        {
+            _Response.SetBodyPointer(&parseCgi.GetBody());
+            _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
+            _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
+            _Response.SetModTransferData(true);
+        }
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
-        _ErrorPage.ResponseError(_eventProcess, ""); // change in future
+        _ErrorPage.ResponseError(_eventProcess, "");
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
         _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
@@ -69,16 +72,16 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
-    if (!RunCGI)
+    if (!_RunCGI)
     {
         _CGI.RunCGI();
         _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
         _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
-        RunCGI = _CGI.GetIsRunCGI();
+        _RunCGI = _CGI.GetIsRunCGI();
     }
    if (_CGI.GetErno())
    {
-        // switch to error stat
+        _eventProcess = stEventProcess::END_UNKNOW;
         _ErrorPage.ResponseError(500, "");
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
@@ -120,6 +123,7 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess()
 {
+    _RunCGI = false;
     if (_DataRequest.getError().isError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
@@ -137,6 +141,11 @@ void clsMainProcess::MainProcess()
 clsCGI &clsMainProcess::GetclsCGI()
 {
     return _CGI;
+}
+
+bool clsMainProcess::GetIsRunCGI()
+{
+    return _RunCGI;
 }
 
 clsResponse &clsMainProcess::GetclsResponse()
