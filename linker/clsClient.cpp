@@ -5,6 +5,7 @@
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
 {
+    this->_socket = -1;
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;
     _dataForReq.unknown_headers = _theData.unknown_headers;
@@ -153,39 +154,39 @@ void clsClient::ProcessRequest()
     {
         this->_state = START_RESPOND;
 
-        // std::cout << "\n================= REQUEST DEBUG =================\n";
+        std::cout << "\n================= REQUEST DEBUG =================\n";
 
-        // std::cout << "[STATUS] Request completed successfully\n";
+        std::cout << "[STATUS] Request completed successfully\n";
 
-        // std::cout << "\n[METADATA]\n";
-        // std::cout << this->_theData.request_metadata << "\n";
+        std::cout << "\n[METADATA]\n";
+        std::cout << this->_theData.request_metadata << "\n";
 
-        // std::cout << "\n[BODY STORAGE]\n";
-        // if (_Requester._body._bodyLocation == clsBody::DISK)
-        //     std::cout << "Location : DISK\n";
-        // else if (_Requester._body._bodyLocation == clsBody::RAM)
-        //     std::cout << "Location : RAM\n";
-        // else
-        //     std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
+        std::cout << "\n[BODY STORAGE]\n";
+        if (_Requester._body._bodyLocation == clsBody::DISK)
+            std::cout << "Location : DISK\n";
+        else if (_Requester._body._bodyLocation == clsBody::RAM)
+            std::cout << "Location : RAM\n";
+        else
+            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
 
-        // std::cout << "\n[BODY INFO]\n";
-        // if (this->_theData.read_body > 0)
-        // {
-        //     std::cout << "Size : " << this->_theData.read_body << " bytes\n";
-        //     std::cout << "Content:\n";
-        //     std::cout << "----------------------------------------\n";
+        std::cout << "\n[BODY INFO]\n";
+        if (this->_theData.read_body > 0)
+        {
+            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
+            std::cout << "Content:\n";
+            std::cout << "----------------------------------------\n";
 
-        //     for (int i = 0; i < _theData.read_body; i++)
-        //         std::cout << this->_theData.io_chunk[i];
+            for (int i = 0; i < _theData.read_body; i++)
+                std::cout << this->_theData.io_chunk[i];
 
-        //     std::cout << "\n----------------------------------------\n";
-        // }
-        // else
-        // {
-        //     std::cout << "No body received\n";
-        // }
+            std::cout << "\n----------------------------------------\n";
+        }
+        else
+        {
+            std::cout << "No body received\n";
+        }
 
-        // std::cout << "========================================\n\n";
+        std::cout << "========================================\n\n";
         return;
     }
 }

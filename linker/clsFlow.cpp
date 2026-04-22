@@ -126,6 +126,7 @@ void clsFlow::_registerServersSockets()
 
 clsFlow::clsFlow()
 {
+    _clientsArr = NULL;
     _initializeStatics();
     _createBlocksServers();
     _createServers();
@@ -225,8 +226,12 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
     else if (TypeFd == SERVER_SOCK)
         _newClientProcess(fd);
 
-    // else if (TypeFd == PIPE)
-    //     cgi work here
+    else if (TypeFd == PIPE)
+    {
+        // read input from pipe
+        // check cgi status
+        // 
+    }
 }
 
 void clsFlow::EventLoop()
@@ -252,4 +257,9 @@ void clsFlow::EventLoop()
         }
     }
     throw std::runtime_error("Error\n epoll system call fail");
+}
+
+clsFlow::~clsFlow()
+{
+    delete[] _clientsArr;
 }

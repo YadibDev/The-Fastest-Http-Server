@@ -51,5 +51,7 @@ private:
     bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
 public:
     clsFlow();
+    ~clsFlow();
     void EventLoop();
+
 };
