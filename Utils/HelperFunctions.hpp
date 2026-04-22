@@ -66,7 +66,7 @@ public:
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex);
     static const char *GetTypeDataFile(const std::string &Str);
-    static void GetCleanLineHeader(char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
+    static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
     static char	*ft_itoa(int n);
     static char	*ft_itoa_negative(int n, char *int_char);
     static int	len_int(int nb);
@@ -79,6 +79,7 @@ public:
     static const char * GetBody(int Status);
     static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
     static void CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos);
+    static void CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length);
     static size_t	ft_strlen(const char *s);
     static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
     static int Countword(const std::string &Str, const std::string &Sep);

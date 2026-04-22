@@ -103,8 +103,8 @@ void clsResponse::_ErrorRespnseHandling()
     const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
     
     std::cout << "-----status--------\n";
-        std::cout << _Status << std::endl;
-        std::cout << "-----status END--------\n";
+    std::cout << _Status << std::endl;
+    std::cout << "-----status END--------\n";
     if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
@@ -239,14 +239,6 @@ void clsResponse::SetMod(stMod::eMod Mod)
 {
     _Mod[Mod] = Mod;
 }
-void clsResponse::SetType(const std::string &Type)
-{
-    _Type = Type;
-}
-void clsResponse::SetFileFromDisk(const std::string &FileFromDisk)
-{
-    _FileFromDisk = FileFromDisk ;
-}
 
 void clsResponse::Reset()
 {
@@ -298,6 +290,20 @@ void clsResponse::SetModTransferData(bool ModTransferData)
 {
     _ModTransferData = ModTransferData;
 }
+
+void clsResponse::SetBodyPointer(const std::string *BodyPointer)
+{
+    _BodyPointer = BodyPointer;
+}
+void clsResponse::SetHeaderFeildPointer(const std::string *HeaderFeildPointer)
+{
+    _HeaderFeildPointer = HeaderFeildPointer;
+}
+void clsResponse::SetFileFromDiskPointer(const std::string *FileFromDiskPointer)
+{
+    _FileFromDiskPointer = FileFromDiskPointer;
+}
+
 bool clsResponse::GetModTransferData() const
 {
     return _ModTransferData;

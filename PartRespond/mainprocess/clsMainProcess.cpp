@@ -13,8 +13,11 @@
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
-clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _DataRequest(RequestLinker), _Response(RequestLinker), _CGI(RequestLinker){}
-clsMainProcess::~clsMainProcess() {}
+clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _DataRequest(RequestLinker), _Response(RequestLinker), _CGI(RequestLinker)
+{
+    RunCGI = false;
+}
+clsMainProcess::~clsMainProcess() {} // free right way
 
 void clsMainProcess::_PartRedirection()
 {
@@ -23,8 +26,65 @@ void clsMainProcess::_PartRedirection()
     _Response.MakeResponse();
 }
 
-void clsMainProcess::_PartCGI()
+stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
+    return this->_eventProcess;
+}
+void clsMainProcess::setEventProcess(stEventProcess::eEventProcess &ev)
+{
+    this->_eventProcess = ev;
+}
+
+void clsMainProcess::ParseCGI(const char *Buffer, short Length)
+{
+    clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
+    if (_eventProcess == stEventProcess::THE_END)
+        parseCgi.SetProcessIsFinish(true);
+    parseCgi.ReceivingData(Buffer, Length);
+
+    if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
+    {
+        if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
+        {
+            _eventProcess = stEventProcess::END_WITH_PARSE;
+            _Response.SetBodyPointer(parseCgi.GetBodyPointer());
+            _Response.SetHeaderFeildPointer(parseCgi.GetHeaderFeildPointer());
+            _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
+            _Response.SetModTransferData(true);
+        }
+        _Response.SetBodyPointer(&parseCgi.GetBody());
+        _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
+        _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
+        _Response.SetModTransferData(true);
+    }
+    else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
+    {
+        _ErrorPage.ResponseError(_eventProcess, ""); // change in future
+        _Response.SetBodyPointer(&_ErrorPage.GetBody());
+        _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
+        _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
+        _Response.SetModTransferData(true);
+    }
+}
+
+void clsMainProcess::_InitializeCGI()
+{
+    if (!RunCGI)
+    {
+        _CGI.RunCGI();
+        _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
+        _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
+        RunCGI = _CGI.GetIsRunCGI();
+    }
+   if (_CGI.GetErno())
+   {
+        // switch to error stat
+        _ErrorPage.ResponseError(500, "");
+        _Response.SetBodyPointer(&_ErrorPage.GetBody());
+        _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
+        _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
+        _Response.SetModTransferData(true);
+   }
    
 }
 
@@ -32,18 +92,11 @@ void clsMainProcess::_PartDeleteMethod()
 {
     _Response.SetMod(stMod::DELETE);
     _Response.SetStatus(200);
-    if (access(_DataRequest.getPhysicalPath(), R_OK))
-    {
-        _Response.SetMod(stMod::ERROR);
-        _Response.SetStatus(404);
-        _Response.MakeResponse();
-    }
     _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartPOSMethod()
 {
-    // remove set request handler function by adib
     _Response.SetStatus(200);
     _Response.SetMod(stMod::UPLOAD);
     _Response.MakeResponse();
@@ -51,8 +104,6 @@ void clsMainProcess::_PartPOSMethod()
 
 void clsMainProcess::_PartGETMethod()
 {
-    // remove set request handler function by adib
-
     _Response.SetMod(stMod::GET);
     _Response.SetStatus(200);
     _Response.MakeResponse();
@@ -75,8 +126,8 @@ void clsMainProcess::MainProcess()
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    else if (0)
-        _PartCGI();
+    else if (!_DataRequest.getPathCgi())
+        _InitializeCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == HttpTables::M_POST))

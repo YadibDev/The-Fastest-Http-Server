@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
-
+short clsCGI::_LimitProcess;
 clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
     _IsRunCGI = false;
@@ -76,7 +76,6 @@ bool clsCGI::_SERVER_SOFTWARE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1")))
     {
-
         return (false);
     }
     _Counter++;
@@ -225,7 +224,6 @@ bool clsCGI::_CONTENT_TYPE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
     {
-
         return (false);
     }
     _Counter++;
@@ -236,7 +234,6 @@ bool clsCGI::_CONTENT_LENGTH()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
     {
-
         return (false);
     }
     _Counter++;
@@ -253,18 +250,16 @@ bool clsCGI::_StoredArgs()
     _ARG = new(std::nothrow) char*[3];
     if (!_ARG)
         return (false);
-    _ARG[0] = _DataRequest.getPathCgi()->c_str();
+    _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
     if (!_ARG[0])
         return (false);
-    _ARG[1] = _DataRequest.getPhysicalPath();
+    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
     if (!_ARG[1])
         return (false);
     _ARG[2] = NULL;
     return (true);
 }
-// object 
-// function 
-// input , string buffer[], stateData == data exist stateProcess == sucess error runing timeout
+
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
@@ -281,14 +276,13 @@ bool clsCGI::_childeProcesse()
     //     return (close(Fd), close(pip[1]), true);
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
-    
     close(_pip[1]);
     close(Fd);
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
-int clsCGI::_ParentProcesse()
+void clsCGI::_ParentProcesse()
 {
     int status;
     int exit_code;
@@ -297,28 +291,23 @@ int clsCGI::_ParentProcesse()
     if (exit_code < 0)
     {
         close(_pip[0]);
-        HelperFunctions::free_matrex(&_ARG);
-        HelperFunctions::free_matrex(&_ENV);
-        return (-1);
+        _FD = -1;
+        _Erno = true;
     }
     else if (WEXITSTATUS(status) == 1)
     {
         close(_pip[0]);
-        HelperFunctions::free_matrex(&_ARG);
-        HelperFunctions::free_matrex(&_ENV);
-        return (-1);
+        _Erno = true;
+       _FD = -1;
     }
     else if (exit_code > 0)
     {
         _IsRunCGI = true;
-        HelperFunctions::free_matrex(&_ARG);
-        HelperFunctions::free_matrex(&_ENV);
-        return (_pip[0]);
+        _FD = _pip[0];
+        return ;
     }
     _IsRunCGI = true;
-    HelperFunctions::free_matrex(&_ARG);
-    HelperFunctions::free_matrex(&_ENV);
-    return (_pip[0]);
+    _FD = _pip[0];
 }
 bool clsCGI::_InintialVar()
 {
@@ -330,28 +319,30 @@ bool clsCGI::_InintialVar()
         return (false);
     return (true);
 }
-int clsCGI::RunCGI()
+void clsCGI::RunCGI()
 {
     if (!_InintialVar())
-        return (-1);
+    {
+        _Erno = true;
+       _FD = -1;
+    }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
     {
         close(_pip[0]);
         close(_pip[1]);
-        HelperFunctions::free_matrex(&_ENV);
-        HelperFunctions::free_matrex(&_ARG);
-        return (-1);
+       _Erno = true;
+       _FD = -1;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            return (-1);
+            return ;
     }
     else
-        return (_ParentProcesse());
-    return 0;
+       _ParentProcesse();
+    return ;
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -370,12 +361,24 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 }
 
  int clsCGI::GetPid()
- {
+{
     return _PIDCHILD;
- }
+}
 
+int clsCGI::GetFdPipe()
+{
+    return _FD;
+}
+bool clsCGI::GetErno()
+{
+    return _Erno;
+}
 clsCGI::~clsCGI()
 {
-
+   
+    HelperFunctions::free_matrex(&_ENV);
+    HelperFunctions::free_matrex(&_ARG);
+    kill(_PIDCHILD,SIGKILL);
+    close(_pip[0]);
 }
 

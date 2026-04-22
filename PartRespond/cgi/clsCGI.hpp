@@ -27,6 +27,7 @@ class clsCGI
         long long _StartTime;
         int _FD;
         bool _Erno;
+        static short _LimitProcess;
         const RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
         std::string TempVar;
@@ -36,7 +37,7 @@ class clsCGI
         uint8_t _Counter;
         std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
         bool _childeProcesse();
-        int _ParentProcesse();
+        void _ParentProcesse();
         bool _InintialVar();
         bool _StoredArgs();
         bool _MakeEnv();
@@ -61,8 +62,10 @@ class clsCGI
     public:
         clsCGI(const RequestHandler &DataRequest);
         bool GetIsRunCGI();
+        bool GetErno();
+        int GetFdPipe();
         clsParseOutCGI &GetclsParseOutCGI();
-        int RunCGI();
+        void RunCGI();
         int GetPid();
         void SetIsRunCGI(bool IsRunCGI);
         ~clsCGI();

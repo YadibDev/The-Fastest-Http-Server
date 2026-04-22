@@ -59,15 +59,16 @@ class clsResponse
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
-        void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(stMod::eMod Mod);
-        void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
         bool GetErnoVar();
         const std::string *GetBodyPointer();
         const std::string *GetHeaderFeildPointer();
         const std::string *GetFileFromDiskPointer();
+        void SetBodyPointer(const std::string *BodyPointer);
+        void SetHeaderFeildPointer(const std::string *HeaderFeildPointer);
+        void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
         bool GetModTransferData() const;

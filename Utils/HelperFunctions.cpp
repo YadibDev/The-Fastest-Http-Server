@@ -331,9 +331,8 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 	return SizeByte;
 }
 
-void HelperFunctions::GetCleanLineHeader(char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
+void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
-	// 123\n45
 	while(i < LengthData && BigData[i] != '\n')
 	{
 		(MaxSizeHeader)++;
@@ -680,6 +679,16 @@ void HelperFunctions::CopyStr(const std::string &Str_src, std::string &Str_new, 
 {
 	short i = Start;
 	while(i < (short)Str_src.length() && i < Pos)
+	{
+		Str_new += Str_src[i];
+		i++;
+	}
+}
+
+void HelperFunctions::CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length)
+{
+	short i = Start;
+	while(i < Length)
 	{
 		Str_new += Str_src[i];
 		i++;

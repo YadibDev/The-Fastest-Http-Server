@@ -26,6 +26,7 @@ class clsParseOutCGI
 {
         std::string _Data;
         stMod::eMod _Mod[10];
+        pid_t _PIDCHILD;
         stHeadersCGI::eHeaders _ExistHeaders[3];
         bool _FoundBody;
         int _Status;
@@ -70,8 +71,8 @@ class clsParseOutCGI
         void _StatusNormal();
         void _StatusRedirection();
         void _ContentLength();
-        void _ReceivingHeaders(std::string &Data);
-        void _ReceivingBody(std::string &Data);
+        void _ReceivingHeaders(const char *Arr, short Length);
+        void _ReceivingBody(const char *Arr, short Length);
         bool _StoredHeadersField(std::string &Str);
         void _StoredInFileOrStr();
         void _CreatFileTemp();
@@ -86,8 +87,10 @@ class clsParseOutCGI
         const std::string *GetHeaderFeildPointer();
         const std::string *GetFileFromDiskPointer();
         void SetPipe_Fd(int Pipe_Fd);
-        void ReceivingData(std::string &Data);
+        stMod::eMod *GetMod();
+        void ReceivingData(const char *Arr, short Length);
         void SetProcessIsFinish(bool ProcessIsFinish);
+        void SetPIDPROCESS(int PIDPROCESS);
         bool GetModTransferData() const;
         ~clsParseOutCGI();
 };
