@@ -94,7 +94,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		*_request.read_body_ptr = size - _offset;
 	}
 
-	_body.bodyHandler(_request.read_body_ptr);
+	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize());
 
 	if (_body.getState() == clsBody::DONE_GOOD)
 	{
@@ -118,7 +118,7 @@ bool RequestParser::Parse(uint16_t size)
 		else if (_state == STATE_HEADERS)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
-			ParseBody(size);
+			ParseBody(size); // add handle error with the proprly way
 		else
 			break;
 

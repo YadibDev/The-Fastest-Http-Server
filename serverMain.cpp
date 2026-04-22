@@ -127,12 +127,21 @@ void function(int signal)
 //     }
 // }
 
+void HandlerSignal(int sig)
+{
+    if (sig == SIGINT)
+    {
+        throw std::runtime_error("Exit\nProgram Exit with [ctr + c]");
+    } 
+}
+
 #include "linker/clsFlow.hpp"
 
 int main()
 {
     try
     {
+        signal(SIGINT, HandlerSignal);
         clsFlow flow;
         flow.EventLoop();
     }

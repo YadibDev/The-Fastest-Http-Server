@@ -54,7 +54,7 @@ public:
 	std::vector<sockaddr_in>			getListens() const; // address
 	// std::vector<std::string>		getServerNames() const;
 	std::map<short, stErrorPagedata>	getErrorPages() const;
-	size_t								getMaxBodySize() const;
+	const size_t								&getMaxBodySize() const;
 	const std::vector<clsLocation> &			getLocationExact() const;
 	const std::vector<clsLocation> &			getLocationPrefix() const;
 	std::string							getRoot() const;

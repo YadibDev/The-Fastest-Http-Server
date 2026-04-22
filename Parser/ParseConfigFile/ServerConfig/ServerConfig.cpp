@@ -168,7 +168,7 @@ std::map<short, stErrorPagedata> clsServerConfig::getErrorPages() const {
 	return _error_pages;
 }
 
-size_t clsServerConfig::getMaxBodySize() const {
+const size_t &clsServerConfig::getMaxBodySize() const {
 	return _max_body_size;
 }
 

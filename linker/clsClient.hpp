@@ -60,7 +60,6 @@ private:
     ssize_t _addSizeChunkToStr();
     void _initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond);
 
-
 public:
     clsClient();
     void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
