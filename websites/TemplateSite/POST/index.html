@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/cgi-bin/upload.php" method="POST" >
-        <input type="file" name="myFile">
-        <button type="submit">Upload A FILE</button>
-    </form>    
+    <form method="post" action="/cgi-bin/upload.php" enctype="multipart/form-data">
+        <input type="file" name="name" >
+        <button type="submit">submit test</button>
+    </form>
 </body>
 </html>
