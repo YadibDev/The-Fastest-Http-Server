@@ -51,7 +51,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
 
 const clinetState &clsClient::GetState() const
 {
-    return _state;
+    return  _state;
 }
 
 unsigned short clsClient::GetPort() const

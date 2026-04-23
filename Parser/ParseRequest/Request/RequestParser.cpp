@@ -124,7 +124,11 @@ bool RequestParser::Parse(uint16_t size)
 
 		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
 			_state = STATE_COMPLETE;
-
+		else if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
+		{
+			if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].val.len == 1 && _request.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data[0] == '0')
+					_state = STATE_COMPLETE;
+		}
 		if (_state == STATE_COMPLETE)
 			return true;
 		else if (_error.isError())
