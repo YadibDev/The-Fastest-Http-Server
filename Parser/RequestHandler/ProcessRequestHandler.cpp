@@ -137,8 +137,6 @@ bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
 		index.len = vindex[i].size();
 		if (HandleCgi(bestLocation, handler, index, handler->getPhysicalPath()) && handler->getScriptName().len)
 			return true;
-		else if (handler->getScriptName().len)
-			return false;
 		std::memcpy(destBuffer + dirLen, vindex[i].c_str(), idxLen);
 		destBuffer[dirLen + idxLen] = '\0';
 		if (checkPath(destBuffer))
@@ -201,11 +199,8 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 	}
 
 	if (uriPartLen > 0) {
-		if (destBuffer[currentPos - 1] != '/' && uriPart[0] != '/') {
-			if (currentPos < MAX_PATH_LEN - 1)
-				destBuffer[currentPos++] = '/';
-		} 
-		else if (destBuffer[currentPos - 1] == '/' && uriPart[0] == '/') {
+
+		if (destBuffer[currentPos - 1] == '/' && uriPart[0] == '/') {
 			uriPart++;
 			uriPartLen--;
 		}
@@ -260,7 +255,7 @@ bool	ProcessRequestHandler::HandleCgi(const clsLocation* bestLocation, RequestHa
 
 bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 						RequestHandler* handler,
-						const s_view &requestUri, HttpError	error)
+						const s_view &requestUri, HttpError	&error)
 {
 
 	if (!HandleCgi(bestLocation, handler, requestUri, handler->getPhysicalPath()))
@@ -329,7 +324,6 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		return false;
 	}
 
-	// handler->setReturn(bestLocation->getReturn());
 	finalizeErrorState(handler, originalCode, foundData);
 	return true;
 }
@@ -359,13 +353,16 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	}
 
 	if (!handlePath(bestLocation, handler, startLine.getRequestURI().getPath(), error))
-		return (handler->setError(error), false);
+	{
+		if (error.isError())
+			return (handler->setError(error), false);
+		return false;
+	}
 
 	handler->setQuery(startLine.getRequestURI().getQuery());
 	handler->setVersion(startLine.getVersion());
 	handler->setMethod(startLine.getMethod());
-	handler->setDefaultErrorPage(bestLocation->getDefaultErrorPage());
-	handler->setReturn(bestLocation->getReturn());
+	handler->setReturn((!serverConfig->getReturn().value.empty()) ? serverConfig->getReturn() : bestLocation->getReturn());
 	handler->setUploadStore(&bestLocation->getUploadStore());
 
 	handler->setError(error);

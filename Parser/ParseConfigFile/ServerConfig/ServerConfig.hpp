@@ -21,16 +21,19 @@ private:
         INDEX           = 1 << 2,
         MAX_BODY_SIZE   = 1 << 3,
     };
-	std::vector<sockaddr_in>		_listens;
-	// std::vector<std::string>		_server_names;
-	std::string						_root;
+
+	short								_flags;
+	std::vector<sockaddr_in>			_listens;
+	// std::vector<std::string>			_server_names;
+	std::string							_root;
 	std::vector<std::string>			_index;
 	std::map<short, stErrorPagedata>	_error_pages;
 	bool 								_autoindex;
-	size_t							_max_body_size;
-	std::vector<clsLocation>		_LocationExact;
-	std::vector<clsLocation>		_LocationPrefix;
-	s_parse_context					&ctx;
+	stReturnData						_return;
+	size_t								_max_body_size;
+	std::vector<clsLocation>			_LocationExact;
+	std::vector<clsLocation>			_LocationPrefix;
+	s_parse_context						&ctx;
 	
 	bool				ParseListen();
 	// bool	ParseServerName();
@@ -38,6 +41,7 @@ private:
 	bool				ParseClientMaxBodySize();
 	bool				ParseLocation();
 	bool				ParseRoot();
+	bool				ParseReturn();
 	bool				ParseIndex();
 	bool				ParseAutoIndex();
 
@@ -55,11 +59,13 @@ public:
 	// std::vector<std::string>		getServerNames() const;
 	std::map<short, stErrorPagedata>	getErrorPages() const;
 	size_t								getMaxBodySize() const;
-	const std::vector<clsLocation> &			getLocationExact() const;
-	const std::vector<clsLocation> &			getLocationPrefix() const;
+	const std::vector<clsLocation> &	getLocationExact() const;
+	const std::vector<clsLocation> &	getLocationPrefix() const;
 	std::string							getRoot() const;
 	std::vector<std::string>			getIndex() const;
+	const stReturnData					&getReturn() const;
 	bool								getAutoIndex() const;
+
 
 	HttpError getError() const;
 };

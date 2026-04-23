@@ -183,8 +183,8 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET /cgi-bin/script.php.py HTTP/1.1\r\n"
-    	"Host : 127.0.0.1:8081\r\n"
+    	"GET /test HTTP/1.1\r\n"
+    	"Host: 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
     	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"

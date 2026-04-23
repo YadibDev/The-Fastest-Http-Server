@@ -28,7 +28,7 @@ class ProcessRequestHandler
 	static bool					handlePath(const clsLocation* bestLocation,
 									RequestHandler* handler,
 									const s_view &requestUri,
-									HttpError	error);
+									HttpError	&error);
 	static bool					HandleCgi(const clsLocation* bestLocation, RequestHandler* handler,
 												const s_view &requestUri, char *PhysicalPath);
 

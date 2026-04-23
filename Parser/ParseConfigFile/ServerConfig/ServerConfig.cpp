@@ -5,6 +5,7 @@ clsServerConfig::clsServerConfig(s_parse_context	&ctxs) : ctx(ctxs)
 	_max_body_size = 1048576; // convert 1M to byte Default: client_max_body_size 1m;
 	_root = "default";
 	_index.push_back("index.html");
+	_flags = Directives::D_NONE;
 }
 
 clsServerConfig::~clsServerConfig() {}
@@ -58,6 +59,16 @@ bool	clsServerConfig::ParseIndex()
 	return (true);
 }
 
+bool    clsServerConfig::ParseReturn()
+{
+    if (_flags & Directives::D_RETURN)
+        return (ctx.error.setStatus(1, "Directives: return already set"), false);
+
+    _flags |= Directives::D_RETURN;
+    _return = ConfigDirectiveParser::ParseReturn(ctx);
+    return !ctx.error.isError();
+}
+
 bool	clsServerConfig::ParseAutoIndex()
 {
 	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
@@ -99,6 +110,7 @@ enBlocksDirective	clsServerConfig::getServerDirectiveType(const std::string& key
 		directives["index"]                 = L_DIR_INDEX;
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
 		directives["autoindex"]            = L_DIR_AUTOINDEX;
+		directives["return"]                = L_DIR_RETURN;
 		directives["error_page"]           = L_DIR_ERROR_PAGE;
 		directives["location"]             = L_DIR_LOCATION;
 	}
@@ -127,6 +139,7 @@ bool    clsServerConfig::ParseServerDirective()
 		case L_DIR_INDEX:					return	ParseIndex();
 		case L_DIR_CLIENT_MAX_BODY_SIZE:	return	ParseClientMaxBodySize();
 		case L_DIR_AUTOINDEX:				return	ParseAutoIndex();
+		case L_DIR_RETURN:					return	ParseReturn();
 		case L_DIR_ERROR_PAGE:				return	ParseErrorPage();
 		case L_DIR_LOCATION:				return	ParseLocation();
 		default:							return	(false);
@@ -178,6 +191,10 @@ const std::vector<clsLocation> &clsServerConfig::getLocationExact() const {
 
 const std::vector<clsLocation> &clsServerConfig::getLocationPrefix() const {
 	return _LocationPrefix;
+}
+
+const stReturnData &clsServerConfig::getReturn() const {
+	return _return;
 }
 
 HttpError clsServerConfig::getError() const {
