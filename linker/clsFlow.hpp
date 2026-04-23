@@ -29,7 +29,7 @@ private:
     enum fdTypes {SERVER_SOCK, CLIENT_SOCK, PIPE};
     size_t _totalServers;
     clsClient *_clientsArr;
-    std::vector<clsServerConfig> *_allBlocks;
+    std::vector<const clsServerConfig> *_allBlocks;
     epoll_event _clientsEvents[EVENTS_MAX];
     clsEpollHandler _epoll;
     std::vector<clsServerSock> _allServers;

@@ -59,18 +59,6 @@ bool clsParseConfigueFile::ParseConfigue()
     return true;
 }
 
+const std::vector<clsServerConfig> &clsParseConfigueFile::getServers() const { return (_servers); }
 
-std::vector<clsServerConfig> &clsParseConfigueFile::getServers()
-{
-    return (_servers);
-}
-
-const std::vector<clsServerConfig> &clsParseConfigueFile::getServers() const
-{
-    return (_servers);
-}
-
-HttpError					clsParseConfigueFile::getError()
-{
-    return _ERROR;
-}
+HttpError					clsParseConfigueFile::getError() { return _ERROR; }

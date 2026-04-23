@@ -31,7 +31,9 @@ void RequestParser::init(uint16_t offset)
 	_requestLine.init(offset);
 	_header.init(offset);
 	_error.setStatus(0, "");
+	_RequestHandler->reset();
 }
+
 
 
 bool RequestParser::LProcessRequestHandler()

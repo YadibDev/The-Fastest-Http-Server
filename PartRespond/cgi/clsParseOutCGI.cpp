@@ -419,8 +419,8 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     kill(_PIDCHILD,SIGKILL);
     close(_Pipe_Fd);
     close(_Fdout);
-    const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    if (ErrorPageConf->response)
+    const stErrorPagedata *ErrorPageConf = NULL;
+    if (ErrorPageConf && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;

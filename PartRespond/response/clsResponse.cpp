@@ -96,7 +96,7 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    const stErrorPagedata *ErrorPageConf = NULL;
     if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
