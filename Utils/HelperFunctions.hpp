@@ -18,6 +18,11 @@
 #include "../Parser/ParseRequest//Request/HttpTypes.hpp"
 
 
+struct stEventProcess
+{
+    enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
+};
+
 // achraf headers
 
 
@@ -42,7 +47,6 @@ public:
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
-
 
 
     // achraf part
@@ -84,7 +88,8 @@ public:
     static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
     static int Countword(const std::string &Str, const std::string &Sep);
     static void NumToStr(int Number, std::string &Str);
-
+    static stEventProcess::eEventProcess checkProcessStatus(int pid);
+    static int SkeepAtLast(const std::string& Str, const std::string &Sep);
 
 private:
     static std::map<std::string, std::string> _TypeContent;

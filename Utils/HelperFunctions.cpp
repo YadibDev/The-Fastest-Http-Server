@@ -313,6 +313,14 @@ int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep)
 	return i;
 }
 
+int HelperFunctions::SkeepAtLast(const std::string& Str, const std::string &Sep)
+{
+	int End = Str.length() - 1;
+	while (End >= 0 && Ischar(Sep, Str[End]))
+			End--;
+	return End;
+}
+
 int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
 {
 	size_t i = 0;
@@ -707,4 +715,26 @@ short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep
         i++;
     }
     return (count);
+}
+
+stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
+{
+	int status;
+	int exit_code = waitpid(pid, &status, WNOHANG);
+
+	if (exit_code != 0)
+	{
+        if (WIFEXITED(status)) // if exited
+        {
+            if (WEXITSTATUS(status) != 0) // check status
+    			return stEventProcess::END_UNKNOW;
+            else
+                return stEventProcess::THE_END;
+        }
+        else if (WIFSIGNALED(status) || exit_code == -1)
+    		return stEventProcess::END_UNKNOW;
+		else
+			return stEventProcess::THE_END;
+	}
+	return stEventProcess::RUNINNG;
 }

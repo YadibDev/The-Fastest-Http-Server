@@ -21,7 +21,10 @@ clsMainProcess::~clsMainProcess() {} // free right way
 
 void clsMainProcess::_PartRedirection()
 {
-    _Response.SetStatus(_DataRequest.getReturn().code);
+    if (0)
+        _Response.SetStatus(302);
+    else
+        _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(stMod::REDIRECTION);
     _Response.MakeResponse();
 }
@@ -30,7 +33,7 @@ stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
     return this->_eventProcess;
 }
-void clsMainProcess::setEventProcess(stEventProcess::eEventProcess &ev)
+void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 {
     this->_eventProcess = ev;
 }
@@ -72,6 +75,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
+    std::cout << "initialize cgi\n" << std::endl;;
     if (!_RunCGI)
     {
         _CGI.RunCGI();
@@ -124,13 +128,13 @@ void clsMainProcess::_PartErrorRequest()
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
-    if (_DataRequest.getError().isError())
+    else if(_DataRequest.getError().isError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    else if (!_DataRequest.getPathCgi())
+    else if (_DataRequest.getPathCgi())
         _InitializeCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();
@@ -151,4 +155,9 @@ bool clsMainProcess::GetIsRunCGI()
 clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
+}
+
+bool clsMainProcess::isRunCgi()
+{
+    return _RunCGI;
 }

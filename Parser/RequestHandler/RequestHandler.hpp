@@ -1,8 +1,9 @@
 #ifndef REQUESTHANDLER_HPP
 #define REQUESTHANDLER_HPP
 
-#include "../../Utils/HttpError.hpp"
+
 #include "../Header/HeaderFiles.hpp"
+#include "../../Utils/HttpError.hpp"
 #include "../ParseRequest/Request/HttpTypes.hpp"
 #include "../ParseRequest/Request/HeaderTable.hpp"
 #include <map>

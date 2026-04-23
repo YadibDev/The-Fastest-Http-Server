@@ -181,9 +181,21 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
     return true;
 }
 
+void clsFlow::_pushPipe(short pipe, short indexClient)
+{
+    if (_epoll.addClient(pipe, EPOLLIN) == false)
+        return ; // watch by epoll
+    _IdByPipe[pipe] = indexClient;
+}
+
+void clsFlow::_popPipe(short pipe)
+{
+    _IdByPipe.erase(pipe);
+}
+
 void clsFlow::_clientProcess(int fd, uint32_t event)
 {
-    int index = _clientIdByFd[fd];
+    short index = _clientIdByFd[fd];
     clsClient &client = _clientsArr[index];
 
     client.ProcessBoth(event);
@@ -198,6 +210,11 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     else if (status == BEGIN)
     {
         _epoll.changeAbility(fd, EPOLLIN);
+    }
+    else if (status == CGI_START)
+    {
+        _pushPipe(client.getPipeCgi(), index);
+        client.SetState(CGI_RUNING);
     }
 }
 
@@ -219,6 +236,15 @@ void clsFlow::_newClientProcess(int serverFd)
     }
 }
 
+void clsFlow::_pipeFlow(int fd)
+{
+    short index = _IdByPipe[fd];
+    clsClient &client = _clientsArr[index];
+
+    client.monitorCgi(fd);
+}
+
+
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
     if (TypeFd == CLIENT_SOCK)
@@ -227,11 +253,7 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
         _newClientProcess(fd);
 
     else if (TypeFd == PIPE)
-    {
-        // read input from pipe
-        // check cgi status
-        // 
-    }
+        _pipeFlow(fd);
 }
 
 void clsFlow::EventLoop()

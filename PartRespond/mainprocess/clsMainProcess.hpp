@@ -18,11 +18,6 @@
 #include "../cgi/clsCGI.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
-struct stEventProcess
-{
-    enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
-};
-
 class clsMainProcess
 {
 private:
@@ -46,7 +41,8 @@ public:
     void ParseCGI(const char *Buffer, short Length);
     clsMainProcess(RequestHandler &RequestLinker);
     stEventProcess::eEventProcess &getEventProcess();
-    void setEventProcess(stEventProcess::eEventProcess &ev);
+    void setEventProcess(stEventProcess::eEventProcess ev);
+    bool isRunCgi();
     clsCGI &GetclsCGI();
     bool GetIsRunCGI();
     clsResponse &GetclsResponse();

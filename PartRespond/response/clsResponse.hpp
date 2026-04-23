@@ -17,6 +17,7 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
+
 class clsResponse
 {
     private:
@@ -29,6 +30,8 @@ class clsResponse
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
+        bool _InternalRedirect;
+        std::string _InternalRedirectSrc;
         std::string _Type;
         clsErrorPage _ErrorPage;
         std::string _Body;

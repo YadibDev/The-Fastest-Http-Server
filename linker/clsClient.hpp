@@ -19,6 +19,8 @@ enum clinetState
     BEGIN,
     REQUEST_MODE,
     START_RESPOND,
+    CGI_START,
+    CGI_RUNING,
     RESPOND_MODE,
     LAST_CHUNKED,
     CONNECTION_CLOSED
@@ -51,7 +53,6 @@ private:
     RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
-
     clinetState _state;
     bodyPlaceEnum::place _BodyPlace;
 
@@ -59,6 +60,7 @@ private:
     int _ReadDataForReq();
     ssize_t _addSizeChunkToStr();
     void _initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond);
+    short    _ReadData(int fd);
 
 public:
     clsClient();
@@ -85,6 +87,9 @@ public:
     void ProcessRequest(); // will be
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
+    int getPipeCgi();
+    void monitorCgi(int fd);
+
 };
 
 #endif

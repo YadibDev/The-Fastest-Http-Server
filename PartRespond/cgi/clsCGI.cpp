@@ -19,7 +19,7 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
     _ENV = NULL;
     _Counter = 0;
     _Erno = false;
-    TempVar.resize(2000);
+    TempVar.resize(MAX_HEADERS);
     if (TempVar.empty())
     {
         _Erno = true;
@@ -324,7 +324,7 @@ void clsCGI::RunCGI()
     if (!_InintialVar())
     {
         _Erno = true;
-       _FD = -1;
+        _FD = -1;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -338,7 +338,7 @@ void clsCGI::RunCGI()
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            return ;
+            exit(1) ;
     }
     else
        _ParentProcesse();
