@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 10:55:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 16:17:26 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,7 +425,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     _BodyPointer = &_ErrorPage.GetBody();
     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-    _Mod[stMod::INTERANLRE] == stMod::INTERANLRE;
+    _Mod[stMod::INTERANLRE] = stMod::INTERANLRE;
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)

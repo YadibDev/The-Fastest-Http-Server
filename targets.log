@@ -1,0 +1,959 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.4.1
+# Built for x86_64-unknown-linux-gnu
+# Copyright (C) 1988-2023 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Fri Apr 24 16:16:09 2026
+
+# Variables
+
+# makefile (from 'Makefile', line 22)
+OBJ = $(ALL_FILES:.cpp=.o)
+# environment
+GDK_BACKEND = x11
+# environment
+LC_ALL = C
+# environment
+SSH_AGENT_LAUNCHER = gnome-keyring
+# environment
+PULSE_SERVER = unix:/run/flatpak/pulse/native
+# makefile (from 'Makefile', line 5)
+SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp main.cpp linker/clsLinker.cpp linker/clsClient.cpp
+# environment
+GJS_DEBUG_OUTPUT = stderr
+# environment
+SBX_CHROME_API_RQ = 1
+# environment
+VSCODE_CRASH_REPORTER_PROCESS_TYPE = extensionHost
+# environment
+VSCODE_CWD = /home/yadib
+# environment
+LIBVIRT_DEFAULT_URI = qemu:///system
+# default
+MAKE_COMMAND := make
+# environment
+APPLICATIONINSIGHTS_CONFIGURATION_CONTENT = {}
+# environment
+QT_ACCESSIBILITY = 1
+# environment
+OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT = true
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+COPILOT_OTEL_EXPORTER_TYPE = file
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /goinfre/yadib/The-Fastest-Http-Server
+# environment
+ZYPAK_ZYGOTE_STRATEGY_SPAWN = 1
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+GI_TYPELIB_PATH = /app/lib/girepository-1.0
+# environment
+XDG_DATA_DIRS = /app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/yadib/.var/app/com.visualstudio.code/config/Code/CachedData/560a9dba96f961efea7b1612916f89e5d5d4d679
+# environment
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session25
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/flatpak/Xauthority
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS := /usr/include
+# environment
+ALSA_CONFIG_DIR = /usr/share/alsa
+# makefile
+MAKEFLAGS = pqrR
+# makefile (from 'Makefile', line 23)
+DEP = $(OBJ:%.o=%.d)
+# makefile
+CURDIR := /goinfre/yadib/The-Fastest-Http-Server
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+ZYPAK_LIB = /app/bin/../lib
+# environment
+MFLAGS = -pqrR
+# environment
+SSH_AUTH_SOCK = /run/flatpak/ssh-auth
+# default
+.SHELLFLAGS := -c
+# environment
+XDG_CONFIG_DIRS = /app/etc/xdg:/etc/xdg
+ 
+# environment
+COPILOT_OTEL_FILE_EXPORTER_PATH = /dev/null
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+ALSA_CONFIG_PATH = /usr/share/alsa/alsa-flatpak.conf
+# environment
+XDG_SESSION_DESKTOP = ubuntu
+# makefile (from 'main.d', line 1)
+MAKEFILE_LIST := Makefile server/clsEpollHandler.d server/clsServerSock.d server/testing.d main.d
+# environment
+FLATPAK_SANDBOX_DIR = /home/yadib/.var/app/com.visualstudio.code/sandbox
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_PID = 22
+# environment
+KRB5CCNAME = FILE:/tmp/krb5cc_104128_2fYUuu
+# environment
+XDG_SESSION_TYPE = x11
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+PYTHONUSERBASE = /var/data/python
+# environment
+AT_SPI_BUS_ADDRESS = unix:path=/run/flatpak/at-spi-bus
+# environment
+XDG_DATA_HOME = /home/yadib/.var/app/com.visualstudio.code/data
+# environment
+SESSION_MANAGER = local/e1r13p1.1337.ma:@/tmp/.ICE-unix/1272581,unix/e1r13p1.1337.ma:/tmp/.ICE-unix/1272581
+# automatic
+*F = $(notdir $*)
+# environment
+CHROME_DESKTOP = code.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/flatpak/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# makefile (from 'Makefile', line 14)
+CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
+# environment
+VSCODE_NLS_CONFIG = {"userLocale":"en-us","osLocale":"en-us","resolvedLanguage":"en","defaultMessagesFile":"/app/extra/vscode/resources/app/out/nls.messages.json","locale":"en-us","availableLanguages":{}}
+# environment
+__EGL_EXTERNAL_PLATFORM_CONFIG_DIRS = /etc/egl/egl_external_platform.d:/usr/lib/x86_64-linux-gnu/GL/egl/egl_external_platform.d:/usr/share/egl/egl_external_platform.d
+# default
+MAKE_HOST := x86_64-unknown-linux-gnu
+# environment
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+XMODIFIERS = @im=ibus
+# environment
+LD_LIBRARY_PATH = /app/lib
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
+SANDBOX_LD_LIBRARY_PATH = /app/lib
+# environment
+SHLVL = 0
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = /app/bin:/app/bin:/app/bin:/usr/bin:/home/yadib/.var/app/com.visualstudio.code/data/node_modules/bin
+# environment
+XCURSOR_PATH = /run/host/user-share/icons:/run/host/share/icons
+# default
+MAKEFILES := 
+# automatic
+^F = $(notdir $^)
+# environment
+DBUS_SYSTEM_BUS_ADDRESS = unix:path=/run/dbus/system_bus_socket
+# environment
+APPLICATION_INSIGHTS_NO_STATSBEAT = true
+# environment
+XDG_CONFIG_HOME = /home/yadib/.var/app/com.visualstudio.code/config
+# environment
+INVOCATION_ID = dd6b533470b94977be33be782e5f58e5
+# makefile (from 'Makefile', line 1)
+CPP = c++
+# environment
+DOCKER_HOST = unix:///run/user/104128/docker.sock
+# automatic
+?F = $(notdir $?)
+# makefile (from 'Makefile', line 3)
+NAME = webserv
+# environment
+GTK_IM_MODULE = ibus
+# environment
+XDG_CURRENT_DESKTOP = ubuntu:GNOME
+# automatic
++F = $(notdir $+)
+# environment
+XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
+# environment
+DESKTOP_SESSION = ubuntu
+# environment
+GST_PLUGIN_SYSTEM_PATH = /app/lib/gstreamer-1.0:/usr/lib/extensions/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/codecs-extra/lib/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = yadib
+# makefile (from 'Makefile', line 12)
+RESPOND_FILES = PartRespond/mainprocess/clsMainProcess.cpp  PartRespond/response/clsResponse.cpp PartRespond/response/clsErrorPage.cpp 
+# environment
+container = flatpak
+# makefile (from 'Makefile', line 2)
+CPPFLAGS = -Wall -Wextra -g --std=c++98
+# environment
+GIO_LAUNCHED_DESKTOP_FILE = /var/lib/flatpak/exports/share/applications/com.visualstudio.code.desktop
+# makefile
+.DEFAULT_GOAL := all
+# environment
+SYSTEMD_EXEC_PID = 1272602
+# environment
+NPM_CONFIG_GLOBALCONFIG = /app/etc/npmrc
+# environment
+GTK_MODULES = gail:atk-bridge
+# environment
+USER = yadib
+# environment
+DISPLAY = :99.0
+# default
+MAKE_VERSION := 4.4.1
+# environment
+MANAGERPID = 1272015
+# environment
+GIO_LAUNCHED_DESKTOP_FILE_PID = 1274297
+# makefile (from 'Makefile', line 20)
+ALL_FILES = $(SERVER_FILES) $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES)
+# environment
+_ = /usr/bin/make
+# environment
+XDG_RUNTIME_DIR = /run/user/104128
+# environment
+GPG_AGENT_INFO = /run/user/104128/gnupg/S.gpg-agent:0:1
+# environment
+PULSE_CLIENTCONFIG = /run/flatpak/pulse/config
+# environment
+FC_FONTATIONS = 1
+# environment
+COPILOT_OTEL_ENABLED = true
+# environment
+JOURNAL_STREAM = 8:4455883
+# makefile (from 'Makefile', line 8)
+UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpError.cpp Utils/Lexer.cpp
+# environment
+XDG_SESSION_CLASS = user
+# environment
+HOME = /home/yadib
+# environment
+QT_IM_MODULE = ibus
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/104128/vscode-3832be5a-1.11-main.sock
+# environment
+FT_HOOK_PATHNAME = login-user.d
+# environment
+IM_CONFIG_PHASE = 1
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# default
+SUFFIXES := 
+ 
+# environment
+XDG_CACHE_HOME = /home/yadib/.var/app/com.visualstudio.code/cache
+# environment
+VSCODE_CLI = 1
+# environment
+FT_HOOK_NAME = login-user
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+XDG_GREETER_DATA_DIR = /var/lib/lightdm-data/yadib
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs notintermediate shell-export archives jobserver jobserver-fifo output-sync check-symlink load
+# makefile (from 'Makefile', line 17)
+REQUEST_FILES = Parser/ParseRequest/Request/clsStartLine.cpp Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/Request.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp
+# environment
+FLATPAK_ID = com.visualstudio.code
+# environment
+XDG_MENU_PREFIX = gnome-
+# environment
+VSCODE_ESM_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+ZYPAK_BIN = /app/bin
+# environment
+GDMSESSION = ubuntu
+# variable set hash-table stats:
+# Load=140/1024=14%, Rehash=0, Collisions=18/198=9%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 64769, inode 18093201): 27 files, no impossibilities.
+# server (device 64769, inode 18095918): No files, no impossibilities so far.
+
+# 27 files, no impossibilities in 2 directories.
+
+# Implicit Rules
+
+%.o: %.cpp
+#  recipe to execute (from 'Makefile', line 31):
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
+
+# 1 implicit rules, 0 (0.0%) terminal.
+# Files
+
+# Not a target:
+Parser/ParseRequest/URI/URIParser.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/RequestHandler/../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.925605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+server/testing.d:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.405674
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Utils/HelperFunctions.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+PartRespond/response/clsResponse.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/RequestHandler/../Header/HeaderFiles.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Utils/Lexer.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/RequestHandler/RequestHandler.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseRequest/URI/URIParser.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseRequest/URI/URI.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+ 
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HttpError.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/clsStartLine.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+server/clsServerSock.d:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.361674
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+linker/clsClient.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+server/clsEpollHandler.o: server/clsEpollHandler.cpp server/clsEpollHandler.cpp server/clsEpollHandler.hpp server/clsServerSock.hpp server/../Utils/HttpError.hpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'server/clsEpollHandler'
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.021674
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 31):
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
+
+# Not a target:
+Parser/ParseConfigFile/ServerConfig/ServerConfig.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/LocationConfig/LocationConfig.o:
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+server/clsServerSock.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/RequestHandler/ProcessRequestHandler.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+PartRespond/response/clsErrorPage.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+PartRespond/response/clsResponse.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/Lexer.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+ 
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../../Header/HeaderFiles.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Request.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.925605
+#  File has been updated.
+#  Successfully updated.
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 34):
+	rm -rf $(OBJ) $(DEP)
+
+server/testing.o: server/testing.cpp server/testing.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'server/testing'
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.409674
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 31):
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
+
+# Not a target:
+server/testing.cpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.925605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Utils/HttpError.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Header.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+server/clsServerSock.o: server/clsServerSock.cpp server/clsServerSock.cpp server/clsServerSock.hpp server/../Utils/HttpError.hpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'server/clsServerSock'
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.397674
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 31):
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
+
+# Not a target:
+linker/clsClient.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+webserv: server/clsEpollHandler.o server/clsServerSock.o server/testing.o main.o linker/clsLinker.o linker/clsClient.o Utils/HelperFunctions.o Utils/HelperFunctions.o Utils/HttpError.o Utils/Lexer.o Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.o Parser/ParseConfigFile/LocationConfig/LocationConfig.o Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.o Parser/ParseConfigFile/ServerConfig/ServerConfig.o Parser/ParseRequest/Request/clsStartLine.o Parser/ParseRequest/Request/Header.o Parser/ParseRequest/Request/Request.o Parser/ParseRequest/URI/URI.o Parser/ParseRequest/URI/URIParser.o Parser/RequestHandler/ProcessRequestHandler.o Parser/RequestHandler/RequestHandler.o PartRespond/mainprocess/clsMainProcess.o PartRespond/response/clsResponse.o PartRespond/response/clsErrorPage.o
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+#  recipe to execute (from 'Makefile', line 28):
+	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
+
+re: fclean all
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ServerConfig/ServerConfig.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+PartRespond/mainprocess/clsMainProcess.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/RequestHandler/ProcessRequestHandler.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Header.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+PartRespond/mainprocess/clsMainProcess.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/RequestHandler/RequestHandler.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/HeaderFiles.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+all: webserv
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+ 
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+
+fclean: clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 37):
+	rm -f $(NAME)
+
+# Not a target:
+Parser/ParseRequest/Request/clsStartLine.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Header.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+main.cpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.925605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+linker/clsLinker.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/LocationConfig/LocationConfig.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Utils/Lexer.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+main.o: main.cpp main.cpp Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/HeaderFiles.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/Lexer.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URI.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URIParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Request.hpp Parser/ParseRequest/Request/clsStartLine.hpp Parser/ParseRequest/Request/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Header.hpp Parser/RequestHandler/ProcessRequestHandler.hpp Parser/RequestHandler/../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/RequestHandler/../ParseRequest/Request/Request.hpp Parser/RequestHandler/RequestHandler.hpp Parser/RequestHandler/../Header/HeaderFiles.hpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'main'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := main.o
+# automatic
+# * := main
+# automatic
+# < := main.cpp
+# automatic
+# + := main.cpp main.cpp Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/HeaderFiles.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/Lexer.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URI.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URIParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Request.hpp Parser/ParseRequest/Request/clsStartLine.hpp Parser/ParseRequest/Request/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Header.hpp Parser/RequestHandler/ProcessRequestHandler.hpp Parser/RequestHandler/../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/RequestHandler/../ParseRequest/Request/Request.hpp Parser/RequestHandler/RequestHandler.hpp Parser/RequestHandler/../Header/HeaderFiles.hpp
+# automatic
+# % := 
+# automatic
+# ^ := main.cpp Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/HeaderFiles.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/Lexer.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URI.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URIParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Request.hpp Parser/ParseRequest/Request/clsStartLine.hpp Parser/ParseRequest/Request/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Header.hpp Parser/RequestHandler/ProcessRequestHandler.hpp Parser/RequestHandler/../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/RequestHandler/../ParseRequest/Request/Request.hpp Parser/RequestHandler/RequestHandler.hpp Parser/RequestHandler/../Header/HeaderFiles.hpp
+# automatic
+# ? := main.cpp Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/ServerConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/LocationConfig.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/ConfigDirectiveParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/HeaderFiles.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/Lexer.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URI.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URIParser.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HttpError.hpp Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HelperFunctions.hpp Parser/ParseConfigFile/ConfigFile/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Request.hpp Parser/ParseRequest/Request/clsStartLine.hpp Parser/ParseRequest/Request/../../Header/HeaderFiles.hpp Parser/ParseRequest/Request/Header.hpp Parser/RequestHandler/ProcessRequestHandler.hpp Parser/RequestHandler/../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp Parser/RequestHandler/../ParseRequest/Request/Request.hpp Parser/RequestHandler/RequestHandler.hpp Parser/RequestHandler/../Header/HeaderFiles.hpp
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
+#  recipe to execute (from 'Makefile', line 31):
+	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+PartRespond/response/clsErrorPage.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+server/clsEpollHandler.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URIParser.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:23:01.993704
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+main.d:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:23:03.525707
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Request.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../../Utils/HelperFunctions.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/URI/URI.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+ 
+
+# Not a target:
+Parser/ParseRequest/Request/clsStartLine.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Parser/RequestHandler/RequestHandler.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+server/clsEpollHandler.d:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:43.001673
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/Request.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:51.345687
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HelperFunctions.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseRequest/Request/../../Header/HeaderFiles.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/RequestHandler/ProcessRequestHandler.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.189672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/RequestHandler/../ParseRequest/Request/Request.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:51.345687
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+server/../Utils/HttpError.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/../../../Utils/HttpError.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+linker/clsLinker.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+server/clsEpollHandler.cpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:42.193672
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Utils/HttpError.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+Parser/ParseConfigFile/ConfigFile/../ServerConfig/../LocationConfig/../ServerConfig/../../Header/../ParseRequest/URI/URI.hpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+server/clsServerSock.cpp:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-04-21 10:22:01.929605
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+Utils/HelperFunctions.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# files hash-table stats:
+# Load=83/1024=8%, Rehash=0, Collisions=9/195=5%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 114 / storage = 3923 B / avg = 34 B
+# current buf: size = 8162 B / used = 3923 B / count = 114 / avg = 34 B
+
+# strcache performance: lookups = 174 / hit rate = 34%
+# hash-table stats:
+# Load=114/8192=1%, Rehash=0, Collisions=1/174=1%
+# Finished Make data base on Fri Apr 24 16:16:09 2026
+
+ 

@@ -39,7 +39,6 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    bool _resetReq;
     int _socket;
     int _fdRespond;
     ssize_t bytesToSend;
