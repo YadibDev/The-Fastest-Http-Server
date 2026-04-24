@@ -145,9 +145,12 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client)
             std::cout << "EPOLLERR" << std::endl;
         else
             std::cout << "EPOLLHUP" << std::endl;
-        // if (getsockname)
-            // ClientsLinker.removeClient(fd);
-        _freeClient(fd);
+        if (this->_IdByPipe.count(fd))
+        {
+            this->_popPipe(fd);
+        }
+        else
+            _freeClient(fd);
         return true;
     }
     return false;
@@ -190,6 +193,7 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 
 void clsFlow::_popPipe(short pipe)
 {
+    close(pipe);
     _IdByPipe.erase(pipe);
 }
 
@@ -221,6 +225,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
         _pushPipe(client.getPipeCgi(), index);
         client.SetState(CGI_RUNING);
     }
+    
 
     
 }
@@ -248,7 +253,8 @@ void clsFlow::_pipeFlow(int fd)
     short index = _IdByPipe[fd];
     clsClient &client = _clientsArr[index];
 
-    client.monitorCgi(fd);
+    if (client.monitorCgi(fd))
+        _popPipe(fd);
 }
 
 

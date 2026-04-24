@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 17:10:13 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/24 21:05:00 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_PATH_INFO())
         return false;
-    if (_PATH_TRANSLATED())
+    if (!_PATH_TRANSLATED())
         return false;
     if (!_SCRIPT_NAME())
         return false;
@@ -253,7 +253,7 @@ bool clsCGI::_StoredArgs()
     _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
     if (!_ARG[0])
         return (false);
-    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
+    _ARG[1] = HelperFunctions::ft_strdup("/home/yadib/goinfre/The-Fastest-Http-Server/cgi-bin/upload.php");
     if (!_ARG[1])
         return (false);
     _ARG[2] = NULL;
@@ -277,37 +277,26 @@ bool clsCGI::_childeProcesse()
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
-    close(Fd);
+    // close(Fd);
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
 void clsCGI::_ParentProcesse()
 {
-    int status;
-    int exit_code;
+    stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
     close(_pip[1]);
-    exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
-    if (exit_code < 0)
+    if (exit_code == stEventProcess::END_UNKNOW)
     {
         close(_pip[0]);
         _FD = -1;
         _Erno = true;
     }
-    else if (WEXITSTATUS(status) == 1)
-    {
-        close(_pip[0]);
-        _Erno = true;
-       _FD = -1;
-    }
-    else if (exit_code > 0)
+    else
     {
         _IsRunCGI = true;
         _FD = _pip[0];
-        return ;
     }
-    _IsRunCGI = true;
-    _FD = _pip[0];
 }
 bool clsCGI::_InintialVar()
 {
@@ -325,7 +314,7 @@ void clsCGI::RunCGI()
     {
         _Erno = true;
         _FD = -1;
-        return;
+        return ;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -334,12 +323,13 @@ void clsCGI::RunCGI()
         close(_pip[1]);
        _Erno = true;
        _FD = -1;
+       return ;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            exit(1) ;
+            exit(1);
     }
     else
        _ParentProcesse();

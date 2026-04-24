@@ -87,7 +87,7 @@ public:
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
     int getPipeCgi();
-    void monitorCgi(int fd);
+    bool monitorCgi(int fd);
     void logs();
 };
 
