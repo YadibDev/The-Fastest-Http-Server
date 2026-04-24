@@ -101,15 +101,8 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    const stErrorPagedata *ErrorPageConf = NULL;
-    if (ErrorPageConf != NULL && ErrorPageConf->response)
-    {
-        if (ErrorPageConf->response != -1)
-            _Status = ErrorPageConf->response;
-        _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
-    }
-    else
-        _ErrorPage.ResponseError(_Status, "");
+    _IsConnection = false;
+    _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
     _BodySize =  _ErrorPage.GetBodySize();
     _BodyPointer = &_ErrorPage.GetBody();
