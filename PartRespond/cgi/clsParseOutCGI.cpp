@@ -20,17 +20,31 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _CountSizeHeaders = 0;
     _Fdout = -1;
     _ModTransferData = false;
-
+    _Erno = false;
     _Body.resize(MAX_BODY);
     _HeadersFieldDuplicate.resize(MAX_HEADERS);
-    _HeadersFieldDuplicate.clear();
     _Line.resize(MAX_HEADERS);
-    _Line.clear();
     _NameHeader.resize(MAX_HEADERS);
-    _NameHeader.clear();
     _ValueHeader.resize(MAX_HEADERS);
+    _InternalRedirectSrc.resize(1000);
+    _FileNameFromDisk.resize(1000);
+    if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
+        || _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
+    {
+        _Status = 500;
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Erno = true;
+        return ;
+    }
+
+    _NameHeader.clear();
+    _HeadersFieldDuplicate.clear();
+    _Line.clear();
+    _InternalRedirectSrc.clear();
     _ValueHeader.clear();
+    _FileNameFromDisk.clear();
     _PIDCHILD = -3;
+    _InternalRedirect = false;
 
     HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
     HelperFunctions::ft_memset(_Mod, -1, 10);
@@ -227,8 +241,9 @@ void clsParseOutCGI::_HeaderResponseCGI()
     _HeadersFieldFinal += "\r\n";
 }
 
-void clsParseOutCGI::_GeneratePhisiaclPath()
+void clsParseOutCGI::_InitialInternalRedirect()
 {
+    short Pos = 0;
     _ValueHeader = _HeadersField["location"];
     short Skeep = HelperFunctions::SkeeSep(_ValueHeader, " \t");
     if (_ValueHeader[Skeep] != '/')
@@ -238,9 +253,12 @@ void clsParseOutCGI::_GeneratePhisiaclPath()
         _ErrorRespnseHandling();
         return ;
     }
-    _FileNameFromDisk = "rootoralias";
-    HelperFunctions::CopyStr(_ValueHeader,_FileNameFromDisk, Skeep, _ValueHeader.length());
-
+    _Status = 200;
+    _InternalRedirect = true;
+    Pos = HelperFunctions::SkeepAtLast(_ValueHeader," \t");
+    if (Pos < 0)
+        Pos = _ValueHeader.length();
+    HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -256,18 +274,7 @@ void clsParseOutCGI::_BuilResponsedredirection()
         _HeaderResponseCGI();
     else if(_HeadersField.size() == 1 && !_BytesBody)
     {
-        _GeneratePhisiaclPath();
-        // if (access(_FileNameFromDisk.c_str(), F_OK | R_OK) == -1)
-        // {
-        //     _Mod[stMod::ERROR] = stMod::ERROR;
-        //     _Status = 404;
-        //     _ErrorRespnseHandling();
-        //     return ;
-        // }
-        if (_Mod[stMod::ERROR] != stMod::ERROR)
-            _StoredInFileOrStr();
-        if (_Mod[stMod::ERROR] != stMod::ERROR)
-            _HeaderResponseCGI();
+        _InitialInternalRedirect();
     }
     else
     {
@@ -412,18 +419,18 @@ void clsParseOutCGI::_StoredInFileOrStr()
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-    _Body.clear();
-    _HeadersField.clear();
-    _HeadersFieldDuplicate.clear();
-    _HeadersFieldFinal.clear();
-    kill(_PIDCHILD,SIGKILL);
-    close(_Pipe_Fd);
-    close(_Fdout);
-    const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    if (ErrorPageConf->response)
+    _Reset();
+    const stErrorPagedata *ErrorPageConf = NULL;
+    if (ErrorPageConf && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
             _Status = ErrorPageConf->response;
+        if (!ErrorPageConf->uri.empty() && ErrorPageConf->uri[0] == '/')
+        {
+            _InternalRedirect = true;
+            _InternalRedirectSrc = ErrorPageConf->uri;
+            return ;
+        }
         _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
     }
     else
@@ -512,6 +519,11 @@ const std::string &clsParseOutCGI::GetBody()
     return _Body;
 }
 
+bool clsParseOutCGI::GetInernalRedirectVar()
+{
+    return _InternalRedirect;
+}
+
 const std::string &clsParseOutCGI::GetFileNameBody()
 {
     return _FileNameFromDisk;
@@ -539,11 +551,35 @@ stMod::eMod *clsParseOutCGI::GetMod()
     return _Mod;
 }
 
+short clsParseOutCGI::GetStatus()
+{
+    return _Status;
+}
+
+std::string &clsParseOutCGI::GetInternalRedirectSrc()
+{
+    return _InternalRedirectSrc;
+}
+
+void clsParseOutCGI::_Reset()
+{
+    _Body.clear();
+    _HeadersField.clear();
+    _HeadersFieldDuplicate.clear();
+    _HeadersFieldFinal.clear();
+    kill(_PIDCHILD,SIGKILL);
+    close(_Pipe_Fd);
+    close(_Fdout);
+}
+
 void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 {
     _PIDCHILD = PIDPROCESS;
 }
-
+bool clsParseOutCGI::GetErno()
+{
+   return _Erno;
+}
 clsParseOutCGI::~clsParseOutCGI()
 {
     close(_Fdout);

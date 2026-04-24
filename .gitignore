@@ -5,3 +5,6 @@ test.cpp
 .vscode
 *.out
 Testers
+test.cpp
+test1.cpp
+test*

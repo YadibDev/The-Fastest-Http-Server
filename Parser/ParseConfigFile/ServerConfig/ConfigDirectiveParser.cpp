@@ -260,7 +260,7 @@ bool	isValidStatusCode(short code)
 std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx) {
 	std::map<short, stErrorPagedata> errorMap;
 	std::vector<short> codes;
-	short responseOverride = 0;
+	short responseOverride = -1;;
 	std::string uri = "";
 
 	ctx.parser.advance();
@@ -279,8 +279,6 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 		std::string resStr = ctx.parser.peek().value;
 		if (resStr.size() > 1)
 			responseOverride = (short)std::atoi(resStr.substr(1).c_str());
-		else
-			responseOverride = -1; 
 		ctx.parser.advance();
 	}
 

@@ -313,6 +313,14 @@ int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep)
 	return i;
 }
 
+int HelperFunctions::SkeepAtLast(const std::string& Str, const std::string &Sep)
+{
+	int End = Str.length() - 1;
+	while (End >= 0 && Ischar(Sep, Str[End]))
+			End--;
+	return End;
+}
+
 int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
 {
 	size_t i = 0;

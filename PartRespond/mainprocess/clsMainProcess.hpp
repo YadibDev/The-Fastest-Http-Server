@@ -25,7 +25,7 @@ private:
     clsErrorPage _ErrorPage;
     clsCGI _CGI;
     RequestHandler &_DataRequest;
-    bool RunCGI;
+    bool _RunCGI;
     void _PartRedirection();
     void _PartPermission();
     void _PartDeleteMethod();
@@ -44,6 +44,7 @@ public:
     void setEventProcess(stEventProcess::eEventProcess ev);
     bool isRunCgi();
     clsCGI &GetclsCGI();
+    bool GetIsRunCGI();
     clsResponse &GetclsResponse();
     ~clsMainProcess();
 };

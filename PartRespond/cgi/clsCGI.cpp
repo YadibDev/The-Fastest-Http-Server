@@ -19,7 +19,7 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
     _ENV = NULL;
     _Counter = 0;
     _Erno = false;
-    TempVar.resize(2000);
+    TempVar.resize(MAX_HEADERS);
     if (TempVar.empty())
     {
         _Erno = true;

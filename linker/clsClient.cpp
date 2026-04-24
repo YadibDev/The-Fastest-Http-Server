@@ -5,6 +5,7 @@
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
 {
+    // _Requester.init();
     this->_socket = -1;
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;
@@ -26,28 +27,8 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _LastConnection = _FirstConnection;
     _state = BEGIN;
     _Requester.init(block);
-    // add request
 }
 
-// clsClient::clsClient(const clsClient &other) : block(other.block),
-//                                                _socket(other._socket),
-//                                                _FirstConnection(other._FirstConnection),
-//                                                _addr(other._addr),
-//                                                _dataForReq(),
-//                                                RequestXconfig(_dataForReq),
-//                                                _Requester(_dataForReq, &block, &RequestXconfig),
-//                                                _ResponderProecss(RequestXconfig)
-
-// {
-//     this->_dataForReq.io_chunk = this->_theData.io_chunk;
-//     this->_dataForReq.known_headers = this->_theData.known_headers;
-//     this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-//     _dataForReq.request_metadata = _theData.request_metadata;
-//     this->_dataForReq.read_body_ptr = &_theData.read_body;
-//     _fdRespond = 0;
-//     _LastConnection = _FirstConnection;
-//     _state = BEGIN;
-// }
 
 const clinetState &clsClient::GetState() const
 {
@@ -153,40 +134,6 @@ void clsClient::ProcessRequest()
     else if (_Requester.isComplete())
     {
         this->_state = START_RESPOND;
-
-        std::cout << "\n================= REQUEST DEBUG =================\n";
-
-        std::cout << "[STATUS] Request completed successfully\n";
-
-        std::cout << "\n[METADATA]\n";
-        std::cout << this->_theData.request_metadata << "\n";
-
-        std::cout << "\n[BODY STORAGE]\n";
-        if (_Requester._body._bodyLocation == clsBody::DISK)
-            std::cout << "Location : DISK\n";
-        else if (_Requester._body._bodyLocation == clsBody::RAM)
-            std::cout << "Location : RAM\n";
-        else
-            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
-
-        std::cout << "\n[BODY INFO]\n";
-        if (this->_theData.read_body > 0)
-        {
-            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
-            std::cout << "Content:\n";
-            std::cout << "----------------------------------------\n";
-
-            for (int i = 0; i < _theData.read_body; i++)
-                std::cout << this->_theData.io_chunk[i];
-
-            std::cout << "\n----------------------------------------\n";
-        }
-        else
-        {
-            std::cout << "No body received\n";
-        }
-
-        std::cout << "========================================\n\n";
         return;
     }
 }
@@ -225,8 +172,10 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
 
     if (_BodyPlace == bodyPlaceEnum::DISK)
     {
-        if (_fdRespond == 0)
+        if (_fdRespond == 0 && _Responder.GetModTransferData() == false )
             _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
+        else
+            _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
 
         int sizeToRead = _addSizeChunkToStr();
         if (sizeToRead)
@@ -261,11 +210,11 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 }
 
-void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond)
+void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond, bool fileExist)
 {
     memcpy(&respondBuffer[0], Headers, bytesToSend);
 
-    if (Respond.GetFileName().empty())
+    if (fileExist == false)
     {
         _BodyPlace = bodyPlaceEnum::RAM;
         memcpy(&respondBuffer[bytesToSend], Body, Respond.GetSizeBody());
@@ -306,19 +255,22 @@ void clsClient::ProcessRespond()
 
         const char *Header;
         const char *Body;
+        bool fileExist = false;
         if (Respond.GetModTransferData())
         {
             bytesToSend +=  Respond.GetHeaderFeildPointer()->size();
             Header = Respond.GetHeaderFeildPointer()->c_str();
             Body = Respond.GetBodyPointer()->c_str();
+            fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
         }
         else
         {
             bytesToSend +=  Respond.GetHeaderFeild().size();
             Header = Respond.GetHeaderFeild().c_str();
             Body = Respond.GetBody().c_str();
+            fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
         }
-        _initalizeRespondBuffer(respondBuffer, Header, Body, Respond);
+        _initalizeRespondBuffer(respondBuffer, Header, Body, Respond, fileExist);
     }
     else if (_state == CGI_RUNING)
         return ;
@@ -355,7 +307,71 @@ void clsClient::ProcessBoth(uint32_t events)
 
 void clsClient::freeRessources()
 {
+    _Requester.init();
+    _ResponderProecss.GetclsResponse().Reset();
     if (this->_socket > 0)
         close(this->_socket);
     _socket = -1;
+}
+
+void clsClient::logs()
+{
+    string arr[3] = {"GET", "POST", "DELETE"};
+    std::cout << "\n================= log start =================" << std::endl;
+    const RequestLine &reqLine = _Requester.getRequestLine();
+    std::cout << arr[(int)reqLine.getMethod()] << " ";
+    for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+        std::cout <<  reqLine.getRequestURI().getPath().Data[i];
+    std::cout << " ";
+    for (int i = 0; i < reqLine.getVersion().len; i++)
+        std::cout <<  reqLine.getVersion().Data[i];
+    for (int i = 0; i < 6; i++)
+    {
+        if (this->_theData.known_headers[i].Hash != -1)
+        {
+            cout << std::endl;
+            for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
+                std::cout << this->_theData.known_headers[i].key.Data[i];
+            std::cout << ": ";
+            for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
+                std::cout << this->_theData.known_headers[i].val.Data[i];
+        }
+    }
+    std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
+    std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+    std::cout << "\n================= log end =================\n" << std::endl;
+
+    //  std::cout << "\n================= REQUEST DEBUG =================\n";
+
+    //     std::cout << "[STATUS] Request completed successfully\n";
+
+    //     std::cout << "\n[METADATA]\n";
+    //     std::cout << this->_theData.request_metadata << "\n";
+
+    //     std::cout << "\n[BODY STORAGE]\n";
+    //     if (_Requester._body._bodyLocation == clsBody::DISK)
+    //         std::cout << "Location : DISK\n";
+    //     else if (_Requester._body._bodyLocation == clsBody::RAM)
+    //         std::cout << "Location : RAM\n";
+    //     else
+    //         std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
+
+    //     std::cout << "\n[BODY INFO]\n";
+    //     if (this->_theData.read_body > 0)
+    //     {
+    //         std::cout << "Size : " << this->_theData.read_body << " bytes\n";
+    //         std::cout << "Content:\n";
+    //         std::cout << "----------------------------------------\n";
+
+    //         for (int i = 0; i < _theData.read_body; i++)
+    //             std::cout << this->_theData.io_chunk[i];
+
+    //         std::cout << "\n----------------------------------------\n";
+    //     }
+    //     else
+    //     {
+    //         std::cout << "No body received\n";
+    //     }
+
+    //     std::cout << "========================================\n\n";
 }

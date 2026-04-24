@@ -18,18 +18,18 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
 {
     _Status = 0;
     _BodySize = 0;
-    _MaxSizeHeader = 2000;
-    _MaxSizeBody = 8192 - _MaxSizeHeader;
 
     _IsConnection = true;
     _SizeHeaders = 0;
     _Erno = false;
+    _InternalRedirect = false;
     _ModTransferData = false;
     _FileFromDisk.resize(1000);
-    _HeaderFeild.resize(_MaxSizeHeader);
-    _Body.resize(_MaxSizeBody);
+    _HeaderFeild.resize(MAX_HEADERS);
+    _InternalRedirectSrc.resize(1000);
+    _Body.resize(MAX_BODY);
     _Type.resize(500);
-    if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
+    if (_InternalRedirectSrc.empty() || _Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -38,6 +38,7 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     }
     _FileFromDisk.clear();
     _HeaderFeild.clear();
+    _InternalRedirectSrc.clear();
     _Type.clear();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY,sizeof(_Mod));
 }
@@ -49,7 +50,6 @@ void clsResponse::MakeResponse()
     if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
-
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
         _StoredInFileOrStr();
 
@@ -61,7 +61,6 @@ void clsResponse::MakeResponse()
         _ErrorRespnseHandling();
         return ;
     }
-   _HeaderFeild += "\r\n";
 }
 
 void clsResponse::_InitialHeaders()
@@ -69,12 +68,17 @@ void clsResponse::_InitialHeaders()
     _StatusLine();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
+    if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
+    {
+        if (_Status == 301 || _Status == 302 || _Status == 303 || _Status == 307 || _Status == 308)
+            _Redirction();
+        _Body = _DataRequest.getReturn().value;
+        _BodySize = _Body.size();
+    }
     if (_BodySize)
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
-    if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
-        _Redirction();
     _Date();
     _CachControl();
     _Server();
@@ -91,12 +95,13 @@ void clsResponse::_InitialHeaders()
     }
     else
         _Connection(true);
+   _HeaderFeild += "\r\n";
 }
 
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    const stErrorPagedata *ErrorPageConf = _DataRequest.getErrorPage(_Status);
+    const stErrorPagedata *ErrorPageConf = NULL;
     if (ErrorPageConf != NULL && ErrorPageConf->response)
     {
         if (ErrorPageConf->response != -1)
@@ -181,7 +186,7 @@ void clsResponse::_StoredInFileOrStr()
         return ;
     }
     _BodySize = MetaData.st_size;
-    if (_BodySize > _MaxSizeBody)
+    if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
@@ -193,7 +198,7 @@ void clsResponse::_StoredInFileOrStr()
         _Status = 500;
         return ;
     }
-    if (read(FD,&_Body[0],_MaxSizeBody) == -1)
+    if (read(FD,&_Body[0],MAX_BODY) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -202,21 +207,6 @@ void clsResponse::_StoredInFileOrStr()
     }
     _FileFromDisk.clear();
     close(FD);
-}
-
-void clsResponse::ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const
-{
-    if (Str == "")
-    {
-        NewStr += ("0\r\n\r\n");
-        return ;
-    }
-    NewStr += HelperFunctions::Convert_Hex("0123456789abcdef",Str.size());
-    NewStr += "\r\n";
-    NewStr += Str;
-    NewStr += "\r\n";
-    if (lastChunked)
-        NewStr += "0\r\n\r\n";
 }
 
 void clsResponse::SetStatus(short Status)
@@ -231,6 +221,7 @@ void clsResponse::SetMod(stMod::eMod Mod)
 
 void clsResponse::Reset()
 {
+
     _Status = 0;
     _BodySize = 0;
     _FileFromDisk = "";
@@ -270,7 +261,7 @@ const std::string *clsResponse::GetHeaderFeildPointer()
 {
     return _HeaderFeildPointer;
 }
-const std::string *clsResponse::GetFileFromDiskPointer()
+const std::string *clsResponse::GetFileFromDiskPointer() const
 {
     return _FileFromDiskPointer;
 }

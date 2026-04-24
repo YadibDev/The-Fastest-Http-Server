@@ -89,6 +89,7 @@ public:
     static int Countword(const std::string &Str, const std::string &Sep);
     static void NumToStr(int Number, std::string &Str);
     static stEventProcess::eEventProcess checkProcessStatus(int pid);
+    static int SkeepAtLast(const std::string& Str, const std::string &Sep);
 
 private:
     static std::map<std::string, std::string> _TypeContent;

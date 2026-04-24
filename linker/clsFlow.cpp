@@ -89,9 +89,9 @@ short clsFlow::_getClient()
 
 void clsFlow::_freeClient(short clientFd)
 {
+    std::cout << "--- free client ---\n" << std::endl;
     short index = _clientIdByFd[clientFd];
     _clientIdByFd.erase(clientFd);
-
     _clientsArr[index].freeRessources();
     _clientsAvailable.push(index);
 }
@@ -201,6 +201,11 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     client.ProcessBoth(event);
     const clinetState &status = client.GetState();
 
+    if (status == BEGIN || status == CONNECTION_CLOSED)
+    {
+        client.logs();
+    }
+
     if (status == CONNECTION_CLOSED)
         _freeClient(fd);
     else if (status == START_RESPOND)
@@ -216,6 +221,8 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
         _pushPipe(client.getPipeCgi(), index);
         client.SetState(CGI_RUNING);
     }
+
+    
 }
 
 void clsFlow::_newClientProcess(int serverFd)
@@ -247,6 +254,7 @@ void clsFlow::_pipeFlow(int fd)
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
+    // update flow of checkins is it a pipe or a server
     if (TypeFd == CLIENT_SOCK)
         _clientProcess(fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)

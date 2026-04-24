@@ -30,6 +30,8 @@ class clsResponse
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
+        bool _InternalRedirect;
+        std::string _InternalRedirectSrc;
         std::string _Type;
         clsErrorPage _ErrorPage;
         std::string _Body;
@@ -66,7 +68,7 @@ class clsResponse
         bool GetErnoVar();
         const std::string *GetBodyPointer();
         const std::string *GetHeaderFeildPointer();
-        const std::string *GetFileFromDiskPointer();
+        const std::string *GetFileFromDiskPointer() const;
         void SetBodyPointer(const std::string *BodyPointer);
         void SetHeaderFeildPointer(const std::string *HeaderFeildPointer);
         void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
