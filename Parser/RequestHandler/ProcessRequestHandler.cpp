@@ -73,51 +73,6 @@ bool checkPath(const char *str)
 	return (stat(str, &buffer) == 0 && (buffer.st_mode & S_IRUSR));
 }
 
-
-// bool	ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation, char *destBuffer, HttpError &error) {
-// 	const std::vector<std::string> &vindex = bestLocation->getIndex();
-// 	const std::string &base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
-// 	size_t baseLen = base.size();
-
-// 	if (baseLen >= MAX_PATH_LEN - 1)
-// 		return (error.setStatus(400, "Physical Path Is Large"), false);
-
-// 	for (size_t i = 0; i < vindex.size(); i++) {
-// 		memcpy(destBuffer, base.c_str(), baseLen);
-// 		size_t currentPos = baseLen;
-
-// 		if (currentPos > 0 && destBuffer[currentPos - 1] != '/')
-// 			if (currentPos < MAX_PATH_LEN - 1)
-// 				destBuffer[currentPos++] = '/';
-
-// 		size_t idxLen = vindex[i].size();
-// 		if (currentPos + idxLen < MAX_PATH_LEN)
-// 		{
-// 			memcpy(destBuffer + currentPos, vindex[i].c_str(), idxLen);
-// 			destBuffer[currentPos + idxLen] = '\0';
-// 			if (checkPath(destBuffer))
-// 				return true;
-// 		}
-// 	}
-
-// 	if (baseLen + 12 < MAX_PATH_LEN)
-// 	{
-// 		memcpy(destBuffer, base.c_str(), baseLen);
-// 		size_t currentPos = baseLen;
-// 		if (currentPos > 0 && destBuffer[currentPos - 1] != '/') destBuffer[currentPos++] = '/';
-// 		memcpy(destBuffer + currentPos, "index.html", INDEX_PATH_LEN);
-// 		if (checkPath(destBuffer))
-// 			return true;
-// 	}
-// 	if (bestLocation->getAutoIndex())
-// 	{
-// 		memcpy(destBuffer, base.c_str(), baseLen);
-// 		destBuffer[baseLen] = '\0';
-// 		return true;
-// 	}
-// 	return (error.setStatus(404, "Not Found"), false);
-// }
-
 bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
 											RequestHandler* handler,
 											char *destBuffer,
@@ -153,10 +108,13 @@ bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
 			return true;
 	}
 
-	if (bestLocation->getAutoIndex()) // autoindex in this if write logic
+	if (bestLocation->getAutoIndex())
+	{
+		handler->setAutoIndex(true);
 		return true;
+	}
 
-	return (error.setStatus(404, "Not Found"), false);
+	return (error.setStatus(403, "Forbidden"), false);
 }
 
 size_t PercentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
@@ -200,7 +158,16 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 
 	if (uriPartLen > 0) {
 
-		if (destBuffer[currentPos - 1] == '/' && uriPart[0] == '/') {
+		if (bestLocation->getAlias().empty() && currentPos > 0)
+		{
+			if (destBuffer[currentPos - 1] != '/' && uriPart[0] != '/')
+			{
+				if (currentPos < MAX_PATH_LEN - 1)
+					destBuffer[currentPos++] = '/';
+			}
+		}
+		if (currentPos > 0 && destBuffer[currentPos - 1] == '/' && uriPart[0] == '/')
+		{
 			uriPart++;
 			uriPartLen--;
 		}
@@ -254,38 +221,45 @@ bool	ProcessRequestHandler::HandleCgi(const clsLocation* bestLocation, RequestHa
 }
 
 bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
-						RequestHandler* handler,
-						const s_view &requestUri, HttpError	&error)
+									   RequestHandler* handler,
+									   const s_view &requestUri,
+									   HttpError &error)
 {
-
 	if (!HandleCgi(bestLocation, handler, requestUri, handler->getPhysicalPath()))
-			return false;
-	else
-	{
-		if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(),
-							   requestUri, error))
-			return (false);
+		return false;
 
-		if (requestUri.len && requestUri.Data[requestUri.len - 1] == '/')
-			if (!handleDirectory(bestLocation, handler, handler->getPhysicalPath(), error)) // I didn't want to make the Physical path dependent on the class
-				return false;
-		if (!checkPath(handler->getPhysicalPath()))
-			return (error.setStatus(404, "Not Found"), false);
+	if (handler->getScriptName().len)
+	{
+		if (handler->getPathInfo().len)
+			handler->computePathTranslated(bestLocation->getRoot());
+		return true;
 	}
 
-	if (handler->getPathInfo().len)
-		handler->computePathTranslated(bestLocation->getRoot());
+	if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), requestUri, error))
+		return false;
+
+	if (requestUri.len && requestUri.Data[requestUri.len - 1] == '/')
+	{
+		if (!handleDirectory(bestLocation, handler, handler->getPhysicalPath(), error))
+			return false;
+		if (handler->getPathInfo().len)
+			handler->computePathTranslated(bestLocation->getRoot());
+		return true;
+	}
+
+	if (!checkPath(handler->getPhysicalPath()))
+		return (error.setStatus(404, "Not Found"), false);
 
 	return true;
 }
 
 void ProcessRequestHandler::finalizeErrorState(RequestHandler* handler, 
-                                               int originalCode, 
-                                               const stErrorPagedata& errorData) 
+											   int originalCode, 
+											   const stErrorPagedata& errorData) 
 {
-    int finalCode = (errorData.response != -1) ? errorData.response : originalCode;
+	int finalCode = (errorData.response != -1) ? errorData.response : originalCode;
 
-    handler->setStatusError(finalCode);
+	handler->setStatusError(finalCode);
 }
 
 bool ProcessRequestHandler::generateErrorPath(short originalCode,
@@ -301,8 +275,8 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 
 	if (it == ErrorPagedata.end())
 	{
-	    finalizeErrorState(handler, originalCode, stErrorPagedata());
-	    return false;
+		finalizeErrorState(handler, originalCode, stErrorPagedata());
+		return false;
 	}
 
 	const stErrorPagedata &foundData = it->second;
@@ -342,9 +316,12 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 		return true;
 
 	HttpError error;
-
-	handler->setAutoIndex(bestLocation->getAutoIndex());
-
+	if (!bestLocation->getReturn().value.empty())
+	{
+    	handler->setReturn(bestLocation->getReturn());
+    	return true;    
+	}
+	
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{
 		error.setStatus(405, "Method Not Allowed");
