@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 21:16:54 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 17:10:13 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
 
 bool clsCGI::_MakeEnv()
 {
-    _ENV = new char*[SIZE_VAR_ENV];
+    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV]; // 
     if (!_ENV)
         return (false);
     HelperFunctions::ft_memset(_ENV,0,sizeof(_ENV) * SIZE_VAR_ENV);
@@ -325,6 +325,7 @@ void clsCGI::RunCGI()
     {
         _Erno = true;
         _FD = -1;
+        return;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
