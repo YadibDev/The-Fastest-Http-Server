@@ -578,7 +578,7 @@ void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 }
 bool clsParseOutCGI::GetErno()
 {
-   _Erno = true;
+   return _Erno;
 }
 clsParseOutCGI::~clsParseOutCGI()
 {

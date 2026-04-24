@@ -128,7 +128,7 @@ void clsMainProcess::_PartErrorRequest()
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
-    else if(_DataRequest.getError().isError())
+    if(_DataRequest.getError().isError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();
