@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 21:16:54 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 17:52:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,30 +284,19 @@ bool clsCGI::_childeProcesse()
 
 void clsCGI::_ParentProcesse()
 {
-    int status;
-    int exit_code;
+    stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
     close(_pip[1]);
-    exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
-    if (exit_code < 0)
+    if (exit_code == stEventProcess::END_UNKNOW)
     {
         close(_pip[0]);
         _FD = -1;
         _Erno = true;
     }
-    else if (WEXITSTATUS(status) == 1)
-    {
-        close(_pip[0]);
-        _Erno = true;
-       _FD = -1;
-    }
-    else if (exit_code > 0)
+    else
     {
         _IsRunCGI = true;
         _FD = _pip[0];
-        return ;
     }
-    _IsRunCGI = true;
-    _FD = _pip[0];
 }
 bool clsCGI::_InintialVar()
 {
@@ -325,6 +314,7 @@ void clsCGI::RunCGI()
     {
         _Erno = true;
         _FD = -1;
+        return ;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -333,6 +323,7 @@ void clsCGI::RunCGI()
         close(_pip[1]);
        _Erno = true;
        _FD = -1;
+       return ;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
