@@ -101,16 +101,12 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    const stErrorPagedata *ErrorPageConf = NULL;
-    if (ErrorPageConf != NULL && ErrorPageConf->response)
-    {
-        if (ErrorPageConf->response != -1)
-            _Status = ErrorPageConf->response;
-        _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
-    }
-    else
-        _ErrorPage.ResponseError(_Status, "");
+    // if (_DataRequest.getDefaultErrorPage()->uri.empty())
+    //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+    // else
+    _ErrorPage.ResponseError(_Status,"");
     _ModTransferData = true;
+    _IsConnection = false;
     _BodySize =  _ErrorPage.GetBodySize();
     _BodyPointer = &_ErrorPage.GetBody();
     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
@@ -261,7 +257,7 @@ const std::string *clsResponse::GetHeaderFeildPointer()
 {
     return _HeaderFeildPointer;
 }
-const std::string *clsResponse::GetFileFromDiskPointer()
+const std::string *clsResponse::GetFileFromDiskPointer() const
 {
     return _FileFromDiskPointer;
 }
