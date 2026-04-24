@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 17:58:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 18:22:47 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
     _ENV = NULL;
     _Counter = 0;
     _Erno = false;
+    _pip[0] = -1;
+    _pip[1] = -1;
     TempVar.resize(MAX_HEADERS);
     if (TempVar.empty())
     {
@@ -212,7 +214,7 @@ bool clsCGI::_SCRIPT_NAME()
 bool clsCGI::_QUERY_STRING()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-    {
+        {
 
         return (false);
     }
@@ -371,5 +373,7 @@ clsCGI::~clsCGI()
     HelperFunctions::free_matrex(&_ARG);
     kill(_PIDCHILD,SIGKILL);
     close(_pip[0]);
+    _pip[0] = -1;
+    _pip[1] = -1;
 }
 
