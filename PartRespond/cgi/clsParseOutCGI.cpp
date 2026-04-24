@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 16:43:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 18:56:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -555,7 +555,6 @@ void clsParseOutCGI::_Reset()
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
     kill(_PIDCHILD,SIGKILL);
-    close(_Pipe_Fd);
     close(_Fdout);
 }
 
