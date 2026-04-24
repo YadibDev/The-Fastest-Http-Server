@@ -118,7 +118,6 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-    // remove set request handler function by adib
 
     _Response.SetMod(stMod::ERROR);
     _Response.SetStatus(_DataRequest.getError().getCodeStatus());
@@ -128,7 +127,7 @@ void clsMainProcess::_PartErrorRequest()
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
-    if(_DataRequest.getError().isError())
+    if(!_DataRequest.getStatusError())
         _PartErrorRequest();
     else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();

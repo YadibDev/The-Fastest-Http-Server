@@ -21,7 +21,7 @@ enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
 struct stMod
 {
-    enum eMod {UPLOAD , GET, POST, DELETE, REDIRECTION, CHUNK, CGI, ERROR, EMPTY = -1};
+    enum eMod {UPLOAD , GET, POST, DELETE, REDIRECTION, CHUNK, ERROR, INTERANLRE, NOTINTERNALRE,EMPTY = -1};
 };
 
 #include "../../Utils/HelperFunctions.hpp"

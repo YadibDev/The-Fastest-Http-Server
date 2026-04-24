@@ -267,13 +267,13 @@ bool clsCGI::_childeProcesse()
     // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
     // if (Fd < 0)
     // {
-    //     close(pip[1]);
-    //     HelperFunctions::free_matrex(&ENV);
+    //     close(_pip[1]);
+    //     HelperFunctions::free_matrex(&_ENV);
     //     std::cout << "lkapo\n";
     //     return (-500);
     // }
     // if (dup2(Fd, 0) == -1)
-    //     return (close(Fd), close(pip[1]), true);
+    //     return (close(Fd), close(_pip[1]), true);
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);

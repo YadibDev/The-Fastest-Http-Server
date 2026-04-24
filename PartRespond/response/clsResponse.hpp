@@ -71,6 +71,7 @@ class clsResponse
         const std::string *GetFileFromDiskPointer() const;
         void SetBodyPointer(const std::string *BodyPointer);
         void SetHeaderFeildPointer(const std::string *HeaderFeildPointer);
+        void SetFileFromDiskPointer(const char *FileFromDiskPointer);
         void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);

@@ -420,25 +420,12 @@ void clsParseOutCGI::_StoredInFileOrStr()
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
     _Reset();
-    const stErrorPagedata *ErrorPageConf = NULL;
-    if (ErrorPageConf && ErrorPageConf->response)
-    {
-        if (ErrorPageConf->response != -1)
-            _Status = ErrorPageConf->response;
-        if (!ErrorPageConf->uri.empty() && ErrorPageConf->uri[0] == '/')
-        {
-            _InternalRedirect = true;
-            _InternalRedirectSrc = ErrorPageConf->uri;
-            return ;
-        }
-        _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
-    }
-    else
-        _ErrorPage.ResponseError(_Status, "");
+    _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
     _BodyPointer = &_ErrorPage.GetBody();
     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    _Mod[stMod::INTERANLRE] == stMod::INTERANLRE;
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
