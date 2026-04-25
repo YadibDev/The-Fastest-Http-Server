@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 17:54:53 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/25 17:03:50 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
         parseCgi.SetProcessIsFinish(true);
-    parseCgi.ReceivingData(Buffer, Length);
+
+    if (Length > 0)
+        parseCgi.ReceivingData(Buffer, Length);
 
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
     {
@@ -69,6 +71,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
         _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
+        _Response.SetSizeBody(_ErrorPage.GetBodySize());
         _Response.SetModTransferData(true);
     }
 }
@@ -84,6 +87,7 @@ void clsMainProcess::_InitializeCGI()
             _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
             _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
             _RunCGI = _CGI.GetIsRunCGI();
+            _eventProcess = stEventProcess::RUNINNG;
         }
     }
    if (_CGI.GetErno())

@@ -20,7 +20,11 @@
 
 struct stEventProcess
 {
-    enum eEventProcess {RUNINNG, DATA_LEFT, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
+    enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
+};
+struct stEventData
+{
+    enum eEventData {STILL_EXIST, END_PIPE};
 };
 
 // achraf headers

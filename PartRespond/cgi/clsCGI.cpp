@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 12:03:55 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/25 14:48:46 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,20 +284,20 @@ bool clsCGI::_childeProcesse()
 
 void clsCGI::_ParentProcesse()
 {
-    stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
-    close(_pip[1]);
-    if (exit_code == stEventProcess::END_UNKNOW)
-    {
-        close(_pip[0]);
-        _FD = -1;
-        _Erno = true;
-    }
-    else
-    {
-        _IsRunCGI = true;
-        _FD = _pip[0];
-    }
+    // stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
+    // close(_pip[1]);
+    // if (exit_code == stEventProcess::END_UNKNOW)
+    // {
+    //     close(_pip[0]);
+    //     _FD = -1;
+    //     _Erno = true;
+    // }
+    // else
+    // {
+    _IsRunCGI = true;
+    _FD = _pip[0];
 }
+
 bool clsCGI::_InintialVar()
 {
     if (!_MakeEnv())

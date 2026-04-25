@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/20 14:36:49 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 17:02:11 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,10 @@ void clsResponse::SetFileFromDiskPointer(const std::string *FileFromDiskPointer)
 bool clsResponse::GetModTransferData() const
 {
     return _ModTransferData;
+}
+void clsResponse::SetSizeBody(int size)
+{
+    _BodySize = size;
 }
 int clsResponse::GetSizeBody() const
 {
