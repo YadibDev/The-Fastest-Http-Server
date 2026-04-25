@@ -90,12 +90,15 @@ public:
     static void NumToStr(int Number, std::string &Str);
     static stEventProcess::eEventProcess checkProcessStatus(int pid);
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
+    static void StoreVarConst();
+    static char *GetENV_VAR_CONST(short Index);
 
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
     static char _PoinerType[10];
+    static char *_ENV_VAR_CONST[10];
     HelperFunctions() {}
 };
 

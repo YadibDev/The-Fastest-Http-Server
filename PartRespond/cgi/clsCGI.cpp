@@ -74,7 +74,7 @@ bool clsCGI::_MakeEnv()
 }
 bool clsCGI::_SERVER_SOFTWARE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1")))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST[0]))
     {
         return (false);
     }
@@ -240,6 +240,16 @@ bool clsCGI::_CONTENT_LENGTH()
     return (true);
 }
 
+bool clsCGI::REMOTE_HOST()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
+    {
+        return (false);
+    }
+    _Counter++;
+    return (true);
+}
+
 bool clsCGI::_OtherHeaders()
 {
     
@@ -325,6 +335,7 @@ void clsCGI::RunCGI()
     {
         _Erno = true;
         _FD = -1;
+        return ;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
@@ -333,6 +344,7 @@ void clsCGI::RunCGI()
         close(_pip[1]);
        _Erno = true;
        _FD = -1;
+       return ;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
