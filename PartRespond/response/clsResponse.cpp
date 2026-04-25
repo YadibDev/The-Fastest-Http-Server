@@ -72,8 +72,11 @@ void clsResponse::_InitialHeaders()
     {
         if (_Status == 301 || _Status == 302 || _Status == 303 || _Status == 307 || _Status == 308)
             _Redirction();
-        _Body = _DataRequest.getReturn().value;
-        _BodySize = _Body.size();
+        else
+        {
+            _Body = _DataRequest.getReturn().value;
+            _BodySize = _Body.size();
+        }
     }
     if (_BodySize)
         _ContentType();
