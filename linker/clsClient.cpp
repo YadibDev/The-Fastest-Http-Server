@@ -170,10 +170,13 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
 
     if (_BodyPlace == bodyPlaceEnum::DISK)
     {
-        if (_fdRespond == 0 && _Responder.GetModTransferData() == false)
-            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
-        else
-            _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+        if (_fdRespond == 0)
+        {
+            if (_Responder.GetModTransferData() == false)
+                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
+            else
+                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+        }
 
         int sizeToRead = _addSizeChunkToStr();
         if (sizeToRead)
