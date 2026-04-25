@@ -98,16 +98,6 @@ bool RequestParser::ParseBody(uint16_t size)
 
 	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize());
 
-<<<<<<< HEAD
-	if (_body.getState() == clsBody::DONE_GOOD)
-	{
-		_state = STATE_COMPLETE;
-	}
-	else if (_body.getState() == clsBody::DONE_WIHTERROR)
-		_state = STATE_ERROR;
-
-	return true;
-=======
 	// if (_body.getState() == clsBody::DONE_GOOD)
 	{
 		// 	_state = STATE_COMPLETE;
@@ -116,7 +106,6 @@ bool RequestParser::ParseBody(uint16_t size)
 	// 	_state = STATE_ERROR;
 	_state = STATE_COMPLETE;
 	return  size;
->>>>>>> Request
 }
 
 bool RequestParser::Parse(uint16_t size)
