@@ -55,7 +55,6 @@ bool HelperFunctions::is_numeric(const std::string& str) {
 	return true;
 }
 
-
 bool HelperFunctions::is_CTLsString(const std::string& str) {
 	for (size_t i = 0; i < str.length(); i++)
 		if (std::iscntrl(str[i])) return true;
@@ -64,7 +63,6 @@ bool HelperFunctions::is_CTLsString(const std::string& str) {
 
 bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
 {
-
 	for (size_t i = POS; i < str.size(); i++)
 	{
 		if (str[i] == ' ' || str[i] == '\t')
@@ -791,4 +789,23 @@ bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
     if (timeNow - startInS >= Timeout)
         return true;
     return false;
+}
+
+int HelperFunctions::changeFileToNonBlocking(int fd)
+{
+	int flags = fcntl(fd, F_GETFL, 0);
+	if (flags == -1)
+		return -1;
+	flags |= O_NONBLOCK;
+	fcntl(fd, F_SETFL, flags);
+	return 0;
+}
+
+bool HelperFunctions::ConvertStrToNum(const char *arr, long &num, short base)
+{
+	char *end;
+	num = strtol(arr, &end, base);
+	if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+		return false;
+	return true;
 }

@@ -267,7 +267,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 											RequestHandler* handler,
 											HttpError &error)
 {
-	const map<short, stErrorPagedata> &ErrorPagedata = serverConfig->getErrorPages();
+	const std::map<short, stErrorPagedata> &ErrorPagedata = serverConfig->getErrorPages();
 
 	std::map<short, stErrorPagedata>::const_iterator it = ErrorPagedata.find(originalCode); // learn this 
 

@@ -2,6 +2,7 @@
 
 void clsFlow::_initializeStatics()
 {
+    HelperFunctions::StoreVarConst();
     HelperFunctions::StoredDefaultType();
     HelperFunctions::StoredBodys();
     HelperFunctions::StoredMessage();
@@ -314,6 +315,7 @@ void clsFlow::EventLoop()
             if (_clientsArr[index].timeoutCgi())
             {
                 it++;
+                std::cout << "timeout cgi\n" << std::endl;
                 _popPipe(pipeFd);
             }
             else
