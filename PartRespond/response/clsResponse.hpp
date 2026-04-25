@@ -30,7 +30,6 @@ class clsResponse
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
-        bool _InternalRedirect;
         std::string _InternalRedirectSrc;
         std::string _Type;
         clsErrorPage _ErrorPage;
@@ -75,6 +74,8 @@ class clsResponse
         void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
+        void SetInternalRedirectSrc(const std::string &InternalRedirectSrc);
+        std::string &GetInternalRedirectSrc();
         bool GetModTransferData() const;
         int GetSizeBody() const;
         ~clsResponse();

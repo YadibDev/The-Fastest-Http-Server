@@ -44,7 +44,6 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _ValueHeader.clear();
     _FileNameFromDisk.clear();
     _PIDCHILD = -3;
-    _InternalRedirect = false;
 
     HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
     HelperFunctions::ft_memset(_Mod, -1, 10);
@@ -119,7 +118,7 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
     {
         if (!_NameHeader.compare("location") || !_NameHeader.compare("status") || !_NameHeader.compare("content-type"))
             return false;
-        else if (_NameHeader == "set-cookie")
+        else if (!_NameHeader.compare("set-cookie"))
         {
             _HeadersFieldDuplicate += Str;
             _HeadersFieldDuplicate += "\r\n";
@@ -254,11 +253,11 @@ void clsParseOutCGI::_InitialInternalRedirect()
         return ;
     }
     _Status = 200;
-    _InternalRedirect = true;
     Pos = HelperFunctions::SkeepAtLast(_ValueHeader," \t");
     if (Pos < 0)
         Pos = _ValueHeader.length();
     HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
+    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -340,7 +339,7 @@ void clsParseOutCGI::_CreatFileTemp()
 
 void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 {
-    if (_FoundBody && _BytesBody < 40000)
+    if (_FoundBody && _BytesBody < MAX_BODY)
     {
         if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
              _ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
@@ -369,7 +368,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 return ;
             }
-            if (write(_Fdout, Arr, Length))
+            if (write(_Fdout, Arr, Length) == -1)
             {
                 _Status = 500;
                 _Mod[stMod::ERROR] = stMod::ERROR;
@@ -420,12 +419,16 @@ void clsParseOutCGI::_StoredInFileOrStr()
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
     _Reset();
-    _ErrorPage.ResponseError(_Status, "");
-    _ModTransferData = true;
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+        _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    else
+    {
+        _ErrorPage.ResponseError(_Status, "");
+        _ModTransferData = true;
+        _BodyPointer = &_ErrorPage.GetBody();
+        _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    }
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
@@ -504,11 +507,6 @@ void clsParseOutCGI::SetProcessIsFinish(bool ProcessIsFinish)
 const std::string &clsParseOutCGI::GetBody()
 {
     return _Body;
-}
-
-bool clsParseOutCGI::GetInernalRedirectVar()
-{
-    return _InternalRedirect;
 }
 
 const std::string &clsParseOutCGI::GetFileNameBody()

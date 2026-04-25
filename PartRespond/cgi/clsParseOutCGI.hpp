@@ -29,7 +29,6 @@ class clsParseOutCGI
         pid_t _PIDCHILD;
         stHeadersCGI::eHeaders _ExistHeaders[3];
         bool _FoundBody;
-        bool _InternalRedirect;
         bool _Erno;
         std::string _InternalRedirectSrc;
         short _Status;
@@ -96,7 +95,6 @@ class clsParseOutCGI
         void SetProcessIsFinish(bool ProcessIsFinish);
         void SetPIDPROCESS(int PIDPROCESS);
         bool GetModTransferData() const;
-        bool GetInernalRedirectVar();
         bool GetErno();
         std::string &GetInternalRedirectSrc();
         short GetStatus();

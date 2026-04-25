@@ -22,7 +22,6 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _IsConnection = true;
     _SizeHeaders = 0;
     _Erno = false;
-    _InternalRedirect = false;
     _ModTransferData = false;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(MAX_HEADERS);
@@ -104,16 +103,23 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    // if (_DataRequest.getDefaultErrorPage()->uri.empty())
-    //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
-    _ErrorPage.ResponseError(_Status,"");
-    _ModTransferData = true;
-    _IsConnection = false;
-    _BodySize =  _ErrorPage.GetBodySize();
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    {
+        // if (_DataRequest.getDefaultErrorPage()->uri.empty())
+        //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+        // else
+        _ErrorPage.ResponseError(_Status,"");
+        _ModTransferData = true;
+        _IsConnection = false;
+        _BodySize =  _ErrorPage.GetBodySize();
+        _BodyPointer = &_ErrorPage.GetBody();
+        _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    }
+    
+
 }
 
 void clsResponse::_StatusLine()
@@ -283,6 +289,14 @@ void clsResponse::SetFileFromDiskPointer(const std::string *FileFromDiskPointer)
     _FileFromDiskPointer = FileFromDiskPointer;
 }
 
+void clsResponse::SetInternalRedirectSrc(const std::string &InternalRedirectSrc)
+{
+    _InternalRedirectSrc = InternalRedirectSrc;
+}
+std::string &clsResponse::GetInternalRedirectSrc()
+{
+    return _InternalRedirectSrc;
+}
 bool clsResponse::GetModTransferData() const
 {
     return _ModTransferData;
