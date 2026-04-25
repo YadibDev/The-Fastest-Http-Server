@@ -107,6 +107,7 @@ int clsClient::_ReadDataForReq()
 void clsClient::ProcessRequest()
 {
     // reset request in every new request from client
+    HttpError error;
     if (_state == BEGIN)
     {
         _theData.Reset();
@@ -126,6 +127,10 @@ void clsClient::ProcessRequest()
 
     if (_Requester.isError())
     {
+        if (ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
         this->_state = START_RESPOND;
         return;
     }

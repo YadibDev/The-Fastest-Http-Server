@@ -46,6 +46,8 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_REMOTE_IDENT())
         return false;
+    if (!_REMOTE_HOST())
+        return false;
     if (!_REMOTE_ADDR())
         return false;
     if (!_AUTH_TYPE())
@@ -343,6 +345,12 @@ void clsCGI::RunCGI()
     return ;
 }
 
+void clsCGI::Reset()
+{
+    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ARG, 0);
+}
+
 bool clsCGI::GetIsRunCGI()
 {
     return (_IsRunCGI);
@@ -379,8 +387,8 @@ bool clsCGI::GetErno()
 }
 clsCGI::~clsCGI()
 {
-    HelperFunctions::free_matrex(&_ENV);
-    HelperFunctions::free_matrex(&_ARG);
+    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ARG, 0);
     kill(_PIDCHILD,SIGKILL);
     close(_pip[0]);
     _pip[0] = -1;

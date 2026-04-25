@@ -484,11 +484,11 @@ char	*HelperFunctions::ft_strdup(const char *src)
 	return (dest_dup);
 }
 
-void	HelperFunctions::free_matrex(char ***matrex)
+void	HelperFunctions::free_matrex(char ***matrex, short IndexStart)
 {
 	int	i;
 
-	i = 0;
+	i = IndexStart;
 	if (!*matrex)
 		return ;
 	while ((*matrex)[i])
