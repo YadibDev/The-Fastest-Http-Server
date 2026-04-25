@@ -254,12 +254,16 @@ std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 char HelperFunctions::_PoinerType[10] = {0};
 char  **HelperFunctions::_ENV_VAR_CONST;
+bool HelperFunctions::_Flag = false;
 
 void HelperFunctions::StoreVarConst()
 {
 	_ENV_VAR_CONST = new(std::nothrow) char*[10];
 	if (_ENV_VAR_CONST)
+		HelperFunctions::ft_memset(_ENV_VAR_CONST, 0,(sizeof(_ENV_VAR_CONST) * 10));
+	if (_ENV_VAR_CONST && !_Flag)
 	{
+		_Flag = true;
 		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
 		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
 		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
@@ -268,12 +272,14 @@ void HelperFunctions::StoreVarConst()
 		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
 	}
 }
+
 char *HelperFunctions::GetENV_VAR_CONST(short Index)
 {
 	if (!_ENV_VAR_CONST || Index > 8)
 		return NULL;
 	return _ENV_VAR_CONST[Index];
 }
+
 bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
 

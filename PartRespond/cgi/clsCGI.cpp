@@ -35,7 +35,7 @@ bool clsCGI::_MakeEnv()
     _ENV = new char*[SIZE_VAR_ENV];
     if (!_ENV)
         return (false);
-    HelperFunctions::ft_memset(_ENV,0,sizeof(_ENV) * SIZE_VAR_ENV);
+    HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));
     if (!_SERVER_SOFTWARE())
         return false;
     if (!_SERVER_NAME())

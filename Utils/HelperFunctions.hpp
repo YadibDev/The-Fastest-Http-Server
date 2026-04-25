@@ -99,6 +99,7 @@ private:
     static std::map<int, std::string> _Body;
     static char _PoinerType[10];
     static char **_ENV_VAR_CONST;
+    static bool _Flag;
     HelperFunctions() {}
 };
 
