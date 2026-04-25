@@ -253,20 +253,24 @@ std::map<int, std::string> HelperFunctions::_Message;
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 char HelperFunctions::_PoinerType[10] = {0};
-const char HelperFunctions::*_ENV_VAR_CONST[10];
+char  **HelperFunctions::_ENV_VAR_CONST;
 
 void HelperFunctions::StoreVarConst()
 {
-	_ENV_VAR_CONST[0] = "SERVER_SOFTWARE=FastHTTP/1.1";
-	_ENV_VAR_CONST[1] = "SERVER_NAME=FastServer";
-	_ENV_VAR_CONST[2] = "SERVER_PROTOCOL=HTTP/1.1";
-	_ENV_VAR_CONST[3] = "GATEWAY_INTERFACE=CGI/1.1";
-	_ENV_VAR_CONST[4] = "REMOTE_IDENT=\"\"";
-	_ENV_VAR_CONST[5] = "REMOTE_HOST=\"\"";
+	_ENV_VAR_CONST = new(std::nothrow) char*[10];
+	if (_ENV_VAR_CONST)
+	{
+		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
+		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
+		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
+		_ENV_VAR_CONST[3] = ft_strdup("GATEWAY_INTERFACE=CGI/1.1");
+		_ENV_VAR_CONST[4] = ft_strdup("REMOTE_IDENT=\"\"");
+		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
+	}
 }
 char *HelperFunctions::GetENV_VAR_CONST(short Index)
 {
-	if (Index > 8)
+	if (!_ENV_VAR_CONST || Index > 8)
 		return NULL;
 	return _ENV_VAR_CONST[Index];
 }

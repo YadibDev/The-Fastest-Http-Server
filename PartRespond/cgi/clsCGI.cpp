@@ -76,7 +76,7 @@ bool clsCGI::_MakeEnv()
 }
 bool clsCGI::_SERVER_SOFTWARE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST[0]))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(0)))
     {
         return (false);
     }
@@ -85,9 +85,8 @@ bool clsCGI::_SERVER_SOFTWARE()
 }
 bool clsCGI::_SERVER_NAME()
 {
-     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_NAME=FastServer")))
+     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
      {
-
         return (false);
      }
     _Counter++;
@@ -95,7 +94,7 @@ bool clsCGI::_SERVER_NAME()
 }
 bool clsCGI::_SERVER_PROTOCOL()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PROTOCOL=HTTP/1.1")))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(2)))
     {
 
         return (false);
@@ -105,7 +104,7 @@ bool clsCGI::_SERVER_PROTOCOL()
 }
 bool clsCGI::_GATEWAY_INTERFACE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("GATEWAY_INTERFACE=CGI/1.1")))
+    if (!(_ENV[_Counter] =HelperFunctions::GetENV_VAR_CONST(3)))
     {
 
         return (false);
@@ -115,9 +114,18 @@ bool clsCGI::_GATEWAY_INTERFACE()
 }
 bool clsCGI::_REMOTE_IDENT()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_IDENT=\"\"")))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(4)))
     {
 
+        return (false);
+    }
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_REMOTE_HOST()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(5)))
+    {
         return (false);
     }
     _Counter++;
@@ -233,16 +241,6 @@ bool clsCGI::_CONTENT_TYPE()
 }
 
 bool clsCGI::_CONTENT_LENGTH()
-{
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
-    {
-        return (false);
-    }
-    _Counter++;
-    return (true);
-}
-
-bool clsCGI::REMOTE_HOST()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
     {

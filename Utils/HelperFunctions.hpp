@@ -98,7 +98,7 @@ private:
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
     static char _PoinerType[10];
-    static char *_ENV_VAR_CONST[10];
+    static char **_ENV_VAR_CONST;
     HelperFunctions() {}
 };
 
