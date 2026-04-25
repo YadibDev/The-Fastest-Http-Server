@@ -252,7 +252,7 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
-char HelperFunctions::_PoinerType[10] = {0};
+char HelperFunctions::_PoinerType[10];
 char  **HelperFunctions::_ENV_VAR_CONST;
 bool HelperFunctions::_Flag = false;
 
@@ -265,11 +265,23 @@ void HelperFunctions::StoreVarConst()
 	{
 		_Flag = true;
 		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
+		if (!_ENV_VAR_CONST[0])
+			return ;
 		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
+		if (!_ENV_VAR_CONST[1])
+			return ;
 		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
+		if (!_ENV_VAR_CONST[2])
+			return ;
 		_ENV_VAR_CONST[3] = ft_strdup("GATEWAY_INTERFACE=CGI/1.1");
+		if (!_ENV_VAR_CONST[3])
+			return ;
 		_ENV_VAR_CONST[4] = ft_strdup("REMOTE_IDENT=\"\"");
+		if (!_ENV_VAR_CONST[4])
+			return ;
 		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
+		if (!_ENV_VAR_CONST[5])
+			return ;
 	}
 }
 

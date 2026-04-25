@@ -47,7 +47,7 @@ void clsResponse::MakeResponse()
 {
     if (_Erno)
         return ;
-    if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
+    if (_Mod[stMod::GET] == stMod::GET)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
