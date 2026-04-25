@@ -193,7 +193,7 @@ const s_view	&RequestHandler::getScriptName() const
 	return _ScriptName;
 }
 
-bool	RequestHandler::getDefaultErrorPage() { return _defaultErrorPage; }
+bool	RequestHandler::getDefaultErrorPage() const { return _defaultErrorPage; }
 
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

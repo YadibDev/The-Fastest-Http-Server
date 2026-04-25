@@ -107,10 +107,10 @@ void clsResponse::_ErrorRespnseHandling()
     //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
     {
-        // if (!_DataRequest.getDefaultErrorPage())
-        //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
-        // else
-        _ErrorPage.ResponseError(_Status,"");
+        if (_DataRequest.getDefaultErrorPage())
+            _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+        else
+            _ErrorPage.ResponseError(_Status,"");
         _ModTransferData = true;
         _IsConnection = false;
         _BodySize =  _ErrorPage.GetBodySize();
