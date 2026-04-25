@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 10:55:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 18:56:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -420,25 +420,12 @@ void clsParseOutCGI::_StoredInFileOrStr()
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
     _Reset();
-    const stErrorPagedata *ErrorPageConf = NULL;
-    if (ErrorPageConf && ErrorPageConf->response)
-    {
-        if (ErrorPageConf->response != -1)
-            _Status = ErrorPageConf->response;
-        if (!ErrorPageConf->uri.empty() && ErrorPageConf->uri[0] == '/')
-        {
-            _InternalRedirect = true;
-            _InternalRedirectSrc = ErrorPageConf->uri;
-            return ;
-        }
-        _ErrorPage.ResponseError(_Status, ErrorPageConf->uri);
-    }
-    else
-        _ErrorPage.ResponseError(_Status, "");
+    _ErrorPage.ResponseError(_Status, "");
     _ModTransferData = true;
     _BodyPointer = &_ErrorPage.GetBody();
     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
@@ -568,7 +555,6 @@ void clsParseOutCGI::_Reset()
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
     kill(_PIDCHILD,SIGKILL);
-    close(_Pipe_Fd);
     close(_Fdout);
 }
 

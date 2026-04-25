@@ -156,7 +156,7 @@ void clsErrorPage::_Date()
 
 void clsErrorPage::_Server()
 {
-    _HeaderFeild += "Server: HTTP1.1\r\n";
+    _HeaderFeild += "Server: the-fastest-server\r\n";
 }
 void clsErrorPage::_RetryAfter()
 {

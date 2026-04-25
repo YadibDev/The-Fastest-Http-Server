@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 21:16:54 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 18:22:47 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
     _ENV = NULL;
     _Counter = 0;
     _Erno = false;
+    _pip[0] = -1;
+    _pip[1] = -1;
     TempVar.resize(MAX_HEADERS);
     if (TempVar.empty())
     {
@@ -56,7 +58,7 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_PATH_INFO())
         return false;
-    if (_PATH_TRANSLATED())
+    if (!_PATH_TRANSLATED())
         return false;
     if (!_SCRIPT_NAME())
         return false;
@@ -212,7 +214,7 @@ bool clsCGI::_SCRIPT_NAME()
 bool clsCGI::_QUERY_STRING()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-    {
+        {
 
         return (false);
     }
@@ -277,13 +279,13 @@ bool clsCGI::_childeProcesse()
     // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
     // if (Fd < 0)
     // {
-    //     close(pip[1]);
-    //     HelperFunctions::free_matrex(&ENV);
+    //     close(_pip[1]);
+    //     HelperFunctions::free_matrex(&_ENV);
     //     std::cout << "lkapo\n";
     //     return (-500);
     // }
     // if (dup2(Fd, 0) == -1)
-    //     return (close(Fd), close(pip[1]), true);
+    //     return (close(Fd), close(_pip[1]), true);
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
@@ -294,30 +296,19 @@ bool clsCGI::_childeProcesse()
 
 void clsCGI::_ParentProcesse()
 {
-    int status;
-    int exit_code;
+    stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
     close(_pip[1]);
-    exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
-    if (exit_code < 0)
+    if (exit_code == stEventProcess::END_UNKNOW)
     {
         close(_pip[0]);
         _FD = -1;
         _Erno = true;
     }
-    else if (WEXITSTATUS(status) == 1)
-    {
-        close(_pip[0]);
-        _Erno = true;
-       _FD = -1;
-    }
-    else if (exit_code > 0)
+    else
     {
         _IsRunCGI = true;
         _FD = _pip[0];
-        return ;
     }
-    _IsRunCGI = true;
-    _FD = _pip[0];
 }
 bool clsCGI::_InintialVar()
 {
@@ -392,5 +383,7 @@ clsCGI::~clsCGI()
     HelperFunctions::free_matrex(&_ARG);
     kill(_PIDCHILD,SIGKILL);
     close(_pip[0]);
+    _pip[0] = -1;
+    _pip[1] = -1;
 }
 

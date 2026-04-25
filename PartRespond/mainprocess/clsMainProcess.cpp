@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 18:24:21 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 17:45:03 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,12 @@ void clsMainProcess::_InitializeCGI()
     if (!_RunCGI)
     {
         _CGI.RunCGI();
-        _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
-        _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
-        _RunCGI = _CGI.GetIsRunCGI();
+        if (!_CGI.GetErno())
+        {
+            _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
+            _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
+            _RunCGI = _CGI.GetIsRunCGI();
+        }
     }
    if (_CGI.GetErno())
    {
@@ -118,24 +121,23 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-    // remove set request handler function by adib
 
     _Response.SetMod(stMod::ERROR);
-    _Response.SetStatus(_DataRequest.getError().getCodeStatus());
+    _Response.SetStatus(_DataRequest.getStatusError());
     _Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
-    if(_DataRequest.getError().isError())
+    if(_DataRequest.getStatusError())
         _PartErrorRequest();
+    else if (_DataRequest.getPathCgi())
+        _InitializeCGI();
     else if (_DataRequest.getReturn().value.compare("") != 0)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    else if (_DataRequest.getPathCgi())
-        _InitializeCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == HttpTables::M_POST))

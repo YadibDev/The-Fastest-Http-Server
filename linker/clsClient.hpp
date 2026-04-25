@@ -59,7 +59,7 @@ private:
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
     ssize_t _addSizeChunkToStr();
-    void _initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond);
+    void _initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond, bool fileExist);
     short    _ReadData(int fd);
 
 public:
@@ -89,7 +89,7 @@ public:
     void ProcessBoth(uint32_t events);
     int getPipeCgi();
     void monitorCgi(int fd);
-
+    void logs();
 };
 
 #endif

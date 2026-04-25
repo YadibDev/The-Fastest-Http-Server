@@ -101,9 +101,17 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
+<<<<<<< HEAD
     _IsConnection = false;
     _ErrorPage.ResponseError(_Status, "");
+=======
+    // if (_DataRequest.getDefaultErrorPage()->uri.empty())
+    //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+    // else
+    _ErrorPage.ResponseError(_Status,"");
+>>>>>>> refs/remotes/origin/Respond
     _ModTransferData = true;
+    _IsConnection = false;
     _BodySize =  _ErrorPage.GetBodySize();
     _BodyPointer = &_ErrorPage.GetBody();
     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
@@ -254,7 +262,7 @@ const std::string *clsResponse::GetHeaderFeildPointer()
 {
     return _HeaderFeildPointer;
 }
-const std::string *clsResponse::GetFileFromDiskPointer()
+const std::string *clsResponse::GetFileFromDiskPointer() const
 {
     return _FileFromDiskPointer;
 }

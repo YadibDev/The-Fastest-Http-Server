@@ -193,7 +193,7 @@ bool	checkExcute(char *path)
    		return false;
    	if (!S_ISREG(st.st_mode))
    		return false;
-   	return (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH));
+   	return true;
 }
 
 bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods)
