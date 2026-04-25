@@ -44,10 +44,9 @@ private:
     void _registerServersSockets();
     short _getClient();
     void _freeClient(short clientFd);
-    fdTypes _fdType(int fd);
     void _newClientProcess(int serverFd);
     void _clientProcess(int fd, uint32_t event);
-    bool _eventsEroorHandle(epoll_event &client);
+    bool _eventsEroorHandle(epoll_event &client, fdTypes &TypeFd);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
     bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
     void _popPipe(short pipe);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 18:22:47 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 12:03:55 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
 
 bool clsCGI::_MakeEnv()
 {
-    _ENV = new char*[SIZE_VAR_ENV];
+    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV]; // 
     if (!_ENV)
         return (false);
     HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));
@@ -263,7 +263,7 @@ bool clsCGI::_StoredArgs()
     _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
     if (!_ARG[0])
         return (false);
-    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
+    _ARG[1] = HelperFunctions::ft_strdup("/home/yadib/goinfre/The-Fastest-Http-Server/cgi-bin/upload.php");
     if (!_ARG[1])
         return (false);
     _ARG[2] = NULL;
@@ -287,7 +287,7 @@ bool clsCGI::_childeProcesse()
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
-    close(Fd);
+    // close(Fd);
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
@@ -339,7 +339,7 @@ void clsCGI::RunCGI()
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            exit(1) ;
+            exit(1);
     }
     else
        _ParentProcesse();
@@ -366,6 +366,12 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
     return _PIDCHILD;
 }
 
+const time_t &clsCGI::getStartTime() const
+{
+    return this->_StartTime;
+}; 
+
+
 int clsCGI::GetFdPipe()
 {
     return _FD;
@@ -376,7 +382,6 @@ bool clsCGI::GetErno()
 }
 clsCGI::~clsCGI()
 {
-   
     HelperFunctions::free_matrex(&_ENV);
     HelperFunctions::free_matrex(&_ARG);
     kill(_PIDCHILD,SIGKILL);

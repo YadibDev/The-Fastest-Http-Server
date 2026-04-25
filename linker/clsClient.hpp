@@ -12,6 +12,9 @@
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
 
+#define CGI_TIMEOUT 15
+#define CLIENT_TIMEOUT 60
+
 using namespace std;
 
 enum clinetState
@@ -39,7 +42,6 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    bool _resetReq;
     int _socket;
     int _fdRespond;
     ssize_t bytesToSend;
@@ -88,8 +90,10 @@ public:
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
     int getPipeCgi();
-    void monitorCgi(int fd);
+    bool monitorCgi(int fd);
     void logs();
+    bool isCgiTimeout();
+    void killCgi();
 };
 
 #endif

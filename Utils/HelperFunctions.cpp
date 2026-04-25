@@ -783,3 +783,12 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 	}
 	return stEventProcess::RUNINNG;
 }
+
+
+bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
+{
+    time_t timeNow = time(NULL);
+    if (timeNow - startInS >= Timeout)
+        return true;
+    return false;
+}
