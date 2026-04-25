@@ -12,6 +12,9 @@
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
 
+#define CGI_TIMEOUT 15
+#define CLIENT_TIMEOUT 60
+
 using namespace std;
 
 enum clinetState
@@ -89,6 +92,8 @@ public:
     int getPipeCgi();
     bool monitorCgi(int fd);
     void logs();
+    bool isCgiTimeout();
+    void killCgi();
 };
 
 #endif

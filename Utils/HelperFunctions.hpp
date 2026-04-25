@@ -90,7 +90,7 @@ public:
     static void NumToStr(int Number, std::string &Str);
     static stEventProcess::eEventProcess checkProcessStatus(int pid);
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
-
+    static bool isTimeout(const time_t &startInS, time_t Timeout);
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

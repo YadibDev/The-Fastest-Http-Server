@@ -284,10 +284,15 @@ bool clsClient::monitorCgi(int fd) // return true if it's the end
 {
     stEventProcess::eEventProcess eventProcess = _ResponderProecss.getEventProcess();
     int pid = _ResponderProecss.GetclsCGI().GetPid();
+    stEventProcess::eEventProcess temp = HelperFunctions::checkProcessStatus(pid);
 
+    std::cout << "\n==================\n";
+    std::cout << eventProcess << std::endl;
+    std::cout << pid << std::endl;
+    std::cout << temp << std::endl;
+    std::cout << "\n==================\n";
     if (eventProcess == stEventProcess::RUNINNG)
     {
-        stEventProcess::eEventProcess temp = HelperFunctions::checkProcessStatus(pid);
         if (temp == stEventProcess::THE_END)
         {
             _ResponderProecss.setEventProcess(stEventProcess::DATA_LEFT);
@@ -295,6 +300,7 @@ bool clsClient::monitorCgi(int fd) // return true if it's the end
         }
         else if (temp == stEventProcess::END_UNKNOW)
         {
+            _state = RESPOND_MODE;
             _ResponderProecss.setEventProcess(temp);
             return true;
         }
@@ -305,23 +311,25 @@ bool clsClient::monitorCgi(int fd) // return true if it's the end
         size_t length = _ReadData(fd);
 
         if (eventProcess == stEventProcess::DATA_LEFT && length < sizeof(_theData.io_chunk)) // i may be wrong here
+        {
             _ResponderProecss.setEventProcess(stEventProcess::THE_END);
-
+            eventProcess = stEventProcess::THE_END;
+        }
+        std::cout << "-----length-------\n";
+        std::cout << eventProcess << std::endl;
+        std::cout << length << std::endl;
         _ResponderProecss.ParseCGI(_theData.io_chunk, length);
     }
 
     if (eventProcess >= stEventProcess::THE_END)
     {
         _state = RESPOND_MODE;
-        return true;
+        return true;    
     }
     return false;
 }
 
-bool clsClient::monitorTimeout(size_t)
-{
 
-}
 
 void clsClient::ProcessBoth(uint32_t events)
 {
@@ -401,4 +409,26 @@ void clsClient::logs()
     //     }
 
     //     std::cout << "========================================\n\n";
+}
+
+bool clsClient::isCgiTimeout()
+{
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    const time_t &start = cgi.getStartTime();
+
+    if (HelperFunctions::isTimeout(start, CGI_TIMEOUT))
+        return true;
+    else
+        return false;
+}
+
+void clsClient::killCgi()
+{
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    if (_ResponderProecss.getEventProcess() == stEventProcess::RUNINNG)
+    {
+        kill(cgi.GetPid(), SIGKILL);
+        HelperFunctions::checkProcessStatus(cgi.GetPid());
+    }
+    _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
 }
