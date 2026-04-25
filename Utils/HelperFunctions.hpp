@@ -92,6 +92,7 @@ public:
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
     static void StoreVarConst();
     static char *GetENV_VAR_CONST(short Index);
+    static char **GetPointer_ENV_VAR_CONST();
 
 private:
     static std::map<std::string, std::string> _TypeContent;

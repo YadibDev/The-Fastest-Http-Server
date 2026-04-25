@@ -280,6 +280,13 @@ char *HelperFunctions::GetENV_VAR_CONST(short Index)
 	return _ENV_VAR_CONST[Index];
 }
 
+char **HelperFunctions::GetPointer_ENV_VAR_CONST()
+{
+	if (!_ENV_VAR_CONST)
+		return NULL;
+	return _ENV_VAR_CONST;
+}
+
 bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
 
