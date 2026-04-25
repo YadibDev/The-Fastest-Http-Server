@@ -271,41 +271,42 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 
 	std::map<short, stErrorPagedata>::const_iterator it = ErrorPagedata.find(originalCode); // learn this 
 
-	handler->reset();
-
 	if (it == ErrorPagedata.end())
 	{
 		finalizeErrorState(handler, originalCode, stErrorPagedata());
 		return false;
 	}
 
+	if (it->second.isExternalURL)
+	{
+		stReturnData returnData;
+		returnData.code = it->second.response;
+		returnData.value = it->second.uri;
+		handler->setReturnVal(returnData);
+		return true;
+	}
+
 	const stErrorPagedata &foundData = it->second;
 	s_view errorUri;
-	
+
 	errorUri.len = foundData.uri.length();
 	errorUri.Data = foundData.uri.c_str();
 
-	const clsLocation* bestLocation = findBestLocation(
-		serverConfig->getLocationExact(),
-		serverConfig->getLocationPrefix(),
-		errorUri
-	);
-	if (bestLocation)
-		handler->setReturn(bestLocation->getReturn());
-	if (!bestLocation || !handlePath(bestLocation, handler, errorUri, error))
+	if (internalRedirect(errorUri, serverConfig, handler, error))
 	{
 		finalizeErrorState(handler, originalCode, foundData);
-		return false;
+		return true;
 	}
 
 	finalizeErrorState(handler, originalCode, foundData);
-	return true;
+	return false;
 }
 
 bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 										   const clsServerConfig* serverConfig,
 										   RequestHandler* handler)
 {
+	HttpError error;
 	const clsLocation* bestLocation = findBestLocation(
 		serverConfig->getLocationExact(),
 		serverConfig->getLocationPrefix(),
@@ -315,13 +316,6 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	if (!bestLocation)
 		return true;
 
-	HttpError error;
-	if (!bestLocation->getReturn().value.empty())
-	{
-    	handler->setReturn(bestLocation->getReturn());
-    	return true;    
-	}
-	
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{
 		error.setStatus(405, "Method Not Allowed");
@@ -329,7 +323,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 		return false;
 	}
 
-	if (!handlePath(bestLocation, handler, startLine.getRequestURI().getPath(), error))
+	if (!internalRedirect(startLine.getRequestURI().getPath(), serverConfig, handler, error))
 	{
 		if (error.isError())
 			return (handler->setError(error), false);
@@ -339,9 +333,37 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	handler->setQuery(startLine.getRequestURI().getQuery());
 	handler->setVersion(startLine.getVersion());
 	handler->setMethod(startLine.getMethod());
-	handler->setReturn((!serverConfig->getReturn().value.empty()) ? serverConfig->getReturn() : bestLocation->getReturn());
-	handler->setUploadStore(&bestLocation->getUploadStore());
+	return true;
+}
 
+
+bool ProcessRequestHandler::internalRedirect(
+	const s_view& newUri,
+	const clsServerConfig* serverConfig,
+	RequestHandler* handler,
+	HttpError& error)
+{
+	handler->reset();
+
+	const clsLocation* newLocation = findBestLocation(
+		serverConfig->getLocationExact(),
+		serverConfig->getLocationPrefix(),
+		newUri
+	);
+
+	handler->setReturn((!serverConfig->getReturn().value.empty()) ? serverConfig->getReturn() : newLocation->getReturn());
+
+	if (!handler->getReturn().value.empty())
+		return true;    
+
+	if (!newLocation)
+		return false;
+
+	if (!handlePath(newLocation, handler, newUri, error))
+		return false;
+
+	handler->setUploadStore(&newLocation->getUploadStore());
 	handler->setError(error);
+
 	return true;
 }

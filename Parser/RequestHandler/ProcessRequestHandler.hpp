@@ -33,6 +33,7 @@ class ProcessRequestHandler
 												const s_view &requestUri, char *PhysicalPath);
 
 
+
 	public:
 		ProcessRequestHandler();
 		static bool					processRequest(const RequestLine& StartLine, const clsServerConfig* serverConfig, RequestHandler* handler);
@@ -40,6 +41,10 @@ class ProcessRequestHandler
 											const clsServerConfig* serverConfig,
 											 RequestHandler* handler, 
 											 HttpError &error);
+		static bool					internalRedirect( const s_view& newUri,
+										const clsServerConfig* serverConfig,
+										RequestHandler* handler,
+										HttpError& error);
 };
 
 #endif

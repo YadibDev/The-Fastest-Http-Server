@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"POST /cgi-bin/script.txt.js/index.php HTTP/1.1\r\n"
+    	"POST /cgi/yes HTTP/1.1\r\n"
     	"Host: 127.0.0.1:8081\r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
@@ -239,8 +239,6 @@ int main()
 		return 1;
 	}
 	HttpError error;
-	stErrorPagedata	defaultErrorPage;
-	defaultErrorPage.uri = "YES";
 
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
@@ -257,7 +255,7 @@ int main()
 	{
 		if (!ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error))
 		{
-			RequestHandler.setDefaultErrorPage(&defaultErrorPage);
+			RequestHandler.setDefaultErrorPage(true);
 			std::cout << "Default Error Page\n";
 		}
 	}
@@ -276,7 +274,7 @@ int main()
 	std::cout << "Path Cgi : " << cgi << std::endl;
 	std::cout << "code Error : " << RequestHandler.getStatusError() << std::endl;
 	std::cout << "Default Error Page : " 
-          << (RequestHandler.getDefaultErrorPage() ? RequestHandler.getDefaultErrorPage()->uri : "(NULL)") 
+          << (RequestHandler.getDefaultErrorPage() ? "(YES)" : "(NULL)") 
           << std::endl;
 
 	HeaderTable headerTable = RequestHandler.getHeader();
