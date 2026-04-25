@@ -222,10 +222,7 @@ bool clsCGI::_SCRIPT_NAME()
 bool clsCGI::_QUERY_STRING()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-        {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
