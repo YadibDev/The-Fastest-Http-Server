@@ -1,3 +1,6 @@
+#ifndef CLS_FLOW
+#define CLS_FLOW
+
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -13,7 +16,7 @@
 #include "../server/clsServerSock.hpp"
 #include "clsLinker.hpp"
 #include <unistd.h>
-
+#include "monitorCgi.hpp"
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500
 
@@ -22,6 +25,8 @@
 // #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 // #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 // #include <csignal>
+
+
 
 class clsFlow
 {
@@ -59,3 +64,5 @@ public:
     void EventLoop();
 
 };
+
+#endif

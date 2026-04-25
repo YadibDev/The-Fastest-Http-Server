@@ -178,7 +178,6 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         int sizeToRead = _addSizeChunkToStr();
         if (sizeToRead)
         {
-
             s = read(_fdRespond, &respondBuffer[bytesToSend], sizeToRead);
             bytesToSend += s;
             memcpy(&respondBuffer[bytesToSend], "\r\n", 2);
@@ -208,9 +207,29 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 }
 
-void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond, bool fileExist)
+void clsClient::_initalizeRespondBuffer()
 {
-    memcpy(&respondBuffer[0], Headers, bytesToSend);
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    const char *Header;
+    const char *Body;
+    bool fileExist = false;
+    char *respondBuffer = this->_theData.io_chunk;
+    if (Respond.GetModTransferData())
+    {
+        bytesToSend += Respond.GetHeaderFeildPointer()->size();
+        Header = Respond.GetHeaderFeildPointer()->c_str();
+        Body = Respond.GetBodyPointer()->c_str();
+        fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
+    }
+    else
+    {
+        bytesToSend += Respond.GetHeaderFeild().size();
+        Header = Respond.GetHeaderFeild().c_str();
+        Body = Respond.GetBody().c_str();
+        fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
+    }
+
+    memcpy(&respondBuffer[0], Header, bytesToSend);
 
     if (fileExist == false)
     {
@@ -234,8 +253,6 @@ void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
-    char *respondBuffer = this->_theData.io_chunk;
-
     if (_state == START_RESPOND)
     {
         bytesToSend = 0;
@@ -250,86 +267,17 @@ void clsClient::ProcessRespond()
             _state = CGI_START;
             return;
         }
-
-        const char *Header;
-        const char *Body;
-        bool fileExist = false;
-        if (Respond.GetModTransferData())
-        {
-            bytesToSend += Respond.GetHeaderFeildPointer()->size();
-            Header = Respond.GetHeaderFeildPointer()->c_str();
-            Body = Respond.GetBodyPointer()->c_str();
-            fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
-        }
-        else
-        {
-            bytesToSend += Respond.GetHeaderFeild().size();
-            Header = Respond.GetHeaderFeild().c_str();
-            Body = Respond.GetBody().c_str();
-            fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
-        }
-        _initalizeRespondBuffer(respondBuffer, Header, Body, Respond, fileExist);
+        _initalizeRespondBuffer();
     }
-    else if (_state == CGI_RUNING)
-        return;
-    _SendRespond(Respond);
-}
-
-short clsClient::_ReadData(int fd)
-{
-    return read(fd, this->_theData.io_chunk, sizeof(_theData.io_chunk));
-}
-
-bool clsClient::monitorCgi(int fd) // return true if it's the end
-{
-    stEventProcess::eEventProcess eventProcess = _ResponderProecss.getEventProcess();
-    int pid = _ResponderProecss.GetclsCGI().GetPid();
-    stEventProcess::eEventProcess temp = HelperFunctions::checkProcessStatus(pid);
-
-    std::cout << "\n==================\n";
-    std::cout << eventProcess << std::endl;
-    std::cout << pid << std::endl;
-    std::cout << temp << std::endl;
-    std::cout << "\n==================\n";
-    if (eventProcess == stEventProcess::RUNINNG)
+    else if (_state == CGI_END)
     {
-        if (temp == stEventProcess::THE_END)
-        {
-            _ResponderProecss.setEventProcess(stEventProcess::DATA_LEFT);
-            eventProcess = stEventProcess::DATA_LEFT;
-        }
-        else if (temp == stEventProcess::END_UNKNOW)
-        {
-            _state = RESPOND_MODE;
-            _ResponderProecss.setEventProcess(temp);
-            return true;
-        }
-    }
-
-    if (eventProcess == stEventProcess::RUNINNG || eventProcess == stEventProcess::DATA_LEFT)
-    {
-        size_t length = _ReadData(fd);
-
-        if (eventProcess == stEventProcess::DATA_LEFT && length < sizeof(_theData.io_chunk)) // i may be wrong here
-        {
-            _ResponderProecss.setEventProcess(stEventProcess::THE_END);
-            eventProcess = stEventProcess::THE_END;
-        }
-        std::cout << "-----length-------\n";
-        std::cout << eventProcess << std::endl;
-        std::cout << length << std::endl;
-        _ResponderProecss.ParseCGI(_theData.io_chunk, length);
-    }
-
-    if (eventProcess >= stEventProcess::THE_END)
-    {
+        _initalizeRespondBuffer();
         _state = RESPOND_MODE;
-        return true;    
     }
-    return false;
+
+    if (_state == RESPOND_MODE)
+        _SendRespond(Respond);
 }
-
-
 
 void clsClient::ProcessBoth(uint32_t events)
 {
@@ -375,60 +323,47 @@ void clsClient::logs()
     std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
     std::cout << "\n================= log end =================\n"
               << std::endl;
-
-    //  std::cout << "\n================= REQUEST DEBUG =================\n";
-
-    //     std::cout << "[STATUS] Request completed successfully\n";
-
-    //     std::cout << "\n[METADATA]\n";
-    //     std::cout << this->_theData.request_metadata << "\n";
-
-    //     std::cout << "\n[BODY STORAGE]\n";
-    //     if (_Requester._body._bodyLocation == clsBody::DISK)
-    //         std::cout << "Location : DISK\n";
-    //     else if (_Requester._body._bodyLocation == clsBody::RAM)
-    //         std::cout << "Location : RAM\n";
-    //     else
-    //         std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
-
-    //     std::cout << "\n[BODY INFO]\n";
-    //     if (this->_theData.read_body > 0)
-    //     {
-    //         std::cout << "Size : " << this->_theData.read_body << " bytes\n";
-    //         std::cout << "Content:\n";
-    //         std::cout << "----------------------------------------\n";
-
-    //         for (int i = 0; i < _theData.read_body; i++)
-    //             std::cout << this->_theData.io_chunk[i];
-
-    //         std::cout << "\n----------------------------------------\n";
-    //     }
-    //     else
-    //     {
-    //         std::cout << "No body received\n";
-    //     }
-
-    //     std::cout << "========================================\n\n";
 }
 
-bool clsClient::isCgiTimeout()
+void clsClient::initializeCGI()
 {
-    clsCGI &cgi = _ResponderProecss.GetclsCGI();
-    const time_t &start = cgi.getStartTime();
-
-    if (HelperFunctions::isTimeout(start, CGI_TIMEOUT))
-        return true;
-    else
-        return false;
+    clsCGI &cgi = this->_ResponderProecss.GetclsCGI();
+    _state = CGI_RUNING;
+    _monitorCGI.initialzie(cgi.GetPid(), cgi.GetFdPipe(), cgi.getStartTime());
 }
 
-void clsClient::killCgi()
+bool clsClient::monitorCgi()
 {
-    clsCGI &cgi = _ResponderProecss.GetclsCGI();
-    if (_ResponderProecss.getEventProcess() == stEventProcess::RUNINNG)
+    short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
+    stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
+    stEventData::eEventData dataState = _monitorCGI.getStateData();
+
+    if (length == -1)
     {
-        kill(cgi.GetPid(), SIGKILL);
-        HelperFunctions::checkProcessStatus(cgi.GetPid());
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(processState);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
     }
-    _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
+    else if (length == 0 || (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE))
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(processState);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+    return false;
 }
+
+bool clsClient::timeoutCgi()
+{
+    if (_monitorCGI.TimeoutCgi())
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+    return false;
+}
+

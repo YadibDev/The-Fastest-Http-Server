@@ -173,7 +173,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             if (TypeFd == PIPE)
             {
                 int index = _IdByPipe[fd];
-                if (_clientsArr[index].monitorCgi(fd))
+                if (_clientsArr[index].monitorCgi())
                     _popPipe(fd);
             }
             else if (TypeFd == CLIENT_SOCK)
@@ -211,7 +211,6 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 
 void clsFlow::_popPipe(short pipe)
 {
-    close(pipe);
     _IdByPipe.erase(pipe);
 }
 
@@ -241,7 +240,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     else if (status == CGI_START)
     {
         _pushPipe(client.getPipeCgi(), index);
-        client.SetState(CGI_RUNING);
+        client.initializeCGI();
     }
 }
 
@@ -268,7 +267,7 @@ void clsFlow::_pipeFlow(int fd)
     short index = _IdByPipe[fd];
     clsClient &client = _clientsArr[index];
 
-    if (client.monitorCgi(fd))
+    if (client.monitorCgi())
         _popPipe(fd);
 }
 
@@ -312,13 +311,13 @@ void clsFlow::EventLoop()
         {
             int pipeFd = it->first;
             int index = it->second;
-            if (_clientsArr[index].isCgiTimeout())
+            if (_clientsArr[index].timeoutCgi())
             {
-                std::cout << "cgi timeouta\n" << std::endl;
-                _clientsArr[index].killCgi();
+                it++;
                 _popPipe(pipeFd);
             }
-            it++;
+            else
+                it++;
         }
     }
     throw std::runtime_error("Error\n epoll system call fail");
