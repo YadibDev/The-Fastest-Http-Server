@@ -28,7 +28,7 @@ private:
 	std::string							_filePathBody;
 	HttpTables::eMethod					_method;
 	HeaderTable							_Header;
-	const stErrorPagedata*				_defaultErrorPage;
+	bool								_defaultErrorPage;
 	const std::string*					_pathCgi;
 	const std::string*					_upload_store;
 	HttpError							_error;
@@ -49,9 +49,10 @@ public:
 	void					setMethod(HttpTables::eMethod method);
 	void					setAllowedMethods(uint8_t allowed);
 	void					setHeader(HeaderTable	_Header);
-	void					setDefaultErrorPage(const stErrorPagedata* defaultErrorPage);
+	void					setDefaultErrorPage(bool defaultErrorPage);
 	void					setPathCgi(const std::string* pathCgi);
 	void					setReturn(const stReturnData& returnData);
+	void					setReturnVal(stReturnData returnData);
 	void					setUploadStore(const std::string* uploadStore);
 	void					setBody(const std::string& body);
 	void					setFilePathBody(const std::string& filePathBody);
@@ -74,7 +75,7 @@ public:
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
 	const std::string*		getPathCgi() const;
-	const stErrorPagedata*	getDefaultErrorPage();
+	bool					getDefaultErrorPage();
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
 	const std::string&		getBody() const;

@@ -22,6 +22,37 @@ void UriParser::init(uint16_t startOffset) {
 	_error = HttpError();
 }
 
+
+bool	UriParser::isAbsoluteURI(const std::string& uri)
+{
+    if (uri.empty())
+        return false;
+
+    size_t colonPos = uri.find(':');
+    
+    if (colonPos == std::string::npos || colonPos == 0)
+        return false;
+
+    if (!std::isalpha(uri[0]))
+        return false;
+
+    for (size_t i = 1; i < colonPos; ++i) {
+        char c = uri[i];
+        if (!std::isalnum(c) && c != '+' && c != '-' && c != '.')
+            return false;
+    }
+
+    if (uri.find('#') != std::string::npos)
+        return false;
+
+    if (colonPos + 1 == uri.length())
+        return false;
+
+    return true;
+}
+
+
+
 bool UriParser::isUnreserved(char c) {
 	unsigned char uc = static_cast<unsigned char>(c);
 	return std::isalnum(uc) || c == '-' || c == '.' || c == '_' || c == '~';
