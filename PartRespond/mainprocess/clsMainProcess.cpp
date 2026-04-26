@@ -55,9 +55,8 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetBodyPointer(parseCgi.GetBodyPointer());
             _Response.SetHeaderFeildPointer(parseCgi.GetHeaderFeildPointer());
             _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
+            _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetStatus(parseCgi.GetStatus());
-            if (parseCgi.GetMod()[stMod::INTERNALRE] == stMod::INTERNALRE)
-                _Response.SetMod(stMod::INTERNALRE);
             _Response.SetModTransferData(true);
         }
         else

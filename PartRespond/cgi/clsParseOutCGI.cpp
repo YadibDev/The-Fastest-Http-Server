@@ -556,6 +556,11 @@ void clsParseOutCGI::_Reset()
     close(_Fdout);
 }
 
+short clsParseOutCGI::GetSizeBody()
+{
+    return _BytesBody;
+}
+
 void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 {
     _PIDCHILD = PIDPROCESS;

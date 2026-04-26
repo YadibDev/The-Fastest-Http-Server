@@ -52,7 +52,6 @@ class clsResponse
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
         void _Date();
-        void _CachControl();
         void _Server();
     public:
         void Reset();

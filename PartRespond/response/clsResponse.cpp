@@ -82,7 +82,6 @@ void clsResponse::_InitialHeaders()
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
     _Date();
-    _CachControl();
     _Server();
     if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
@@ -168,10 +167,6 @@ void clsResponse::_Date()
    _HeaderFeild += "Date: ";
    _HeaderFeild += HelperFunctions::DateTime();
    _HeaderFeild += "\r\n";
-}
-void clsResponse::_CachControl()
-{
-    _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
 void clsResponse::_Server()

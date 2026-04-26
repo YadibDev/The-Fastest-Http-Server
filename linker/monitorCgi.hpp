@@ -3,7 +3,7 @@
 #ifndef monitor_cgi_0000
 #define monitor_cgi_0000
 
-#define CGI_TIMEOUT 30
+#define CGI_TIMEOUT 2
 
 
 class clsMonitorCGI
@@ -32,18 +32,25 @@ public:
     {
         if (HelperFunctions::isTimeout(startTime, CGI_TIMEOUT))
         {
-            if (stateProcess < stEventProcess::THE_END)
-            {
-                kill(pid, SIGKILL);
-                HelperFunctions::checkProcessStatus(pid);
-                stateProcess = stEventProcess::END_WITH_TIMOUT;
-            }
-            if (stateData == stEventData::STILL_EXIST)
-                close(pipe);
-            stateData = stEventData::END_PIPE;
+            freeCgiRessources();
             return true;
         }
         return false;
+    }
+
+    void freeCgiRessources()
+    {
+        if (stateProcess == stEventProcess::RUNINNG)
+        {
+            kill(pid, SIGKILL);
+            HelperFunctions::checkProcessStatus(pid);
+            stateProcess = stEventProcess::END_WITH_TIMOUT;
+        }
+        if (stateData == stEventData::STILL_EXIST)
+            close(pipe);
+        stateData = stEventData::END_PIPE;
+        pid = -1;
+        pipe = -1;
     }
 
     short getDataFromCgi(char *buffer, short bufferSize) // -1 end of pipe
