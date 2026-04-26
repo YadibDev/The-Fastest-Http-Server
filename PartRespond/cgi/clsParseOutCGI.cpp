@@ -419,15 +419,16 @@ void clsParseOutCGI::_StoredInFileOrStr()
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
     _Reset();
-    if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
-        _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
-    else
+    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    // else
     {
         _ErrorPage.ResponseError(_Status, "");
         _ModTransferData = true;
         _BodyPointer = &_ErrorPage.GetBody();
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        _BytesBody = _ErrorPage.GetBodySize();
     }
 }
 

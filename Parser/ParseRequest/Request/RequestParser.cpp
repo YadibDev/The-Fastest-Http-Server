@@ -32,6 +32,7 @@ void RequestParser::init(uint16_t offset)
 	_header.init(offset);
 	_error.setStatus(0, "");
 	_RequestHandler->reset();
+	_body.Reset();
 }
 
 
@@ -98,14 +99,14 @@ bool RequestParser::ParseBody(uint16_t size)
 
 	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize());
 
-	// if (_body.getState() == clsBody::DONE_GOOD)
+	if (_body.getState() == clsBody::DONE_GOOD)
 	{
-		// 	_state = STATE_COMPLETE;
+		_state = STATE_COMPLETE;
 	}
-	// else if (_body.getState() == clsBody::DONE_WIHTERROR)
-	// 	_state = STATE_ERROR;
-	_state = STATE_COMPLETE;
-	return  size;
+	else if (_body.getState() == clsBody::DONE_WIHTERROR)
+		_state = STATE_ERROR;
+
+	return  true;;
 }
 
 bool RequestParser::Parse(uint16_t size)
@@ -120,13 +121,16 @@ bool RequestParser::Parse(uint16_t size)
 		else if (_state == STATE_HEADERS)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
+		{
+			// std::cout << "enter here" << std::endl;
 			ParseBody(size); // add handle error with the proprly way
+		}
 		else
 			break;
 
 		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
 			_state = STATE_COMPLETE;
-		else if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
+		 if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
 		{
 			if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].val.len == 1 && _request.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data[0] == '0')
 					_state = STATE_COMPLETE;

@@ -3,169 +3,669 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amber Folio Dark Photography Portfolio by TemplateMo</title>
-    <link rel="stylesheet" href="templatemo-amber-folio.css">
-<!--
-
-TemplateMo 615 Amber Folio
-
-https://templatemo.com/tm-615-amber-folio
-
--->
+    <title>Document</title>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loader"></div>
-    </div>
+    <form method="post" action="/cgi-bin/script.php">
+        <input type="text" name="name" >
+        <button type="submit">test</button>
+    </form>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Free HTML CSS Templates - TemplateMo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- Header Navigation -->
+        :root {
+            --bg-deep: #0b0b0f;
+            --bg-card: #141419;
+            --bg-elevated: #1c1c24;
+            --accent-warm: #e8a849;
+            --accent-warm-dim: rgba(232, 168, 73, 0.15);
+            --accent-warm-glow: rgba(232, 168, 73, 0.06);
+            --text-primary: #eeeef0;
+            --text-secondary: #8a8a96;
+            --text-tertiary: #55555f;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ─── Header ─── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 11, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: padding 0.4s var(--ease-out-expo);
+        }
+
+        header.compact { padding: 14px 40px; }
+
+        .logo {
+            font-family: 'Instrument Serif', serif;
+            font-size: 26px;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-dot {
+            width: 8px; height: 8px;
+            background: var(--accent-warm);
+            border-radius: 50%;
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 20px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .header-link:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-warm);
+            background: var(--accent-warm-glow);
+        }
+
+        /* ─── Hero + Coverflow Section ─── */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-warm-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-warm);
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 400;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent-warm);
+        }
+
+        .hero-desc {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ─── 3D Coverflow (from Amber Folio) ─── */
+        .coverflow-wrapper {
+            width: 100%;
+            position: relative;
+            padding: 40px 0 80px;
+        }
+
+        .coverflow-container {
+            width: 900px;
+            max-width: 90vw;
+            height: clamp(320px, 40vh, 440px);
+            position: relative;
+            transform-style: preserve-3d;
+            margin: 0 auto;
+            perspective: 1200px;
+        }
+
+        .coverflow-item {
+            position: absolute;
+            width: clamp(240px, 30vh, 320px);
+            height: clamp(240px, 30vh, 320px);
+            left: 50%; top: 50%;
+            transform-origin: center center;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (min-height: 900px) {
+            .coverflow-container { height: clamp(420px, 48vh, 520px); }
+            .coverflow-item {
+                width: clamp(300px, 34vh, 380px);
+                height: clamp(300px, 34vh, 380px);
+            }
+        }
+
+        @media (max-height: 768px) {
+            .coverflow-container { height: clamp(280px, 38vh, 360px); }
+            .coverflow-item {
+                width: clamp(200px, 26vh, 260px);
+                height: clamp(200px, 26vh, 260px);
+            }
+        }
+
+        /* Reflection */
+        .coverflow-item::after {
+            content: '';
+            position: absolute;
+            top: 100%; left: 0;
+            width: 100%; height: 100%;
+            background: inherit;
+            transform: scaleY(-1) translateY(1px);
+            opacity: 0.15;
+            filter: blur(2px);
+            mask: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.1) 40%, transparent 60%);
+            -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.1) 40%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .portfolio-image {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.6s ease;
+        }
+
+        .coverflow-item:hover .portfolio-image { transform: scale(1.05); }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.3) 70%, transparent 100%);
+            padding: 30px;
+            transform: translateY(100px);
+            transition: transform 0.4s ease;
+        }
+
+        .coverflow-item:hover .portfolio-overlay { transform: translateY(0); }
+
+        .portfolio-category {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-warm);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .portfolio-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .portfolio-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .coverflow-controls {
+            position: absolute;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            width: 45px; height: 45px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(20, 20, 25, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-warm);
+            border-color: var(--accent-warm);
+            color: var(--bg-deep);
+            transform: scale(1.1);
+        }
+
+        #playPauseBtn { padding-left: 2px; }
+        #playPauseBtn.playing { padding-left: 0; }
+
+        /* Indicators */
+        .indicators {
+            position: absolute;
+            bottom: -40px; left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            width: 30px;
+            border-radius: 4px;
+            background: var(--accent-warm);
+        }
+
+        /* ─── Section Divider ─── */
+        .section-divider {
+            max-width: 1100px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+        }
+
+        /* ─── About Section ─── */
+        .about { padding: 120px 40px; }
+
+        .about-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 28px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+
+        .metric-card:first-child {
+            border-color: rgba(232, 168, 73, 0.2);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(232, 168, 73, 0.05) 100%);
+        }
+
+        .metric-value {
+            font-family: 'Instrument Serif', serif;
+            font-size: 42px;
+            color: var(--accent-warm);
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .metric-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+        .section-eyebrow {
+            font-size: 12px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--accent-warm);
+            margin-bottom: 20px;
+        }
+
+        .about-right h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 24px;
+        }
+
+        .about-right h2 em { font-style: italic; color: var(--accent-warm); }
+
+        .about-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .about-highlights { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; }
+
+        .highlight-item {
+            display: flex; align-items: center; gap: 14px;
+            font-size: 15px; color: var(--text-secondary);
+        }
+
+        .highlight-icon {
+            width: 32px; height: 32px;
+            background: var(--accent-warm-dim);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .highlight-icon svg { width: 16px; height: 16px; fill: var(--accent-warm); }
+
+        /* ─── CTA Section ─── */
+        .cta { padding: 120px 40px; text-align: center; position: relative; }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 500px;
+            background: radial-gradient(ellipse, var(--accent-warm-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-inner { max-width: 700px; margin: 0 auto; position: relative; }
+
+        .cta h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .cta h2 em { font-style: italic; color: var(--accent-warm); }
+
+        .cta-desc {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 36px;
+            background: var(--accent-warm);
+            color: var(--bg-deep);
+            text-decoration: none;
+            font-weight: 600; font-size: 15px;
+            border-radius: 100px;
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(232, 168, 73, 0.3);
+        }
+
+        .btn-primary svg { width: 18px; height: 18px; transition: transform 0.3s ease; }
+        .btn-primary:hover svg { transform: translateX(3px); }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 36px;
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500; font-size: 15px;
+            border-radius: 100px;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        footer p { font-size: 13px; color: var(--text-tertiary); }
+        footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s ease; }
+        footer a:hover { color: var(--accent-warm); }
+
+        /* ─── Scroll Reveal ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 1024px) {
+            .about-inner { grid-template-columns: 1fr; gap: 50px; }
+            .about-metric-grid { max-width: 400px; margin: 0 auto; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 16px 20px; }
+            header.compact { padding: 12px 20px; }
+            .logo { font-size: 22px; }
+            .hero { padding: 80px 0; }
+            .about { padding: 80px 20px; }
+            .cta { padding: 80px 20px; }
+            .metric-card { padding: 22px 18px; }
+            .metric-value { font-size: 34px; }
+        }
+
+        @media (max-width: 480px) {
+            .cta-buttons { flex-direction: column; align-items: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
     <header id="header">
-        <nav>
-            <a href="#home" class="logo">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 20C16.4 20 20 16.4 20 12C20 7.6 16.4 4 12 4C7.6 4 4 7.6 4 12C4 16.4 7.6 20 12 20M12 2C18.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M14.3 16.2L12 10L9.7 16.2L7 11.3L11.3 7L16.2 9.7L14.3 16.2M8.8 17L12 8L15.2 17L20 12L15.2 7L12 15L8.8 7L4 12L8.8 17Z"/>
-                </svg>
-                Amber Folio
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="menu-toggle" id="menuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </nav>
+        <a href="https://templatemo.com" class="logo" target="_blank" rel="noopener">
+            <span class="logo-dot"></span>TemplateMo
+        </a>
+        <a href="https://templatemo.com/page/1" class="header-link" target="_blank" rel="noopener">Browse All Templates</a>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section" id="home">
-        <div class="hero-bg"></div>
-        <div class="hero-shapes">
-            <div class="floating-accent accent-1"></div>
-            <div class="floating-accent accent-2"></div>
-            <div class="floating-accent accent-3"></div>
-        </div>
-        <div class="hero-content reveal">
-            <h1 class="hero-title">Capturing Moments</h1>
-            <p class="hero-subtitle">Professional Photography Portfolio</p>
-            <a href="#portfolio" class="cta-button">View My Work</a>
-        </div>
-    </section>
-
-    <!-- Portfolio Section with Coverflow -->
-    <section class="portfolio-section" id="portfolio">
-        <div class="section-header reveal">
-            <h2 class="section-title">Featured Work</h2>
-            <p class="section-subtitle">Explore my latest photography projects across various genres and styles</p>
+    <!-- Hero + 3D Coverflow -->
+    <section class="hero" id="templates">
+        <div class="hero-header reveal">
+            <p class="hero-eyebrow">Latest Collection</p>
+            <h1 class="hero-title">Free HTML CSS <em>Templates</em></h1>
+            <p class="hero-desc">Handcrafted website templates ready to download. Pure HTML, CSS &amp; JavaScript — no frameworks, no signup, no cost.</p>
         </div>
 
-        <div class="coverflow-wrapper">
+        <div class="coverflow-wrapper reveal">
             <div class="coverflow-container" id="coverflowContainer">
-                <!-- Portrait Photography -->
-                <div class="coverflow-item" data-index="0">
-                    <img src="images/templatemo-amber-folio-01.jpg" alt="Portrait Photography" class="portfolio-image">
+
+                <div class="coverflow-item" data-index="0" data-url="https://templatemo.com/tm-614-quantix-saas">
+                    <img src="https://templatemo.com/thumbnails-360/tm-614-quantix-saas.jpg" alt="Quantix SaaS Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Portrait</div>
-                        <h3 class="portfolio-title">Human Stories</h3>
-                        <p class="portfolio-description">Capturing authentic emotions and personalities</p>
+                        <div class="portfolio-category">TM-614</div>
+                        <h3 class="portfolio-title">Quantix</h3>
+                        <p class="portfolio-description">High-conversion SaaS landing page with pure HTML5, CSS3 &amp; vanilla JS</p>
                     </div>
                 </div>
 
-                <!-- Landscape Photography -->
-                <div class="coverflow-item" data-index="1">
-                    <img src="images/templatemo-amber-folio-02.jpg" alt="Landscape Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="1" data-url="https://templatemo.com/tm-613-frost-bakery">
+                    <img src="https://templatemo.com/thumbnails-360/tm-613-frost-bakery.jpg" alt="Frost Bakery Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Landscape</div>
-                        <h3 class="portfolio-title">Nature's Canvas</h3>
-                        <p class="portfolio-description">Breathtaking vistas and natural wonders</p>
+                        <div class="portfolio-category">TM-613</div>
+                        <h3 class="portfolio-title">Frost</h3>
+                        <p class="portfolio-description">Bright single-page template for ice cream shops, bakeries &amp; dessert businesses</p>
                     </div>
                 </div>
 
-                <!-- Street Photography -->
-                <div class="coverflow-item" data-index="2">
-                    <img src="images/templatemo-amber-folio-03.jpg" alt="Street Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="2" data-url="https://templatemo.com/tm-612-parallax-starter">
+                    <img src="https://templatemo.com/thumbnails-360/tm-612-parallax-starter.jpg" alt="Parallax Starter Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Street</div>
-                        <h3 class="portfolio-title">Urban Life</h3>
-                        <p class="portfolio-description">Candid moments in city environments</p>
+                        <div class="portfolio-category">TM-612</div>
+                        <h3 class="portfolio-title">Parallax Starter</h3>
+                        <p class="portfolio-description">Smooth JS-driven parallax scrolling across five full-screen sections</p>
                     </div>
                 </div>
 
-                <!-- Architecture Photography -->
-                <div class="coverflow-item" data-index="3">
-                    <img src="images/templatemo-amber-folio-04.jpg" alt="Architecture Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="3" data-url="https://templatemo.com/tm-611-maison-doree">
+                    <img src="https://templatemo.com/thumbnails-360/tm-611-maison-doree.jpg" alt="Maison Doree Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Architecture</div>
-                        <h3 class="portfolio-title">Structural Beauty</h3>
-                        <p class="portfolio-description">Modern lines and timeless designs</p>
+                        <div class="portfolio-category">TM-611</div>
+                        <h3 class="portfolio-title">Maison Doree</h3>
+                        <p class="portfolio-description">Elegant template for gold jewelry boutiques &amp; luxury accessory brands</p>
                     </div>
                 </div>
 
-                <!-- Fashion Photography -->
-                <div class="coverflow-item" data-index="4">
-                    <img src="images/templatemo-amber-folio-05.jpg" alt="Fashion Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="4" data-url="https://templatemo.com/tm-610-aurum-gold">
+                    <img src="https://templatemo.com/thumbnails-360/tm-610-aurum-gold.jpg" alt="Aurum Gold Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Fashion</div>
-                        <h3 class="portfolio-title">Style & Elegance</h3>
-                        <p class="portfolio-description">High fashion and editorial shoots</p>
+                        <div class="portfolio-category">TM-610</div>
+                        <h3 class="portfolio-title">Aurum Gold</h3>
+                        <p class="portfolio-description">Dark-themed template for gold investment &amp; precious metals dealers</p>
                     </div>
                 </div>
 
-                <!-- Wildlife Photography -->
-                <div class="coverflow-item" data-index="5">
-                    <img src="images/templatemo-amber-folio-06.jpg" alt="Wildlife Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="5" data-url="https://templatemo.com/tm-609-crypto-vault">
+                    <img src="https://templatemo.com/thumbnails-360/tm-609-crypto-vault.jpg" alt="CryptoVault Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Wildlife</div>
-                        <h3 class="portfolio-title">Wild Kingdom</h3>
-                        <p class="portfolio-description">Nature's magnificent creatures</p>
+                        <div class="portfolio-category">TM-609</div>
+                        <h3 class="portfolio-title">CryptoVault</h3>
+                        <p class="portfolio-description">Crypto trading dashboard with Graphite &amp; Copper color scheme</p>
                     </div>
                 </div>
 
-                <!-- Black & White Photography -->
-                <div class="coverflow-item" data-index="6">
-                    <img src="images/templatemo-amber-folio-07.jpg" alt="Black and White Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="6" data-url="https://templatemo.com/tm-608-daynight-admin">
+                    <img src="https://templatemo.com/thumbnails-360/tm-608-daynight-admin.jpg" alt="DayNight Admin Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Monochrome</div>
-                        <h3 class="portfolio-title">Timeless Classics</h3>
-                        <p class="portfolio-description">The art of black and white</p>
+                        <div class="portfolio-category">TM-608</div>
+                        <h3 class="portfolio-title">DayNight Admin</h3>
+                        <p class="portfolio-description">Flat dashboard with dual theme — Snow Edition &amp; Carbon Edition</p>
                     </div>
                 </div>
 
-                <!-- Event Photography -->
-                <div class="coverflow-item" data-index="7">
-                    <img src="images/templatemo-amber-folio-08.jpg" alt="Event Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="7" data-url="https://templatemo.com/tm-607-glass-admin">
+                    <img src="https://templatemo.com/thumbnails-360/tm-607-glass-admin.jpg" alt="GlassDash Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Events</div>
-                        <h3 class="portfolio-title">Special Moments</h3>
-                        <p class="portfolio-description">Weddings and celebrations</p>
+                        <div class="portfolio-category">TM-607</div>
+                        <h3 class="portfolio-title">GlassDash</h3>
+                        <p class="portfolio-description">Glassmorphism admin dashboard with 3D tilt &amp; emerald-gold scheme</p>
                     </div>
                 </div>
 
-                <!-- Abstract Photography -->
-                <div class="coverflow-item" data-index="8">
-                    <img src="images/templatemo-amber-folio-09.jpg" alt="Abstract Photography" class="portfolio-image">
+                <div class="coverflow-item" data-index="8" data-url="https://templatemo.com/tm-606-string-master">
+                    <img src="https://templatemo.com/thumbnails-360/tm-606-string-master.jpg" alt="String Master Template" class="portfolio-image">
                     <div class="portfolio-overlay">
-                        <div class="portfolio-category">Abstract</div>
-                        <h3 class="portfolio-title">Creative Vision</h3>
-                        <p class="portfolio-description">Artistic and experimental works</p>
+                        <div class="portfolio-category">TM-606</div>
+                        <h3 class="portfolio-title">String Master</h3>
+                        <p class="portfolio-description">Interactive guitar learning platform for music educators</p>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Navigation Controls -->
             <div class="coverflow-controls">
-                <button class="control-btn" id="prevBtn">‹</button>
-                <button class="control-btn" id="playPauseBtn">▶</button>
-                <button class="control-btn" id="nextBtn">›</button>
+                <button class="control-btn" id="prevBtn">&#8249;</button>
+                <button class="control-btn" id="playPauseBtn">&#9654;</button>
+                <button class="control-btn" id="nextBtn">&#8250;</button>
             </div>
 
-            <!-- Indicators -->
             <div class="indicators" id="indicators">
                 <div class="indicator active" data-index="0"></div>
                 <div class="indicator" data-index="1"></div>
@@ -180,187 +680,293 @@ https://templatemo.com/tm-615-amber-folio
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- About Section -->
-    <section class="about-section" id="about">
-        <div class="about-container reveal">
-            <div class="about-image">
-                <img src="images/templatemo-about-artist.jpg" alt="Photographer">
-            </div>
-            <div class="about-content">
-                <h2>About the Artist</h2>
-                <p>With over a decade of experience in professional photography, I specialize in capturing the extraordinary in everyday moments. My journey began with a simple camera and an insatiable curiosity about the world around me.</p>
-                <p>From the bustling streets of urban landscapes to the serene beauty of nature, I strive to tell stories through my lens. Each photograph is a carefully crafted piece of art, designed to evoke emotion and preserve memories that last a lifetime.</p>
-                <p>My work has been featured in numerous galleries and publications worldwide, but my greatest satisfaction comes from creating images that resonate with people on a personal level.</p>
-                
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">500+</div>
-                        <div class="stat-label">Projects</div>
+    <section class="about" id="about">
+        <div class="about-inner">
+            <div class="about-left reveal">
+                <div class="about-metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">604+</div>
+                        <div class="metric-label">Free Templates</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">10+</div>
-                        <div class="stat-label">Years</div>
+                    <div class="metric-card">
+                        <div class="metric-value">17+</div>
+                        <div class="metric-label">Years Online</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">50+</div>
-                        <div class="stat-label">Awards</div>
+                    <div class="metric-card">
+                        <div class="metric-value">100%</div>
+                        <div class="metric-label">Free to Use</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Signup Required</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section class="services-section" id="services">
-        <div class="services-container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Services Offered</h2>
-                <p class="section-subtitle">Professional photography services tailored to capture your vision</p>
-            </div>
-
-            <div class="services-grid reveal">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C10.34 2 9 3.34 9 5C9 6.66 10.34 8 12 8C13.66 8 15 6.66 15 5C15 3.34 13.66 2 12 2ZM12 9C8.69 9 6 11.69 6 15C6 16.66 6.56 18.17 7.5 19.32V22L12 20L16.5 22V19.32C17.44 18.17 18 16.66 18 15C18 11.69 15.31 9 12 9Z"/>
-                        </svg>
+            <div class="about-right reveal">
+                <p class="section-eyebrow">About TemplateMo</p>
+                <h2>Free Templates <em>Since 2008</em></h2>
+                <p class="about-text">TemplateMo has been providing free HTML CSS website templates for over 17 years. Every template is 100% free to download — no email, no login, no hidden charges. Use them for learning, personal projects, or commercial websites.</p>
+                <p class="about-text">From responsive Bootstrap layouts to modern AI-customizable pure CSS designs, the collection spans every category: portfolios, business sites, landing pages, dashboards, and more.</p>
+                <div class="about-highlights">
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+                        No frameworks required — pure HTML, CSS &amp; JS
                     </div>
-                    <h3 class="service-title">Portrait Sessions</h3>
-                    <p class="service-description">Professional headshots, personal branding, and lifestyle portraits. Each session includes consultation, styling guidance, and expert retouching.</p>
-                    <div class="service-price">Starting at $450</div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 6.5C12 5.67 11.33 5 10.5 5S9 5.67 9 6.5 9.67 8 10.5 8 12 7.33 12 6.5M13.5 5C12.67 5 12 5.67 12 6.5S12.67 8 13.5 8 15 7.33 15 6.5 14.33 5 13.5 5M12 21.35L5.35 14.7C3.58 12.93 2.61 10.54 2.61 8.04C2.61 3.74 6.05 0.25 10.36 0.21C14.72 0.17 18.29 3.69 18.29 8C18.29 10.53 17.34 12.88 15.58 14.65L12 21.35Z"/>
-                        </svg>
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+                        Commercial &amp; personal use permitted
                     </div>
-                    <h3 class="service-title">Wedding Photography</h3>
-                    <p class="service-description">Complete wedding day coverage from preparation to reception. Includes engagement session, two photographers, and premium album design.</p>
-                    <div class="service-price">Starting at $2,800</div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3ZM12 18L8 14H11V9H13V14H16L12 18Z"/>
-                        </svg>
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+                        AI-customizable templates with Claude &amp; ChatGPT
                     </div>
-                    <h3 class="service-title">Commercial Work</h3>
-                    <p class="service-description">Product photography, corporate events, architectural shoots, and marketing campaigns. High-resolution images with commercial licensing.</p>
-                    <div class="service-price">Custom Pricing</div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.5 11H19V7C19 5.9 18.1 5 17 5H13V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4C2.9 5 2 5.9 2 7V10.8H3.5C4.99 10.8 6.2 12.01 6.2 13.5S4.99 16.2 3.5 16.2H2V20C2 21.1 2.9 22 4 22H7.8V20.5C7.8 19.01 9.01 17.8 10.5 17.8S13.2 19.01 13.2 20.5V22H17C18.1 22 19 21.1 19 20V16H20.5C21.88 16 23 14.88 23 13.5S21.88 11 20.5 11Z"/>
-                        </svg>
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+                        Responsive &amp; mobile-friendly designs
                     </div>
-                    <h3 class="service-title">Fine Art Prints</h3>
-                    <p class="service-description">Museum-quality giclée prints on archival paper. Limited editions with certificates of authenticity. Custom framing available.</p>
-                    <div class="service-price">Starting at $180</div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L2 7V9C2 14.55 5.84 19.74 11 21C16.16 19.74 20 14.55 20 9V7L12 2ZM12 11.5L9 8.5L10.41 7.09L12 8.67L15.59 5.09L17 6.5L12 11.5Z"/>
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Photo Editing</h3>
-                    <p class="service-description">Professional retouching, color grading, and composite creation. Fast turnaround with unlimited revisions until perfect.</p>
-                    <div class="service-price">$50 per hour</div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2ZM11 17L6 12L7.41 10.59L11 14.17L16.59 8.59L18 10L11 17Z"/>
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Photography Workshops</h3>
-                    <p class="service-description">One-on-one mentoring sessions, group workshops, and online masterclasses. Learn composition, lighting, and post-processing techniques.</p>
-                    <div class="service-price">Starting at $200</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section class="contact-section" id="contact">
-        <div class="contact-container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Get In Touch</h2>
-                <p class="section-subtitle">Let's create something beautiful together</p>
-            </div>
+    <div class="section-divider"></div>
 
-            <div class="contact-info reveal">
-                <a href="mailto:hello@capture.com" class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/>
-                        </svg>
-                    </div>
-                    <div class="contact-label">Email</div>
-                    <div class="contact-value">hello@capture.com</div>
+    <!-- CTA Section -->
+    <section class="cta" id="cta">
+        <div class="cta-inner reveal">
+            <p class="section-eyebrow">Get Started</p>
+            <h2>Download Your Next <em>Template</em> Today</h2>
+            <p class="cta-desc">Browse the full collection of 604+ free HTML CSS website templates. Find the perfect starting point for your next project — all free, all yours.</p>
+            <div class="cta-buttons">
+                <a href="https://templatemo.com/page/1" class="btn-primary" target="_blank" rel="noopener">
+                    Browse All Templates
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
-
-                <a href="tel:+1234567890" class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.62 10.79C8.06 13.62 10.38 15.94 13.21 17.38L15.41 15.18C15.69 14.9 16.08 14.82 16.43 14.93C17.55 15.3 18.75 15.5 20 15.5C20.55 15.5 21 15.95 21 16.5V20C21 20.55 20.55 21 20 21C10.61 21 3 13.39 3 4C3 3.45 3.45 3 4 3H7.5C8.05 3 8.5 3.45 8.5 4C8.5 5.25 8.7 6.45 9.07 7.57C9.18 7.92 9.1 8.31 8.82 8.59L6.62 10.79Z"/>
-                        </svg>
-                    </div>
-                    <div class="contact-label">Phone</div>
-                    <div class="contact-value">+1 (234) 567-890</div>
-                </a>
-
-                <a href="https://maps.google.com/?q=New+York+USA" target="_blank" rel="noopener" class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5S14.5 7.62 14.5 9S13.38 11.5 12 11.5Z"/>
-                        </svg>
-                    </div>
-                    <div class="contact-label">Studio</div>
-                    <div class="contact-value">New York, USA</div>
-                </a>
+                <a href="https://templatemo.com/about" class="btn-secondary" target="_blank" rel="noopener">Learn More</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="social-links">
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.8 2H16.2C19.4 2 22 4.6 22 7.8V16.2C22 19.4 19.4 22 16.2 22H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2M7.6 4C5.61 4 4 5.61 4 7.6V16.4C4 18.39 5.61 20 7.6 20H16.4C18.39 20 20 18.39 20 16.4V7.6C20 5.61 18.39 4 16.4 4H7.6M17.25 5.5C17.94 5.5 18.5 6.06 18.5 6.75S17.94 8 17.25 8S16 7.44 16 6.75S16.56 5.5 17.25 5.5M12 7C14.76 7 17 9.24 17 12S14.76 17 12 17S7 14.76 7 12S9.24 7 12 7M12 9C10.34 9 9 10.34 9 12S10.34 15 12 15S15 13.66 15 12S13.66 9 12 9Z"/>
-                    </svg>
-                </a>
-                <a href="https://facebook.com/templatemo" target="_blank" rel="noopener" class="social-link" aria-label="Facebook">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
-                    </svg>
-                </a>
-                <a href="https://x.com/minthu" target="_blank" rel="noopener" class="social-link" aria-label="Twitter">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22.46 6C21.69 6.35 20.86 6.58 20 6.69C20.88 6.16 21.56 5.32 21.88 4.31C21.05 4.81 20.13 5.16 19.16 5.36C18.37 4.5 17.26 4 16 4C13.65 4 11.73 5.92 11.73 8.29C11.73 8.63 11.77 8.96 11.84 9.27C8.28 9.09 5.11 7.38 3 4.79C2.63 5.42 2.42 6.16 2.42 6.94C2.42 8.43 3.17 9.75 4.33 10.5C3.62 10.5 2.96 10.3 2.38 10V10.03C2.38 12.11 3.86 13.85 5.82 14.24C5.46 14.34 5.08 14.39 4.69 14.39C4.42 14.39 4.15 14.36 3.89 14.31C4.43 16 6 17.26 7.89 17.29C6.43 18.45 4.58 19.13 2.56 19.13C2.22 19.13 1.88 19.11 1.54 19.07C3.44 20.29 5.74 21 8.23 21C16 21 20.33 14.46 20.33 8.79C20.33 8.6 20.33 8.42 20.32 8.23C21.16 7.63 21.88 6.87 22.46 6Z"/>
-                    </svg>
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 3C19.55 3 20.05 3.21 20.41 3.59C20.79 3.95 21 4.45 21 5V19C21 19.55 20.79 20.05 20.41 20.41C20.05 20.79 19.55 21 19 21H5C4.45 21 3.95 20.79 3.59 20.41C3.21 20.05 3 19.55 3 19V5C3 4.45 3.21 3.95 3.59 3.59C3.95 3.21 4.45 3 5 3H19M18.5 18.5V13.2C18.5 11.87 17.45 10.82 16.12 10.82C15.21 10.82 14.46 11.37 14.17 12.15V11H11.5V18.5H14.17V13.57C14.17 12.82 14.79 12.2 15.54 12.2C16.29 12.2 16.91 12.82 16.91 13.57V18.5H18.5M6.88 9.57C7.63 9.57 8.25 8.96 8.25 8.21C8.25 7.46 7.63 6.84 6.88 6.84C6.13 6.84 5.5 7.46 5.5 8.21C5.5 8.96 6.13 9.57 6.88 9.57M8.21 18.5V11H5.5V18.5H8.21Z"/>
-                    </svg>
-                </a>
-            </div>
-            <p class="footer-text">
-                © 2026 Amber Folio Photography. All rights reserved.<br>
-                Design: <a href="https://templatemo.com" target="_blank" rel="noopener">TemplateMo</a>
-            </p>
-        </div>
+        <p>&copy; 2026 <a href="https://templatemo.com" target="_blank" rel="nofollow noopener">TemplateMo</a> &mdash; Free HTML CSS Website Templates Since 2008</p>
     </footer>
-    <script src="templatemo-amber-script.js"></script>
+
+    <script>
+        // ─── 3D Coverflow Class (from Amber Folio) ───
+        class PhotoCoverflow {
+            constructor() {
+                this.items = document.querySelectorAll('.coverflow-item');
+                this.indicators = document.querySelectorAll('.indicator');
+                this.currentIndex = 4;
+                this.totalItems = this.items.length;
+                this.isPlaying = false;
+                this.autoPlayInterval = null;
+                this.autoPlaySpeed = 4000;
+                this.init();
+            }
+
+            init() {
+                this.updateCoverflow();
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+                document.getElementById('nextBtn').addEventListener('click', () => this.next());
+                document.getElementById('playPauseBtn').addEventListener('click', () => this.toggleAutoPlay());
+
+                this.indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => this.goTo(index));
+                });
+
+                this.items.forEach((item, index) => {
+                    item.addEventListener('click', () => {
+                        if (index === this.currentIndex) {
+                            const url = item.getAttribute('data-url');
+                            if (url) window.open(url, '_blank', 'noopener');
+                        } else {
+                            this.goTo(index);
+                        }
+                    });
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.prev();
+                    if (e.key === 'ArrowRight') this.next();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleAutoPlay();
+                    }
+                });
+
+                let startX = 0;
+                let startY = 0;
+                const container = document.getElementById('coverflowContainer');
+
+                container.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+
+                container.addEventListener('touchend', (e) => {
+                    if (!startX || !startY) return;
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+                    const diffX = startX - endX;
+                    const diffY = startY - endY;
+
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                        if (diffX > 0) this.next();
+                        else this.prev();
+                    }
+                    startX = 0;
+                    startY = 0;
+                }, { passive: true });
+
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => this.updateCoverflow(), 100);
+                });
+            }
+
+            updateCoverflow() {
+                const isMobile = window.innerWidth <= 768;
+                const isSmallMobile = window.innerWidth <= 480;
+                const viewportHeight = window.innerHeight;
+
+                let baseSpacing = 220;
+
+                if (viewportHeight > 900) baseSpacing = 250;
+                else if (viewportHeight < 768) baseSpacing = 180;
+
+                if (isSmallMobile) baseSpacing = Math.min(baseSpacing * 0.7, 140);
+                else if (isMobile) baseSpacing = Math.min(baseSpacing * 0.8, 170);
+
+                this.items.forEach((item, index) => {
+                    let offset = index - this.currentIndex;
+
+                    if (offset > this.totalItems / 2) offset -= this.totalItems;
+                    else if (offset < -this.totalItems / 2) offset += this.totalItems;
+
+                    let translateX = offset * baseSpacing;
+                    let translateZ = 0;
+                    let rotateY = 0;
+                    let scale = 1;
+                    let opacity = 1;
+
+                    if (offset === 0) {
+                        translateZ = 100;
+                        scale = 1.1;
+                    } else if (Math.abs(offset) === 1) {
+                        translateZ = 0;
+                        rotateY = offset * -40;
+                        scale = 0.85;
+                        opacity = 0.7;
+                    } else if (Math.abs(offset) === 2) {
+                        translateZ = -100;
+                        rotateY = offset * -50;
+                        scale = 0.7;
+                        opacity = 0.5;
+                    } else if (Math.abs(offset) === 3) {
+                        translateZ = -150;
+                        rotateY = offset * -60;
+                        scale = 0.6;
+                        opacity = 0.3;
+                    } else {
+                        translateZ = -200;
+                        rotateY = offset * -70;
+                        scale = 0.5;
+                        opacity = 0.2;
+                    }
+
+                    item.style.transform = `
+                        translate(-50%, -50%)
+                        translateX(${translateX}px)
+                        translateZ(${translateZ}px)
+                        rotateY(${rotateY}deg)
+                        scale(${scale})
+                    `;
+                    item.style.opacity = opacity;
+                    item.style.zIndex = this.totalItems - Math.abs(offset);
+                });
+
+                this.indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            toggleAutoPlay() {
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                if (this.isPlaying) {
+                    this.stopAutoPlay();
+                    playPauseBtn.innerHTML = '&#9654;';
+                    playPauseBtn.classList.remove('playing');
+                } else {
+                    this.startAutoPlay();
+                    playPauseBtn.innerHTML = '&#10074;&#10074;';
+                    playPauseBtn.classList.add('playing');
+                }
+            }
+
+            startAutoPlay() {
+                this.isPlaying = true;
+                this.autoPlayInterval = setInterval(() => this.next(), this.autoPlaySpeed);
+            }
+
+            stopAutoPlay() {
+                this.isPlaying = false;
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                    this.autoPlayInterval = null;
+                }
+            }
+
+            prev() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalItems) % this.totalItems;
+                this.updateCoverflow();
+            }
+
+            next() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalItems;
+                this.updateCoverflow();
+            }
+
+            goTo(index) {
+                this.currentIndex = index;
+                this.updateCoverflow();
+            }
+        }
+
+        // ─── Init ───
+        document.addEventListener('DOMContentLoaded', () => {
+            new PhotoCoverflow();
+
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('compact', window.scrollY > 60);
+            }, { passive: true });
+
+            const revealEls = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            revealEls.forEach(el => revealObserver.observe(el));
+
+            // Safety fallback for iframe previews
+            setTimeout(() => {
+                revealEls.forEach(el => el.classList.add('visible'));
+            }, 3000);
+        });
+    </script>
 </body>
 </html>

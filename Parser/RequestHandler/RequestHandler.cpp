@@ -39,7 +39,7 @@ void RequestHandler::reset()
 	_defaultErrorPage = false;
 	_pathCgi = NULL;
 	_upload_store = NULL;
-
+	_statusError = 0; // adib add this
 	_error = HttpError();
 }
 
