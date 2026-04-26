@@ -72,7 +72,7 @@ public:
     static std::string DateTime();
     static std::string Convert_Hex(const std::string &Str, int Num);
     static char	*ft_strdup(const char *src);
-    static void	free_matrex(char ***matrex);
+    static void	free_matrex(char ***matrex, short IndexStart);
     static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
     static char	*ft_itoa(int n);

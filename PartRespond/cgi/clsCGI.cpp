@@ -46,6 +46,8 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_REMOTE_IDENT())
         return false;
+    if (!_REMOTE_HOST())
+        return false;
     if (!_REMOTE_ADDR())
         return false;
     if (!_AUTH_TYPE())
@@ -260,7 +262,7 @@ bool clsCGI::_StoredArgs()
     _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
     if (!_ARG[0])
         return (false);
-    _ARG[1] = HelperFunctions::ft_strdup("/home/yadib/goinfre/The-Fastest-Http-Server/cgi-bin/upload.php");
+    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
     if (!_ARG[1])
         return (false);
     _ARG[2] = NULL;
@@ -343,6 +345,12 @@ void clsCGI::RunCGI()
     return ;
 }
 
+void clsCGI::Reset()
+{
+    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ARG, 0);
+}
+
 bool clsCGI::GetIsRunCGI()
 {
     return (_IsRunCGI);
@@ -379,8 +387,8 @@ bool clsCGI::GetErno()
 }
 clsCGI::~clsCGI()
 {
-    HelperFunctions::free_matrex(&_ENV);
-    HelperFunctions::free_matrex(&_ARG);
+    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ARG, 0);
     kill(_PIDCHILD,SIGKILL);
     close(_pip[0]);
     _pip[0] = -1;

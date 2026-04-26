@@ -211,6 +211,11 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
+    if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
+    {
+        std::cout << "========> fcntl fail add pipe <=========\n" << std::endl;
+        return ;
+    }
     if (_epoll.addClient(pipe, EPOLLIN) == false)
         return; // watch by epoll
     _IdByPipe[pipe] = indexClient;
@@ -227,7 +232,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     clsClient &client = _clientsArr[index];
 
     client.ProcessBoth(event);
-    const clinetState &status = client.GetState();
+    const clinetState &status = client.GetState ();
 
     if (status == BEGIN || status == CONNECTION_CLOSED)
     {
@@ -261,6 +266,11 @@ void clsFlow::_newClientProcess(int serverFd)
         int newClient = server.tryAcceptNewClient(serverFd, &addr);
         if (newClient > 0)
         {
+            if (HelperFunctions::changeFileToNonBlocking(newClient) == -1)
+            {
+                std::cout << "Fail to change client fd to non blocking\n" << std::endl;
+                return ;
+            }
             _insertClient(newClient, addr, server.getBlock());
             break;
         }

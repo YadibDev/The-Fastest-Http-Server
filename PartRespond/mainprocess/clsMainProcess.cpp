@@ -151,6 +151,12 @@ void clsMainProcess::MainProcess()
         _PartPOSMethod();
 }
 
+void clsMainProcess::Reset()
+{
+    _CGI.Reset();
+    _Response.Reset();
+}
+
 clsCGI &clsMainProcess::GetclsCGI()
 {
     return _CGI;

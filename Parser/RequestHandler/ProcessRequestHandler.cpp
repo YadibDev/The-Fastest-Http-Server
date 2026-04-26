@@ -298,7 +298,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		return true;
 	}
 
-	finalizeErrorState(handler, originalCode, foundData);
+	finalizeErrorState(handler, error.getCodeStatus(), foundData);
 	return false;
 }
 

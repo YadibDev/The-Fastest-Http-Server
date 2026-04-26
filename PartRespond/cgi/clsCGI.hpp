@@ -68,7 +68,8 @@ class clsCGI
         void RunCGI();
         int GetPid();
         void SetIsRunCGI(bool IsRunCGI);
-        const time_t &getStartTime() const; 
+        const time_t &getStartTime() const;
+        void Reset();
         ~clsCGI();
 };
 

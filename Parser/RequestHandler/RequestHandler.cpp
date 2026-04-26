@@ -39,7 +39,7 @@ void RequestHandler::reset()
 	_defaultErrorPage = false;
 	_pathCgi = NULL;
 	_upload_store = NULL;
-
+	_statusError = 0; // adib add this
 	_error = HttpError();
 }
 
@@ -193,7 +193,7 @@ const s_view	&RequestHandler::getScriptName() const
 	return _ScriptName;
 }
 
-bool	RequestHandler::getDefaultErrorPage() { return _defaultErrorPage; }
+bool	RequestHandler::getDefaultErrorPage() const { return _defaultErrorPage; }
 
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

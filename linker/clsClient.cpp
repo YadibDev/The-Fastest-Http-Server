@@ -26,6 +26,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _LastConnection = _FirstConnection;
     _state = BEGIN;
     _Requester.init(block);
+    _RequestXconfig.reset();
 }
 
 const clinetState &clsClient::GetState() const
@@ -107,6 +108,7 @@ int clsClient::_ReadDataForReq()
 void clsClient::ProcessRequest()
 {
     // reset request in every new request from client
+    HttpError error;
     if (_state == BEGIN)
     {
         _theData.Reset();
@@ -126,6 +128,10 @@ void clsClient::ProcessRequest()
 
     if (_Requester.isError())
     {
+        if (ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
         this->_state = START_RESPOND;
         return;
     }
@@ -352,7 +358,7 @@ bool clsClient::monitorCgi()
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(processState);
-        _ResponderProecss.ParseCGI(NULL, 0);
+        _ResponderProecss.ParseCGI(_theData.io_chunk, length);
         return true;
     }
     return false;
