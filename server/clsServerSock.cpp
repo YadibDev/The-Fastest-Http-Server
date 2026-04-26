@@ -18,10 +18,8 @@ void clsServerSock::enableCloseAtEnd()
 }
 
 // free all data and closing all the fds of socket
-clsServerSock::~clsServerSock()
+void clsServerSock::freeAllSockets()
 {
-    if (closeAtEnd == false)
-        return;
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
@@ -32,6 +30,13 @@ clsServerSock::~clsServerSock()
         close(*it);
         it++;
     }
+    _Sockets.clear();
+}
+clsServerSock::~clsServerSock()
+{
+    if (closeAtEnd == false)
+        return;
+    freeAllSockets();
 }
 
 void clsServerSock::removeSocket(int fd)

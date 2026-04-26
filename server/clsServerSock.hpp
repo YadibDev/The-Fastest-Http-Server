@@ -45,6 +45,7 @@ public:
     clsServerConfig *getBlock();
     int tryAcceptNewClient(int sockServer, sockaddr_in *addr);
     const set<int> &getServerSockets();
+    void freeAllSockets();
 };
 
 #endif

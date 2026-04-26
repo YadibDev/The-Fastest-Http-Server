@@ -21,7 +21,11 @@ void clsFlow::_createBlocksServers()
     configeData.resize(10000);
     int sizeRead = read(fd, &configeData[0], 9999);
     if (sizeRead == 0 || read(fd, &configeData[9999], 1) > 0)
+    {
+        close(fd);
         throw std::runtime_error("Error can be on of the following reasons :\n- config file too large \n- empty file\n");
+    }
+    close(fd);
     configeData.resize(sizeRead);
 
     static LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
@@ -115,7 +119,7 @@ void clsFlow::_registerServersSockets()
         catch (std::exception &e)
         {
             std::cout << e.what() << std::endl;
-            it->enableCloseAtEnd();
+            it->freeAllSockets();
             it = _allServers.erase(it);
         }
     }
@@ -135,8 +139,8 @@ clsFlow::clsFlow()
     _initializeStatics();
     _createBlocksServers();
     _createServers();
-    _initializeDataBase();
     _registerServersSockets();
+    _initializeDataBase();
 }
 
 bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
@@ -330,5 +334,6 @@ void clsFlow::EventLoop()
 
 clsFlow::~clsFlow()
 {
+    // HelperFunctions::free_matrex(HelperFunctions::GetENV_VAR_CONST());
     delete[] _clientsArr;
 }
