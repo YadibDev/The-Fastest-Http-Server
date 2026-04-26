@@ -79,67 +79,49 @@ bool clsCGI::_MakeEnv()
 bool clsCGI::_SERVER_SOFTWARE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(0)))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_SERVER_NAME()
 {
      if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
-     {
         return (false);
-     }
     _Counter++;
     return (true);
 }
 bool clsCGI::_SERVER_PROTOCOL()
 {
     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(2)))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_GATEWAY_INTERFACE()
 {
     if (!(_ENV[_Counter] =HelperFunctions::GetENV_VAR_CONST(3)))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_REMOTE_IDENT()
 {
     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(4)))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_REMOTE_HOST()
 {
     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(5)))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_REMOTE_ADDR()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_ADDR=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -147,10 +129,7 @@ bool clsCGI::_REMOTE_ADDR()
 bool clsCGI::_AUTH_TYPE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("AUTH_TYPE=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -158,10 +137,7 @@ bool clsCGI::_AUTH_TYPE()
 bool clsCGI::_REMOTE_USER()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_USER=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -169,10 +145,7 @@ bool clsCGI::_REMOTE_USER()
 bool clsCGI::_SERVER_PORT()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PORT=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -180,10 +153,7 @@ bool clsCGI::_SERVER_PORT()
 bool clsCGI::_REQUEST_METHOD()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REQUEST_METHOD=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -191,10 +161,7 @@ bool clsCGI::_REQUEST_METHOD()
 bool clsCGI::_PATH_INFO()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -202,10 +169,7 @@ bool clsCGI::_PATH_INFO()
 bool clsCGI::_PATH_TRANSLATED()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -213,10 +177,7 @@ bool clsCGI::_PATH_TRANSLATED()
 bool clsCGI::_SCRIPT_NAME()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SCRIPT_NAME=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -232,9 +193,7 @@ bool clsCGI::_QUERY_STRING()
 bool clsCGI::_CONTENT_TYPE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -242,16 +201,13 @@ bool clsCGI::_CONTENT_TYPE()
 bool clsCGI::_CONTENT_LENGTH()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_OtherHeaders()
 {
-    
     return (true);
 }
 bool clsCGI::_StoredArgs()
@@ -321,6 +277,8 @@ void clsCGI::RunCGI()
 {
     if (!_InintialVar())
     {
+        HelperFunctions::free_matrex(&_ENV , 6);
+        HelperFunctions::free_matrex(&_ARG, 0);
         _Erno = true;
         _FD = -1;
         return ;
@@ -347,7 +305,7 @@ void clsCGI::RunCGI()
 
 void clsCGI::Reset()
 {
-    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ENV , 6);
     HelperFunctions::free_matrex(&_ARG, 0);
 }
 

@@ -292,7 +292,7 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
     // update flow of checkins is it a pipe or a server
     if (TypeFd == CLIENT_SOCK)
-        _clientProcess(fd, _clientsEvents[indexEvent].events);
+        _clientProcess  (fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)
         _newClientProcess(fd);
     else if (TypeFd == PIPE)
@@ -303,7 +303,7 @@ void clsFlow::EventLoop()
 {
     int nFds = 0;
     fdTypes TypeFd; 
-    while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, -1)))
+    while ((nFds = _epoll.tryPollNewClients (_clientsEvents, EVENTS_MAX, -1)))
     {
         for (int i = 0; i < nFds; i++)
         {
