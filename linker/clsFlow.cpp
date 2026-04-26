@@ -100,23 +100,26 @@ void clsFlow::_freeClient(short clientFd)
 
 void clsFlow::_registerServersSockets()
 {
-    int Erase = 0;
-    for (size_t i = 0; i < _allServers.size() + Erase; i++)
+    std::vector<clsServerSock>::iterator it = _allServers.begin();
+    std::vector<clsServerSock>::iterator end = _allServers.end();
+
+    while (it != end && _allServers.size())
     {
         try
         {
-            clsServerSock &server = _allServers[i - Erase];
-            if (_epoll.addServerSockets(server, EPOLLIN) == false)
+            throw(std::exception());
+            if (_epoll.addServerSockets(*it, EPOLLIN) == false)
                 throw std::runtime_error("Error\nservers can't add his socket to epoll");
+            ++it;
         }
         catch (std::exception &e)
         {
             std::cout << e.what() << std::endl;
-            _allServers.erase(_allServers.begin() + (i - Erase));
-            Erase++;
+            it->enableCloseAtEnd();
+            it = _allServers.erase(it);
         }
     }
-
+    std::cout << "out\n" << std::endl;
     if (_allServers.size() == 0)
         throw(std::runtime_error("Error\ncan't register all servers sockets"));
 

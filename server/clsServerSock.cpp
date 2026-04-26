@@ -64,13 +64,20 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     const sockaddr *addr = reinterpret_cast<const sockaddr *>(&temp);
 
     int enable = 1;
+    // read about it 
     setsockopt(fdSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)); // i must read about SOL_SOCKET
 
     if (bind(fdSock, addr, sizeof(sockaddr_in)) == -1)
+    {
+        close(fdSock);
         throw std::runtime_error("bind system call fail");
+    }
 
     if (listen(fdSock, MAX_QUEUE) == -1)
+    {
+        close(fdSock);
         throw std::runtime_error("listen system call fail");
+    }
 
     this->_allIps.push_back(ipV4);
     this->_allPorts.push_back(port);
