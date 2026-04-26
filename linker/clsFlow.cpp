@@ -111,7 +111,6 @@ void clsFlow::_registerServersSockets()
     {
         try
         {
-            throw(std::exception());
             if (_epoll.addServerSockets(*it, EPOLLIN) == false)
                 throw std::runtime_error("Error\nservers can't add his socket to epoll");
             ++it;
