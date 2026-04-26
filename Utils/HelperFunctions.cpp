@@ -252,7 +252,7 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
-char HelperFunctions::_PoinerType[10];
+char HelperFunctions::_PoinerType[50];
 char  **HelperFunctions::_ENV_VAR_CONST;
 bool HelperFunctions::_Flag = false;
 
@@ -556,53 +556,6 @@ void HelperFunctions::NumToStr(int Number, std::string &Str)
     }
 }
 
-char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
-{
-	long	num;
-	int		len;
-
-	len = len_int(n);
-	num = n;
-	if (num < 0)
-	{
-		int_char[0] = '-';
-		num *= -1;
-	}
-	while (len > 1)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[len_int(n)] = '\0';
-	return ((int_char));
-}
-
-char	*HelperFunctions::ft_itoa(int n)
-{
-	long	num;
-	char	*int_char;
-	int		len;
-	int		prev_len;
-
-	len = len_int(n);
-	prev_len = len;
-	num = n;
-	int_char = new(std::nothrow) char[len + 1];
-	if (!int_char)
-		return (NULL);
-	if (num < 0)
-		return (ft_itoa_negative(n, int_char));
-	while (len)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[prev_len] = '\0';
-	return ((int_char));
-}
-
 const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
     size_t Pos;
@@ -612,7 +565,7 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
         _PoinerType[0] = '\0';
         return _PoinerType;
     }
-    while (i < 10 && Pos < Str.length())
+    while (i < 49 && Pos < Str.length())
     {
         _PoinerType[i] = Str[Pos];
         Pos++;

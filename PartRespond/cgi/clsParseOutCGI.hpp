@@ -98,6 +98,7 @@ class clsParseOutCGI
         bool GetErno();
         std::string &GetInternalRedirectSrc();
         short GetStatus();
+        short GetSizeBody();
         
         ~clsParseOutCGI();
 };
