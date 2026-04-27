@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 12:59:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 13:15:39 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,13 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
+    {
         parseCgi.SetProcessIsFinish(true);
+        std::cout << "is finish \n";
+    }
 
-    if (Length > 0)
+    // if (Length > 0)
         parseCgi.ReceivingData(Buffer, Length);
-    std::cout << "Headers --> "<<parseCgi.GetHeadersFieldFinal() << std::endl;
-    std::cout << "Body --> "<<parseCgi.GetBody() << std::endl;
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
     {
         if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)

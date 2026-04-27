@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 13:00:55 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 13:20:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -552,7 +552,8 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
 void clsParseOutCGI::Reset()
 {
     _Body.clear();
-    _HeadersField.clear();
+    if (!_HeadersField.empty())
+        _HeadersField.clear();
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
     _BytesBody = 0;
