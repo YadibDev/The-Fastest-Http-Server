@@ -42,9 +42,9 @@ void clsFlow::_createBlocksServers()
     ConfigFile.ParseConfigue();
     if (ConfigFile.getServers().size() == 0)
     {
-        // std::cout << "Error\n"
-        //           << ConfigFile.getError().getMsgError() << std::endl;
-        // std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
+        std::cout << "Error\n"
+                  << ConfigFile.getError().getMsgError() << std::endl;
+        std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
         throw std::runtime_error("0 block server\n");
     }
 
