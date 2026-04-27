@@ -3,7 +3,7 @@
 #ifndef monitor_cgi_0000
 #define monitor_cgi_0000
 
-#define CGI_TIMEOUT 10
+#define CGI_TIMEOUT 4
 
 class clsMonitorCGI
 {
@@ -19,6 +19,8 @@ public:
     {
         pid = -1;
         pipe = -1;
+        stateProcess = stEventProcess::RUNINNG;
+        stateData = stEventData::STILL_EXIST;
     }
     void initialzie(int pid, int pipe, time_t start)
     {
@@ -60,7 +62,6 @@ public:
     {
         if (stateProcess == stEventProcess::RUNINNG)
         {
-            std::cout << "wch d5al \n\n";
             stateProcess = HelperFunctions::checkProcessStatus(pid);
         }
 
@@ -71,9 +72,9 @@ public:
             stateData = stEventData::END_PIPE;
             return -1;
         }
+
         short reads = read(pipe, buffer, bufferSize);
-        std::cout << "reads ==> " << reads << std::endl;
-        std::cout << "reads ==> " << stateProcess << std::endl;
+
         if (reads == 0 || (stateProcess == stEventProcess::THE_END && reads < bufferSize))
         {
             std::cout << "=========\n";

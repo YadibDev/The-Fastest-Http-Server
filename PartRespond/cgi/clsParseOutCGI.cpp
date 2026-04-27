@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 15:34:54 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 18:30:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _FileNameFromDisk.clear();
     _PIDCHILD = -3;
 
-    HelperFunctions::ft_memset(_ExistHeaders, -1, sizeof(_ExistHeaders));
-    HelperFunctions::ft_memset(_Mod, -1, sizeof(_Mod));
+    HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
+    HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
 bool clsParseOutCGI::_IsSpecialChar(char C)
@@ -557,7 +557,8 @@ void clsParseOutCGI::Reset()
     _IsConnectoin = true;
     _FoundBody = false;
     _ProcessIsFinish = false;
-    HelperFunctions::ft_memset(_Mod, -1, sizeof(_Mod));
+    HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
+    HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }
 
 short clsParseOutCGI::GetSizeBody()

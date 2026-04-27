@@ -1,70 +1,66 @@
-==14113== Memcheck, a memory error detector
-==14113== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
-==14113== Using Valgrind-3.23.0 and LibVEX; rerun with -h for copyright info
-==14113== Command: ./webserv
-==14113== 
-==14113== 
-==14113== Process terminating with default action of signal 1 (SIGHUP)
-==14113==    at 0x4B14C35: _Unwind_Find_FDE (in /usr/lib/x86_64-linux-gnu/libgcc_s.so.1)
-==14113==    by 0x4B0F5D1: ??? (in /usr/lib/x86_64-linux-gnu/libgcc_s.so.1)
-==14113==    by 0x4B10AB9: ??? (in /usr/lib/x86_64-linux-gnu/libgcc_s.so.1)
-==14113==    by 0x4B111F0: _Unwind_RaiseException (in /usr/lib/x86_64-linux-gnu/libgcc_s.so.1)
-==14113==    by 0x492B383: __cxa_throw (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33)
-==14113==    by 0x14414D: clsFlow::_registerServersSockets() (clsFlow.cpp:111)
-==14113==    by 0x14448D: clsFlow::clsFlow() (clsFlow.cpp:140)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== FILE DESCRIPTORS: 8 open (3 std) at exit.
-==14113== Open AF_INET socket 7: 127.0.0.1:8083 <-> <unbound>
-==14113==    at 0x4C520FB: socket (syscall-template.S:120)
-==14113==    by 0x13DDBF: clsServerSock::_buildSingleSocket(sockaddr_in&) (clsServerSock.cpp:60)
-==14113==    by 0x13E1D2: clsServerSock::buildSockets(std::vector<sockaddr_in, std::allocator<sockaddr_in> >) (clsServerSock.cpp:105)
-==14113==    by 0x143ABD: clsFlow::_createServers() (clsFlow.cpp:58)
-==14113==    by 0x144475: clsFlow::clsFlow() (clsFlow.cpp:138)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== Open AF_INET socket 6: 127.0.0.1:8082 <-> <unbound>
-==14113==    at 0x4C520FB: socket (syscall-template.S:120)
-==14113==    by 0x13DDBF: clsServerSock::_buildSingleSocket(sockaddr_in&) (clsServerSock.cpp:60)
-==14113==    by 0x13E1D2: clsServerSock::buildSockets(std::vector<sockaddr_in, std::allocator<sockaddr_in> >) (clsServerSock.cpp:105)
-==14113==    by 0x143ABD: clsFlow::_createServers() (clsFlow.cpp:58)
-==14113==    by 0x144475: clsFlow::clsFlow() (clsFlow.cpp:138)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== Open AF_INET socket 5: 127.0.0.1:8081 <-> <unbound>
-==14113==    at 0x4C520FB: socket (syscall-template.S:120)
-==14113==    by 0x13DDBF: clsServerSock::_buildSingleSocket(sockaddr_in&) (clsServerSock.cpp:60)
-==14113==    by 0x13E1D2: clsServerSock::buildSockets(std::vector<sockaddr_in, std::allocator<sockaddr_in> >) (clsServerSock.cpp:105)
-==14113==    by 0x143ABD: clsFlow::_createServers() (clsFlow.cpp:58)
-==14113==    by 0x144475: clsFlow::clsFlow() (clsFlow.cpp:138)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== Open file descriptor 4: configs/default.conf
-==14113==    at 0x4C40E13: open (open64.c:41)
-==14113==    by 0x143048: clsFlow::_createBlocksServers() (clsFlow.cpp:15)
-==14113==    by 0x144469: clsFlow::clsFlow() (clsFlow.cpp:137)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== Open file descriptor 3:
-==14113==    at 0x4C4FC7B: epoll_create (epoll_create.c:28)
-==14113==    by 0x13CA57: clsEpollHandler::clsEpollHandler() (clsEpollHandler.cpp:5)
-==14113==    by 0x1443DD: clsFlow::clsFlow() (clsFlow.cpp:133)
-==14113==    by 0x141310: main (serverMain.cpp:51)
-==14113== 
-==14113== 
-==14113== HEAP SUMMARY:
-==14113==     in use at exit: 53,434,745 bytes in 12,712 blocks
-==14113==   total heap usage: 4,310,948 allocs, 4,298,236 frees, 637,987,891 bytes allocated
-==14113== 
-==14113== LEAK SUMMARY:
-==14113==    definitely lost: 0 bytes in 0 blocks
-==14113==    indirectly lost: 0 bytes in 0 blocks
-==14113==      possibly lost: 0 bytes in 0 blocks
-==14113==    still reachable: 53,434,745 bytes in 12,712 blocks
-==14113==                       of which reachable via heuristic:
-==14113==                         newarray           : 24,324,008 bytes in 1 blocks
-==14113==         suppressed: 0 bytes in 0 blocks
-==14113== Rerun with --leak-check=full to see details of leaked memory
-==14113== 
-==14113== For lists of detected and suppressed errors, rerun with: -s
-==14113== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
+Register Server Sockets by success
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+H: l
+H: l
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5

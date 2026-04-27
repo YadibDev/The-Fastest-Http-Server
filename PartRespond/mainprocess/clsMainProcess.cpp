@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 15:31:55 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 18:30:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
     {
-        std::cout << "isfinished==========> \n" << std::endl;
         parseCgi.SetProcessIsFinish(true);
     }
 
@@ -70,11 +69,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetInternalRedirectSrc(parseCgi.GetInternalRedirectSrc());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
-            std::cout << "====== success ========\n";
-            std::cout << "the header\n";
-            std::cout << parseCgi.GetHeadersFieldFinal() << std::endl;
-            std::cout << "the body\n";
-            std::cout << parseCgi.GetBody() << std::endl;
         }
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
@@ -166,6 +160,7 @@ void clsMainProcess::Reset()
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
     _Response.Reset();
+    _eventProcess = stEventProcess::RUNINNG; // add by adib
 }
 
 clsCGI &clsMainProcess::GetclsCGI()

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 15:34:17 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 18:30:24 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 struct stHeadersCGI
 {
-    enum eHeaders{CONTENT_TYPE,LOCATION,STATUS, EMPTY = -1};
+    enum eHeaders{EMPTY, CONTENT_TYPE, LOCATION, STATUS};
 };
 
 class clsParseOutCGI
