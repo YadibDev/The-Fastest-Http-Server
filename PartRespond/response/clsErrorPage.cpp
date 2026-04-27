@@ -15,6 +15,7 @@
  clsErrorPage::clsErrorPage()
 {
     _Status = 0;
+    _IsConnection = false;
     _BodySize = 0;
     _Type.resize(500);
     _FileFromDisk.resize(1000);
@@ -46,6 +47,7 @@ void clsErrorPage::_HeadersErrorResponse()
         _Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
         _RetryAfter();
+    _CheckConnection();
     _ConnectionClose();
     _HeaderFeild += "\r\n";
 }
@@ -122,7 +124,16 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
  
 void clsErrorPage::_ConnectionClose()
 {
-    _HeaderFeild += "Connection: Close\r\n";
+    if (_IsConnection)
+        _HeaderFeild += "Connection: keep-alive\r\n";
+    else
+        _HeaderFeild += "Connection: Close\r\n";
+}
+
+void _CheckConnection()
+{
+    if (_Status == 404)
+        _IsConnection = true;
 }
 
 void clsErrorPage::_StatusLine()
@@ -211,6 +222,11 @@ void clsErrorPage::Reset()
     _FileFromDisk = "";
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
+
+ bool clsErrorPage::GetIsConnection()
+ {
+    return IsConnection;
+ }
 
 int clsErrorPage::GetBodySize() const
 {

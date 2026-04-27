@@ -116,6 +116,7 @@ void clsResponse::_ErrorRespnseHandling()
         _BodyPointer = &_ErrorPage.GetBody();
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        _IsConnection = _ErrorPage.GetIsConnection();
     }
     
 
@@ -300,6 +301,12 @@ void clsResponse::SetSizeBody(int size)
 {
     _BodySize = size;
 }
+
+ void SetIsConnection(bool IsConnection)
+ {
+    _IsConnection = IsConnection
+ }
+
 int clsResponse::GetSizeBody() const
 {
     return (_BodySize);
