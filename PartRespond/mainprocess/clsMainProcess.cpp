@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 17:03:50 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 11:08:14 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
             _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
             _Response.SetInternalRedirectSrc(parseCgi.GetInternalRedirectSrc());
+            _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
         }
     }
@@ -75,6 +76,9 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
         _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
+        _Response.SetSizeBody(_ErrorPage.GetBodySize());
+        _Response.SetStatus(_eventProcess);
+        _Response.SetIsConnection(_ErrorPage.GetIsConnection());
         _Response.SetModTransferData(true);
     }
 }

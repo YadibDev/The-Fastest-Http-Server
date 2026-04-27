@@ -300,7 +300,8 @@ void clsClient::freeRessources()
 {
     _Requester.init();
     _monitorCGI.freeCgiRessources();
-    _ResponderProecss.GetclsResponse().Reset();
+    // edit by achraf add rest response and cgi 
+    _ResponderProecss.Reset();
     if (this->_socket > 0)
         close(this->_socket);
     _socket = -1;
