@@ -23,8 +23,8 @@ void clsServerSock::freeAllSockets()
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
-    std::cout << "------- DEBUG ---------\n" << std::endl;
-    std::cout << "------- " << _Sockets.size() << std::endl;
+    // std::cout << "------- DEBUG ---------\n" << std::endl;
+    // std::cout << "------- " << _Sockets.size() << std::endl;
     while (it != end)
     {
         close(*it);
@@ -123,9 +123,9 @@ void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
         throw std::runtime_error("all socket fail or empty input");
 
     // in debug
-    std::cout << "-----------------------------------" << std::endl;
-    std::cout << "sockets are now in passive mode" << std::endl;
-    std::cout << "-----------------------------------" << std::endl;
+    // std::cout << "-----------------------------------" << std::endl;
+    // std::cout << "sockets are now in passive mode" << std::endl;
+    // std::cout << "-----------------------------------" << std::endl;
 }
 
 // check is the socket exist in the server or not
@@ -149,7 +149,7 @@ int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        std::cout << "Not server socket \n";
+        // std::cout << "Not server socket \n";
         return 0;
     }
 

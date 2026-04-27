@@ -80,7 +80,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
-    std::cout << "initialize cgi\n" << std::endl;;
+    // std::cout << "initialize cgi\n" << std::endl;;
     if (!_RunCGI)
     {
         _CGI.RunCGI();

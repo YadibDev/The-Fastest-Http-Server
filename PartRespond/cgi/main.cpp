@@ -41,8 +41,8 @@ int main()
     while((exit_code = waitpid(CGI.GetPid(), NULL, WNOHANG)) != CGI.GetPid()) {};
     CGI.GetclsParseOutCGI().SetProcessIsFinish(true);
     CGI.GetclsParseOutCGI().ReceivingData(Str);
-    std::cout << "Return Waitpid :"<< exit_code<< " Id process : "<< CGI.GetPid()<< " Exit status : " << WEXITSTATUS(status) << " counter : "<< sum << std::endl;
-    std::cout<< "<---Header--->" << std::endl;
+    // std::cout << "Return Waitpid :"<< exit_code<< " Id process : "<< CGI.GetPid()<< " Exit status : " << WEXITSTATUS(status) << " counter : "<< sum << std::endl;
+    // std::cout<< "<---Header--->" << std::endl;
     std::cout << CGI.GetclsParseOutCGI().GetHeadersFieldFinal()<< std::endl;
     std::cout << CGI.GetclsParseOutCGI().GetBody() << std::endl;
     std::cout << CGI.GetclsParseOutCGI().GetFileNameBody() << std::endl;

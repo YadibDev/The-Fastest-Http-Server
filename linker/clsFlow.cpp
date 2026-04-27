@@ -42,9 +42,9 @@ void clsFlow::_createBlocksServers()
     ConfigFile.ParseConfigue();
     if (ConfigFile.getServers().size() == 0)
     {
-        std::cout << "Error\n"
-                  << ConfigFile.getError().getMsgError() << std::endl;
-        std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
+        // std::cout << "Error\n"
+        //           << ConfigFile.getError().getMsgError() << std::endl;
+        // std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
         throw std::runtime_error("0 block server\n");
     }
 
@@ -73,7 +73,7 @@ void clsFlow::_createServers()
     if (_totalServers == 0)
         throw std::runtime_error("Error\nthere is no server or there is a problem in all the servers");
     // debug
-    std::cout << "total servers created [" << _totalServers << "]" << std::endl;
+    // std::cout << "total servers created [" << _totalServers << "]" << std::endl;
 }
 
 void clsFlow::_initializeDataBase()
@@ -94,8 +94,8 @@ short clsFlow::_getClient()
 
 void clsFlow::_freeClient(short clientFd)
 {
-    std::cout << "--- free client ---\n"
-              << std::endl;
+    // std::cout << "--- free client ---\n"
+            //   << std::endl;
     short index = _clientIdByFd[clientFd];
     _clientIdByFd.erase(clientFd);
     _clientsArr[index].freeRessources();
@@ -122,7 +122,7 @@ void clsFlow::_registerServersSockets()
             it = _allServers.erase(it);
         }
     }
-    std::cout << "out\n" << std::endl;
+    // std::cout << "out\n" << std::endl;
     if (_allServers.size() == 0)
         throw(std::runtime_error("Error\ncan't register all servers sockets"));
 
@@ -150,7 +150,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 
         if (client.events & EPOLLRDHUP)
         {
-            std::cout << "EPOLLRDHUP" << std::endl;
+            // std::cout << "EPOLLRDHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -163,7 +163,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (client.events & EPOLLERR)
         {
-            std::cout << "EPOLLERR" << std::endl;
+            // std::cout << "EPOLLERR" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -176,7 +176,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else
         {
-            std::cout << "EPOLLHUP" << std::endl;
+            // std::cout << "EPOLLHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 int index = _IdByPipe[fd];
@@ -308,9 +308,9 @@ void clsFlow::EventLoop()
         for (int i = 0; i < nFds; i++)
         {
             int fd = (_clientsEvents[i].data.fd);
-            if (_clientIdByFd.count(fd))
+            if (_clientIdByFd.size() && _clientIdByFd.count(fd))
                 TypeFd = CLIENT_SOCK;
-            else if (_IdByPipe.count(fd))
+            else if (_IdByPipe.size() && _IdByPipe.count(fd))
                 TypeFd = PIPE;
             else
                 TypeFd = SERVER_SOCK;

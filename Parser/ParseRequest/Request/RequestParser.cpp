@@ -122,7 +122,7 @@ bool RequestParser::Parse(uint16_t size)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
 		{
-			std::cout << "enter here" << std::endl;
+			// std::cout << "enter here" << std::endl;
 			ParseBody(size); // add handle error with the proprly way
 		}
 		else

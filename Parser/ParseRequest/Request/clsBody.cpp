@@ -63,7 +63,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
             _state = clsBody::READING_BODY;
         }
         fd = mkstemp(&_fileName[0]);
-        std::cout << "Created\n\n" << std::endl;
+        // std::cout << "Created\n\n" << std::endl;
         if (fd == -1)
         {
             this->_isError = 500;
