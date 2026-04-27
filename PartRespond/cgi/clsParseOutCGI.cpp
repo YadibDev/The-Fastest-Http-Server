@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 13:00:55 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 14:32:41 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _FileNameFromDisk.clear();
     _PIDCHILD = -3;
 
-    HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
-    HelperFunctions::ft_memset(_Mod, -1, 10);
+    HelperFunctions::ft_memset(_ExistHeaders, -1, sizeof(_ExistHeaders));
+    HelperFunctions::ft_memset(_Mod, -1, sizeof(_Mod));
 }
 
 bool clsParseOutCGI::_IsSpecialChar(char C)
@@ -378,9 +378,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
        }
        else
             HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
-    std::cout <<"---> body <---\n" << _Body << std::endl;
-    std::cout <<"---> Size body <---\n" << _BytesBody << std::endl;
-    std::cout <<"---> Size body1 <---\n"<< Length - _Counter  << std::endl;
     }
     else if (_BytesBody > MAX_BODY)
         write(_Fdout, Arr, Length);
@@ -559,6 +556,7 @@ void clsParseOutCGI::Reset()
     _IsConnectoin = true;
     _FoundBody = false;
     _ProcessIsFinish = false;
+    HelperFunctions::ft_memset(_Mod, -1, sizeof(_Mod));
 }
 
 short clsParseOutCGI::GetSizeBody()

@@ -349,6 +349,9 @@ bool clsClient::monitorCgi()
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
 
+    std::cout << "process state \n\n";
+    std::cout << processState << std::endl;
+    std::cout << "process state \n" << std::endl;;
     if (length == -1)
     {
         _state = CGI_END;
@@ -366,6 +369,7 @@ bool clsClient::monitorCgi()
     }
 
     _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+
     if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
     {
         _monitorCGI.freeCgiRessources();

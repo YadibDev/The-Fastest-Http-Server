@@ -619,6 +619,7 @@ void HelperFunctions::StoredBodys()
 	_Body[500] = "Body500";
 	_Body[501] = "Body501";
 	_Body[502] = "Body502";
+	_Body[504] = "Body504(Gateway Timeout)";
  
  }
  void HelperFunctions::StoredMessage()
@@ -634,6 +635,7 @@ void HelperFunctions::StoredBodys()
 	_Message[500] = "Internal Server Error";
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
+	_Message[504] = "Gateway Timeout";
  }
 
  const char *HelperFunctions::GetStatusMessage(int Status) 
@@ -712,21 +714,17 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 	int status;
 	int exit_code = waitpid(pid, &status, WNOHANG);
 
-	if (exit_code != 0)
+	if (WIFEXITED(status)) // if exited
 	{
-        if (WIFEXITED(status)) // if exited
-        {
-            if (WEXITSTATUS(status) != 0) // check status
-    			return stEventProcess::END_UNKNOW;
-            else
-                return stEventProcess::THE_END;
-        }
-        else if (WIFSIGNALED(status) || exit_code == -1)
-    		return stEventProcess::END_UNKNOW;
+		if (WEXITSTATUS(status) != 0) // check status
+			return stEventProcess::END_UNKNOW;
 		else
 			return stEventProcess::THE_END;
 	}
-	return stEventProcess::RUNINNG;
+	else if (WIFSIGNALED(status) || exit_code == -1)
+		return stEventProcess::END_UNKNOW;
+	else
+		return stEventProcess::RUNINNG;
 }
 
 

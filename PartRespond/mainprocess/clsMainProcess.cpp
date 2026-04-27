@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 12:59:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 14:48:46 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,15 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
+    {
+        std::cout << "isfinished==========> \n" << std::endl;
         parseCgi.SetProcessIsFinish(true);
+    }
 
-    if (Length > 0)
+    if (Length > 0 || _eventProcess == stEventProcess::THE_END)
         parseCgi.ReceivingData(Buffer, Length);
-    std::cout << "Headers --> "<<parseCgi.GetHeadersFieldFinal() << std::endl;
-    std::cout << "Body --> "<<parseCgi.GetBody() << std::endl;
+    // std::cout << "Headers --> "<<parseCgi.GetHeadersFieldFinal() << std::endl;
+    // std::cout << "Body --> "<<parseCgi.GetBody() << std::endl;
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
     {
         if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
@@ -69,6 +72,11 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetInternalRedirectSrc(parseCgi.GetInternalRedirectSrc());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
+            std::cout << "====== success ========\n";
+            std::cout << "the header\n";
+            std::cout << parseCgi.GetHeadersFieldFinal() << std::endl;
+            std::cout << "the body\n";
+            std::cout << parseCgi.GetBody() << std::endl;
         }
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
