@@ -6,11 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2026/04/27 15:54:40 by achamdao         ###   ########.fr       */
-=======
-/*   Updated: 2026/04/27 15:01:37 by yadib            ###   ########.fr       */
->>>>>>> Server
+/*   Updated: 2026/04/27 19:43:25 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +244,6 @@ bool clsCGI::_childeProcesse()
     close(_pip[1]);
     // close(Fd);
     execve(_ARG[0], _ARG, _ENV);
-    std::cout << "exceve fail============>\n\n" << std::endl;;
     return true;
 }
 
@@ -312,6 +307,7 @@ void clsCGI::Reset()
 {
     HelperFunctions::free_matrex(&_ENV , 6);
     HelperFunctions::free_matrex(&_ARG, 0);
+    _Counter = 0;
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -328,7 +324,6 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 {
     return _ParseOutCGI;
 }
-
  int clsCGI::GetPid()
 {
     return _PIDCHILD;

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 18:30:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 18:40:24 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ clsMainProcess::~clsMainProcess() {} // free right way
 
 void clsMainProcess::_PartRedirection()
 {
-    if (0)
-        _Response.SetStatus(302);
-    else
-        _Response.SetStatus(_DataRequest.getReturn().code);
+    _Response.SetStatus(_DataRequest.getReturn().code);
     _Response.SetMod(stMod::REDIRECTION);
     _Response.MakeResponse();
 }
