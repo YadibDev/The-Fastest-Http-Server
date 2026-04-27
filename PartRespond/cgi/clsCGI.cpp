@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 19:43:25 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 23:40:54 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ bool clsCGI::_childeProcesse()
 void clsCGI::_ParentProcesse()
 {
     // stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
-    // close(_pip[1]);
+    close(_pip[1]);
     // if (exit_code == stEventProcess::END_UNKNOW)
     // {
     //     close(_pip[0]);

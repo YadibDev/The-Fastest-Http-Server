@@ -309,7 +309,7 @@ void clsFlow::EventLoop()
     while (1)
     {
 
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 100000)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1000 * 500)))
         {
             for (int i = 0; i < nFds; i++)
             {
