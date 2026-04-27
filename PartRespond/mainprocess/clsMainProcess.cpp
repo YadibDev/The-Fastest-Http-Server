@@ -57,6 +57,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetStatus(parseCgi.GetStatus());
+            _Response.SetIsConnection(parseCgi.GetIsConnection());
             _Response.SetModTransferData(true);
         }
         else

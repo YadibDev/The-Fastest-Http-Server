@@ -32,8 +32,10 @@ class clsParseOutCGI
         bool _Erno;
         std::string _InternalRedirectSrc;
         short _Status;
+        short _Counter;
         int _BytesBody;
         uint8_t _CounterCGI_Field;
+        bool _IsConnectoin;
         bool _ProcessIsFinish;
         std::string _Body;
         std::string _NameHeader;
@@ -99,6 +101,7 @@ class clsParseOutCGI
         std::string &GetInternalRedirectSrc();
         short GetStatus();
         short GetSizeBody();
+        bool GetIsConnection();
         
         ~clsParseOutCGI();
 };

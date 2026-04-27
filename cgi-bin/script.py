@@ -1,12 +1,4 @@
-#!/usr/bin/env python3
-# Standard shebang line to tell the server to use Python
-
-# 1. Output HTTP header
-print("Content-type: text/html\n")
-
-# 2. Output HTML content
-print("<html>")
-print("<body>")
-print("<h1>Hello from Python CGI!</h1>")
-print("</body>")
-print("</html>")
+print("status: 200 Ok\r\n", end="")
+print("content-type: text/html\r\n", end="")
+print("status: 200 Ok\r\n\r\n", end="")
+print("In 5 years, you will be years old.", end="")

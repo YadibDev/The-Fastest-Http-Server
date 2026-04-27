@@ -299,6 +299,7 @@ void clsClient::ProcessBoth(uint32_t events)
 void clsClient::freeRessources()
 {
     _Requester.init();
+    _monitorCGI.freeCgiRessources();
     _ResponderProecss.GetclsResponse().Reset();
     if (this->_socket > 0)
         close(this->_socket);
@@ -354,6 +355,7 @@ bool clsClient::monitorCgi()
         _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }
+
     else if (length == 0 || (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE))
     {
         _state = CGI_END;
@@ -361,11 +363,20 @@ bool clsClient::monitorCgi()
         _ResponderProecss.ParseCGI(_theData.io_chunk, length);
         return true;
     }
+
+    _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+    if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
+    {
+        _monitorCGI.freeCgiRessources();
+        return true;
+    }
     return false;
 }
 
 bool clsClient::timeoutCgi()
 {
+    if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
+        return true;
     if (_monitorCGI.TimeoutCgi())
     {
         _state = CGI_END;

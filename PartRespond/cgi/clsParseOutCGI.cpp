@@ -16,6 +16,7 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
 {
     _BytesBody = 0;
     _FoundBody = false;
+    _IsConnectoin = true;
     _ProcessIsFinish = false;
     _CountSizeHeaders = 0;
     _Fdout = -1;
@@ -257,7 +258,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
     if (Pos < 0)
         Pos = _ValueHeader.length();
     HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
-    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -285,11 +285,11 @@ void clsParseOutCGI::_BuilResponsedredirection()
 
 void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 {
+    _Counter = 0;
     if (_FoundBody)
         return ;
     bool Flag = false;
-    short Counter = 0;
-    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     if (_CountSizeHeaders > MAX_HEADERS)
     {
         _Status = 413;
@@ -320,7 +320,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     }
 }
 
@@ -377,7 +377,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             _Body.clear();
        }
        else
-            HelperFunctions::CopyStr(Arr, _Body, 0,Length);
+            HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
     }
     else if (_BytesBody > MAX_BODY)
         write(_Fdout, Arr, Length);
@@ -429,6 +429,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
         _BytesBody = _ErrorPage.GetBodySize();
+        _IsConnectoin = _ErrorPage.GetIsConnection();
     }
 }
 
@@ -566,6 +567,12 @@ void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 {
     _PIDCHILD = PIDPROCESS;
 }
+
+ bool clsParseOutCGI::GetIsConnection()
+ {
+    return _IsConnectoin;
+ }
+
 bool clsParseOutCGI::GetErno()
 {
    return _Erno;
