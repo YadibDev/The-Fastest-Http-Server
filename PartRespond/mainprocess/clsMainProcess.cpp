@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 12:54:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 12:59:26 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-
     _Response.SetMod(stMod::ERROR);
     _Response.SetStatus(_DataRequest.getStatusError());
     _Response.MakeResponse();

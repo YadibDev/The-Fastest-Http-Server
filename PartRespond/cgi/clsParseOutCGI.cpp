@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 11:53:40 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 13:00:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,8 +438,6 @@ void clsParseOutCGI::_ErrorRespnseHandling()
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
-    if (_Mod[stMod::ERROR] == stMod::ERROR)
-        return ;
     _ReceivingHeaders(Arr, Length);
     _ReceivingBody(Arr, Length);
     if (_Mod[stMod::ERROR] == stMod::ERROR)
