@@ -350,8 +350,9 @@ bool clsClient::monitorCgi()
 {
     static int i = 0;
     std::cout << "================\n";
-    std::cout << "================\n";
     std::cout << i++ << endl;
+    std::cout << "================\n";
+
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();

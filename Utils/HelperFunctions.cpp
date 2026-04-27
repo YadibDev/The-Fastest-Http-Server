@@ -716,6 +716,8 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 
 	std::cout << "exit code : \n";
 	std::cout << exit_code << std::endl;
+	std::cout << "exit end ::::::: \n" << std::endl;
+
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
 	else if (WIFEXITED(status))
