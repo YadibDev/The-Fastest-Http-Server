@@ -155,9 +155,12 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             }
             else if (TypeFd == CLIENT_SOCK)
                 _freeClient(fd);
-            else
+            else if (TypeFd == SERVER_SOCK)
+            {
+                std::cout << fd << std::endl;
                 std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
                           << std::endl;
+            }
         }
         else if (client.events & EPOLLERR)
         {
@@ -168,7 +171,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             }
             else if (TypeFd == CLIENT_SOCK)
                 _freeClient(fd);
-            else
+            else if (TypeFd == SERVER_SOCK)
                 std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
                           << std::endl;
         }
@@ -183,7 +186,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             }
             else if (TypeFd == CLIENT_SOCK)
                 _freeClient(fd);
-            else
+            else if (TypeFd == SERVER_SOCK)
                 std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
                           << std::endl;
         }
@@ -211,8 +214,9 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 {
     if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
     {
-        std::cout << "========> fcntl fail add pipe <=========\n" << std::endl;
-        return ;
+        std::cout << "========> fcntl fail add pipe <=========\n"
+                  << std::endl;
+        return;
     }
     if (_epoll.addClient(pipe, EPOLLIN) == false)
         return; // watch by epoll
@@ -266,8 +270,9 @@ void clsFlow::_newClientProcess(int serverFd)
         {
             if (HelperFunctions::changeFileToNonBlocking(newClient) == -1)
             {
-                std::cout << "Fail to change client fd to non blocking\n" << std::endl;
-                return ;
+                std::cout << "Fail to change client fd to non blocking\n"
+                          << std::endl;
+                return;
             }
             _insertClient(newClient, addr, server.getBlock());
             break;
@@ -300,7 +305,7 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 void clsFlow::EventLoop()
 {
     int nFds = 0;
-    fdTypes TypeFd; 
+    fdTypes TypeFd;
     while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, -1)))
     {
         for (int i = 0; i < nFds; i++)
@@ -329,7 +334,8 @@ void clsFlow::EventLoop()
             if (_clientsArr[index].timeoutCgi())
             {
                 it++;
-                std::cout << "timeout cgi\n" << std::endl;
+                std::cout << "timeout cgi\n"
+                          << std::endl;
                 _popPipe(pipeFd);
             }
             else

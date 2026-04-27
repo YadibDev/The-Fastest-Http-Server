@@ -302,6 +302,9 @@ void clsClient::freeRessources()
     // _Requester.init();
     // _monitorCGI.freeCgiRessources();
     // _ResponderProecss.GetclsResponse().Reset();
+
+    
+    std::cout << _socket << std::endl;
     if (this->_socket > 0)
         close(this->_socket);
     _socket = -1;
@@ -349,9 +352,6 @@ bool clsClient::monitorCgi()
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
 
-    std::cout << "process state \n\n";
-    std::cout << processState << std::endl;
-    std::cout << "process state \n" << std::endl;;
     if (length == -1)
     {
         _state = CGI_END;

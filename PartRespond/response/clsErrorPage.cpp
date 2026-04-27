@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/20 14:32:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 16:40:10 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsErrorPage.hpp"
 
- clsErrorPage::clsErrorPage()
+clsErrorPage::clsErrorPage()
 {
     _Status = 0;
     _IsConnection = false;

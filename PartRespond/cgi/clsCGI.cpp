@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 14:48:46 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 15:01:37 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,7 @@ bool clsCGI::_childeProcesse()
     close(_pip[1]);
     // close(Fd);
     execve(_ARG[0], _ARG, _ENV);
+    std::cout << "exceve fail============>\n\n" << std::endl;;
     return true;
 }
 
