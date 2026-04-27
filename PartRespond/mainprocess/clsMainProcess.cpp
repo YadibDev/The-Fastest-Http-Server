@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2026/04/27 13:15:39 by achamdao         ###   ########.fr       */
-=======
-/*   Updated: 2026/04/27 14:48:46 by yadib            ###   ########.fr       */
->>>>>>> Server
+/*   Updated: 2026/04/27 15:31:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +49,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
     if (Length > 0 || _eventProcess == stEventProcess::THE_END)
         parseCgi.ReceivingData(Buffer, Length);
-    // std::cout << "Headers --> "<<parseCgi.GetHeadersFieldFinal() << std::endl;
-    // std::cout << "Body --> "<<parseCgi.GetBody() << std::endl;
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
     {
         if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)

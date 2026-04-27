@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 15:19:10 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 15:34:54 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,9 +179,9 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 void clsParseOutCGI::_Connection(bool Isclose)
 {
     if (Isclose)
-        _HeadersFieldFinal += "Connection: keep-alive";
+        _HeadersFieldFinal += "Connection: keep-alive\r\n";
     else
-        _HeadersFieldFinal += "Connection: Close";
+        _HeadersFieldFinal += "Connection: Close\r\n";
 }
 
 void clsParseOutCGI::_StatusNormal()
