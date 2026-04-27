@@ -19,14 +19,11 @@ int hexCharToDec(char c) {
 long HelperFunctions::hexToDec(const std::string& hex)
 {
 	long decimalValue = 0;
-	
 	for (std::size_t i = 0; i < hex.length(); ++i)
 	{
 		int digit = hexCharToDec(hex[i]);
-		
 		if (digit == -1)
 			return -1;
-		
 		decimalValue = (decimalValue << 4) | digit;
 	}
 	return decimalValue;
@@ -131,7 +128,6 @@ std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string&
 		else
 			current += value[i];
 	}
-
 	current = normalizeLWS(current);
 	if (!current.empty())
 		result.push_back(current);
@@ -172,13 +168,10 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	struct stat info;
 	if (stat(path.c_str(), &info) != 0)
 		return (403);
-
 	if (expectDir && !S_ISDIR(info.st_mode))
 		return (403);
-
 	if (!expectDir && S_ISDIR(info.st_mode))
 		return (403);
-
 	return (200);
 }
 
@@ -187,7 +180,6 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
 		return result;
-
 	for (int i = (int)view.len - 1; i >= 0; --i) {
 		char current = view.Data[i];
 		
@@ -201,10 +193,8 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 	}
 	return result;
 }
-
 s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
 {
-
 	s_view result;
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
@@ -278,7 +268,8 @@ bool HelperFunctions::IsStringDigit(const std::string &StringDigit, short Start,
 	return true;
 }
 
-bool HelperFunctions::Iswhaitspace(char C) {
+bool HelperFunctions::Iswhaitspace(char C)
+{
 	return (C == ' ' || C == '\t');
 }
 
@@ -288,15 +279,18 @@ void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
 		if (std::isalpha(Str[i]))
 			Str[i] = std::tolower(Str[i]);
 }
-std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
-    for (size_t i = 0; i < Str.size(); i++) {
+std::string HelperFunctions::ConvertStringToUpper(std::string &Str)
+{
+    for (size_t i = 0; i < Str.size(); i++)
+	{
         if (std::isalpha(Str[i]))
             Str[i] = std::toupper(Str[i]);
     }
     return Str;
 }
 
-bool HelperFunctions::Ischar(const std::string &Sep, char C) {
+bool HelperFunctions::Ischar(const std::string &Sep, char C)
+{
 	for (size_t i = 0; i < Sep.size(); i++)
 	{
 		if (Sep[i] == C)
