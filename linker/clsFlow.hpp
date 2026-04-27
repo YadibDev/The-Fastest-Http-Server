@@ -1,3 +1,6 @@
+#ifndef CLS_FLOW
+#define CLS_FLOW
+
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -13,7 +16,7 @@
 #include "../server/clsServerSock.hpp"
 #include "clsLinker.hpp"
 #include <unistd.h>
-
+#include "monitorCgi.hpp"
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500
 
@@ -22,6 +25,8 @@
 // #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 // #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 // #include <csignal>
+
+
 
 class clsFlow
 {
@@ -44,10 +49,9 @@ private:
     void _registerServersSockets();
     short _getClient();
     void _freeClient(short clientFd);
-    fdTypes _fdType(int fd);
     void _newClientProcess(int serverFd);
     void _clientProcess(int fd, uint32_t event);
-    bool _eventsEroorHandle(epoll_event &client);
+    bool _eventsEroorHandle(epoll_event &client, fdTypes &TypeFd);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
     bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
     void _popPipe(short pipe);
@@ -60,3 +64,5 @@ public:
     void EventLoop();
 
 };
+
+#endif

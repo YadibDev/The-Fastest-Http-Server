@@ -2,8 +2,7 @@
 
 #define CHUNK_LIMIT 8192
 
-
-clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig) , _ResponderProecss(_RequestXconfig)
+clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
     // _Requester.init();
     this->_socket = -1;
@@ -16,7 +15,7 @@ clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester
     _state = BEGIN;
 }
 
-void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block) 
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block)
 {
     _theData.Reset();
     _fdRespond = 0;
@@ -27,12 +26,12 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _LastConnection = _FirstConnection;
     _state = BEGIN;
     _Requester.init(block);
+    _RequestXconfig.reset();
 }
-
 
 const clinetState &clsClient::GetState() const
 {
-    return  _state;
+    return _state;
 }
 
 unsigned short clsClient::GetPort() const
@@ -99,7 +98,7 @@ int clsClient::_ReadDataForReq()
         size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
-    }   
+    }
     if (size == 0)
         _state = CONNECTION_CLOSED;
 
@@ -109,6 +108,7 @@ int clsClient::_ReadDataForReq()
 void clsClient::ProcessRequest()
 {
     // reset request in every new request from client
+    HttpError error;
     if (_state == BEGIN)
     {
         _theData.Reset();
@@ -119,17 +119,21 @@ void clsClient::ProcessRequest()
     int size = _ReadDataForReq(); // reading data for request
 
     if (_state == CONNECTION_CLOSED || size == -1)
-        return ;
+        return;
 
     if (_Requester._state == RequestParser::STATE_BODY)
-        _Requester.Parse(_theData.read_body);  // then pase it to parse
+        _Requester.Parse(_theData.read_body); // then pase it to parse
     else
-        _Requester.Parse(_theData.read_offset - 1);  // then pase it to parse
+        _Requester.Parse(_theData.read_offset - 1); // then pase it to parse
 
     if (_Requester.isError())
     {
+        if (ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
         this->_state = START_RESPOND;
-        return ;
+        return;
     }
     else if (_Requester.isComplete())
     {
@@ -154,7 +158,7 @@ ssize_t clsClient::_addSizeChunkToStr()
     }
     byteCanSend = min(byteCanSend, bodyLimit);
 
-    std::string lengthHex =  HelperFunctions::Convert_Hex("0123456789abcdef", byteCanSend);
+    std::string lengthHex = HelperFunctions::Convert_Hex("0123456789abcdef", byteCanSend);
     lengthHex += "\r\n";
 
     memcpy(&respondBuffer[bytesToSend], lengthHex.c_str(), lengthHex.size());
@@ -172,15 +176,17 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
 
     if (_BodyPlace == bodyPlaceEnum::DISK)
     {
-        if (_fdRespond == 0 && _Responder.GetModTransferData() == false )
-            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
-        else
-            _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+        if (_fdRespond == 0)
+        {
+            if (_Responder.GetModTransferData() == false)
+                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
+            else
+                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+        }
 
         int sizeToRead = _addSizeChunkToStr();
         if (sizeToRead)
         {
-            
             s = read(_fdRespond, &respondBuffer[bytesToSend], sizeToRead);
             bytesToSend += s;
             memcpy(&respondBuffer[bytesToSend], "\r\n", 2);
@@ -189,7 +195,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 
     nBytes = send(_socket, respondBuffer, bytesToSend, MSG_DONTWAIT);
-    
+
     if (nBytes != -1)
     {
         if (nBytes < bytesToSend)
@@ -210,9 +216,29 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 }
 
-void clsClient::_initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond, bool fileExist)
+void clsClient::_initalizeRespondBuffer()
 {
-    memcpy(&respondBuffer[0], Headers, bytesToSend);
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    const char *Header;
+    const char *Body;
+    bool fileExist = false;
+    char *respondBuffer = this->_theData.io_chunk;
+    if (Respond.GetModTransferData())
+    {
+        bytesToSend += Respond.GetHeaderFeildPointer()->size();
+        Header = Respond.GetHeaderFeildPointer()->c_str();
+        Body = Respond.GetBodyPointer()->c_str();
+        fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
+    }
+    else
+    {
+        bytesToSend += Respond.GetHeaderFeild().size();
+        Header = Respond.GetHeaderFeild().c_str();
+        Body = Respond.GetBody().c_str();
+        fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
+    }
+
+    memcpy(&respondBuffer[0], Header, bytesToSend);
 
     if (fileExist == false)
     {
@@ -236,8 +262,6 @@ void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
-    char *respondBuffer = this->_theData.io_chunk;
-
     if (_state == START_RESPOND)
     {
         bytesToSend = 0;
@@ -250,51 +274,18 @@ void clsClient::ProcessRespond()
         if (this->_ResponderProecss.isRunCgi())
         {
             _state = CGI_START;
-            return ;
+            return;
         }
-
-        const char *Header;
-        const char *Body;
-        bool fileExist = false;
-        if (Respond.GetModTransferData())
-        {
-            bytesToSend +=  Respond.GetHeaderFeildPointer()->size();
-            Header = Respond.GetHeaderFeildPointer()->c_str();
-            Body = Respond.GetBodyPointer()->c_str();
-            fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
-        }
-        else
-        {
-            bytesToSend +=  Respond.GetHeaderFeild().size();
-            Header = Respond.GetHeaderFeild().c_str();
-            Body = Respond.GetBody().c_str();
-            fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
-        }
-        _initalizeRespondBuffer(respondBuffer, Header, Body, Respond, fileExist);
+        _initalizeRespondBuffer();
     }
-    else if (_state == CGI_RUNING)
-        return ;
-    _SendRespond(Respond);
-}
-
-short    clsClient::_ReadData(int fd)
-{
-    return read(fd, this->_theData.io_chunk, sizeof(_theData.io_chunk));
-}
-
-void    clsClient::monitorCgi(int fd)
-{
-    stEventProcess::eEventProcess eventProcess = _ResponderProecss.getEventProcess();
-    int pid = _ResponderProecss.GetclsCGI().GetPid();
-    
-
-
-    short length = _ReadData(fd);
-    _ResponderProecss.setEventProcess(HelperFunctions::checkProcessStatus(pid));
-    _ResponderProecss.ParseCGI(_theData.io_chunk, length);
-
-    if (eventProcess == stEventProcess::RUNINNG && _ResponderProecss.getEventProcess() != stEventProcess::RUNINNG)
+    else if (_state == CGI_END)
+    {
+        _initalizeRespondBuffer();
         _state = RESPOND_MODE;
+    }
+
+    if (_state == RESPOND_MODE)
+        _SendRespond(Respond);
 }
 
 void clsClient::ProcessBoth(uint32_t events)
@@ -308,6 +299,7 @@ void clsClient::ProcessBoth(uint32_t events)
 void clsClient::freeRessources()
 {
     _Requester.init();
+    _monitorCGI.freeCgiRessources();
     _ResponderProecss.GetclsResponse().Reset();
     if (this->_socket > 0)
         close(this->_socket);
@@ -317,61 +309,81 @@ void clsClient::freeRessources()
 void clsClient::logs()
 {
     string arr[3] = {"GET", "POST", "DELETE"};
-    std::cout << "\n================= log start =================" << std::endl;
-    const RequestLine &reqLine = _Requester.getRequestLine();
-    std::cout << arr[(int)reqLine.getMethod()] << " ";
-    for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
-        std::cout <<  reqLine.getRequestURI().getPath().Data[i];
-    std::cout << " ";
-    for (int i = 0; i < reqLine.getVersion().len; i++)
-        std::cout <<  reqLine.getVersion().Data[i];
+    // std::cout << "\n================= log start =================" << std::endl;
+    // const RequestLine &reqLine = _Requester.getRequestLine();
+    // // std::cout << arr[(int)reqLine.getMethod()] << " ";
+    // for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+    //     // std::cout << reqLine.getRequestURI().getPath().Data[i];
+    // // std::cout << " ";
+    // for (int i = 0; i < reqLine.getVersion().len; i++)
+    //     // std::cout << reqLine.getVersion().Data[i];
     for (int i = 0; i < 6; i++)
     {
         if (this->_theData.known_headers[i].Hash != -1)
         {
-            cout << std::endl;
-            for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
-                std::cout << this->_theData.known_headers[i].key.Data[i];
-            std::cout << ": ";
-            for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
-                std::cout << this->_theData.known_headers[i].val.Data[i];
+            // cout << std::endl;
+            // for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
+            //     // std::cout << this->_theData.known_headers[i].key.Data[i];
+            // // std::cout << ": ";
+            // for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
+            //     // std::cout << this->_theData.known_headers[i].val.Data[i];
         }
     }
-    std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
-    std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
-    std::cout << "\n================= log end =================\n" << std::endl;
-
-    //  std::cout << "\n================= REQUEST DEBUG =================\n";
-
-    //     std::cout << "[STATUS] Request completed successfully\n";
-
-    //     std::cout << "\n[METADATA]\n";
-    //     std::cout << this->_theData.request_metadata << "\n";
-
-    //     std::cout << "\n[BODY STORAGE]\n";
-    //     if (_Requester._body._bodyLocation == clsBody::DISK)
-    //         std::cout << "Location : DISK\n";
-    //     else if (_Requester._body._bodyLocation == clsBody::RAM)
-    //         std::cout << "Location : RAM\n";
-    //     else
-    //         std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
-
-    //     std::cout << "\n[BODY INFO]\n";
-    //     if (this->_theData.read_body > 0)
-    //     {
-    //         std::cout << "Size : " << this->_theData.read_body << " bytes\n";
-    //         std::cout << "Content:\n";
-    //         std::cout << "----------------------------------------\n";
-
-    //         for (int i = 0; i < _theData.read_body; i++)
-    //             std::cout << this->_theData.io_chunk[i];
-
-    //         std::cout << "\n----------------------------------------\n";
-    //     }
-    //     else
-    //     {
-    //         std::cout << "No body received\n";
-    //     }
-
-    //     std::cout << "========================================\n\n";
+    // std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
+    // std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+    // std::cout << "\n================= log end =================\n"
+    //           << std::endl;
 }
+
+void clsClient::initializeCGI()
+{
+    clsCGI &cgi = this->_ResponderProecss.GetclsCGI();
+    _state = CGI_RUNING;
+    _monitorCGI.initialzie(cgi.GetPid(), cgi.GetFdPipe(), cgi.getStartTime());
+}
+
+bool clsClient::monitorCgi()
+{
+    short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
+    stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
+    stEventData::eEventData dataState = _monitorCGI.getStateData();
+
+    if (length == -1)
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(processState);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+
+    else if (length == 0 || (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE))
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(processState);
+        _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+        return true;
+    }
+
+    _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+    if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
+    {
+        _monitorCGI.freeCgiRessources();
+        return true;
+    }
+    return false;
+}
+
+bool clsClient::timeoutCgi()
+{
+    if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
+        return true;
+    if (_monitorCGI.TimeoutCgi())
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+    return false;
+}
+

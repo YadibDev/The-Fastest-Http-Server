@@ -260,48 +260,62 @@ bool	isValidStatusCode(short code)
 std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx) {
 	std::map<short, stErrorPagedata> errorMap;
 	std::vector<short> codes;
-	short responseOverride = -1;;
+	short responseOverride = -1;
 	std::string uri = "";
 
 	ctx.parser.advance();
 
 	while (ctx.parser.peek().type == TOKEN_WORD && HelperFunctions::is_numeric(ctx.parser.peek().value))
 	{
-		short code = (short)std::atoi(ctx.parser.peek().value.c_str());
-		if (!isValidStatusCode(code))
-			return (ctx.error.setStatus(400, "Expected ';' after methods"), errorMap);
-		codes.push_back(code);
-		ctx.parser.advance();
+	    short code = (short)std::atoi(ctx.parser.peek().value.c_str());
+	    if (!isValidStatusCode(code))
+	        return (ctx.error.setStatus(400, "Invalid status code in error_page"), errorMap);
+	    codes.push_back(code);
+	    ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type == TOKEN_WORD && ctx.parser.peek().value[0] == '=')
 	{
-		std::string resStr = ctx.parser.peek().value;
-		if (resStr.size() > 1)
-			responseOverride = (short)std::atoi(resStr.substr(1).c_str());
-		ctx.parser.advance();
+	    std::string &resStr = ctx.parser.peek().value;
+	    if (resStr.size() > 1)
+	        responseOverride = (short)std::atoi(resStr.substr(1).c_str());
+	    ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type == TOKEN_WORD)
 	{
-		uri = ctx.parser.peek().value;
-		ctx.parser.advance();
+	    uri = ctx.parser.peek().value;
+	    ctx.parser.advance();
 	}
 	else
-		return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), errorMap);
+	    return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), errorMap);
+
+	stErrorPagedata data;
+	data.uri = uri;
+	data.isExternalURL = UriParser::isAbsoluteURI(uri);
+
+	if (data.isExternalURL)
+	{
+	    if (responseOverride != -1) {
+	        if (responseOverride != 301 && responseOverride != 302 && 
+	            responseOverride != 303 && responseOverride != 307 && responseOverride != 308) {
+	            return (ctx.error.setStatus(400, "Invalid redirect code for external URL"), errorMap);
+	        }
+	    }
+		else
+	        responseOverride = 302;
+	}
+		
+	data.response = responseOverride;
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-		return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
-	
+	    return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
+		
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
 
-	stErrorPagedata data;
-	data.response = responseOverride;
-	data.uri = uri;
-
 	for (size_t i = 0; i < codes.size(); ++i)
-		errorMap[codes[i]] = data;
+	    errorMap[codes[i]] = data;
 
 	return errorMap;
 }

@@ -56,7 +56,7 @@ bool clsEpollHandler::addClient(int fd, long long ability)
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_ADD, fd, &tempEvent) == -1)
     {
-        std::cout << "epoll fd " << _EpollFd << " Fail to add new client in epoll " << fd << std::endl;
+        // std::cout << "epoll fd " << _EpollFd << " Fail to add new client in epoll " << fd << std::endl;
         perror("error: epoll:");
         return false; // we can add here sterror and errno for debugin in future
     }

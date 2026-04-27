@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98 #  -fsanitize=address 
 NAME = webserv
 
 # -fsanitize=address
@@ -20,7 +20,7 @@ CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/Pa
 
 REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
 				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp \
-				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp Parser/ParseRequest/Request/clsBody.cpp Parser/ParseRequest/Request/clsMultipart.cpp\
+				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp Parser/ParseRequest/Request/clsBody.cpp
 
 ALL_FILES +=  $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES) $(SERVER_FILES)
 

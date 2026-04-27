@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 18:56:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/24 16:54:26 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
 {
     _BytesBody = 0;
     _FoundBody = false;
+    _IsConnectoin = true;
     _ProcessIsFinish = false;
     _CountSizeHeaders = 0;
     _Fdout = -1;
@@ -44,7 +45,6 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _ValueHeader.clear();
     _FileNameFromDisk.clear();
     _PIDCHILD = -3;
-    _InternalRedirect = false;
 
     HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
     HelperFunctions::ft_memset(_Mod, -1, 10);
@@ -119,7 +119,7 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
     {
         if (!_NameHeader.compare("location") || !_NameHeader.compare("status") || !_NameHeader.compare("content-type"))
             return false;
-        else if (_NameHeader == "set-cookie")
+        else if (!_NameHeader.compare("set-cookie"))
         {
             _HeadersFieldDuplicate += Str;
             _HeadersFieldDuplicate += "\r\n";
@@ -254,7 +254,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
         return ;
     }
     _Status = 200;
-    _InternalRedirect = true;
     Pos = HelperFunctions::SkeepAtLast(_ValueHeader," \t");
     if (Pos < 0)
         Pos = _ValueHeader.length();
@@ -286,11 +285,11 @@ void clsParseOutCGI::_BuilResponsedredirection()
 
 void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 {
+    _Counter = 0;
     if (_FoundBody)
         return ;
     bool Flag = false;
-    short Counter = 0;
-    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     if (_CountSizeHeaders > MAX_HEADERS)
     {
         _Status = 413;
@@ -321,7 +320,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     }
 }
 
@@ -340,7 +339,7 @@ void clsParseOutCGI::_CreatFileTemp()
 
 void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 {
-    if (_FoundBody && _BytesBody < 40000)
+    if (_FoundBody && _BytesBody < MAX_BODY)
     {
         if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
              _ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
@@ -369,7 +368,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 return ;
             }
-            if (write(_Fdout, Arr, Length))
+            if (write(_Fdout, Arr, Length) == -1)
             {
                 _Status = 500;
                 _Mod[stMod::ERROR] = stMod::ERROR;
@@ -378,7 +377,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             _Body.clear();
        }
        else
-            HelperFunctions::CopyStr(Arr, _Body, 0,Length);
+            HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
     }
     else if (_BytesBody > MAX_BODY)
         write(_Fdout, Arr, Length);
@@ -420,12 +419,18 @@ void clsParseOutCGI::_StoredInFileOrStr()
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
     _Reset();
-    _ErrorPage.ResponseError(_Status, "");
-    _ModTransferData = true;
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    // else
+    {
+        _ErrorPage.ResponseError(_Status, "");
+        _ModTransferData = true;
+        _BodyPointer = &_ErrorPage.GetBody();
+        _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        _BytesBody = _ErrorPage.GetBodySize();
+        _IsConnectoin = _ErrorPage.GetIsConnection();
+    }
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
@@ -506,11 +511,6 @@ const std::string &clsParseOutCGI::GetBody()
     return _Body;
 }
 
-bool clsParseOutCGI::GetInernalRedirectVar()
-{
-    return _InternalRedirect;
-}
-
 const std::string &clsParseOutCGI::GetFileNameBody()
 {
     return _FileNameFromDisk;
@@ -558,10 +558,21 @@ void clsParseOutCGI::_Reset()
     close(_Fdout);
 }
 
+short clsParseOutCGI::GetSizeBody()
+{
+    return _BytesBody;
+}
+
 void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 {
     _PIDCHILD = PIDPROCESS;
 }
+
+ bool clsParseOutCGI::GetIsConnection()
+ {
+    return _IsConnectoin;
+ }
+
 bool clsParseOutCGI::GetErno()
 {
    return _Erno;

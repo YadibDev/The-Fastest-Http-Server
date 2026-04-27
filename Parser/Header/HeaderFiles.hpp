@@ -5,6 +5,7 @@
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
 #include "../ParseRequest/URI/URI.hpp"
+#include "../ParseRequest/URI/NUriParser.hpp"
 
 
 
@@ -73,8 +74,9 @@ struct stReturnData {
 struct stErrorPagedata {
 	short		response;
 	std::string	uri;
+	bool		isExternalURL;
 
-	stErrorPagedata() : response(-1), uri("") {}
+	stErrorPagedata() : response(-1), uri(""), isExternalURL(false) {}
 };
 
 #endif

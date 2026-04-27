@@ -11,6 +11,9 @@
 #include "../Parser/RequestHandler/RequestHandler.hpp"
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
+#include "monitorCgi.hpp"
+
+#define CLIENT_TIMEOUT 60
 
 using namespace std;
 
@@ -21,6 +24,7 @@ enum clinetState
     START_RESPOND,
     CGI_START,
     CGI_RUNING,
+    CGI_END,
     RESPOND_MODE,
     LAST_CHUNKED,
     CONNECTION_CLOSED
@@ -39,7 +43,6 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    bool _resetReq;
     int _socket;
     int _fdRespond;
     ssize_t bytesToSend;
@@ -55,11 +58,12 @@ private:
     clsMainProcess _ResponderProecss;
     clinetState _state;
     bodyPlaceEnum::place _BodyPlace;
+    clsMonitorCGI _monitorCGI;
 
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
     ssize_t _addSizeChunkToStr();
-    void _initalizeRespondBuffer(char *respondBuffer, const char *Headers, const char *Body, clsResponse &Respond, bool fileExist);
+    void _initalizeRespondBuffer();
     short    _ReadData(int fd);
 
 public:
@@ -88,8 +92,11 @@ public:
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
     int getPipeCgi();
-    void monitorCgi(int fd);
+    bool monitorCgi();
     void logs();
+    bool timeoutCgi();
+    void initializeCGI();
+
 };
 
 #endif

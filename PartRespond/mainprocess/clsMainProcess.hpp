@@ -46,6 +46,7 @@ public:
     clsCGI &GetclsCGI();
     bool GetIsRunCGI();
     clsResponse &GetclsResponse();
+    void Reset();
     ~clsMainProcess();
 };
 #endif

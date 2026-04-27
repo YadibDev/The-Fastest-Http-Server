@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/20 14:36:49 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 17:02:11 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ clsResponse::clsResponse(RequestHandler &DataRequest): _DataRequest(DataRequest)
     _IsConnection = true;
     _SizeHeaders = 0;
     _Erno = false;
-    _InternalRedirect = false;
     _ModTransferData = false;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(MAX_HEADERS);
@@ -47,7 +46,7 @@ void clsResponse::MakeResponse()
 {
     if (_Erno)
         return ;
-    if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::REDIRECTION] !=stMod::REDIRECTION)
+    if (_Mod[stMod::GET] == stMod::GET)
     {
         _FileFromDisk = _DataRequest.getPhysicalPath();
         _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
@@ -72,15 +71,17 @@ void clsResponse::_InitialHeaders()
     {
         if (_Status == 301 || _Status == 302 || _Status == 303 || _Status == 307 || _Status == 308)
             _Redirction();
-        _Body = _DataRequest.getReturn().value;
-        _BodySize = _Body.size();
+        else
+        {
+            _Body = _DataRequest.getReturn().value;
+            _BodySize = _Body.size();
+        }
     }
     if (_BodySize)
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
     _Date();
-    _CachControl();
     _Server();
     if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
@@ -101,16 +102,24 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    // if (_DataRequest.getDefaultErrorPage()->uri.empty())
-    //     _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
-    _ErrorPage.ResponseError(_Status,"");
-    _ModTransferData = true;
-    _IsConnection = false;
-    _BodySize =  _ErrorPage.GetBodySize();
-    _BodyPointer = &_ErrorPage.GetBody();
-    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+    {
+        if (_DataRequest.getDefaultErrorPage())
+            _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+        else
+            _ErrorPage.ResponseError(_Status,"");
+        _ModTransferData = true;
+        _IsConnection = false;
+        _BodySize =  _ErrorPage.GetBodySize();
+        _BodyPointer = &_ErrorPage.GetBody();
+        _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        _IsConnection = _ErrorPage.GetIsConnection();
+    }
+    
+
 }
 
 void clsResponse::_StatusLine()
@@ -159,10 +168,6 @@ void clsResponse::_Date()
    _HeaderFeild += "Date: ";
    _HeaderFeild += HelperFunctions::DateTime();
    _HeaderFeild += "\r\n";
-}
-void clsResponse::_CachControl()
-{
-    _HeaderFeild += "Cache-Control: no-store\r\n";
 }
 
 void clsResponse::_Server()
@@ -280,10 +285,28 @@ void clsResponse::SetFileFromDiskPointer(const std::string *FileFromDiskPointer)
     _FileFromDiskPointer = FileFromDiskPointer;
 }
 
+void clsResponse::SetInternalRedirectSrc(const std::string &InternalRedirectSrc)
+{
+    _InternalRedirectSrc = InternalRedirectSrc;
+}
+std::string &clsResponse::GetInternalRedirectSrc()
+{
+    return _InternalRedirectSrc;
+}
 bool clsResponse::GetModTransferData() const
 {
     return _ModTransferData;
 }
+void clsResponse::SetSizeBody(int size)
+{
+    _BodySize = size;
+}
+
+ void clsResponse::SetIsConnection(bool IsConnection)
+ {
+    _IsConnection = IsConnection;
+ }
+
 int clsResponse::GetSizeBody() const
 {
     return (_BodySize);

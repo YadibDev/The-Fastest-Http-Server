@@ -24,6 +24,7 @@ class clsErrorPage
         std::string _Body;
         std::string _HeaderFeild;
         std::string _FileFromDisk;
+        bool _IsConnection;
         int _BodySize;
         bool _Erno;
 
@@ -33,13 +34,14 @@ class clsErrorPage
         void _StatusLine();
         void _ContentLength();
         void _ContentType();
-        void _ConnectionClose();
+        void _Connection();
         void _Date();
         void _Server();
         void _Allow();
         void _RetryAfter();
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
+        void _CheckConnection();
     public:
         clsErrorPage();
         void SetBodySize(int BodySize);
@@ -48,6 +50,7 @@ class clsErrorPage
         const std::string &GetBody();
         const std::string &GetFileFromDisk();
         void ResponseError(int Status, const std::string &FilePageError);
+        bool GetIsConnection();
         void Reset();
         ~clsErrorPage();
 };

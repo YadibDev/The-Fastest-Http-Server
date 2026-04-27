@@ -52,7 +52,6 @@ bool HelperFunctions::is_numeric(const std::string& str) {
 	return true;
 }
 
-
 bool HelperFunctions::is_CTLsString(const std::string& str) {
 	for (size_t i = 0; i < str.length(); i++)
 		if (std::iscntrl(str[i])) return true;
@@ -61,7 +60,6 @@ bool HelperFunctions::is_CTLsString(const std::string& str) {
 
 bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
 {
-
 	for (size_t i = POS; i < str.size(); i++)
 	{
 		if (str[i] == ' ' || str[i] == '\t')
@@ -242,7 +240,52 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
-char HelperFunctions::_PoinerType[10] = {0};
+char HelperFunctions::_PoinerType[50];
+char  **HelperFunctions::_ENV_VAR_CONST;
+bool HelperFunctions::_Flag = false;
+
+void HelperFunctions::StoreVarConst()
+{
+	_ENV_VAR_CONST = new(std::nothrow) char*[10];
+	if (_ENV_VAR_CONST)
+		HelperFunctions::ft_memset(_ENV_VAR_CONST, 0,(sizeof(_ENV_VAR_CONST) * 10));
+	if (_ENV_VAR_CONST && !_Flag)
+	{
+		_Flag = true;
+		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
+		if (!_ENV_VAR_CONST[0])
+			return ;
+		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
+		if (!_ENV_VAR_CONST[1])
+			return ;
+		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
+		if (!_ENV_VAR_CONST[2])
+			return ;
+		_ENV_VAR_CONST[3] = ft_strdup("GATEWAY_INTERFACE=CGI/1.1");
+		if (!_ENV_VAR_CONST[3])
+			return ;
+		_ENV_VAR_CONST[4] = ft_strdup("REMOTE_IDENT=\"\"");
+		if (!_ENV_VAR_CONST[4])
+			return ;
+		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
+		if (!_ENV_VAR_CONST[5])
+			return ;
+	}
+}
+
+char *HelperFunctions::GetENV_VAR_CONST(short Index)
+{
+	if (!_ENV_VAR_CONST || Index > 8)
+		return NULL;
+	return _ENV_VAR_CONST[Index];
+}
+
+char **HelperFunctions::GetPointer_ENV_VAR_CONST()
+{
+	if (!_ENV_VAR_CONST)
+		return NULL;
+	return _ENV_VAR_CONST;
+}
 
 bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
@@ -433,11 +476,11 @@ char	*HelperFunctions::ft_strdup(const char *src)
 	return (dest_dup);
 }
 
-void	HelperFunctions::free_matrex(char ***matrex)
+void	HelperFunctions::free_matrex(char ***matrex, short IndexStart)
 {
 	int	i;
 
-	i = 0;
+	i = IndexStart;
 	if (!*matrex)
 		return ;
 	while ((*matrex)[i])
@@ -505,53 +548,6 @@ void HelperFunctions::NumToStr(int Number, std::string &Str)
     }
 }
 
-char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
-{
-	long	num;
-	int		len;
-
-	len = len_int(n);
-	num = n;
-	if (num < 0)
-	{
-		int_char[0] = '-';
-		num *= -1;
-	}
-	while (len > 1)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[len_int(n)] = '\0';
-	return ((int_char));
-}
-
-char	*HelperFunctions::ft_itoa(int n)
-{
-	long	num;
-	char	*int_char;
-	int		len;
-	int		prev_len;
-
-	len = len_int(n);
-	prev_len = len;
-	num = n;
-	int_char = new(std::nothrow) char[len + 1];
-	if (!int_char)
-		return (NULL);
-	if (num < 0)
-		return (ft_itoa_negative(n, int_char));
-	while (len)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[prev_len] = '\0';
-	return ((int_char));
-}
-
 const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
     size_t Pos;
@@ -561,7 +557,7 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
         _PoinerType[0] = '\0';
         return _PoinerType;
     }
-    while (i < 10 && Pos < Str.length())
+    while (i < 49 && Pos < Str.length())
     {
         _PoinerType[i] = Str[Pos];
         Pos++;
@@ -731,4 +727,32 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 			return stEventProcess::THE_END;
 	}
 	return stEventProcess::RUNINNG;
+}
+
+
+bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
+{
+    time_t timeNow = time(NULL);
+    if (timeNow - startInS >= Timeout)
+        return true;
+    return false;
+}
+
+int HelperFunctions::changeFileToNonBlocking(int fd)
+{
+	int flags = fcntl(fd, F_GETFL, 0);
+	if (flags == -1)
+		return -1;
+	flags |= O_NONBLOCK;
+	fcntl(fd, F_SETFL, flags);
+	return 0;
+}
+
+bool HelperFunctions::ConvertStrToNum(const char *arr, long &num, short base)
+{
+	char *end;
+	num = strtol(arr, &end, base);
+	if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+		return false;
+	return true;
 }

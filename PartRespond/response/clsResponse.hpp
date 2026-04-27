@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 19:26:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 17:02:29 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ class clsResponse
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
-        bool _InternalRedirect;
         std::string _InternalRedirectSrc;
         std::string _Type;
         clsErrorPage _ErrorPage;
@@ -53,7 +52,6 @@ class clsResponse
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
         void _Date();
-        void _CachControl();
         void _Server();
     public:
         void Reset();
@@ -75,8 +73,13 @@ class clsResponse
         void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
+        void SetInternalRedirectSrc(const std::string &InternalRedirectSrc);
+        std::string &GetInternalRedirectSrc();
         bool GetModTransferData() const;
         int GetSizeBody() const;
+        void SetSizeBody(int size);
+        void SetIsConnection(bool IsConnection);
+
         ~clsResponse();
 };
 #endif

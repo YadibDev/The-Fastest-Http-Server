@@ -36,10 +36,10 @@ void RequestHandler::reset()
 	_allowMethods = 0;
 
 
-	_defaultErrorPage = NULL;
+	_defaultErrorPage = false;
 	_pathCgi = NULL;
 	_upload_store = NULL;
-
+	_statusError = 0; // adib add this
 	_error = HttpError();
 }
 
@@ -123,7 +123,7 @@ void    RequestHandler::setMethod(HttpTables::eMethod method) { _method = method
 void    RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = allowed; }
 
 
-void	RequestHandler::setDefaultErrorPage(const stErrorPagedata* defaultErrorPage)
+void	RequestHandler::setDefaultErrorPage(bool defaultErrorPage)
 {
 	_defaultErrorPage = defaultErrorPage;
 }
@@ -144,6 +144,8 @@ void    RequestHandler::setHeader(HeaderTable	Header)
 void    RequestHandler::setPathCgi(const std::string* pathCgi) { _pathCgi = pathCgi; }
 
 void    RequestHandler::setReturn(const stReturnData& returnData) { _return = returnData; }
+
+void	RequestHandler::setReturnVal(stReturnData returnData) { _return = returnData; }
 
 void    RequestHandler::setUploadStore(const std::string* uploadStore) { _upload_store = uploadStore; }
 
@@ -191,7 +193,7 @@ const s_view	&RequestHandler::getScriptName() const
 	return _ScriptName;
 }
 
-const stErrorPagedata*	RequestHandler::getDefaultErrorPage() { return _defaultErrorPage; }
+bool	RequestHandler::getDefaultErrorPage() const { return _defaultErrorPage; }
 
 
 const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }

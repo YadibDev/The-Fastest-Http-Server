@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 18:22:47 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 14:48:46 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _
 
 bool clsCGI::_MakeEnv()
 {
-    _ENV = new char*[SIZE_VAR_ENV];
+    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV]; // 
     if (!_ENV)
         return (false);
-    HelperFunctions::ft_memset(_ENV,0,sizeof(_ENV) * SIZE_VAR_ENV);
+    HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));
     if (!_SERVER_SOFTWARE())
         return false;
     if (!_SERVER_NAME())
@@ -45,6 +45,8 @@ bool clsCGI::_MakeEnv()
     if (!_GATEWAY_INTERFACE())
         return false;
     if (!_REMOTE_IDENT())
+        return false;
+    if (!_REMOTE_HOST())
         return false;
     if (!_REMOTE_ADDR())
         return false;
@@ -76,60 +78,50 @@ bool clsCGI::_MakeEnv()
 }
 bool clsCGI::_SERVER_SOFTWARE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1")))
-    {
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(0)))
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_SERVER_NAME()
 {
-     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_NAME=FastServer")))
-     {
-
+     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
         return (false);
-     }
     _Counter++;
     return (true);
 }
 bool clsCGI::_SERVER_PROTOCOL()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PROTOCOL=HTTP/1.1")))
-    {
-
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(2)))
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_GATEWAY_INTERFACE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("GATEWAY_INTERFACE=CGI/1.1")))
-    {
-
+    if (!(_ENV[_Counter] =HelperFunctions::GetENV_VAR_CONST(3)))
         return (false);
-    }
     _Counter++;
     return (true);
 }
 bool clsCGI::_REMOTE_IDENT()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_IDENT=\"\"")))
-    {
-
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(4)))
         return (false);
-    }
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_REMOTE_HOST()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(5)))
+        return (false);
     _Counter++;
     return (true);
 }
 bool clsCGI::_REMOTE_ADDR()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_ADDR=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -137,10 +129,7 @@ bool clsCGI::_REMOTE_ADDR()
 bool clsCGI::_AUTH_TYPE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("AUTH_TYPE=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -148,10 +137,7 @@ bool clsCGI::_AUTH_TYPE()
 bool clsCGI::_REMOTE_USER()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_USER=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -159,10 +145,7 @@ bool clsCGI::_REMOTE_USER()
 bool clsCGI::_SERVER_PORT()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PORT=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -170,10 +153,7 @@ bool clsCGI::_SERVER_PORT()
 bool clsCGI::_REQUEST_METHOD()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REQUEST_METHOD=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -181,10 +161,7 @@ bool clsCGI::_REQUEST_METHOD()
 bool clsCGI::_PATH_INFO()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -192,10 +169,7 @@ bool clsCGI::_PATH_INFO()
 bool clsCGI::_PATH_TRANSLATED()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -203,10 +177,7 @@ bool clsCGI::_PATH_TRANSLATED()
 bool clsCGI::_SCRIPT_NAME()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SCRIPT_NAME=\"\"")))
-    {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -214,10 +185,7 @@ bool clsCGI::_SCRIPT_NAME()
 bool clsCGI::_QUERY_STRING()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-        {
-
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -225,9 +193,7 @@ bool clsCGI::_QUERY_STRING()
 bool clsCGI::_CONTENT_TYPE()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
@@ -235,16 +201,13 @@ bool clsCGI::_CONTENT_TYPE()
 bool clsCGI::_CONTENT_LENGTH()
 {
     if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
-    {
         return (false);
-    }
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_OtherHeaders()
 {
-    
     return (true);
 }
 bool clsCGI::_StoredArgs()
@@ -279,27 +242,27 @@ bool clsCGI::_childeProcesse()
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
-    close(Fd);
+    // close(Fd);
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
 void clsCGI::_ParentProcesse()
 {
-    stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
-    close(_pip[1]);
-    if (exit_code == stEventProcess::END_UNKNOW)
-    {
-        close(_pip[0]);
-        _FD = -1;
-        _Erno = true;
-    }
-    else
-    {
-        _IsRunCGI = true;
-        _FD = _pip[0];
-    }
+    // stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
+    // close(_pip[1]);
+    // if (exit_code == stEventProcess::END_UNKNOW)
+    // {
+    //     close(_pip[0]);
+    //     _FD = -1;
+    //     _Erno = true;
+    // }
+    // else
+    // {
+    _IsRunCGI = true;
+    _FD = _pip[0];
 }
+
 bool clsCGI::_InintialVar()
 {
     if (!_MakeEnv())
@@ -314,6 +277,8 @@ void clsCGI::RunCGI()
 {
     if (!_InintialVar())
     {
+        HelperFunctions::free_matrex(&_ENV , 6);
+        HelperFunctions::free_matrex(&_ARG, 0);
         _Erno = true;
         _FD = -1;
         return ;
@@ -331,11 +296,17 @@ void clsCGI::RunCGI()
     if (_PIDCHILD == 0)
     {
         if (_childeProcesse())
-            exit(1) ;
+            exit(1);
     }
     else
        _ParentProcesse();
     return ;
+}
+
+void clsCGI::Reset()
+{
+    HelperFunctions::free_matrex(&_ENV , 6);
+    HelperFunctions::free_matrex(&_ARG, 0);
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -358,6 +329,12 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
     return _PIDCHILD;
 }
 
+const time_t &clsCGI::getStartTime() const
+{
+    return this->_StartTime;
+}; 
+
+
 int clsCGI::GetFdPipe()
 {
     return _FD;
@@ -368,9 +345,8 @@ bool clsCGI::GetErno()
 }
 clsCGI::~clsCGI()
 {
-   
-    HelperFunctions::free_matrex(&_ENV);
-    HelperFunctions::free_matrex(&_ARG);
+    HelperFunctions::free_matrex(&_ENV , 5);
+    HelperFunctions::free_matrex(&_ARG, 0);
     kill(_PIDCHILD,SIGKILL);
     close(_pip[0]);
     _pip[0] = -1;

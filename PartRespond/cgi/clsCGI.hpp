@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 10:25:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/25 11:21:53 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 #include "../mainprocess/librarys.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
-# define SIZE_VAR_ENV  17 + 31 + 1
+# define SIZE_VAR_ENV  (17 + 31 + 1)
 
 class clsCGI
 {
     private:
         pid_t _PIDCHILD;
         bool _IsRunCGI;
-        long long _StartTime;
+        time_t _StartTime;
         int _FD;
         bool _Erno;
         static short _LimitProcess;
@@ -68,6 +68,8 @@ class clsCGI
         void RunCGI();
         int GetPid();
         void SetIsRunCGI(bool IsRunCGI);
+        const time_t &getStartTime() const;
+        void Reset();
         ~clsCGI();
 };
 

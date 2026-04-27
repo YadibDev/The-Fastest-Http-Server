@@ -22,8 +22,12 @@ struct stEventProcess
 {
     enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
 };
+struct stEventData
+{
+    enum eEventData {STILL_EXIST, END_PIPE};
+};
 
-// achraf headers
+// achraf headers 
 
 
 
@@ -68,7 +72,7 @@ public:
     static std::string DateTime();
     static std::string Convert_Hex(const std::string &Str, int Num);
     static char	*ft_strdup(const char *src);
-    static void	free_matrex(char ***matrex);
+    static void	free_matrex(char ***matrex, short IndexStart);
     static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
     static char	*ft_itoa(int n);
@@ -90,12 +94,19 @@ public:
     static void NumToStr(int Number, std::string &Str);
     static stEventProcess::eEventProcess checkProcessStatus(int pid);
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
-
+    static void StoreVarConst();
+    static char *GetENV_VAR_CONST(short Index);
+    static char **GetPointer_ENV_VAR_CONST();
+    static bool isTimeout(const time_t &startInS, time_t Timeout);
+    static int changeFileToNonBlocking(int fd);
+    static bool ConvertStrToNum(const char *arr, long &num, short base = 10); //
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
-    static char _PoinerType[10];
+    static char _PoinerType[50];
+    static char **_ENV_VAR_CONST;
+    static bool _Flag;
     HelperFunctions() {}
 };
 
