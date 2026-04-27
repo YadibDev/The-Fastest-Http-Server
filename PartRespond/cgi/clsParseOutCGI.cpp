@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 16:54:26 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 11:53:40 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       _BytesBody += Length;
+       _BytesBody += (Length - _Counter < 0)? 0 : Length - _Counter;
        if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
         {
             _Status = 502;
@@ -378,6 +378,9 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
        }
        else
             HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
+    std::cout <<"---> body <---\n" << _Body << std::endl;
+    std::cout <<"---> Size body <---\n" << _BytesBody << std::endl;
+    std::cout <<"---> Size body1 <---\n"<< Length - _Counter  << std::endl;
     }
     else if (_BytesBody > MAX_BODY)
         write(_Fdout, Arr, Length);
@@ -418,7 +421,7 @@ void clsParseOutCGI::_StoredInFileOrStr()
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-    _Reset();
+    Reset();
     // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
     //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
@@ -548,14 +551,16 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
     return _InternalRedirectSrc;
 }
 
-void clsParseOutCGI::_Reset()
+void clsParseOutCGI::Reset()
 {
     _Body.clear();
     _HeadersField.clear();
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
-    kill(_PIDCHILD,SIGKILL);
-    close(_Fdout);
+    _BytesBody = 0;
+    _IsConnectoin = true;
+    _FoundBody = false;
+    _ProcessIsFinish = false;
 }
 
 short clsParseOutCGI::GetSizeBody()
