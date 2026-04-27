@@ -14,8 +14,8 @@
 #include <stack>
 #include "../server/clsEpollHandler.hpp"
 #include "../server/clsServerSock.hpp"
-#include "clsLinker.hpp"
 #include <unistd.h>
+#include "clsClient.hpp"
 #include "monitorCgi.hpp"
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500

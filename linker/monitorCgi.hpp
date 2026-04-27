@@ -40,13 +40,15 @@ public:
 
     void freeCgiRessources()
     {
-        if (stateProcess == stEventProcess::RUNINNG)
+        if (pid == -1 && pipe == -1)
+            return ;
+        if (pid != -1 && stateProcess == stEventProcess::RUNINNG)
         {
             kill(pid, SIGKILL);
             HelperFunctions::checkProcessStatus(pid);
             stateProcess = stEventProcess::END_WITH_TIMOUT;
         }
-        if (stateData == stEventData::STILL_EXIST)
+        if (pipe != -1 && stateData == stEventData::STILL_EXIST)
             close(pipe);
         stateData = stEventData::END_PIPE;
         pid = -1;

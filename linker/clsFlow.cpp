@@ -42,9 +42,9 @@ void clsFlow::_createBlocksServers()
     ConfigFile.ParseConfigue();
     if (ConfigFile.getServers().size() == 0)
     {
-        // std::cout << "Error\n"
-        //           << ConfigFile.getError().getMsgError() << std::endl;
-        // std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
+        std::cout << "Error\n"
+                  << ConfigFile.getError().getMsgError() << std::endl;
+        std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
         throw std::runtime_error("0 block server\n");
     }
 
@@ -94,8 +94,6 @@ short clsFlow::_getClient()
 
 void clsFlow::_freeClient(short clientFd)
 {
-    // std::cout << "--- free client ---\n"
-            //   << std::endl;
     short index = _clientIdByFd[clientFd];
     _clientIdByFd.erase(clientFd);
     _clientsArr[index].freeRessources();
@@ -150,7 +148,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 
         if (client.events & EPOLLRDHUP)
         {
-            // std::cout << "EPOLLRDHUP" << std::endl;
+            std::cout << "EPOLLRDHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -163,7 +161,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (client.events & EPOLLERR)
         {
-            // std::cout << "EPOLLERR" << std::endl;
+            std::cout << "EPOLLERR" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -176,7 +174,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else
         {
-            // std::cout << "EPOLLHUP" << std::endl;
+            std::cout << "EPOLLHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 int index = _IdByPipe[fd];
@@ -292,7 +290,7 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
     // update flow of checkins is it a pipe or a server
     if (TypeFd == CLIENT_SOCK)
-        _clientProcess  (fd, _clientsEvents[indexEvent].events);
+        _clientProcess(fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)
         _newClientProcess(fd);
     else if (TypeFd == PIPE)
@@ -303,7 +301,7 @@ void clsFlow::EventLoop()
 {
     int nFds = 0;
     fdTypes TypeFd; 
-    while ((nFds = _epoll.tryPollNewClients (_clientsEvents, EVENTS_MAX, -1)))
+    while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, -1)))
     {
         for (int i = 0; i < nFds; i++)
         {

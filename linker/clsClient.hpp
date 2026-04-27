@@ -79,6 +79,8 @@ public:
     unsigned int GetIp() const;
     size_t GetTimeConnection() const;
     size_t GetLastConnection() const;
+    int getPipeCgi();
+
 
     // seter
     void SetState(clinetState state);
@@ -87,11 +89,9 @@ public:
     void UpdateTime(); // update last connection
     void ResetAll();   // will reset all things
 
-    // the flow of request and respnd
-    void ProcessRequest(); // will be
+    void ProcessRequest();
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
-    int getPipeCgi();
     bool monitorCgi();
     void logs();
     bool timeoutCgi();

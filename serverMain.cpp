@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include "server/clsEpollHandler.hpp"
 #include "server/clsServerSock.hpp"
-#include "linker/clsLinker.hpp"
 #include <vector>
 #include "PartRespond/mainprocess/Webserv.hpp"
 #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
