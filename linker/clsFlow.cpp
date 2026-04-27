@@ -94,8 +94,6 @@ short clsFlow::_getClient()
 
 void clsFlow::_freeClient(short clientFd)
 {
-    // std::cout << "--- free client ---\n"
-            //   << std::endl;
     short index = _clientIdByFd[clientFd];
     _clientIdByFd.erase(clientFd);
     _clientsArr[index].freeRessources();
@@ -150,7 +148,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 
         if (client.events & EPOLLRDHUP)
         {
-            // std::cout << "EPOLLRDHUP" << std::endl;
+            std::cout << "EPOLLRDHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -163,7 +161,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (client.events & EPOLLERR)
         {
-            // std::cout << "EPOLLERR" << std::endl;
+            std::cout << "EPOLLERR" << std::endl;
             if (TypeFd == PIPE)
             {
                 _popPipe(fd);
@@ -176,7 +174,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else
         {
-            // std::cout << "EPOLLHUP" << std::endl;
+            std::cout << "EPOLLHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 int index = _IdByPipe[fd];

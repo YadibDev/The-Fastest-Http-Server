@@ -69,7 +69,10 @@ void clsClient::UpdateTime() // update with the time of last reqquest
 void clsClient::ResetAll()
 {
     this->SetState(BEGIN);
-    // i will add reset of request and respond
+    _theData.Reset();
+    _Requester.init();
+    _ResponderProecss.Reset();
+    _monitorCGI.freeCgiRessources();
 }
 
 clsClient::~clsClient()
@@ -107,12 +110,11 @@ int clsClient::_ReadDataForReq()
 
 void clsClient::ProcessRequest()
 {
-    // reset request in every new request from client
+   
     HttpError error;
     if (_state == BEGIN)
     {
-        _theData.Reset();
-        _Requester.init();
+        ResetAll();
         _state = REQUEST_MODE;
     }
 
@@ -267,8 +269,6 @@ void clsClient::ProcessRespond()
         bytesToSend = 0;
         _state = RESPOND_MODE;
 
-        // linke request with config
-        Respond.Reset();
         this->_ResponderProecss.MainProcess(); // create respond
 
         if (this->_ResponderProecss.isRunCgi())
@@ -298,10 +298,10 @@ void clsClient::ProcessBoth(uint32_t events)
 
 void clsClient::freeRessources()
 {
-    _Requester.init();
-    _monitorCGI.freeCgiRessources();
-    // edit by achraf add rest response and cgi 
-    _ResponderProecss.Reset();
+    ResetAll();
+    // _Requester.init();
+    // _monitorCGI.freeCgiRessources();
+    // _ResponderProecss.GetclsResponse().Reset();
     if (this->_socket > 0)
         close(this->_socket);
     _socket = -1;
@@ -310,30 +310,30 @@ void clsClient::freeRessources()
 void clsClient::logs()
 {
     string arr[3] = {"GET", "POST", "DELETE"};
-    // std::cout << "\n================= log start =================" << std::endl;
-    // const RequestLine &reqLine = _Requester.getRequestLine();
-    // // std::cout << arr[(int)reqLine.getMethod()] << " ";
-    // for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
-    //     // std::cout << reqLine.getRequestURI().getPath().Data[i];
-    // // std::cout << " ";
-    // for (int i = 0; i < reqLine.getVersion().len; i++)
-    //     // std::cout << reqLine.getVersion().Data[i];
+    std::cout << "\n================= log start =================" << std::endl;
+    const RequestLine &reqLine = _Requester.getRequestLine();
+    std::cout << arr[(int)reqLine.getMethod()] << " ";
+    for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+        std::cout << reqLine.getRequestURI().getPath().Data[i];
+    std::cout << " ";
+    for (int i = 0; i < reqLine.getVersion().len; i++)
+        std::cout << reqLine.getVersion().Data[i];
     for (int i = 0; i < 6; i++)
     {
         if (this->_theData.known_headers[i].Hash != -1)
         {
-            // cout << std::endl;
-            // for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
-            //     // std::cout << this->_theData.known_headers[i].key.Data[i];
-            // // std::cout << ": ";
-            // for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
-            //     // std::cout << this->_theData.known_headers[i].val.Data[i];
+            cout << std::endl;
+            for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
+                std::cout << this->_theData.known_headers[i].key.Data[i];
+            std::cout << ": ";
+            for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
+                std::cout << this->_theData.known_headers[i].val.Data[i];
         }
     }
-    // std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
-    // std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
-    // std::cout << "\n================= log end =================\n"
-    //           << std::endl;
+    std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
+    std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+    std::cout << "\n================= log end =================\n"
+              << std::endl;
 }
 
 void clsClient::initializeCGI()
@@ -349,6 +349,9 @@ bool clsClient::monitorCgi()
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
 
+    std::cout << "process state \n\n";
+    std::cout << processState << std::endl;
+    std::cout << "process state \n" << std::endl;;
     if (length == -1)
     {
         _state = CGI_END;
@@ -366,6 +369,7 @@ bool clsClient::monitorCgi()
     }
 
     _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+
     if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
     {
         _monitorCGI.freeCgiRessources();
@@ -387,4 +391,3 @@ bool clsClient::timeoutCgi()
     }
     return false;
 }
-

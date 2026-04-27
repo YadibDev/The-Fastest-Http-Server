@@ -5,7 +5,6 @@
 
 #define CGI_TIMEOUT 10
 
-
 class clsMonitorCGI
 {
 private:
@@ -14,8 +13,10 @@ private:
     time_t startTime;
     stEventProcess::eEventProcess stateProcess;
     stEventData::eEventData stateData;
+
 public:
-    clsMonitorCGI(){
+    clsMonitorCGI()
+    {
         pid = -1;
         pipe = -1;
     }
@@ -40,13 +41,15 @@ public:
 
     void freeCgiRessources()
     {
-        if (stateProcess == stEventProcess::RUNINNG)
+        if (pid == -1 && pipe == -1)
+            return;
+        if (pid != -1 && stateProcess == stEventProcess::RUNINNG)
         {
             kill(pid, SIGKILL);
             HelperFunctions::checkProcessStatus(pid);
             stateProcess = stEventProcess::END_WITH_TIMOUT;
         }
-        if (stateData == stEventData::STILL_EXIST)
+        if (pipe != -1 && stateData == stEventData::STILL_EXIST)
             close(pipe);
         stateData = stEventData::END_PIPE;
         pid = -1;
@@ -56,7 +59,10 @@ public:
     short getDataFromCgi(char *buffer, short bufferSize) // -1 end of pipe
     {
         if (stateProcess == stEventProcess::RUNINNG)
+        {
+            std::cout << "wch d5al \n\n";
             stateProcess = HelperFunctions::checkProcessStatus(pid);
+        }
 
         if (stateProcess > stEventProcess::THE_END)
         {
@@ -66,9 +72,17 @@ public:
             return -1;
         }
         short reads = read(pipe, buffer, bufferSize);
+        std::cout << "reads ==> " << reads << std::endl;
+        std::cout << "reads ==> " << stateProcess << std::endl;
         if (reads == 0 || (stateProcess == stEventProcess::THE_END && reads < bufferSize))
         {
+            std::cout << "=========\n";
+            std::cout << "process end with success return 0\n\n";
+            std::cout << "=========\n";
+            if (reads == 0)
+                stateProcess = stEventProcess::THE_END;
             close(pipe);
+            pipe = -1;
             stateData = stEventData::END_PIPE;
         }
         return reads;
@@ -90,7 +104,6 @@ public:
     {
         this->stateData = state;
     }
-
 };
 
 #endif
