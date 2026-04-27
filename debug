@@ -1,1 +1,66 @@
-"HTTP/1.1  200 OK\r\ncontent-type: text/html\r\nContent-Length: 35\r\nDate: Mon, 27 Apr 2026 14:23:26 GMT\r\nServer: HTTP/1.1\r\nConnection: keep-alive\r\nIn 5 years, you will be years old.\n"
+Register Server Sockets by success
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+H: l
+H: l
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5
+0 initialize cgi
+
+wch d5al 
+
+reads ==> 78
+reads ==> 0
+-------> 
+0
+-------> 
+504
+timeout cgi
+
+
+================= log start =================
+GET /cgi-bin/script.py HTTP/1.1
+Physical path: /goinfre/yadib/The-Fastest-Http-Server/cgi-bin/script.py
+Status code from request : 0
+
+================= log end =================
+
+5

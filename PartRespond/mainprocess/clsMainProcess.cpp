@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 15:09:24 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 18:12:35 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
     {
-        std::cout << "isfinished==========> \n" << std::endl;
         parseCgi.SetProcessIsFinish(true);
     }
 

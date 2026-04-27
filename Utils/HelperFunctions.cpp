@@ -714,17 +714,20 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 	int status;
 	int exit_code = waitpid(pid, &status, WNOHANG);
 
-	if (WIFEXITED(status)) // if exited
-	{
-		if (WEXITSTATUS(status) != 0) // check status
-			return stEventProcess::END_UNKNOW;
-		else
-			return stEventProcess::THE_END;
-	}
-	else if (WIFSIGNALED(status) || exit_code == -1)
-		return stEventProcess::END_UNKNOW;
-	else
+	std::cout << "exit code : \n";
+	std::cout << exit_code << std::endl;
+	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
+	else if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 0)
+			return stEventProcess::THE_END;
+		else
+			return stEventProcess::END_UNKNOW;
+	}
+	else
+		return stEventProcess::END_UNKNOW;
+
 }
 
 

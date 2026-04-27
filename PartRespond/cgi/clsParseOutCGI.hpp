@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 11:45:31 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 17:02:15 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 struct stHeadersCGI
 {
-    enum eHeaders{CONTENT_TYPE,LOCATION,STATUS, EMPTY = -1};
+    enum eHeaders{EMPTY, CONTENT_TYPE, LOCATION, STATUS};
 };
 
 class clsParseOutCGI
