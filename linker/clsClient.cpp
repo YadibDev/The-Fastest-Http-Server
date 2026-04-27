@@ -71,8 +71,7 @@ void clsClient::ResetAll()
     this->SetState(BEGIN);
     _theData.Reset();
     _Requester.init();
-    _ResponderProecss.GetclsResponse().Reset();
-    _ResponderProecss.GetclsCGI().Reset();
+    _ResponderProecss.Reset();
     _monitorCGI.freeCgiRessources();
 }
 

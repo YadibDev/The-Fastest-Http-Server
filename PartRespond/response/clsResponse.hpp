@@ -78,6 +78,7 @@ class clsResponse
         bool GetModTransferData() const;
         int GetSizeBody() const;
         void SetSizeBody(int size);
+        void SetIsConnection(bool IsConnection);
 
         ~clsResponse();
 };

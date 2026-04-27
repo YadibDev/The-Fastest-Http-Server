@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 10:55:51 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 11:45:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ class clsParseOutCGI
         bool _Erno;
         std::string _InternalRedirectSrc;
         short _Status;
+        short _Counter;
         int _BytesBody;
         uint8_t _CounterCGI_Field;
+        bool _IsConnectoin;
         bool _ProcessIsFinish;
         std::string _Body;
         std::string _NameHeader;
@@ -80,7 +82,6 @@ class clsParseOutCGI
         void _CreatFileTemp();
         bool _IsValidHeaderValueChar(unsigned char C);
         void _InitialInternalRedirect();
-        void _Reset();
     public:
         clsParseOutCGI(const RequestHandler &_DataRequest);
         const std::string &GetBody();
@@ -99,6 +100,8 @@ class clsParseOutCGI
         std::string &GetInternalRedirectSrc();
         short GetStatus();
         short GetSizeBody();
+        bool GetIsConnection();
+        void Reset();
         
         ~clsParseOutCGI();
 };

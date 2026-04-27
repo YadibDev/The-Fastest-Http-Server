@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/24 16:54:26 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 13:00:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
 {
     _BytesBody = 0;
     _FoundBody = false;
+    _IsConnectoin = true;
     _ProcessIsFinish = false;
     _CountSizeHeaders = 0;
     _Fdout = -1;
@@ -257,7 +258,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
     if (Pos < 0)
         Pos = _ValueHeader.length();
     HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
-    _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -285,11 +285,11 @@ void clsParseOutCGI::_BuilResponsedredirection()
 
 void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 {
+    _Counter = 0;
     if (_FoundBody)
         return ;
     bool Flag = false;
-    short Counter = 0;
-    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     if (_CountSizeHeaders > MAX_HEADERS)
     {
         _Status = 413;
@@ -320,7 +320,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, Counter, Length);
+        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     }
 }
 
@@ -349,7 +349,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       _BytesBody += Length;
+       _BytesBody += (Length - _Counter < 0)? 0 : Length - _Counter;
        if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
         {
             _Status = 502;
@@ -377,7 +377,10 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             _Body.clear();
        }
        else
-            HelperFunctions::CopyStr(Arr, _Body, 0,Length);
+            HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
+    std::cout <<"---> body <---\n" << _Body << std::endl;
+    std::cout <<"---> Size body <---\n" << _BytesBody << std::endl;
+    std::cout <<"---> Size body1 <---\n"<< Length - _Counter  << std::endl;
     }
     else if (_BytesBody > MAX_BODY)
         write(_Fdout, Arr, Length);
@@ -418,7 +421,7 @@ void clsParseOutCGI::_StoredInFileOrStr()
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-    _Reset();
+    Reset();
     // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
     //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
@@ -429,13 +432,12 @@ void clsParseOutCGI::_ErrorRespnseHandling()
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
         _BytesBody = _ErrorPage.GetBodySize();
+        _IsConnectoin = _ErrorPage.GetIsConnection();
     }
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
-    if (_Mod[stMod::ERROR] == stMod::ERROR)
-        return ;
     _ReceivingHeaders(Arr, Length);
     _ReceivingBody(Arr, Length);
     if (_Mod[stMod::ERROR] == stMod::ERROR)
@@ -547,14 +549,16 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
     return _InternalRedirectSrc;
 }
 
-void clsParseOutCGI::_Reset()
+void clsParseOutCGI::Reset()
 {
     _Body.clear();
     _HeadersField.clear();
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
-    kill(_PIDCHILD,SIGKILL);
-    close(_Fdout);
+    _BytesBody = 0;
+    _IsConnectoin = true;
+    _FoundBody = false;
+    _ProcessIsFinish = false;
 }
 
 short clsParseOutCGI::GetSizeBody()
@@ -566,6 +570,12 @@ void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
 {
     _PIDCHILD = PIDPROCESS;
 }
+
+ bool clsParseOutCGI::GetIsConnection()
+ {
+    return _IsConnectoin;
+ }
+
 bool clsParseOutCGI::GetErno()
 {
    return _Erno;

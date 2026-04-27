@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 17:03:50 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 12:59:26 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
     if (Length > 0)
         parseCgi.ReceivingData(Buffer, Length);
-
+    std::cout << "Headers --> "<<parseCgi.GetHeadersFieldFinal() << std::endl;
+    std::cout << "Body --> "<<parseCgi.GetBody() << std::endl;
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
     {
         if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
@@ -57,6 +58,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetStatus(parseCgi.GetStatus());
+            _Response.SetIsConnection(parseCgi.GetIsConnection());
             _Response.SetModTransferData(true);
         }
         else
@@ -65,6 +67,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
             _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
             _Response.SetInternalRedirectSrc(parseCgi.GetInternalRedirectSrc());
+            _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
         }
     }
@@ -74,18 +77,21 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
         _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
+        _Response.SetSizeBody(_ErrorPage.GetBodySize());
+        _Response.SetStatus(_eventProcess);
+        _Response.SetIsConnection(_ErrorPage.GetIsConnection());
         _Response.SetModTransferData(true);
     }
 }
 
 void clsMainProcess::_InitializeCGI()
 {
-    // std::cout << "initialize cgi\n" << std::endl;;
     if (!_RunCGI)
     {
         _CGI.RunCGI();
         if (!_CGI.GetErno())
         {
+            std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
             _CGI.GetclsParseOutCGI().SetPIDPROCESS(_CGI.GetPid());
             _CGI.GetclsParseOutCGI().SetPipe_Fd(_CGI.GetFdPipe());
             _RunCGI = _CGI.GetIsRunCGI();
@@ -127,7 +133,6 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-
     _Response.SetMod(stMod::ERROR);
     _Response.SetStatus(_DataRequest.getStatusError());
     _Response.MakeResponse();
@@ -153,6 +158,7 @@ void clsMainProcess::MainProcess()
 void clsMainProcess::Reset()
 {
     _CGI.Reset();
+    _CGI.GetclsParseOutCGI().Reset();
     _Response.Reset();
 }
 

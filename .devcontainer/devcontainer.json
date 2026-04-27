@@ -1,0 +1,44 @@
+{
+  "name": "Java & Angular Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk-amd64"
+      },
+      "extensions": [
+        "angular.ng-template",
+        "christian-kohler.npm-intellisense",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "firsttris.vscode-jest-runner",
+        "github.codespaces",
+        "pivotal.vscode-boot-dev-pack",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-azureappservice",
+        "ms-azuretools.vscode-azureresourcegroups",
+        "ms-azuretools.vscode-azurestorage",
+        "ms-edgedevtools.vscode-edge-devtools",
+        "ms-kubernetes-tools.vscode-aks-tools",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-vscode.azurecli",
+        "ms-vscode.vscode-typescript-tslint-plugin",
+        "redhat.java",
+        "redhat.vscode-yaml",
+        "visualstudioexptteam.vscodeintel",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-maven"
+      ]
+    }
+  },
+  "forwardPorts": [4200, 3001, 9000, 8080],
+  "postCreateCommand": "npm install -g generator-jhipster && sudo apt-get update && sudo apt-get install -y dbeaver-ce",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {
+      "version": "latest"
+    }
+  }
+}
