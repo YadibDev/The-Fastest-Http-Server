@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 17:06:55 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/27 21:03:03 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,8 @@ clsErrorPage::~clsErrorPage()
     _HeaderFeild = "";
     _BodySize = 0;
     _Status = 0;
+    _Erno = false;
+    _FileFromDisk = "";
 }
 
 void clsErrorPage::Reset()

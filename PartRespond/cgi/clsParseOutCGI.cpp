@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 18:30:15 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 21:00:46 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(
     _InternalRedirectSrc.clear();
     _ValueHeader.clear();
     _FileNameFromDisk.clear();
-    _PIDCHILD = -3;
 
     HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
     HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -495,10 +494,7 @@ const std::string &clsParseOutCGI::GetHeadersFieldFinal()
     return _HeadersFieldFinal;
 }
 
-void clsParseOutCGI::SetPipe_Fd(int Pipe_Fd)
-{
-    _Pipe_Fd = Pipe_Fd;
-}
+
 void clsParseOutCGI::SetProcessIsFinish(bool ProcessIsFinish)
 {
     _ProcessIsFinish = ProcessIsFinish;
@@ -557,6 +553,11 @@ void clsParseOutCGI::Reset()
     _IsConnectoin = true;
     _FoundBody = false;
     _ProcessIsFinish = false;
+    _Erno = false;
+    _NameHeader.clear();
+    _ValueHeader.clear();
+    _CountSizeHeaders = 0;
+    _ModTransferData = 0;
     HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
     HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }
@@ -564,11 +565,6 @@ void clsParseOutCGI::Reset()
 short clsParseOutCGI::GetSizeBody()
 {
     return _BytesBody;
-}
-
-void clsParseOutCGI::SetPIDPROCESS(int PIDPROCESS)
-{
-    _PIDCHILD = PIDPROCESS;
 }
 
  bool clsParseOutCGI::GetIsConnection()

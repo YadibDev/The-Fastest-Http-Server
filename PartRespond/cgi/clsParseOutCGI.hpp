@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 18:30:24 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/27 20:59:47 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ struct stHeadersCGI
 
 class clsParseOutCGI
 {
-        std::string _Data;
         stMod::eMod _Mod[10];
-        pid_t _PIDCHILD;
         stHeadersCGI::eHeaders _ExistHeaders[3];
         bool _FoundBody;
         bool _Erno;
@@ -34,7 +32,6 @@ class clsParseOutCGI
         short _Status;
         short _Counter;
         int _BytesBody;
-        uint8_t _CounterCGI_Field;
         bool _IsConnectoin;
         bool _ProcessIsFinish;
         std::string _Body;
@@ -53,7 +50,6 @@ class clsParseOutCGI
         const std::string *_HeaderFeildPointer;
         const std::string *_FileFromDiskPointer;
         bool _ModTransferData;
-        int _Pipe_Fd;
         int _Fdout;
         bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);
         void _ErrorRespnseHandling();
@@ -90,11 +86,9 @@ class clsParseOutCGI
         const std::string *GetBodyPointer();
         const std::string *GetHeaderFeildPointer();
         const std::string *GetFileFromDiskPointer();
-        void SetPipe_Fd(int Pipe_Fd);
         stMod::eMod *GetMod();
         void ReceivingData(const char *Arr, short Length);
         void SetProcessIsFinish(bool ProcessIsFinish);
-        void SetPIDPROCESS(int PIDPROCESS);
         bool GetModTransferData() const;
         bool GetErno();
         std::string &GetInternalRedirectSrc();
