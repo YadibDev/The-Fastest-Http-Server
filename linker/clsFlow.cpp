@@ -306,43 +306,49 @@ void clsFlow::EventLoop()
 {
     int nFds = 0;
     fdTypes TypeFd;
-    while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, -1)))
+    while (1)
     {
-        for (int i = 0; i < nFds; i++)
-        {
-            int fd = (_clientsEvents[i].data.fd);
-            if (_clientIdByFd.size() && _clientIdByFd.count(fd))
-                TypeFd = CLIENT_SOCK;
-            else if (_IdByPipe.size() && _IdByPipe.count(fd))
-                TypeFd = PIPE;
-            else
-                TypeFd = SERVER_SOCK;
 
-            if (_eventsEroorHandle(_clientsEvents[i], TypeFd))
-                continue;
-            else
-                _flowProcess(fd, TypeFd, i);
-        }
-
-        // cgi timeout
-        std::map<short, short>::iterator it = _IdByPipe.begin();
-        std::map<short, short>::iterator end = _IdByPipe.end();
-        while (it != end)
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1000 * 500)))
         {
-            int pipeFd = it->first;
-            int index = it->second;
-            if (_clientsArr[index].timeoutCgi())
+            for (int i = 0; i < nFds; i++)
             {
-                it++;
-                std::cout << "timeout cgi\n"
-                          << std::endl;
-                _popPipe(pipeFd);
+                int fd = (_clientsEvents[i].data.fd);
+                if (_clientIdByFd.size() && _clientIdByFd.count(fd))
+                TypeFd = CLIENT_SOCK;
+                else if (_IdByPipe.size() && _IdByPipe.count(fd))
+                TypeFd = PIPE;
+                else
+                TypeFd = SERVER_SOCK;
+                
+                if (_eventsEroorHandle(_clientsEvents[i], TypeFd))
+                continue;
+                else
+                _flowProcess(fd, TypeFd, i);
             }
-            else
-                it++;
+            
+            // cgi timeout
+            std::map<short, short>::iterator it = _IdByPipe.begin();
+            std::map<short, short>::iterator end = _IdByPipe.end();
+            while (it != end)
+            {
+                int pipeFd = it->first;
+                int index = it->second;
+                std::cout << "********---------********\n";
+                std::cout << "enter timeout\n" << std::endl;
+                if (_clientsArr[index].timeoutCgi())
+                {
+                    it++;
+                    std::cout << "timeout cgi\n"<< std::endl;
+                    _popPipe(pipeFd);
+                }
+                else
+                    it++;
+                std::cout << "end timeout\n" << std::endl;
+                
+            }
         }
     }
-    throw std::runtime_error("Error\n epoll system call fail");
 }
 
 clsFlow::~clsFlow()

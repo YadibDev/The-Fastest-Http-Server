@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 17:02:11 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 12:59:38 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,7 @@ void clsResponse::Reset()
     _SizeHeaders = 0;
     _Type = "";
     _IsConnection = true;
+    this->_ErrorPage.Reset();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 

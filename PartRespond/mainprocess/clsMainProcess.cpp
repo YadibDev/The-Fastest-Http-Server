@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 21:16:54 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/28 14:32:43 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
-    {
         parseCgi.SetProcessIsFinish(true);
-    }
 
     if (Length > 0 || _eventProcess == stEventProcess::THE_END)
         parseCgi.ReceivingData(Buffer, Length);
@@ -154,7 +152,7 @@ void clsMainProcess::Reset()
 {
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
-    _Response.Reset();
+    _Response.Reset(); // reset error page also
     _eventProcess = stEventProcess::RUNINNG; // add by adib
 }
 
