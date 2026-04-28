@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 21:00:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/28 12:59:49 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void clsMainProcess::Reset()
 {
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
-    _Response.Reset();
+    _Response.Reset(); // reset error page also
     _eventProcess = stEventProcess::RUNINNG; // add by adib
 }
 

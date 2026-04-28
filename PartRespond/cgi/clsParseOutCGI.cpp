@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 06:27:18 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 13:26:20 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,6 @@ void clsParseOutCGI::_StoredInFileOrStr()
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-    Reset();
     // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
     //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
@@ -436,6 +435,10 @@ void clsParseOutCGI::_ErrorRespnseHandling()
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
+    std::cout << "============\n";
+    for (int i = 0; i < Length; i++)
+        std::cout << Arr[i];
+    std::cout << "============\n" << std::endl;;
     _ReceivingHeaders(Arr, Length);
     _ReceivingBody(Arr, Length);
     if (_Mod[stMod::ERROR] == stMod::ERROR)
@@ -561,6 +564,7 @@ void clsParseOutCGI::Reset()
     _ValueHeader.clear();
     _CountSizeHeaders = 0;
     _ModTransferData = 0;
+    this->_ErrorPage.Reset();
     HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
     HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }
