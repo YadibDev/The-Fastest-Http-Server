@@ -51,6 +51,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
         this->Reset();
+
         if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != -1)
             _isChunk = true;
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
@@ -68,16 +69,17 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
                 _state = clsBody::DONE_WIHTERROR;
                 return false;
             }
-            _state = clsBody::READING_BODY;
         }
+
         fd = mkstemp(&_fileName[0]);
-        // std::cout << "Created\n\n" << std::endl;
         if (fd == -1)
         {
             _errorPage.setStatus(500, "Internal Server Error:");
             _state = clsBody::DONE_WIHTERROR;
             return false;
         }
+
+        _state = clsBody::READING_BODY;
     }
     ParseBody(offset, maxBodySize); // i must change name of it
     return true;

@@ -93,6 +93,9 @@ int clsClient::_ReadDataForReq()
         size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
+
+        if (size == 0 && (8192 - idx) > 0)
+            _state = CONNECTION_CLOSED;
     }
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
@@ -101,9 +104,11 @@ int clsClient::_ReadDataForReq()
         size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
+
+        if (size == 0 && (8192 - idx) > 0)
+            _state = CONNECTION_CLOSED;
     }
-    if (size == 0)
-        _state = CONNECTION_CLOSED;
+    
 
     return size;
 }
@@ -120,7 +125,7 @@ void clsClient::ProcessRequest()
 
     int size = _ReadDataForReq(); // reading data for request
 
-    if (_state == CONNECTION_CLOSED || size == -1)
+    if (_state == CONNECTION_CLOSED || size == -1 || size == 0)
         return;
 
     if (_Requester._state == RequestParser::STATE_BODY)
