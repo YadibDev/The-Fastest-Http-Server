@@ -4,15 +4,18 @@
 
 // geters
 
+#define DEFAULT_TEMP "/goinfre/yadib/The-Fastest-Http-Server/temp/fileXXXXXX"
+
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
     fd = -1;
-    _isError = 0;
-}
-
-const int &clsBody::getIsError() const
-{
-    return _isError;
+    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
+    this->_state = clsBody::SETTING_VARS;
+    this->_isChunk = false;
+    this->_contentLength = 0;
+    writeSize = 0;
+    chunkHelp.Reset();
+    _errorPage.setStatus(0);
 }
 
 const std::string &clsBody::getFileName() const
@@ -28,15 +31,15 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
-    this->_fileName = "/workspaces/The-Fastest-Http-Server/file_XXXXXX"; // should be /tmp insted of this path
-    this->_isError = 0;
+    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
     writeSize = 0;
     chunkHelp.Reset();
+    _errorPage.setStatus(0);
     if (fd != -1)
-        close (fd);
+        close(fd);
     fd = -1;
 }
 
@@ -54,10 +57,15 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
         {
             _isChunk = false;
             const char *content_leng_str = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
-            
-            if (HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength > (long)maxBodySize)
+
+            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength > (long)maxBodySize)
             {
-                this->_isError = 413;
+                if (_contentLength > (long)maxBodySize)
+                    _errorPage.setStatus(413, "Content Too Large\n");
+                else
+                    _errorPage.setStatus(400, "Bad Request");
+
+                _state = clsBody::DONE_WIHTERROR;
                 return false;
             }
             _state = clsBody::READING_BODY;
@@ -66,7 +74,8 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
         // std::cout << "Created\n\n" << std::endl;
         if (fd == -1)
         {
-            this->_isError = 500;
+            _errorPage.setStatus(500, "Internal Server Error:");
+            _state = clsBody::DONE_WIHTERROR;
             return false;
         }
     }
@@ -132,6 +141,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
                     temp = write(this->fd, &arr[t], size);
                 if (temp == -1)
                 {
+                    _errorPage.setStatus(500, "Internal Server Error:");
                     error = true;
                     break;
                 }
@@ -142,7 +152,10 @@ void clsBody::_handleChunk(uint16_t &ofset)
             if (t + 1 < ofset && size <= 0)
             {
                 if (arr[t] != '\r' || arr[t + 1] != '\n')
+                {
+                    _errorPage.setStatus(400, "Bad Request");
                     error = true;
+                }
                 else
                 {
                     // add special case
@@ -166,7 +179,6 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
     {
         src[i] = src[offset + i];
     }
-
 }
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
@@ -175,7 +187,8 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     int temp = write(this->fd, data.io_chunk, offset); // i will change this
     if (temp == -1)
     {
-        this->_isError = true;
+        _errorPage.setStatus(500, "Internal Server Error:");
+        _state = clsBody::DONE_WIHTERROR;
         return;
     }
 
@@ -191,7 +204,7 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 
 void clsBody::ParseBody(uint16_t &offset, const size_t &maxBodySize)
 {
-    (void) maxBodySize; // unused right now
+    (void)maxBodySize; // unused right now
 
     if (_isChunk == false)
     {
@@ -211,4 +224,23 @@ void clsBody::ParseBody(uint16_t &offset, const size_t &maxBodySize)
 ssize_t clsBody::getBodySize()
 {
     return _contentLength;
+}
+
+HttpError clsBody::getError()
+{
+    return this->_errorPage;
+}
+
+clsBody::~clsBody()
+{
+    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
+    this->_state = clsBody::SETTING_VARS;
+    this->_isChunk = false;
+    this->_contentLength = 0;
+    writeSize = 0;
+    chunkHelp.Reset();
+    _errorPage.setStatus(0);
+    if (fd != -1)
+        close(fd);
+    fd = -1;
 }

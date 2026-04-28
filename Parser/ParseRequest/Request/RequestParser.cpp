@@ -1,7 +1,7 @@
 #include "RequestParser.hpp"
 
-RequestParser::RequestParser(stPollRequest &request, RequestHandler	*requestHandler)
-	: _request(request),  
+RequestParser::RequestParser(stPollRequest &request, RequestHandler *requestHandler)
+	: _request(request),
 	  _offset(0),
 	  _requestLine(),
 	  _header(request),
@@ -9,11 +9,11 @@ RequestParser::RequestParser(stPollRequest &request, RequestHandler	*requestHand
 	  _ServerConfig(NULL),
 	  _RequestHandler(requestHandler),
 	  _state(STATE_REQUEST_LINE)
-	//   _body(request)
+//   _body(request)
 {
 }
 
-void RequestParser::init(clsServerConfig	*ServerConfig, uint16_t offset)
+void RequestParser::init(clsServerConfig *ServerConfig, uint16_t offset)
 {
 	_state = STATE_REQUEST_LINE;
 	_ServerConfig = ServerConfig;
@@ -34,8 +34,6 @@ void RequestParser::init(uint16_t offset)
 	_RequestHandler->reset();
 	_body.Reset();
 }
-
-
 
 bool RequestParser::LProcessRequestHandler()
 {
@@ -104,9 +102,13 @@ bool RequestParser::ParseBody(uint16_t size)
 		_state = STATE_COMPLETE;
 	}
 	else if (_body.getState() == clsBody::DONE_WIHTERROR)
+	{
+		_error = _body.getError();
 		_state = STATE_ERROR;
+	}
 
-	return  true;;
+	return true;
+	;
 }
 
 bool RequestParser::Parse(uint16_t size)
@@ -122,18 +124,17 @@ bool RequestParser::Parse(uint16_t size)
 			ParseHeader(size);
 		else if (_state == STATE_BODY)
 		{
-			// std::cout << "enter here" << std::endl;
-			ParseBody(size); // add handle error with the proprly way
+			ParseBody(size);
 		}
 		else
 			break;
 
 		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
 			_state = STATE_COMPLETE;
-		 if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
+		if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
 		{
 			if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].val.len == 1 && _request.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data[0] == '0')
-					_state = STATE_COMPLETE;
+				_state = STATE_COMPLETE;
 		}
 		if (_state == STATE_COMPLETE)
 			return true;
@@ -143,7 +144,7 @@ bool RequestParser::Parse(uint16_t size)
 	return true;
 }
 
-bool				RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
-bool				RequestParser::isError() const { return _error.isError(); }
-const RequestLine	&RequestParser::getRequestLine() const { return _requestLine; }
-HttpError			RequestParser::getError() const { return _error; }
+bool RequestParser::isComplete() const { return (_state == STATE_COMPLETE); }
+bool RequestParser::isError() const { return _error.isError(); }
+const RequestLine &RequestParser::getRequestLine() const { return _requestLine; }
+HttpError RequestParser::getError() const { return _error; }
