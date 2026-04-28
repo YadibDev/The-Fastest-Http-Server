@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 12:59:49 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 16:31:04 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
-    {
         parseCgi.SetProcessIsFinish(true);
-    }
 
     if (Length > 0 || _eventProcess == stEventProcess::THE_END)
         parseCgi.ReceivingData(Buffer, Length);
@@ -83,12 +81,12 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
+     std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
     if (!_RunCGI)
     {
         _CGI.RunCGI();
         if (!_CGI.GetErno())
         {
-            std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
             _RunCGI = _CGI.GetIsRunCGI();
             _eventProcess = stEventProcess::RUNINNG;
         }

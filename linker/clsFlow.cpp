@@ -146,7 +146,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
     {
         int fd = client.data.fd;
 
-
         if (client.events & EPOLLERR)
         {
             std::cout << "EPOLLERR" << std::endl;
@@ -171,7 +170,8 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
                 _freeClient(fd);
             else if (TypeFd == SERVER_SOCK)
             {
-                std::cout << "----------" << std::endl;;
+                std::cout << "----------" << std::endl;
+                ;
                 if (client.events & EPOLLIN)
                     std::cout << "EPOOLLLIN\n";
                 std::cout << fd << std::endl;
@@ -338,27 +338,19 @@ void clsFlow::EventLoop()
             // cgi timeout
             if (_IdByPipe.size())
             {
-
                 std::map<short, short>::iterator it = _IdByPipe.begin();
                 std::map<short, short>::iterator end = _IdByPipe.end();
                 while (it != end)
                 {
                     int pipeFd = it->first;
                     int index = it->second;
-                    // std::cout << "********---------********\n";
-                    // std::cout << "enter timeout\n"
-                    //           << std::endl;
                     if (_clientsArr[index].timeoutCgi())
                     {
                         it++;
-                        // std::cout << "timeout cgi\n"
-                        //           << std::endl;
                         _popPipe(pipeFd);
                     }
                     else
                         it++;
-                    // std::cout << "end timeout\n"
-                    //           << std::endl;
                 }
             }
             // if (_clientIdByFd.size());// add logic of client timeout

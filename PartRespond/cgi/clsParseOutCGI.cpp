@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 14:43:21 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 16:46:42 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,5 +585,6 @@ bool clsParseOutCGI::GetErno()
 }
 clsParseOutCGI::~clsParseOutCGI()
 {
-    close(_Fdout);
+    if (_Fdout != -1) // by yadib
+        close(_Fdout);
 }
