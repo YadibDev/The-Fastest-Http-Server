@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 21:00:46 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/28 06:27:18 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,6 +422,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
     //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
     // else
     {
+        _Mod[stMod::ERROR] = stMod::ERROR; // add by adib
         _ErrorPage.ResponseError(_Status, "");
         _ModTransferData = true;
         _BodyPointer = &_ErrorPage.GetBody();
@@ -429,6 +430,7 @@ void clsParseOutCGI::_ErrorRespnseHandling()
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
         _BytesBody = _ErrorPage.GetBodySize();
         _IsConnectoin = _ErrorPage.GetIsConnection();
+        _Erno = true; // add by adib
     }
 }
 
@@ -549,6 +551,7 @@ void clsParseOutCGI::Reset()
         _HeadersField.clear();
     _HeadersFieldDuplicate.clear();
     _HeadersFieldFinal.clear();
+    _Line.clear(); // add by yadib
     _BytesBody = 0;
     _IsConnectoin = true;
     _FoundBody = false;

@@ -365,7 +365,7 @@ bool clsClient::monitorCgi()
         return true;
     }
 
-    else if (length == 0 || (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE))
+    else if (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE)
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(processState);
@@ -377,6 +377,7 @@ bool clsClient::monitorCgi()
 
     if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
     {
+        _state = CGI_END;
         _monitorCGI.freeCgiRessources();
         return true;
     }
