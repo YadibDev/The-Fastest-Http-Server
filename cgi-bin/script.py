@@ -6,7 +6,7 @@ CSS = "body{background:linear-gradient(45deg,#0f0c29,#302b63,#24243e);color:#fff
 
 # The "Hard to Parse" part: Functional obfuscation
 (lambda _, __, ___: [
-    sys.stdout.write(f"Content-Type: text/html\r\nn"),
+    sys.stdout.write(f"Content-Type: text/html\r\n\r\n"),
     [sys.stdout.write(t) for t in (
         _('<html lang="en"><head><style>'), CSS, _('</style></head><body><div id="c">'),
         __("Python CGI: The Aesthetic Paradox"),
