@@ -1,45 +1,29 @@
-
-# #include <iostream>
-
-
-# class B
-# {
-#     public:
-#         B() {std::cout << "say hi" << std::endl;};
-#         B(const B &other) {std::cout << "say hi" << std::endl;};
-#         ~B() {std::cout << "Destruct" << std::endl;};
-# };
-
-# #include <vector>
-
-
-# int main()
-# {
-#     std::vector<B> allb;
-
-
-#     B test;
-#     allb.push_back(test);
-#     allb.push_back(test);
-
-#     std::cout << "---------\n" << std::endl;;
-#     allb.erase(allb.begin());
-#     allb.erase(allb.begin());
-#     std::cout << "---------\n";
-# }
-
-
-
 import socket
 
-IP = '127.0.0.1'
-PORT = 8080
+host = "127.0.0.1"
+port = 8082
+path = "/"
 
-# Create a raw HTTP GET request
-request = f"GET / HTTP/1.1\r\nHost: {IP}:{PORT}\r\nConnection: close\r\n\r\n"
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((host, port))
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    sock.connect((IP, PORT))
-    sock.sendall(request.encode())
-    response = sock.recv(4096)
-    print(response.decode())
+request = (
+    f"GET {path} HTTP/1.1\r\n"
+    f"Host: {host}:{port}\r\n"
+    f"Connection: close\r\n"
+    f"\r\n"
+)
+
+sock.send(request.encode())
+
+response = b""
+while True:
+    chunk = sock.recv(4096)
+    if not chunk:
+        break
+    response += chunk
+
+sock.close()
+
+# طباعة الاستجابة كاملة
+print(response.decode())

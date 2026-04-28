@@ -52,6 +52,7 @@ public:
 
 
 	static void								skipWhitespace(clsParse<TokenType>& parser);
+	static void								DefineUri(s_uri_entry &uri, const std::map<std::string, std::string> &cgi_pass);
 
 private:
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);

@@ -292,9 +292,8 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 	stErrorPagedata data;
 	data.uri = uri;
-	data.isExternalURL = UriParser::isAbsoluteURI(uri);
 
-	if (data.isExternalURL)
+	if (UriParser::isAbsoluteURI(uri))
 	{
 	    if (responseOverride != -1) {
 	        if (responseOverride != 301 && responseOverride != 302 && 
@@ -305,7 +304,7 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 		else
 	        responseOverride = 302;
 	}
-		
+
 	data.response = responseOverride;
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
@@ -324,6 +323,19 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 // Private Helpers
 
+
+void	ConfigDirectiveParser::DefineUri(s_uri_entry &uri, const std::map<std::string, std::string> &cgi_pass)
+{
+	
+	if (ExtractCgiMetadata(uri, cgi_pass))
+		uri.flags |= CaseOfUri::U_CGI;
+	if (uri.getPath()[0] == '/')
+		uri.flags |= CaseOfUri::U_ABS_PATH;
+	else if (UriParser::isAbsoluteURI(uri.getPath()))
+		uri.flags |= CaseOfUri::U_ABS_URI;
+	else
+		uri.flags |= CaseOfUri::U_RELATIVE;
+}
 
 unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char unit, HttpError& error) {
 	unsigned long long multiplier = 1;

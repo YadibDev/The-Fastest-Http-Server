@@ -43,18 +43,16 @@ void RequestHandler::reset()
 	_error = HttpError();
 }
 
-
 RequestHandler::~RequestHandler() {}
 
-
-bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(const s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass)
 {
-	if (!uri.Data || uri.len == 0)
+	if (!newUri.getView().Data || newUri.getView().len == 0)
 		return false;
 
-	const char* start = uri.Data;
+	const char* start = newUri.getView().Data;
 	const char* current = start;
-	const char* end = start + uri.len - 1;
+	const char* end = start + newUri.getView().len - 1;
 
 	while (current <= end)
 	{
@@ -93,6 +91,7 @@ bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::s
 	}
 	return false;
 }
+
 
 void	RequestHandler::computePathTranslated(const std::string& rootPath)
 {

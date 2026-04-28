@@ -52,19 +52,18 @@ const clsLocation* ProcessRequestHandler::findBestLocation(
 	return best;
 }
 
-std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
-	switch (method) {
-		case Methods::GET:
-			return "GET";
-		case Methods::POST:
-			return "POST";
-		case Methods::DELETE:
-			return "DELETE";
-		default:
-			return "UNKNOWN";
-	}
-}
-
+// std::string ProcessRequestHandler::selectMethod(Methods::eMethods method) {
+// 	switch (method) {
+// 		case Methods::GET:
+// 			return "GET";
+// 		case Methods::POST:
+// 			return "POST";
+// 		case Methods::DELETE:
+// 			return "DELETE";
+// 		default:
+// 			return "UNKNOWN";
+// 	}
+// }
 
 bool checkPath(const char *str)
 {
@@ -73,39 +72,36 @@ bool checkPath(const char *str)
 	return (stat(str, &buffer) == 0 && (buffer.st_mode & S_IRUSR));
 }
 
-bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
+bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
+											const clsLocation* bestLocation,
 											RequestHandler* handler,
-											char *destBuffer,
+											s_uri_entry& newUri,
 											HttpError &error)
 {
-	size_t dirLen = std::strlen(destBuffer);
-
-	s_view	index;
-	const std::vector<std::string>& vindex = bestLocation->getIndex();
+	short	flagType = CaseOfUri::U_FILE;
+	const std::vector<s_uri_entry> &vindex = bestLocation->getIndex();
 
 	for (size_t i = 0; i < vindex.size(); ++i)
 	{
-		size_t idxLen = vindex[i].size();
-		if (dirLen + idxLen >= MAX_PATH_LEN)
-			continue;
-		index.Data = vindex[i].c_str();
-		index.len = vindex[i].size();
-		if (HandleCgi(bestLocation, handler, index, handler->getPhysicalPath()) && handler->getScriptName().len)
-			return true;
-		std::memcpy(destBuffer + dirLen, vindex[i].c_str(), idxLen);
-		destBuffer[dirLen + idxLen] = '\0';
-		if (checkPath(destBuffer))
-			return true; 
-	}
-
-	const char defaultIndex[] = "index.html";
-	const size_t defaultLen = sizeof(defaultIndex) - 1;
-	if (dirLen + defaultLen < MAX_PATH_LEN)
-	{
-		std::memcpy(destBuffer + dirLen, defaultIndex, defaultLen);
-		destBuffer[dirLen + defaultLen] = '\0';
-		if (checkPath(destBuffer))
-			return true;
+		flagType = vindex[i].flags;
+		if ((flagType & CaseOfUri::U_RELATIVE) == CaseOfUri::U_RELATIVE)
+		{
+			if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
+				continue ;
+			HelperFunctions::joinArr(handler->getPhysicalPath(), &vindex[i].getPath()[0], MAX_PATH_LEN);
+			if (!checkPath(handler->getPhysicalPath()))
+			{
+				error.setStatus(403, "Forbidden");
+				continue ;
+			}
+		}
+		if (!internalRedirect(vindex[i], serverConfig, handler, error))
+		{
+			if ((flagType & CaseOfUri::U_RELATIVE) == CaseOfUri::U_RELATIVE)
+				continue ;
+			return false;
+		}
+		return true;
 	}
 
 	if (bestLocation->getAutoIndex())
@@ -117,7 +113,7 @@ bool ProcessRequestHandler::handleDirectory(const clsLocation* bestLocation,
 	return (error.setStatus(403, "Forbidden"), false);
 }
 
-size_t PercentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
+size_t percentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
 {
 	size_t svIdx = 0;
 	size_t bufIdx = 0;
@@ -134,22 +130,23 @@ size_t PercentEncoded(char *buffer, size_t bufferSize, const s_view &uri)
 	return bufIdx;
 }
 
-bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view &uri, HttpError &error) {
+bool ProcessRequestHandler::createPhysicalPath(const clsLocation* bestLocation, char *destBuffer, s_uri_entry& newUri, HttpError &error) {
 
 	char    CleanUri[MAX_PATH_LEN];
 
 	const std::string &base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
 	size_t currentPos = base.size();
 
-	if (currentPos >= MAX_PATH_LEN - 1) return true;
+	if (currentPos >= MAX_PATH_LEN - 1)
+		return (error.setStatus(414, "URI Too Long"), false);
 
 	memcpy(destBuffer, base.c_str(), currentPos);
-	size_t uriPartLen = PercentEncoded(CleanUri, MAX_PATH_LEN, uri);
+	size_t uriPartLen = percentEncoded(CleanUri, MAX_PATH_LEN, newUri.getView());
 	const char* uriPart = CleanUri;
 
 	if (!bestLocation->getAlias().empty()) {
 		size_t locSize = bestLocation->getLocationData().uri.size();
-		if (uri.len >= locSize)
+		if (newUri.getView().len >= locSize)
 		{
 			uriPart += locSize;
 			uriPartLen -= locSize;
@@ -185,7 +182,7 @@ bool ProcessRequestHandler::creatPhysicalPath(const clsLocation* bestLocation, c
 	return true;
 }
 
-bool	checkExcute(char *path)
+bool	checkExecute(char *path)
 {
 	struct stat st;
 
@@ -203,29 +200,40 @@ bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t 
 	return (methodBit == (allowedMethods & methodBit));
 }
 
-bool	ProcessRequestHandler::HandleCgi(const clsLocation* bestLocation, RequestHandler* handler, const s_view &requestUri, char *PhysicalPath)
+bool	ProcessRequestHandler::handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath)
 {
 	HttpError	error;
-	handler->ExtractCgiMetadata(requestUri, bestLocation->getCgiPass());
+	handler->ExtractCgiMetadata(newUri, bestLocation->getCgiPass());
 
 	if (handler->getScriptName().len)
 	{
-		if (!creatPhysicalPath(bestLocation, PhysicalPath,
-							   handler->getScriptName(), error))
+		if (!createPhysicalPath(bestLocation, PhysicalPath,
+								handler->getScriptName(), error))
 			return (handler->setError(error), false);
 
-		if (!checkExcute(PhysicalPath))
+		if (!checkExecute(PhysicalPath))
 			return (error.setStatus(403, "Forbidden"), handler->setError(error), false);
 	}
 	return true;
 }
 
 bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
-									   RequestHandler* handler,
-									   const s_view &requestUri,
-									   HttpError &error)
+										const clsServerConfig* serverConfig,
+										RequestHandler* handler,
+										s_uri_entry& newUri,
+										HttpError &error)
 {
-	if (!HandleCgi(bestLocation, handler, requestUri, handler->getPhysicalPath()))
+
+	if (newUri.getView().len && newUri.getView().Data[newUri.getView().len - 1] == '/')
+	{
+		if (!handleDirectory(serverConfig, bestLocation, handler, newUri, error))
+			return false;
+		if (handler->getPathInfo().len)
+			handler->computePathTranslated(bestLocation->getRoot());
+		return true;
+	}
+
+	if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath()))
 		return false;
 
 	if (handler->getScriptName().len)
@@ -235,17 +243,8 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 		return true;
 	}
 
-	if (!creatPhysicalPath(bestLocation, handler->getPhysicalPath(), requestUri, error))
+	if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
 		return false;
-
-	if (requestUri.len && requestUri.Data[requestUri.len - 1] == '/')
-	{
-		if (!handleDirectory(bestLocation, handler, handler->getPhysicalPath(), error))
-			return false;
-		if (handler->getPathInfo().len)
-			handler->computePathTranslated(bestLocation->getRoot());
-		return true;
-	}
 
 	if (!checkPath(handler->getPhysicalPath()))
 		return (error.setStatus(404, "Not Found"), false);
@@ -267,7 +266,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 											RequestHandler* handler,
 											HttpError &error)
 {
-	const map<short, stErrorPagedata> &ErrorPagedata = serverConfig->getErrorPages();
+	const std::map<short, stErrorPagedata> &ErrorPagedata = serverConfig->getErrorPages();
 
 	std::map<short, stErrorPagedata>::const_iterator it = ErrorPagedata.find(originalCode); // learn this 
 
@@ -277,7 +276,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		return false;
 	}
 
-	if (it->second.isExternalURL)
+	if ((it->second.uri.flags & CaseOfUri::U_ABS_URI) == CaseOfUri::U_ABS_URI)
 	{
 		stReturnData returnData;
 		returnData.code = it->second.response;
@@ -287,10 +286,10 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 	}
 
 	const stErrorPagedata &foundData = it->second;
-	s_view errorUri;
+	s_uri_entry errorUri;
 
-	errorUri.len = foundData.uri.length();
-	errorUri.Data = foundData.uri.c_str();
+	errorUri.raw_path = foundData.uri;
+	errorUri.initView();
 
 	if (internalRedirect(errorUri, serverConfig, handler, error))
 	{
@@ -307,6 +306,8 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 										   RequestHandler* handler)
 {
 	HttpError error;
+	s_uri_entry uri;
+
 	const clsLocation* bestLocation = findBestLocation(
 		serverConfig->getLocationExact(),
 		serverConfig->getLocationPrefix(),
@@ -323,7 +324,8 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 		return false;
 	}
 
-	if (!internalRedirect(startLine.getRequestURI().getPath(), serverConfig, handler, error))
+	uri.setSview(startLine.getRequestURI().getPath());
+	if (!internalRedirect(uri, serverConfig, handler, error))
 	{
 		if (error.isError())
 			return (handler->setError(error), false);
@@ -338,28 +340,28 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 
 
 bool ProcessRequestHandler::internalRedirect(
-	const s_view& newUri,
+	s_uri_entry& newUri,
 	const clsServerConfig* serverConfig,
 	RequestHandler* handler,
 	HttpError& error)
 {
 	handler->reset();
 
+	newUri.redirect_count++;
 	const clsLocation* newLocation = findBestLocation(
 		serverConfig->getLocationExact(),
 		serverConfig->getLocationPrefix(),
-		newUri
+		newUri.getView()
 	);
+	if (!newLocation)
+		return (error.setStatus(404, "Not Found"), false);
 
 	handler->setReturn((!serverConfig->getReturn().value.empty()) ? serverConfig->getReturn() : newLocation->getReturn());
 
 	if (!handler->getReturn().value.empty())
-		return true;    
+		return true;
 
-	if (!newLocation)
-		return false;
-
-	if (!handlePath(newLocation, handler, newUri, error))
+	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
 		return false;
 
 	handler->setUploadStore(&newLocation->getUploadStore());
