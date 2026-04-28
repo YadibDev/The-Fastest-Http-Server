@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 14:44:23 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 17:02:18 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void clsErrorPage::_StoredInFileOrStr()
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
     }
-    int FD = open(_FileFromDisk.c_str(), O_RDONLY | FD_CLOEXEC, 644);
+    int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
