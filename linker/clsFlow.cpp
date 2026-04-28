@@ -146,27 +146,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
     {
         int fd = client.data.fd;
 
-        if (client.events & EPOLLRDHUP)
-        {
-            std::cout << "EPOLLRDHUP" << std::endl;
-            if (TypeFd == PIPE)
-            {
-                _popPipe(fd);
-            }
-            else if (TypeFd == CLIENT_SOCK)
-                _freeClient(fd);
-            else if (TypeFd == SERVER_SOCK)
-            {
-                std::cout << "----------" << std::endl;;
-                if (client.events & EPOLLIN)
-                    std::cout << "EPOOLLLIN\n";
-                std::cout << fd << std::endl;
-                std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-                          << std::endl;
-                std::cout << "----------" << std::endl;
-            }
-        }
-        else if (client.events & EPOLLERR)
+        if (client.events & EPOLLERR)
         {
             std::cout << "EPOLLERR" << std::endl;
             if (TypeFd == PIPE)
@@ -178,6 +158,27 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             else if (TypeFd == SERVER_SOCK)
                 std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
                           << std::endl;
+        }
+        else if (client.events & EPOLLRDHUP)
+        {
+            std::cout << "EPOLLRDHUP" << std::endl;
+            if (TypeFd == PIPE)
+            {
+                _popPipe(fd);
+            }
+            else if (TypeFd == CLIENT_SOCK)
+                _freeClient(fd);
+            else if (TypeFd == SERVER_SOCK)
+            {
+                std::cout << "----------" << std::endl;
+                ;
+                if (client.events & EPOLLIN)
+                    std::cout << "EPOOLLLIN\n";
+                std::cout << fd << std::endl;
+                std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
+                          << std::endl;
+                std::cout << "----------" << std::endl;
+            }
         }
         else
         {
@@ -216,7 +217,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
-    if (HelperFunctions::changeFileToNonBlocking(pipe, false) == -1)
+    if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
     {
         std::cout << "========> fcntl fail add pipe <=========\n"
                   << std::endl;
@@ -278,9 +279,6 @@ void clsFlow::_newClientProcess(int serverFd)
                           << std::endl;
                 return;
             }
-            std::cout << "===socket client add ===\n";
-            std::cout << newClient << std::endl;;
-            std::cout << "===socket client addEND ===\n" << std::endl;;
 
             _insertClient(newClient, addr, server.getBlock());
             break;
@@ -340,27 +338,19 @@ void clsFlow::EventLoop()
             // cgi timeout
             if (_IdByPipe.size())
             {
-
                 std::map<short, short>::iterator it = _IdByPipe.begin();
                 std::map<short, short>::iterator end = _IdByPipe.end();
                 while (it != end)
                 {
                     int pipeFd = it->first;
                     int index = it->second;
-                    // std::cout << "********---------********\n";
-                    // std::cout << "enter timeout\n"
-                    //           << std::endl;
                     if (_clientsArr[index].timeoutCgi())
                     {
                         it++;
-                        // std::cout << "timeout cgi\n"
-                        //           << std::endl;
                         _popPipe(pipeFd);
                     }
                     else
                         it++;
-                    // std::cout << "end timeout\n"
-                    //           << std::endl;
                 }
             }
             // if (_clientIdByFd.size());// add logic of client timeout

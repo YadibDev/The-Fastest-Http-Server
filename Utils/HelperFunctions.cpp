@@ -608,18 +608,18 @@ const char *HelperFunctions::GetType(const std::string &Type)
 
 void HelperFunctions::StoredBodys()
  {
-	_Body[200] = "Body200";
-	_Body[201] = "Body201";
-	_Body[204] = "Body204";
-	_Body[301] = "Body301";
-	_Body[302] = "Body302";
-	_Body[400] = "Body400";
-	_Body[403] = "Body403";
-	_Body[404] = "Body404";
-	_Body[500] = "Body500";
-	_Body[501] = "Body501";
-	_Body[502] = "Body502";
-	_Body[504] = "Body504(Gateway Timeout)";
+	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
+	_Body[201] = "html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
+	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
+	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
+	_Body[302] = "<html><head><title>302 found</title></head><body><center><h1>302 found</h1></center><hr><center>faste server</center></body></html";
+	_Body[400] = "<html><head><title>400 Bad Request</title></head><body><center><h1>400 Bad Request</h1></center><hr><center>faste server</center></body></html>";
+	_Body[403] = "<html><head><title>Status_Code Status_Message</title></head><body><center><h1>Status_Code Status_Message</h1></center><hr><center>faste server</center></body></html>";
+	_Body[404] = "<html><head><title>404 Not Foud</title></head><body><center><h1>Status_Code Status_Message</h1></center><hr><center>faste server</center></body></html>";
+	_Body[500] = "<html><head><title>500 Internal Server Error</title></head><body><center><h1>500 Internal Server Error</h1></center><hr><center>faste server</center></body></html>";
+	_Body[501] = "<html><head><title>501 Not Implemented</title></head><body><center><h1>501 Not Implemented</h1></center><hr><center>faste server</center></body></html>";
+	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
+	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
  
  }
  void HelperFunctions::StoredMessage()
