@@ -619,7 +619,7 @@ void HelperFunctions::StoredBodys()
 	_Body[500] = "Body500";
 	_Body[501] = "Body501";
 	_Body[502] = "Body502";
-	_Body[504] = "Body504(Gateway Timeout)";
+	_Body[504] = "Body504";
  
  }
  void HelperFunctions::StoredMessage()

@@ -1,11 +1,13 @@
 #include <unistd.h>
-
+#include "Utils/HelperFunctions.hpp"
+unsigned enum  hh{LL, kk, BB};
 int main() {
-    char *args[] = {"/usr/bin/python3", "cgi-bin/script.py", NULL};  // arguments
-    char *env[] = {NULL};                   // environment (empty here)
-
-    execve("/usr/bin/python3", args, env);
-
+   
+    // int i = 100;
+    unsigned int Arr[10];
+    HelperFunctions::ft_memset(&Arr, -1, sizeof(Arr));
+    for (int i = 0; i < 10; i++)
+        std::cout << Arr[i] << std::endl;
     // If execve returns, it means an error occurred
-    return 1;
+    return 0;
 }

@@ -312,31 +312,31 @@ void clsClient::freeRessources()
 
 void clsClient::logs()
 {
-    string arr[3] = {"GET", "POST", "DELETE"};
-    std::cout << "\n================= log start =================" << std::endl;
-    const RequestLine &reqLine = _Requester.getRequestLine();
-    std::cout << arr[(int)reqLine.getMethod()] << " ";
-    for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
-        std::cout << reqLine.getRequestURI().getPath().Data[i];
-    std::cout << " ";
-    for (int i = 0; i < reqLine.getVersion().len; i++)
-        std::cout << reqLine.getVersion().Data[i];
-    for (int i = 0; i < 6; i++)
-    {
-        if (this->_theData.known_headers[i].Hash != -1)
-        {
-            cout << std::endl;
-            for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
-                std::cout << this->_theData.known_headers[i].key.Data[i];
-            std::cout << ": ";
-            for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
-                std::cout << this->_theData.known_headers[i].val.Data[i];
-        }
-    }
-    std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
-    std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
-    std::cout << "\n================= log end =================\n"
-              << std::endl;
+    // string arr[3] = {"GET", "POST", "DELETE"};
+    // std::cout << "\n================= log start =================" << std::endl;
+    // const RequestLine &reqLine = _Requester.getRequestLine();
+    // std::cout << arr[(int)reqLine.getMethod()] << " ";
+    // for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+    //     std::cout << reqLine.getRequestURI().getPath().Data[i];
+    // std::cout << " ";
+    // for (int i = 0; i < reqLine.getVersion().len; i++)
+    //     std::cout << reqLine.getVersion().Data[i];
+    // for (int i = 0; i < 6; i++)
+    // {
+    //     if (this->_theData.known_headers[i].Hash != -1)
+    //     {
+    //         cout << std::endl;
+    //         for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
+    //             std::cout << this->_theData.known_headers[i].key.Data[i];
+    //         std::cout << ": ";
+    //         for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
+    //             std::cout << this->_theData.known_headers[i].val.Data[i];
+    //     }
+    // }
+    // std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
+    // std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+    // std::cout << "\n================= log end =================\n"
+    //           << std::endl;
 }
 
 void clsClient::initializeCGI()
@@ -348,10 +348,10 @@ void clsClient::initializeCGI()
 
 bool clsClient::monitorCgi()
 {
-    static int i = 0;
-    std::cout << "================\n";
-    std::cout << "================\n";
-    std::cout << i++ << endl;
+    // static int i = 0;
+    // std::cout << "================\n";
+    // std::cout << "================\n";
+    // std::cout << i++ << endl;
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
