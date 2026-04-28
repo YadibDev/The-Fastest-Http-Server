@@ -62,7 +62,7 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     unsigned short port = temp.sin_port;
     unsigned int ipV4 = temp.sin_addr.s_addr;
 
-    int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | FD_CLOEXEC , 0);
     if (fdSock == -1)
         throw std::runtime_error("socket system call fail");
 

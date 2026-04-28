@@ -741,11 +741,15 @@ bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
     return false;
 }
 
-int HelperFunctions::changeFileToNonBlocking(int fd)
+int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 {
 	int flags = fcntl(fd, F_GETFL, 0);
 	if (flags == -1)
 		return -1;
+
+	if (closeOnExec)
+		flags |= FD_CLOEXEC;
+
 	flags |= O_NONBLOCK;
 	fcntl(fd, F_SETFL, flags);
 	return 0;

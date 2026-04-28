@@ -10,7 +10,7 @@ CSS = "body{background:linear-gradient(45deg,#0f0c29,#302b63,#24243e);color:#fff
     [sys.stdout.write(t) for t in (
         _('<html lang="en"><head><style>'), CSS, _('</style></head><body><div id="c">'),
         __("Python CGI: The Aesthetic Paradox"),
-        ___("This page was generated via a single-expression lambda chain. It's readable by machines, but designed for the soul."),
+        ___("This page was generated via a single-expression lambda chain. It's readable by machines, but designed for us."),
         _('</div></body></html>')
     )]
 ])(

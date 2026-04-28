@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 12:59:38 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 14:44:10 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void clsResponse::_StoredInFileOrStr()
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
     }
-    int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
+    int FD = open(_FileFromDisk.c_str(), O_RDONLY | FD_CLOEXEC, 644); // add in open FD_CLOEXEC by yadib
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;

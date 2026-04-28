@@ -98,7 +98,7 @@ public:
     static char *GetENV_VAR_CONST(short Index);
     static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
-    static int changeFileToNonBlocking(int fd);
+    static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
     static bool ConvertStrToNum(const char *arr, long &num, short base = 10); //
 private:
     static std::map<std::string, std::string> _TypeContent;

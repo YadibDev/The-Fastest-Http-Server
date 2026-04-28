@@ -110,7 +110,7 @@ int clsClient::_ReadDataForReq()
 
 void clsClient::ProcessRequest()
 {
-   
+
     HttpError error;
     if (_state == BEGIN)
     {
@@ -181,9 +181,9 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         if (_fdRespond == 0)
         {
             if (_Responder.GetModTransferData() == false)
-                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
+                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY | FD_CLOEXEC); // error if fd == -1
             else
-                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY | FD_CLOEXEC); // error if fd == -1
         }
 
         int sizeToRead = _addSizeChunkToStr();
@@ -303,10 +303,15 @@ void clsClient::freeRessources()
     // _monitorCGI.freeCgiRessources();
     // _ResponderProecss.GetclsResponse().Reset();
 
-    
+    std::cout << "===socket===" << std::endl;
+
     std::cout << _socket << std::endl;
     if (this->_socket > 0)
-        close(this->_socket);
+    {
+        std::cout << "close return : " << close(this->_socket) << std::endl;
+    }
+    std::cout << "===socket end===\n"
+              << std::endl;
     _socket = -1;
 }
 
