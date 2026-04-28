@@ -217,7 +217,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
-    if (HelperFunctions::changeFileToNonBlocking(pipe, false) == -1)
+    if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
     {
         std::cout << "========> fcntl fail add pipe <=========\n"
                   << std::endl;

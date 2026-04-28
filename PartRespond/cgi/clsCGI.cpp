@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 14:44:32 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/28 18:24:36 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
     close(_pip[0]);
-    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY | FD_CLOEXEC, 644);
+    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY | O_CLOEXEC, 644);
     // if (Fd < 0)
     // {
     //     close(_pip[1]);
