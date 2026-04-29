@@ -77,9 +77,9 @@ public:
 
         if (reads == 0 || (stateProcess == stEventProcess::THE_END && reads < bufferSize))
         {
-            std::cout << "=========\n";
-            std::cout << "process end with success return 0\n\n";
-            std::cout << "=========\n";
+            // std::cout << "=========\n";
+            // std::cout << "process end with success return 0\n\n";
+            // std::cout << "=========\n";
             if (reads == 0)
                 stateProcess = stEventProcess::THE_END;
             close(pipe);

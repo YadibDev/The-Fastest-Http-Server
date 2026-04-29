@@ -110,7 +110,7 @@ int clsClient::_ReadDataForReq()
 
 void clsClient::ProcessRequest()
 {
-   
+
     HttpError error;
     if (_state == BEGIN)
     {
@@ -181,9 +181,9 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         if (_fdRespond == 0)
         {
             if (_Responder.GetModTransferData() == false)
-                _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY); // error if fd == -1
+                _fdRespond = open(_Responder.GetFileName().c_str(), (O_RDONLY | O_CLOEXEC)); // error if fd == -1
             else
-                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY); // error if fd == -1
+                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY | O_CLOEXEC); // error if fd == -1
         }
 
         int sizeToRead = _addSizeChunkToStr();
@@ -303,10 +303,12 @@ void clsClient::freeRessources()
     // _monitorCGI.freeCgiRessources();
     // _ResponderProecss.GetclsResponse().Reset();
 
-    
-    std::cout << _socket << std::endl;
+    // std::cout << "===socket===" << std::endl;
+
+    // std::cout << _socket << std::endl;
     if (this->_socket > 0)
-        close(this->_socket);
+         close(this->_socket);
+    // std::cout << "===socket end===\n"<< std::endl;
     _socket = -1;
 }
 
@@ -326,11 +328,11 @@ void clsClient::logs()
     //     if (this->_theData.known_headers[i].Hash != -1)
     //     {
     //         cout << std::endl;
-    //         for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
-    //             std::cout << this->_theData.known_headers[i].key.Data[i];
-    //         std::cout << ": ";
-    //         for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
-    //             std::cout << this->_theData.known_headers[i].val.Data[i];
+    //         // for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
+    //         //     std::cout << this->_theData.known_headers[i].key.Data[i];
+    //         // std::cout << ": ";
+    //         // for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
+    //         //     std::cout << this->_theData.known_headers[i].val.Data[i];
     //     }
     // }
     // std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
@@ -350,8 +352,9 @@ bool clsClient::monitorCgi()
 {
     // static int i = 0;
     // std::cout << "================\n";
-    // std::cout << "================\n";
     // std::cout << i++ << endl;
+    // std::cout << "================\n";
+
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();

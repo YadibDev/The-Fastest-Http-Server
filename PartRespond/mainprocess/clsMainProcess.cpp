@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 14:32:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 06:20:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
     if (_eventProcess == stEventProcess::THE_END)
         parseCgi.SetProcessIsFinish(true);
-
     if (Length > 0 || _eventProcess == stEventProcess::THE_END)
         parseCgi.ReceivingData(Buffer, Length);
     if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
@@ -68,6 +67,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
+        _ErrorPage.Reset();
         _ErrorPage.ResponseError(_eventProcess, "");
         _Response.SetBodyPointer(&_ErrorPage.GetBody());
         _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
@@ -81,12 +81,12 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
+     std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
     if (!_RunCGI)
     {
         _CGI.RunCGI();
         if (!_CGI.GetErno())
         {
-            std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
             _RunCGI = _CGI.GetIsRunCGI();
             _eventProcess = stEventProcess::RUNINNG;
         }

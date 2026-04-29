@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 23:40:54 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 15:21:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
     close(_pip[0]);
-    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
+    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY | O_CLOEXEC, 644);
     // if (Fd < 0)
     // {
     //     close(_pip[1]);
@@ -239,6 +239,7 @@ bool clsCGI::_childeProcesse()
     // }
     // if (dup2(Fd, 0) == -1)
     //     return (close(Fd), close(_pip[1]), true);
+    chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);

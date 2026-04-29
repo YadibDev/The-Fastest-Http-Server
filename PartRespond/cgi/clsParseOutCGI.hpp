@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsParseOutCGI.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 13:01:16 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 06:12:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ struct stHeadersCGI
 class clsParseOutCGI
 {
     stMod::eMod _Mod[10];
-    stHeadersCGI::eHeaders _ExistHeaders[3];
+    stHeadersCGI::eHeaders _ExistHeaders[4];
     bool _FoundBody;
     bool _Erno;
     std::string _InternalRedirectSrc;
