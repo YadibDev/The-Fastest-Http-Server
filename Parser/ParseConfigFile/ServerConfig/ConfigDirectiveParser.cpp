@@ -326,15 +326,12 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 void	ConfigDirectiveParser::DefineUri(s_uri_entry &uri, const std::map<std::string, std::string> &cgi_pass)
 {
-	
-	if (ExtractCgiMetadata(uri, cgi_pass))
-		uri.flags |= CaseOfUri::U_CGI;
 	if (uri.getPath()[0] == '/')
-		uri.flags |= CaseOfUri::U_ABS_PATH;
+		uri.flags.is_abs_path = true;
 	else if (UriParser::isAbsoluteURI(uri.getPath()))
-		uri.flags |= CaseOfUri::U_ABS_URI;
+		uri.flags.is_abs_uri = true;
 	else
-		uri.flags |= CaseOfUri::U_RELATIVE;
+		uri.flags.is_relative = true;
 }
 
 unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char unit, HttpError& error) {

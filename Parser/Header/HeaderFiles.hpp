@@ -21,14 +21,28 @@
 #include <vector>
 
 
-struct CaseOfUri {
-	enum e_uri_flags {
-		U_RELATIVE      = 1 << 0,
-		U_ABS_PATH      = 1 << 1,
-		U_CGI           = 1 << 2,
-		U_ABS_URI       = 1 << 3,
-		U_DIR           = 1 << 4,
-		U_FILE          = 1 << 5 
+struct UriStatus {
+	bool is_relative   : 1;
+	bool is_abs_path   : 1;
+	bool is_cgi        : 1;
+	bool is_abs_uri    : 1;
+	bool is_dir        : 1;
+	bool is_file       : 1;
+	bool is_symlink    : 1;
+
+	bool can_read      : 1;
+	bool can_write     : 1;
+	bool can_execute   : 1;
+
+	bool exists        : 1;
+};
+
+struct sPathType {
+	enum e_path_type {
+	    PATH_NOT_FOUND = 0,
+	    PATH_FILE      = 1,
+	    PATH_DIR       = 2,
+	    PATH_OTHER     = 3
 	};
 };
 
@@ -78,12 +92,13 @@ struct stlocation {
 
 struct s_uri_entry {
 	std::string     raw_path;
-	uint32_t        flags;
+	UriStatus       flags;
 	s_view          sv_raw_path;
 	uint8_t         redirect_count;
 
-	s_uri_entry() : raw_path(""), flags(0)
+	s_uri_entry() : raw_path("")
 	{
+		memset(&flags, 0, sizeof(flags));
 		sv_raw_path.Data = NULL;
 		sv_raw_path.len = 0;
 		redirect_count = 0;
@@ -108,17 +123,17 @@ struct s_uri_entry {
 };
 
 struct stReturnData {    
-    short       code;
-    s_uri_entry value;
+	short       code;
+	s_uri_entry value;
 
-    stReturnData() : code(-1) { }
+	stReturnData() : code(-1) { }
 };
 
 struct stErrorPagedata {
-    short       response;
-    s_uri_entry uri;
+	short       response;
+	s_uri_entry uri;
 
-    stErrorPagedata() : response(-1){ }
+	stErrorPagedata() : response(-1){ }
 };
 
 #endif

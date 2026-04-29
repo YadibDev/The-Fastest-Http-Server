@@ -8,8 +8,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((host, port))
 
 request = (
-    f"GET {path} HTTP/1.1\r\n"
-    f"Host: {host}:{port}\r\n"
+    f"G ET {path} HTTP/1.1\r\n"
+    f"Host: {host}:8081\r\n"
     f"Connection: close\r\n"
     f"\r\n"
 )

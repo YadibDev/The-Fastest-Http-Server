@@ -10,6 +10,7 @@
 #include <string>
 
 #define MAX_PATH_LEN 4096
+#define INTERNALE_LOOP 10
 
 class RequestHandler {
 private:
@@ -21,7 +22,7 @@ private:
 	s_view								_version;
 	s_view								_PathInfo;
 	s_view								_ScriptName;
-	s_view								_ServerPort;
+	std::string							_ServerPort;
 	std::string							_PathTranslated;
 	stReturnData						_return;
 	std::string							_body;
@@ -45,7 +46,7 @@ public:
 	void					setVersion(const s_view version);
 	void					setPathInfo(s_view pathInfo);
 	void					setPathTranslated(std::string pathTranslated);
-	void					setServerPort(const s_view serverPort);
+	void					setServerPort(const std::string &serverPort);
 	void					setMethod(HttpTables::eMethod method);
 	void					setAllowedMethods(uint8_t allowed);
 	void					setHeader(HeaderTable	_Header);
@@ -71,7 +72,7 @@ public:
 	const s_view&			getScriptName() const;
 	const s_view&			getPathInfo() const;
     const std::string&		getPathTranslated() const;
-    const s_view&			getServerPort() const;
+    const std::string		&getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
 	const std::string*		getPathCgi() const;

@@ -26,13 +26,15 @@ class ProcessRequestHandler
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
 	s_view							uri);
-	static bool					handlePath(const clsLocation* bestLocation,
-									const clsServerConfig* serverConfig,
-									RequestHandler* handler,
-									const s_view &requestUri,
-									HttpError	&error);
+	static bool 				handlePath(const clsLocation* bestLocation,
+										const clsServerConfig* serverConfig,
+										RequestHandler* handler,
+										s_uri_entry& newUri,
+										HttpError &error)
 	static bool					handleCgi(const clsLocation* bestLocation, RequestHandler* handler,
 												const s_view &requestUri, char *PhysicalPath);
+	static stReturnData			buildReturnFromPathAndStatus(s_uri_entry& newUri, short codeStatus, s_view &Host, const std::string &Port);
+	static void					convertToAbsUri(s_uri_entry& entry, const s_view& host, const std::string& port);
 
 
 

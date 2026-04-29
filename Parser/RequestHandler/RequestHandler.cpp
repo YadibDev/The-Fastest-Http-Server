@@ -131,7 +131,7 @@ void RequestHandler::setPathTranslated(std::string pathTranslated) {
 	_PathTranslated = pathTranslated;
 }
 
-void RequestHandler::setServerPort(const s_view serverPort) {
+void RequestHandler::setServerPort(const std::string &serverPort) {
 	_ServerPort = serverPort;
 }
 
@@ -175,7 +175,7 @@ const std::string &RequestHandler::getPathTranslated() const {
 	return _PathTranslated;
 }
 
-const s_view& RequestHandler::getServerPort() const {
+const std::string &RequestHandler::getServerPort() const {
 	return _ServerPort;
 }
 
