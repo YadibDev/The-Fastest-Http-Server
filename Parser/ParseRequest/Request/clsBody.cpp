@@ -42,7 +42,7 @@ void clsBody::Reset()
 }
 
 // working on normal body without chunk
-bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
+bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
     uint16_t &offset = *off;
 
@@ -69,7 +69,16 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
             }
         }
 
-        fd = mkstemp(&_fileName[0]);
+        
+        if (isCgi)
+            fd = mkstemp(&_fileName[0]);
+        else
+        {
+            std::cout <<  "path: ==> "<< path << std::endl;
+            fd = open(path , O_CLOEXEC | O_WRONLY | O_TRUNC);
+            std::cout << "fd ==> " << fd << std::endl;
+        }
+
         if (fd == -1)
         {
             _errorPage.setStatus(500, "Internal Server Error:");

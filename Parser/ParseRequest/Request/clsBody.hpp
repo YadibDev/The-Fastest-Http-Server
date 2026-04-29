@@ -55,7 +55,7 @@ public:
     const std::string &getFileName() const;
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
-    bool bodyHandler(uint16_t *off, const size_t &maxBodySize);
+    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path);
     void ParseBody(uint16_t &offset, const size_t &maxBodySize);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);

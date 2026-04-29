@@ -83,6 +83,8 @@ bool RequestParser::ParseHeader(uint16_t size)
 
 bool RequestParser::ParseBody(uint16_t size)
 {
+	bool isCgi = false;
+
 	if (_body.getState() == clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
 	{
 		if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
@@ -101,9 +103,11 @@ bool RequestParser::ParseBody(uint16_t size)
 		size++;
 		memcpy(_request.io_chunk, &_request.request_metadata[_offset], size - _offset);
 		*_request.read_body_ptr = size - _offset;
+		if (_RequestHandler->getPathCgi())
+			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
 	}
 
-	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize());
+	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());
 
 	if (_body.getState() == clsBody::DONE_GOOD)
 	{
