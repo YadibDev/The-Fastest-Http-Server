@@ -116,12 +116,11 @@ bool RequestParser::ParseBody(uint16_t size)
 	}
 
 	return true;
-	;
 }
 
 bool RequestParser::Parse(uint16_t size)
 {
-	if (size >= SIZE_BUFFER)
+	if (size >= SIZE_BUFFER && _state != STATE_BODY)
 		return (_error.setStatus(413, "Content Too Large"), false);
 
 	while (_offset <= size)
@@ -133,6 +132,8 @@ bool RequestParser::Parse(uint16_t size)
 		else if (_state == STATE_BODY)
 		{
 			ParseBody(size);
+			if (_state == STATE_BODY)
+				break;
 		}
 		else
 			break;

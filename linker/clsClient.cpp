@@ -1,6 +1,6 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 8192
+#define CHUNK_LIMIT SIZE_BUFFER
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
@@ -90,22 +90,22 @@ int clsClient::_ReadDataForReq()
     if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
-        size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.request_metadata[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
 
-        if (size == 0 && (8192 - idx) > 0)
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
             _state = CONNECTION_CLOSED;
     }
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
         // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
-        size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
 
-        if (size == 0 && (8192 - idx) > 0)
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
             _state = CONNECTION_CLOSED;
     }
     
@@ -120,6 +120,7 @@ void clsClient::ProcessRequest()
     if (_state == BEGIN)
     {
         ResetAll();
+        std::cout << "BEGIN===========\n" << std::endl;;
         _state = REQUEST_MODE;
     }
 
@@ -308,15 +309,10 @@ void clsClient::freeRessources()
     // _monitorCGI.freeCgiRessources();
     // _ResponderProecss.GetclsResponse().Reset();
 
-    std::cout << "===socket===" << std::endl;
-
-    std::cout << _socket << std::endl;
     if (this->_socket > 0)
     {
-        std::cout << "close return : " << close(this->_socket) << std::endl;
+        close(this->_socket);
     }
-    std::cout << "===socket end===\n"
-              << std::endl;
     _socket = -1;
 }
 

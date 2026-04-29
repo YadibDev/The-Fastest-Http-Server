@@ -1,7 +1,5 @@
 #include "clsBody.hpp"
 
-#define MAX_BODY_RAM 8100
-
 // geters
 
 #define DEFAULT_TEMP "/goinfre/yadib/The-Fastest-Http-Server/temp/fileXXXXXX"
@@ -85,7 +83,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize)
     return true;
 }
 
-void clsBody::readSizeChunk(uint16_t &ofset, bool &error)
+void clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
 {
     char *arr = data.io_chunk;
     uint16_t &cur = chunkHelp.cur;
@@ -96,25 +94,32 @@ void clsBody::readSizeChunk(uint16_t &ofset, bool &error)
     if (arr[t] == '\r')
     {
         if (t + 1 < ofset && arr[t + 1] != '\n')
+        {
+            _errorPage.setStatus(400, "Bad Request");
             error = true;
+            _state = clsBody::DONE_WIHTERROR;
+        }
         else if (t + 1 < ofset && arr[t + 1] == '\n')
         {
             t += 2;
-            char *end;
-            size = strtol(&arr[cur], &end, 16);
-            if (end[0] != '\r')
-                error = true;
-            else if (size == 0)
+            totRemoves += t - cur;
+            if (HelperFunctions::ConvertStrToNum(&arr[cur], size, 16) == false)
             {
-                _state = clsBody::DONE_GOOD;
-                return;
+                _errorPage.setStatus(400, "Bad Request");
+                error = true;
+                _state = clsBody::DONE_WIHTERROR;
             }
+            else if (size == 0)
+                _state = clsBody::DONE_GOOD;
+
             readSize = false;
             cur = t;
         }
     }
     else
+    {
         t++;
+    }
 }
 
 void clsBody::_handleChunk(uint16_t &ofset)
@@ -126,11 +131,14 @@ void clsBody::_handleChunk(uint16_t &ofset)
     bool &readSize = chunkHelp.readsize;
     uint16_t &size = chunkHelp.size;
     bool error = false;
+    short totRemoves = 0;
+
+    std::cout << "stroe chunk chunk body\n" << std::endl;
 
     while (cur < ofset && t < ofset)
     {
         if (readSize)
-            readSizeChunk(ofset, error);
+            readSizeChunk(ofset, error, totRemoves);
         else
         {
             while (t < ofset && size)
@@ -147,8 +155,8 @@ void clsBody::_handleChunk(uint16_t &ofset)
                     error = true;
                     break;
                 }
-
                 t += temp;
+                totRemoves += temp;
                 size -= temp;
             }
             if (t + 1 < ofset && size <= 0)
@@ -160,8 +168,8 @@ void clsBody::_handleChunk(uint16_t &ofset)
                 }
                 else
                 {
-                    // add special case
                     t += 2;
+                    totRemoves += 2;
                     cur = t;
                     readSize = true;
                 }
@@ -173,6 +181,13 @@ void clsBody::_handleChunk(uint16_t &ofset)
             return;
         }
     }
+    std::cout << "shifting Data\n" << std::endl;
+    std::cout << "fd ==> " << this->fd << std::endl;
+    std::cout << "ofset ==> " << ofset << std::endl;
+    std::cout << "t ==> " << t << std::endl;
+    std::cout << "removes byes ==> " << totRemoves << std::endl;
+    shiftingData(arr, ofset, (ofset - totRemoves));
+    ofset -= totRemoves;
 }
 
 void clsBody::shiftingData(char *src, int offset, int sizeShift)
@@ -185,7 +200,7 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-
+    std::cout << "stroe normal body\n" << std::endl;
     int temp = write(this->fd, data.io_chunk, offset); // i will change this
     if (temp == -1)
     {
@@ -195,6 +210,8 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     }
 
     writeSize += temp;
+    std::cout << "write size =====> " << writeSize << std::endl;
+    std::cout << "_contentLength size =====> " << _contentLength << std::endl;
     offset -= temp;
 
     if (offset > 0)

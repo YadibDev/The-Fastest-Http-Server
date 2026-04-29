@@ -99,7 +99,16 @@ public:
     static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
-    static bool ConvertStrToNum(const char *arr, long &num, short base = 10); //
+
+    template<typename T>
+    static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
+    {
+        char *end;
+        num = strtol(arr, &end, base);
+        if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+            return false;
+        return true;
+    }
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

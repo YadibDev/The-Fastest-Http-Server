@@ -61,7 +61,7 @@ public:
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
     HttpError getError();
-   void readSizeChunk(uint16_t &ofset, bool &error);
+   void readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
 
 };
 

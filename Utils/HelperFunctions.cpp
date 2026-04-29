@@ -764,11 +764,3 @@ int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 	return 0;
 }
 
-bool HelperFunctions::ConvertStrToNum(const char *arr, long &num, short base)
-{
-	char *end;
-	num = strtol(arr, &end, base);
-	if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
-		return false;
-	return true;
-}
