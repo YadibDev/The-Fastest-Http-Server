@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 16:42:06 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 18:06:58 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,7 +383,10 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
     }
     else if (_BytesBody > MAX_BODY)
+    {
+        _BytesBody += Length;
         write(_Fdout, Arr, Length);
+    }
 }
 
 void clsParseOutCGI::_StoredInFileOrStr()
@@ -457,6 +460,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
     }
     else
         close(_Fdout);
+    std::cout << "----> " << _BytesBody << std::endl;
     if (_ExistHeaders[stHeadersCGI::LOCATION] == stHeadersCGI::LOCATION)
     {
         _Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
