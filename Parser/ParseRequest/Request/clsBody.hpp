@@ -39,6 +39,9 @@ public: // time to debug
     long    _contentLength;
     bool _isChunk;
     void _handleChunk(uint16_t &ofset);
+    bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
+    bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
+
 public:
     enum step
     {
@@ -55,13 +58,12 @@ public:
     const std::string &getFileName() const;
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
-    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path);
+    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path);
     void ParseBody(uint16_t &offset, const size_t &maxBodySize);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
     HttpError getError();
-   void readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
 
 };
 

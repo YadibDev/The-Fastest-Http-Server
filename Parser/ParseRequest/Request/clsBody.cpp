@@ -42,7 +42,7 @@ void clsBody::Reset()
 }
 
 // working on normal body without chunk
-bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
+bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path)
 {
     uint16_t &offset = *off;
 
@@ -73,11 +73,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         if (isCgi)
             fd = mkstemp(&_fileName[0]);
         else
-        {
-            std::cout <<  "path: ==> "<< path << std::endl;
-            fd = open(path , O_CLOEXEC | O_WRONLY | O_TRUNC);
-            std::cout << "fd ==> " << fd << std::endl;
-        }
+            fd = open(path , O_CREAT | O_CLOEXEC | O_WRONLY | O_TRUNC, 0644); // i may change this
 
         if (fd == -1)
         {
@@ -92,7 +88,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
     return true;
 }
 
-void clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
+bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
 {
     char *arr = data.io_chunk;
     uint16_t &cur = chunkHelp.cur;
@@ -124,11 +120,14 @@ void clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
             readSize = false;
             cur = t;
         }
+        else
+            return true;
     }
     else
     {
         t++;
     }
+    return false;
 }
 
 void clsBody::_handleChunk(uint16_t &ofset)
@@ -147,27 +146,26 @@ void clsBody::_handleChunk(uint16_t &ofset)
     while (cur < ofset && t < ofset)
     {
         if (readSize)
-            readSizeChunk(ofset, error, totRemoves);
+        {
+            if (readSizeChunk(ofset, error, totRemoves) == true)
+                break ;
+        }
         else
         {
-            while (t < ofset && size)
+            int temp;
+            if (ofset - t < size)
+                temp = write(this->fd, &arr[t], ofset - t);
+            else
+                temp = write(this->fd, &arr[t], size);
+            if (temp == -1)
             {
-                int temp;
-
-                if (ofset - t < size)
-                    temp = write(this->fd, &arr[t], ofset - t);
-                else
-                    temp = write(this->fd, &arr[t], size);
-                if (temp == -1)
-                {
-                    _errorPage.setStatus(500, "Internal Server Error:");
-                    error = true;
-                    break;
-                }
-                t += temp;
-                totRemoves += temp;
-                size -= temp;
+                _errorPage.setStatus(500, "Internal Server Error:");
+                error = true;
+                break;
             }
+            t += temp;
+            totRemoves += temp;
+            size -= temp;
             if (t + 1 < ofset && size <= 0)
             {
                 if (arr[t] != '\r' || arr[t + 1] != '\n')
@@ -195,7 +193,7 @@ void clsBody::_handleChunk(uint16_t &ofset)
     std::cout << "ofset ==> " << ofset << std::endl;
     std::cout << "t ==> " << t << std::endl;
     std::cout << "removes byes ==> " << totRemoves << std::endl;
-    shiftingData(arr, ofset, (ofset - totRemoves));
+    shiftingData(arr, totRemoves, (ofset - totRemoves)); // add tot removes > 0 before do this
     ofset -= totRemoves;
 }
 
