@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 18:51:45 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:07:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ void clsErrorPage::Reset()
     return _IsConnection;
  }
 
-int clsErrorPage::GetBodySize() const
+size_t clsErrorPage::GetBodySize() const
 {
     return this->_BodySize;
 }

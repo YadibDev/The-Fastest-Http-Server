@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 06:12:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:06:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class clsParseOutCGI
     std::string _InternalRedirectSrc;
     short _Status;
     short _Counter;
-    int _BytesBody;
+    size_t _BytesBody;
     bool _IsConnectoin;
     bool _ProcessIsFinish;
     std::string _Body;
@@ -100,7 +100,7 @@ public:
     bool GetErno();
     std::string &GetInternalRedirectSrc();
     short GetStatus();
-    short GetSizeBody();
+    size_t GetSizeBody();
     bool GetIsConnection();
     void Reset();
 

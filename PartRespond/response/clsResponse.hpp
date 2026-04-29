@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 17:02:29 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 20:09:13 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ class clsResponse
     private:
         stMod::eMod _Mod[10];
         short _Status;
-        short _MaxSizeHeader;
-        int _MaxSizeBody;
-        int _BodySize;
+        size_t _BodySize;
         int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
@@ -76,7 +74,7 @@ class clsResponse
         void SetInternalRedirectSrc(const std::string &InternalRedirectSrc);
         std::string &GetInternalRedirectSrc();
         bool GetModTransferData() const;
-        int GetSizeBody() const;
+        size_t GetSizeBody() const;
         void SetSizeBody(int size);
         void SetIsConnection(bool IsConnection);
 

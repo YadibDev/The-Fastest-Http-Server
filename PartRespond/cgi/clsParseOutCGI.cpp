@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 18:06:58 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:05:49 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -573,7 +573,7 @@ void clsParseOutCGI::Reset()
     HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }
 
-short clsParseOutCGI::GetSizeBody()
+size_t clsParseOutCGI::GetSizeBody()
 {
     return _BytesBody;
 }
