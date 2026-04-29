@@ -69,11 +69,10 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
             }
         }
 
-        
         if (isCgi)
             fd = mkstemp(&_fileName[0]);
         else
-            fd = open(path , O_CREAT | O_CLOEXEC | O_WRONLY | O_TRUNC, 0644); // i may change this
+            fd = open(path, O_CREAT | O_CLOEXEC | O_WRONLY | O_TRUNC, 0644); // i may change this
 
         if (fd == -1)
         {
@@ -130,6 +129,52 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
     return false;
 }
 
+bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
+{
+    char *arr = data.io_chunk;
+    uint16_t &cur = chunkHelp.cur;
+    uint16_t &t = chunkHelp.trav;
+    bool &readSize = chunkHelp.readsize;
+    uint16_t &size = chunkHelp.size;
+
+    int temp;
+    if (ofset - t < size)
+        temp = write(this->fd, &arr[t], ofset - t);
+    else
+        temp = write(this->fd, &arr[t], size);
+
+    if (temp == -1)
+    {
+        _errorPage.setStatus(500, "Internal Server Error:");
+        error = true;
+        return false;  // error so we end the function
+    }
+
+    t += temp;
+    totRemoves += temp;
+    size -= temp;
+
+    if (t + 1 < ofset && size <= 0)
+    {
+        if (arr[t] != '\r' || arr[t + 1] != '\n')
+        {
+            _errorPage.setStatus(400, "Bad Request");
+            error = true;
+            return false;  // error so we end the function
+        }
+        else
+        {
+            t += 2;
+            totRemoves += 2;
+            cur = t;
+            readSize = true;
+        }
+    }
+    else if (t + 1 >= ofset)
+        return true;
+    
+    return false;
+}
 void clsBody::_handleChunk(uint16_t &ofset)
 {
     // pointing to data
@@ -141,46 +186,20 @@ void clsBody::_handleChunk(uint16_t &ofset)
     bool error = false;
     short totRemoves = 0;
 
-    std::cout << "stroe chunk chunk body\n" << std::endl;
+    std::cout << "stroe chunk chunk body\n"
+              << std::endl;
 
     while (cur < ofset && t < ofset)
     {
         if (readSize)
         {
             if (readSizeChunk(ofset, error, totRemoves) == true)
-                break ;
+                break;
         }
         else
         {
-            int temp;
-            if (ofset - t < size)
-                temp = write(this->fd, &arr[t], ofset - t);
-            else
-                temp = write(this->fd, &arr[t], size);
-            if (temp == -1)
-            {
-                _errorPage.setStatus(500, "Internal Server Error:");
-                error = true;
+            if (_saveChunkBody(ofset, error, totRemoves))
                 break;
-            }
-            t += temp;
-            totRemoves += temp;
-            size -= temp;
-            if (t + 1 < ofset && size <= 0)
-            {
-                if (arr[t] != '\r' || arr[t + 1] != '\n')
-                {
-                    _errorPage.setStatus(400, "Bad Request");
-                    error = true;
-                }
-                else
-                {
-                    t += 2;
-                    totRemoves += 2;
-                    cur = t;
-                    readSize = true;
-                }
-            }
         }
         if (error)
         {
@@ -188,13 +207,16 @@ void clsBody::_handleChunk(uint16_t &ofset)
             return;
         }
     }
-    std::cout << "shifting Data\n" << std::endl;
+    std::cout << "shifting Data\n"
+              << std::endl;
     std::cout << "fd ==> " << this->fd << std::endl;
     std::cout << "ofset ==> " << ofset << std::endl;
     std::cout << "t ==> " << t << std::endl;
     std::cout << "removes byes ==> " << totRemoves << std::endl;
     shiftingData(arr, totRemoves, (ofset - totRemoves)); // add tot removes > 0 before do this
     ofset -= totRemoves;
+    cur = 0;
+    t -= totRemoves;
 }
 
 void clsBody::shiftingData(char *src, int offset, int sizeShift)
@@ -207,7 +229,8 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    std::cout << "stroe normal body\n" << std::endl;
+    std::cout << "stroe normal body\n"
+              << std::endl;
     int temp = write(this->fd, data.io_chunk, offset); // i will change this
     if (temp == -1)
     {

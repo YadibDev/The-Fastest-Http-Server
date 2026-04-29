@@ -40,8 +40,7 @@ public: // time to debug
     bool _isChunk;
     void _handleChunk(uint16_t &ofset);
     bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
-    bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
-
+    bool _saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves);
 public:
     enum step
     {

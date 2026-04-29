@@ -15,14 +15,14 @@ int main()
 
     stData.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash = 1;
 
-    int fd = open("/home/yadib/goinfre/The-Fastest-Http-Server/Parser/ParseRequest/Request/request.txt", O_RDONLY | O_CREAT);
+    int fd = open("/home/yadib/goinfre/The-Fastest-Http-Server/Parser/ParseRequest/Request/video.txt", O_RDONLY | O_CREAT);
 
     int len = 30281;
     const size_t maxBody = 100000;
     while (1)
     {
         srand(time(NULL));
-        int size = read(fd, &stData.io_chunk[offset], 1);
+        int size = read(fd, &stData.io_chunk[offset], SIZE_BUFFER - offset);
         if (size == 0)
         {
             std::cout << "file is reades\n\n";
@@ -34,7 +34,7 @@ int main()
             std::cout << "ofset == > " << offset << std::endl;
         }
 
-        bodyParser.bodyHandler(&offset, maxBody, false, "/home/yadib/goinfre/The-Fastest-Http-Server/Parser/ParseRequest/Request/file.json");
+        bodyParser.bodyHandler(&offset, maxBody, false, "/home/yadib/goinfre/The-Fastest-Http-Server/Parser/ParseRequest/Request/result2.mp4");
 
         if (bodyParser.getState() == clsBody::DONE_GOOD)
         {
