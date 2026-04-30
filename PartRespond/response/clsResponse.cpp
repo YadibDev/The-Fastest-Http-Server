@@ -73,7 +73,7 @@ void clsResponse::_InitialHeaders()
             _Redirction();
         else
         {
-            _Body = _DataRequest.getReturn().value;
+            _Body = _DataRequest.getReturn().value.raw_path;
             _BodySize = _Body.size();
         }
     }
@@ -160,7 +160,7 @@ void clsResponse::_Transfer_Encoding()
 void clsResponse::_Redirction()
 {
    _HeaderFeild += "Location: ";
-   _HeaderFeild += _DataRequest.getReturn().value;
+   _HeaderFeild += _DataRequest.getReturn().value.raw_path;
    _HeaderFeild += "\r\n";
 }
 void clsResponse::_Date()
