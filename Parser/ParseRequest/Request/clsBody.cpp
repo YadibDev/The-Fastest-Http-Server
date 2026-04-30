@@ -182,7 +182,6 @@ void clsBody::_handleChunk(uint16_t &ofset)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    uint16_t &size = chunkHelp.size;
     bool error = false;
     short totRemoves = 0;
 

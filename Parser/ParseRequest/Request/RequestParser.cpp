@@ -101,7 +101,8 @@ bool RequestParser::ParseBody(uint16_t size)
 			return false;
 		}
 		size++;
-		memcpy(_request.io_chunk, (_request.request_metadata + _offset), size - _offset);
+		memcpy(_request.io_chunk, (&_request.request_metadata[_offset]), size - _offset);
+		_request.request_metadata[_offset - 1] = '\0'; // end request headers here
 		*_request.read_body_ptr = size - _offset;
 		if (_RequestHandler->getPathCgi())
 			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
