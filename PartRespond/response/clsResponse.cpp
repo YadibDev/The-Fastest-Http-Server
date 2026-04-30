@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 18:24:55 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 20:12:12 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ void clsResponse::Reset()
     _SizeHeaders = 0;
     _Type = "";
     _IsConnection = true;
-    this->_ErrorPage.Reset();
+    _ErrorPage.Reset();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
@@ -308,7 +308,7 @@ void clsResponse::SetSizeBody(int size)
     _IsConnection = IsConnection;
  }
 
-int clsResponse::GetSizeBody() const
+size_t clsResponse::GetSizeBody() const
 {
     return (_BodySize);
 }

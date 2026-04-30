@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98 #  -fsanitize=address 
+CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98   -fsanitize=address 
 NAME = webserv
 
 # -fsanitize=address

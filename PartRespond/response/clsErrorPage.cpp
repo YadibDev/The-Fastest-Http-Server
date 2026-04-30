@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/28 18:23:55 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 20:07:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,7 @@ void clsErrorPage::Reset()
     _Status = 0;
     _Erno = false;
     _FileFromDisk = "";
+    _Body = "";
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
@@ -232,7 +233,7 @@ void clsErrorPage::Reset()
     return _IsConnection;
  }
 
-int clsErrorPage::GetBodySize() const
+size_t clsErrorPage::GetBodySize() const
 {
     return this->_BodySize;
 }

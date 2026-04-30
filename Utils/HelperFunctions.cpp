@@ -614,8 +614,8 @@ void HelperFunctions::StoredBodys()
 	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
 	_Body[302] = "<html><head><title>302 found</title></head><body><center><h1>302 found</h1></center><hr><center>faste server</center></body></html";
 	_Body[400] = "<html><head><title>400 Bad Request</title></head><body><center><h1>400 Bad Request</h1></center><hr><center>faste server</center></body></html>";
-	_Body[403] = "<html><head><title>Status_Code Status_Message</title></head><body><center><h1>Status_Code Status_Message</h1></center><hr><center>faste server</center></body></html>";
-	_Body[404] = "<html><head><title>404 Not Foud</title></head><body><center><h1>Status_Code Status_Message</h1></center><hr><center>faste server</center></body></html>";
+	_Body[403] = "<html><head><title> 403 Forbidden</title></head><body><center><h1> 403 Forbidden</h1></center><hr><center>faste server</center></body></html>";
+	_Body[404] = "<html><head><title>404 Not Foud</title></head><body><center><h1>404 Not Foud</h1></center><hr><center>faste server</center></body></html>";
 	_Body[500] = "<html><head><title>500 Internal Server Error</title></head><body><center><h1>500 Internal Server Error</h1></center><hr><center>faste server</center></body></html>";
 	_Body[501] = "<html><head><title>501 Not Implemented</title></head><body><center><h1>501 Not Implemented</h1></center><hr><center>faste server</center></body></html>";
 	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
@@ -713,10 +713,6 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 {
 	int status;
 	int exit_code = waitpid(pid, &status, WNOHANG);
-
-	std::cout << "exit code : \n";
-	std::cout << exit_code << std::endl;
-	std::cout << "exit end ::::::: \n" << std::endl;
 
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
