@@ -127,6 +127,7 @@ void clsMainProcess::_PartGETMethod()
 void clsMainProcess::_PartErrorRequest()
 {
     _Response.SetMod(stMod::ERROR);
+    _Response.SetMod(stMod::INTERNALRE);
     _Response.SetStatus(_DataRequest.getStatusError());
     _Response.MakeResponse();
 }
