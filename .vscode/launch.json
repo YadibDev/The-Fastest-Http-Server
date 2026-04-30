@@ -6,8 +6,15 @@
       "name": "Launch",
       "program": "${workspaceFolder}/webserv",
       "args": [],
-      "cwd": "${workspaceFolder}",
-
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server",
+      "program": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server/build/Debug/outDebug"
     }
   ]
 }

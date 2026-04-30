@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 20:06:15 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/30 15:52:22 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ class clsParseOutCGI
     void _ReceivingHeaders(const char *Arr, short Length);
     void _ReceivingBody(const char *Arr, short Length);
     bool _StoredHeadersField(std::string &Str);
-    void _StoredInFileOrStr();
     void _CreatFileTemp();
     bool _IsValidHeaderValueChar(unsigned char C);
     void _InitialInternalRedirect();

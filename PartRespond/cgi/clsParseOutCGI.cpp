@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 20:05:49 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/30 15:54:00 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,6 +368,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
             {
                 _Status = 500;
                 _Mod[stMod::ERROR] = stMod::ERROR;
+                close(_Fdout);
                 return ;
             }
             // std::cout<< _CountSizeHeaders<< " <--- '"<<Arr[_Counter]<<"' ---> " << Length << std::endl;
@@ -385,41 +386,14 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
     else if (_BytesBody > MAX_BODY)
     {
         _BytesBody += Length;
-        write(_Fdout, Arr, Length);
+        if (write(_Fdout, Arr, Length) == -1)
+        {
+            _Status = 500;
+            _Mod[stMod::ERROR] = stMod::ERROR;
+            close(_Fdout);
+            return ;
+        }
     }
-}
-
-void clsParseOutCGI::_StoredInFileOrStr()
-{
-    struct stat MetaData;
-    if (stat(_FileNameFromDisk.c_str(), &MetaData) == -1)
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        return ;
-    }
-    _BytesBody = MetaData.st_size;
-    if (_BytesBody > MAX_BODY)
-    {
-        _Mod[stMod::CHUNK] = stMod::CHUNK;
-        return ;
-    }
-    int FD = open(_FileNameFromDisk.c_str(), O_RDONLY | O_CLOEXEC, 644); // add by yadib
-    if (FD < 0)
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        return ;
-    }
-    if (read(FD,&_Body[0],MAX_BODY) == -1)
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        close(FD);
-        return ;
-    }
-    _FileNameFromDisk.clear();
-    close(FD);
 }
 
 void clsParseOutCGI::_ErrorRespnseHandling()
@@ -460,7 +434,6 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
     }
     else
         close(_Fdout);
-    std::cout << "----> " << _BytesBody << std::endl;
     if (_ExistHeaders[stHeadersCGI::LOCATION] == stHeadersCGI::LOCATION)
     {
         _Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
