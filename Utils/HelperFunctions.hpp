@@ -10,13 +10,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <string>
 #include <ctime>
 #include <sys/stat.h>
 #include "../Parser/ParseRequest//Request/HttpTypes.hpp"
 
 
-// achraf headers
+struct stEventProcess
+{
+    enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
+};
+struct stEventData
+{
+    enum eEventData {STILL_EXIST, END_PIPE};
+};
+
+// achraf headers 
 
 
 
@@ -43,6 +54,7 @@ public:
 	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
 
 
+<<<<<<< HEAD
 
 	// achraf part
 	static unsigned long getCurrentTimeInMs();
@@ -82,14 +94,80 @@ public:
 	static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
 	static int Countword(const std::string &Str, const std::string &Sep);
 	static void NumToStr(int Number, std::string &Str);
+=======
+    // achraf part
+    static unsigned long getCurrentTimeInMs();
+    static long getCurrentTimeInS();
+	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
+    static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
+    static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
+    static bool Iswhaitspace(char C);
+    static std::string TrimStr(std::string Str, const std::string &Sep);
+    static void ConvertStringToLower(std::string &Str, short Size);
+    static std::string ConvertStringToUpper(std::string &Str);
+    static bool Ischar(const std::string &Sep, char C);
+    static int SkeeSep(const std::string &Str, const std::string &Sep);
+    static int SkeeSep(const std::string &Str, char Sep);
+    static int ReadData(int FD, std::string &Data, ssize_t Size);
+    static std::string GetNextLine(int FD, std::string &BigData, ssize_t Size);
+    static std::string GTMHTTP(tm *GMT);
+    static std::string DateTime();
+    static std::string Convert_Hex(const std::string &Str, int Num);
+    static char	*ft_strdup(const char *src);
+    static void	free_matrex(char ***matrex, short IndexStart);
+    static const char *GetTypeDataFile(const std::string &Str);
+    static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
+    static char	*ft_itoa(int n);
+    static char	*ft_itoa_negative(int n, char *int_char);
+    static int	len_int(int nb);
+    static void	*ft_memset(void *str, int c, size_t n);
+    static const char *GetType(const std::string &Type);
+    static void StoredDefaultType();
+    static void StoredBodys();
+    static void StoredMessage();
+    static const char *GetStatusMessage(int Status);
+    static const char * GetBody(int Status);
+    static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
+    static void CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos);
+    static void CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length);
+    static size_t	ft_strlen(const char *s);
+    static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
+    static int Countword(const std::string &Str, const std::string &Sep);
+    static void NumToStr(int Number, std::string &Str);
+    static stEventProcess::eEventProcess checkProcessStatus(int pid);
+    static int SkeepAtLast(const std::string& Str, const std::string &Sep);
+    static void StoreVarConst();
+    static char *GetENV_VAR_CONST(short Index);
+    static char **GetPointer_ENV_VAR_CONST();
+    static bool isTimeout(const time_t &startInS, time_t Timeout);
+    static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
+>>>>>>> Server
 
-
+    template<typename T>
+    static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
+    {
+        char *end;
+        num = strtol(arr, &end, base);
+        if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+            return false;
+        return true;
+    }
 private:
+<<<<<<< HEAD
 	static std::map<std::string, std::string> _TypeContent;
 	static std::map<int, std::string> _Message;
 	static std::map<int, std::string> _Body;
 	static char _PoinerType[10];
 	HelperFunctions() {}
+=======
+    static std::map<std::string, std::string> _TypeContent;
+    static std::map<int, std::string> _Message;
+    static std::map<int, std::string> _Body;
+    static char _PoinerType[50];
+    static char **_ENV_VAR_CONST;
+    static bool _Flag;
+    HelperFunctions() {}
+>>>>>>> Server
 };
 
 

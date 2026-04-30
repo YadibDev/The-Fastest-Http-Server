@@ -167,8 +167,7 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
     bool isNumeric = (*end == '\0');
 
     if (!isNumeric) {
-        if (first.value.compare(0, 7, "http://") != 0 &&
-            first.value.compare(0, 8, "https://") != 0) {
+        if (first.value.compare(0, 7, "http://") != 0) {
             ctx.error.setStatus(400, "invalid return value \"" + first.value + "\"");
             return returnData;
         }

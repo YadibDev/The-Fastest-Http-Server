@@ -18,20 +18,25 @@ void clsServerSock::enableCloseAtEnd()
 }
 
 // free all data and closing all the fds of socket
-clsServerSock::~clsServerSock()
+void clsServerSock::freeAllSockets()
 {
-    if (closeAtEnd == false)
-        return;
     set<int>::iterator it = _Sockets.begin();
     set<int>::iterator end = _Sockets.end();
 
-    std::cout << "------- DEBUG ---------\n" << std::endl;
-    std::cout << "------- " << _Sockets.size() << std::endl;
+    // std::cout << "------- DEBUG ---------\n" << std::endl;
+    // std::cout << "------- " << _Sockets.size() << std::endl;
     while (it != end)
     {
         close(*it);
         it++;
     }
+    _Sockets.clear();
+}
+clsServerSock::~clsServerSock()
+{
+    if (closeAtEnd == false)
+        return;
+    freeAllSockets();
 }
 
 void clsServerSock::removeSocket(int fd)
@@ -57,20 +62,27 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     unsigned short port = temp.sin_port;
     unsigned int ipV4 = temp.sin_addr.s_addr;
 
-    int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    int fdSock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC , 0);
     if (fdSock == -1)
         throw std::runtime_error("socket system call fail");
 
     const sockaddr *addr = reinterpret_cast<const sockaddr *>(&temp);
 
     int enable = 1;
+    // read about it 
     setsockopt(fdSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)); // i must read about SOL_SOCKET
 
     if (bind(fdSock, addr, sizeof(sockaddr_in)) == -1)
+    {
+        close(fdSock);
         throw std::runtime_error("bind system call fail");
+    }
 
     if (listen(fdSock, MAX_QUEUE) == -1)
+    {
+        close(fdSock);
         throw std::runtime_error("listen system call fail");
+    }
 
     this->_allIps.push_back(ipV4);
     this->_allPorts.push_back(port);
@@ -111,9 +123,9 @@ void clsServerSock::buildSockets(std::vector<sockaddr_in> listens)
         throw std::runtime_error("all socket fail or empty input");
 
     // in debug
-    std::cout << "-----------------------------------" << std::endl;
-    std::cout << "sockets are now in passive mode" << std::endl;
-    std::cout << "-----------------------------------" << std::endl;
+    // std::cout << "-----------------------------------" << std::endl;
+    // std::cout << "sockets are now in passive mode" << std::endl;
+    // std::cout << "-----------------------------------" << std::endl;
 }
 
 // check is the socket exist in the server or not
@@ -137,7 +149,7 @@ int clsServerSock::tryAcceptNewClient(int sockServer, sockaddr_in *addr)
 {
     if (_isServerSocket(sockServer) == false)
     {
-        std::cout << "Not server socket \n";
+        // std::cout << "Not server socket \n";
         return 0;
     }
 

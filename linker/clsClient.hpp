@@ -2,6 +2,7 @@
 #define ___CLIENT_HPP___
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>
@@ -11,6 +12,9 @@
 #include "../Parser/RequestHandler/RequestHandler.hpp"
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
+#include "monitorCgi.hpp"
+
+#define CLIENT_TIMEOUT 60
 
 using namespace std;
 
@@ -19,6 +23,9 @@ enum clinetState
     BEGIN,
     REQUEST_MODE,
     START_RESPOND,
+    CGI_START,
+    CGI_RUNING,
+    CGI_END,
     RESPOND_MODE,
     LAST_CHUNKED,
     CONNECTION_CLOSED
@@ -37,7 +44,6 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    bool _resetReq;
     int _socket;
     int _fdRespond;
     ssize_t bytesToSend;
@@ -51,14 +57,15 @@ private:
     RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
-
     clinetState _state;
     bodyPlaceEnum::place _BodyPlace;
+    clsMonitorCGI _monitorCGI;
 
     void _SendRespond(const clsResponse &_Responder);
     int _ReadDataForReq();
     ssize_t _addSizeChunkToStr();
-
+    void _initalizeRespondBuffer();
+    short    _ReadData(int fd);
 
 public:
     clsClient();
@@ -73,6 +80,8 @@ public:
     unsigned int GetIp() const;
     size_t GetTimeConnection() const;
     size_t GetLastConnection() const;
+    int getPipeCgi();
+
 
     // seter
     void SetState(clinetState state);
@@ -81,10 +90,14 @@ public:
     void UpdateTime(); // update last connection
     void ResetAll();   // will reset all things
 
-    // the flow of request and respnd
-    void ProcessRequest(); // will be
+    void ProcessRequest();
     void ProcessRespond();
     void ProcessBoth(uint32_t events);
+    bool monitorCgi();
+    void logs();
+    bool timeoutCgi();
+    void initializeCGI();
+
 };
 
 #endif

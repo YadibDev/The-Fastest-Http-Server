@@ -6,21 +6,21 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 19:02:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:07:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsErrorPage.hpp"
 
- clsErrorPage::clsErrorPage()
+clsErrorPage::clsErrorPage()
 {
-    // add define header for size max
     _Status = 0;
+    _IsConnection = false;
     _BodySize = 0;
     _Type.resize(500);
     _FileFromDisk.resize(1000);
-    _HeaderFeild.resize(4000);
-    _Body.resize(40000);
+    _HeaderFeild.resize(MAX_HEADERS);
+    _Body.resize(MAX_BODY);
     if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -31,6 +31,8 @@
     _Type.clear();
     _HeaderFeild.clear();
     _Erno = false;
+    HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
+
 }
 
 void clsErrorPage::_HeadersErrorResponse()
@@ -47,7 +49,8 @@ void clsErrorPage::_HeadersErrorResponse()
         _Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
         _RetryAfter();
-    _ConnectionClose();
+    _CheckConnection();
+    _Connection();
     _HeaderFeild += "\r\n";
 }
  
@@ -65,12 +68,12 @@ void clsErrorPage::_StoredInFileOrStr()
         return ;
     }
     _BodySize = MetaData.st_size;
-    if (_BodySize > 40000)
+    if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
     }
-    int FD = open(_FileFromDisk.c_str(), O_RDONLY, 644);
+    int FD = open(_FileFromDisk.c_str(), O_RDONLY | O_CLOEXEC, 644);
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -78,7 +81,7 @@ void clsErrorPage::_StoredInFileOrStr()
         _Erno = true;
         return ;
     }
-    if (read(FD,&_Body[0],40000) == -1)
+    if (read(FD,&_Body[0],MAX_BODY) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -121,15 +124,24 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
     _HeadersErrorResponse();
 }
  
-void clsErrorPage::_ConnectionClose()
+void clsErrorPage::_Connection()
 {
-    _HeaderFeild += "Connection: Close\r\n";
+    if (_IsConnection)
+        _HeaderFeild += "Connection: keep-alive\r\n";
+    else
+        _HeaderFeild += "Connection: Close\r\n";
+}
+
+void clsErrorPage::_CheckConnection()
+{
+    if (_Status == 404)
+        _IsConnection = true;
 }
 
 void clsErrorPage::_StatusLine()
 {
     _HeaderFeild += "HTTP/1.1 ";
-    HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
+    HelperFunctions::NumToStr(_Status, _HeaderFeild);
     _HeaderFeild +=  " ";
     _HeaderFeild += HelperFunctions::GetStatusMessage(_Status) ;
     _HeaderFeild += "\r\n";
@@ -157,7 +169,7 @@ void clsErrorPage::_Date()
 
 void clsErrorPage::_Server()
 {
-    _HeaderFeild += "Server: HTTP1.1\r\n";
+    _HeaderFeild += "Server: the-fastest-server\r\n";
 }
 void clsErrorPage::_RetryAfter()
 {
@@ -200,6 +212,8 @@ clsErrorPage::~clsErrorPage()
     _HeaderFeild = "";
     _BodySize = 0;
     _Status = 0;
+    _Erno = false;
+    _FileFromDisk = "";
 }
 
 void clsErrorPage::Reset()
@@ -210,10 +224,16 @@ void clsErrorPage::Reset()
     _Status = 0;
     _Erno = false;
     _FileFromDisk = "";
+    _Body = "";
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
-int clsErrorPage::GetBodySize() const
+ bool clsErrorPage::GetIsConnection()
+ {
+    return _IsConnection;
+ }
+
+size_t clsErrorPage::GetBodySize() const
 {
     return this->_BodySize;
 }

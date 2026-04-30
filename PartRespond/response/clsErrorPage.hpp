@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/16 17:43:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:07:30 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ class clsErrorPage
         std::string _Body;
         std::string _HeaderFeild;
         std::string _FileFromDisk;
-        int _BodySize;
+        bool _IsConnection;
+        size_t _BodySize;
         bool _Erno;
 
         void _HeadersErrorResponse();
@@ -33,21 +34,23 @@ class clsErrorPage
         void _StatusLine();
         void _ContentLength();
         void _ContentType();
-        void _ConnectionClose();
+        void _Connection();
         void _Date();
         void _Server();
         void _Allow();
         void _RetryAfter();
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
+        void _CheckConnection();
     public:
         clsErrorPage();
         void SetBodySize(int BodySize);
-        int GetBodySize() const;
+        size_t GetBodySize() const;
         const std::string &GetHeaderField();
         const std::string &GetBody();
         const std::string &GetFileFromDisk();
         void ResponseError(int Status, const std::string &FilePageError);
+        bool GetIsConnection();
         void Reset();
         ~clsErrorPage();
 };

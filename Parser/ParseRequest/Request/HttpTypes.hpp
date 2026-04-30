@@ -65,7 +65,7 @@ struct s_header_slot
 struct PollOfClient
 {
 	char			request_metadata[SIZE_BUFFER];
-	char			io_chunk[8192];
+	char			io_chunk[SIZE_BUFFER];
 	s_header_slot	known_headers[HttpTables::H_COUNT];
 	s_header_slot	unknown_headers[SIZE_UNKNOW_HEADER];
 	char			Response_metadata[SIZE_BUFFER];

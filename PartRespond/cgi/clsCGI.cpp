@@ -6,150 +6,309 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 11:21:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 15:21:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
-
-clsCGI::clsCGI(const RequestHandler DataRequest) : _DataRequest(DataRequest)
+short clsCGI::_LimitProcess;
+clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
     _IsRunCGI = false;
+    _ARG = NULL;
+    _ENV = NULL;
+    _Counter = 0;
+    _Erno = false;
+    _pip[0] = -1;
+    _pip[1] = -1;
+    TempVar.resize(MAX_HEADERS);
+    if (TempVar.empty())
+    {
+        _Erno = true;
+        return ;
+    }
+    TempVar.clear();
 }
 
-char **clsCGI::_MakeEnv()
+bool clsCGI::_MakeEnv()
 {
-    char **ENV = NULL;
-
-    for (it = Header.begin(); it != Header.end(); it++)
-    {
-        if (_WhiteBlakHeaders.count(it->first))
-            if (!_WhiteBlakHeaders[it->first])
-                continue;
-        Variables.push_back(_BuildVarEnv(it->first, _ConcatonateValue(it->second)));
-    }
-    ENV = new char*[Variables.size() + 1];
-    if (!ENV)
-        return (NULL);
-    for (size_t i = 0; i < Variables.size(); i++)
-    {
-        ENV[i] = HelperFunctions::ft_strdup(Variables[i].c_str());
-        if (!ENV[i])
-        {
-            HelperFunctions::free_matrex(&ENV);
-            return (NULL);
-        }
-    }
-    ENV[Variables.size()] = NULL;
-    return ENV;
-    return 0;
+    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV]; // 
+    if (!_ENV)
+        return (false);
+    HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));
+    if (!_SERVER_SOFTWARE())
+        return false;
+    if (!_SERVER_NAME())
+        return false;
+    if (!_SERVER_PROTOCOL())
+        return false;
+    if (!_GATEWAY_INTERFACE())
+        return false;
+    if (!_REMOTE_IDENT())
+        return false;
+    if (!_REMOTE_HOST())
+        return false;
+    if (!_REMOTE_ADDR())
+        return false;
+    if (!_AUTH_TYPE())
+        return false;
+    if (!_REMOTE_USER())
+        return false;
+    if (!_SERVER_PORT())
+        return false;
+    if (!_REQUEST_METHOD())
+        return false;
+    if (!_PATH_INFO())
+        return false;
+    if (!_PATH_TRANSLATED())
+        return false;
+    if (!_SCRIPT_NAME())
+        return false;
+    if (!_QUERY_STRING())
+        return false;
+    if (!_QUERY_STRING())
+        return false;
+    if (!_CONTENT_TYPE())
+        return false;
+    if (!_CONTENT_LENGTH())
+        return false;
+    if (!_OtherHeaders())
+        return false;
+    return (true);
 }
-
-char **clsCGI::_StoredArgs()
+bool clsCGI::_SERVER_SOFTWARE()
 {
-    char **ARG = NULL;
-    ARG = new(std::nothrow) char*[3];
-    if (!ARG)
-        return (NULL);
-    ARG[0] = HelperFunctions::ft_strdup("/usr/bin/php");
-    if (!ARG[0])
-        return (NULL);
-    ARG[1] = HelperFunctions::ft_strdup("file.php");
-    if (!ARG[1])
-    {
-        HelperFunctions::free_matrex(&ARG);
-        return (NULL);
-    }
-    ARG[2] = NULL;
-    return (ARG);
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(0)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_SERVER_NAME()
+{
+     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_SERVER_PROTOCOL()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(2)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_GATEWAY_INTERFACE()
+{
+    if (!(_ENV[_Counter] =HelperFunctions::GetENV_VAR_CONST(3)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_REMOTE_IDENT()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(4)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_REMOTE_HOST()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(5)))
+        return (false);
+    _Counter++;
+    return (true);
+}
+bool clsCGI::_REMOTE_ADDR()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_ADDR=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
 }
 
-bool clsCGI::_childeProcesse(char **ENV, char **ARG, int pip[2])
+bool clsCGI::_AUTH_TYPE()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("AUTH_TYPE=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_REMOTE_USER()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_USER=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_SERVER_PORT()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PORT=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_REQUEST_METHOD()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REQUEST_METHOD=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_PATH_INFO()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_PATH_TRANSLATED()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_SCRIPT_NAME()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SCRIPT_NAME=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_QUERY_STRING()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_CONTENT_TYPE()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_CONTENT_LENGTH()
+{
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
+        return (false);
+    _Counter++;
+    return (true);
+}
+
+bool clsCGI::_OtherHeaders()
+{
+    return (true);
+}
+bool clsCGI::_StoredArgs()
+{
+    _ARG = new(std::nothrow) char*[3];
+    if (!_ARG)
+        return (false);
+    _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
+    if (!_ARG[0])
+        return (false);
+    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
+    if (!_ARG[1])
+        return (false);
+    _ARG[2] = NULL;
+    return (true);
+}
+
+bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
-    close(pip[0]);
-    ENV = NULL;
-    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY, 644);
+    close(_pip[0]);
+    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY | O_CLOEXEC, 644);
     // if (Fd < 0)
     // {
-    //     close(pip[1]);
-    //     HelperFunctions::free_matrex(&ENV);
+    //     close(_pip[1]);
+    //     HelperFunctions::free_matrex(&_ENV);
     //     std::cout << "lkapo\n";
     //     return (-500);
     // }
     // if (dup2(Fd, 0) == -1)
-    //     return (close(Fd), close(pip[1]), true);
-    if (dup2(pip[1], 1) == -1)
-        return (close(Fd), close(pip[1]), true);
-    
-    close(pip[1]);
-    close(Fd);
-    execve("/usr/bin/php", ARG, NULL);
+    //     return (close(Fd), close(_pip[1]), true);
+    // chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
+    if (dup2(_pip[1], 1) == -1)
+        return (close(Fd), close(_pip[1]), true);
+    close(_pip[1]);
+    // close(Fd);
+    execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
-int clsCGI::_ParentProcesse(char **ENV, char **ARG, int pip[2])
+void clsCGI::_ParentProcesse()
 {
-    int status;
-    int exit_code;
-    close(pip[1]);
-    exit_code = waitpid(_PIDCHILD, &status, WNOHANG);
-    if (exit_code < 0)
-    {
-        HelperFunctions::free_matrex(&ENV);
-        close(pip[0]);
-        return (-1);
-    }
-    else if (WEXITSTATUS(status) == 1)
-    {
-        HelperFunctions::free_matrex(&ARG);
-        close(pip[0]);
-        return (-1);
-    }
-    else if (exit_code > 0)
-    {
-        HelperFunctions::free_matrex(&ARG);
-        return (pip[0]);
-    }
+    // stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
+    close(_pip[1]);
+    // if (exit_code == stEventProcess::END_UNKNOW)
+    // {
+    //     close(_pip[0]);
+    //     _FD = -1;
+    //     _Erno = true;
+    // }
+    // else
+    // {
     _IsRunCGI = true;
-    HelperFunctions::free_matrex(&ARG);
-    return (pip[0]);
+    _FD = _pip[0];
 }
-bool clsCGI::_InintialVar(char **ENV, char ***ARG, int pip[2])
+
+bool clsCGI::_InintialVar()
 {
-    ENV = NULL;
-    // if (!(ENV = _MakeEnv()))
-    //     return (true);
-    if (!((*ARG) = _StoredArgs()))
-        return (true);
-    if (pipe(pip) == -1)
-        return (true);
-    return (false);
+    if (!_MakeEnv())
+        return (false);
+    if (!_StoredArgs())
+        return (false);
+    if (pipe(_pip) == -1)
+        return (false);
+    return (true);
 }
-int clsCGI::RunCGI()
+void clsCGI::RunCGI()
 {
-    char **ENV = NULL;
-    char **ARG = NULL;
-    int pip[2] = {-1,-1};
-    if (_InintialVar(ENV, &ARG, pip))
-        return (-1);
+    if (!_InintialVar())
+    {
+        HelperFunctions::free_matrex(&_ENV , 6);
+        HelperFunctions::free_matrex(&_ARG, 0);
+        _Erno = true;
+        _FD = -1;
+        return ;
+    }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
     {
-        close(pip[0]);
-        close(pip[1]);
-        HelperFunctions::free_matrex(&ENV);
-        return (-1);
+        close(_pip[0]);
+        close(_pip[1]);
+       _Erno = true;
+       _FD = -1;
+       return ;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
     {
-        if (_childeProcesse(ENV, ARG, pip))
-            return (-1);
+        if (_childeProcesse())
+            exit(1);
     }
     else
-        return (_ParentProcesse(ENV, ARG, pip));
-    return 0;
+       _ParentProcesse();
+    return ;
+}
+
+void clsCGI::Reset()
+{
+    HelperFunctions::free_matrex(&_ENV , 6);
+    HelperFunctions::free_matrex(&_ARG, 0);
+    _Counter = 0;
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -166,11 +325,30 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 {
     return _ParseOutCGI;
 }
-
  int clsCGI::GetPid()
- {
+{
     return _PIDCHILD;
- }
+}
 
-clsCGI::~clsCGI(){}
+const time_t &clsCGI::getStartTime() const
+{
+    return this->_StartTime;
+}; 
+
+
+int clsCGI::GetFdPipe()
+{
+    return _FD;
+}
+bool clsCGI::GetErno()
+{
+    return _Erno;
+}
+clsCGI::~clsCGI()
+{
+    HelperFunctions::free_matrex(&_ENV , 6);
+    HelperFunctions::free_matrex(&_ARG, 0);
+    _pip[0] = -1;
+    _pip[1] = -1;
+}
 

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 19:26:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:09:13 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,18 @@
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
+
 class clsResponse
 {
     private:
         stMod::eMod _Mod[10];
         short _Status;
-        short _MaxSizeHeader;
-        int _MaxSizeBody;
-        int _BodySize;
+        size_t _BodySize;
         int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
+        std::string _InternalRedirectSrc;
         std::string _Type;
         clsErrorPage _ErrorPage;
         std::string _Body;
@@ -50,7 +50,6 @@ class clsResponse
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
         void _Date();
-        void _CachControl();
         void _Server();
     public:
         void Reset();
@@ -59,19 +58,26 @@ class clsResponse
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
-        void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(stMod::eMod Mod);
-        void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
         bool GetErnoVar();
         const std::string *GetBodyPointer();
         const std::string *GetHeaderFeildPointer();
-        const std::string *GetFileFromDiskPointer();
+        const std::string *GetFileFromDiskPointer() const;
+        void SetBodyPointer(const std::string *BodyPointer);
+        void SetHeaderFeildPointer(const std::string *HeaderFeildPointer);
+        void SetFileFromDiskPointer(const char *FileFromDiskPointer);
+        void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
+        void SetInternalRedirectSrc(const std::string &InternalRedirectSrc);
+        std::string &GetInternalRedirectSrc();
         bool GetModTransferData() const;
-        int GetSizeBody() const;
+        size_t GetSizeBody() const;
+        void SetSizeBody(int size);
+        void SetIsConnection(bool IsConnection);
+
         ~clsResponse();
 };
 #endif

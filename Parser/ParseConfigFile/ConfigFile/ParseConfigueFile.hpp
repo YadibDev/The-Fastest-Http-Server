@@ -26,7 +26,7 @@ public:
 	clsParseConfigueFile(clsParse<TokenType> &Parse);
 
 	bool ParseConfigue();
-	const std::vector<clsServerConfig> &getServers() const;
+	std::vector<clsServerConfig> &getServers();
 	HttpError					getError();
 };
 

@@ -1,3 +1,6 @@
+#ifndef CLS_FLOW
+#define CLS_FLOW
+
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -11,9 +14,9 @@
 #include <stack>
 #include "../server/clsEpollHandler.hpp"
 #include "../server/clsServerSock.hpp"
-#include "clsLinker.hpp"
 #include <unistd.h>
-
+#include "clsClient.hpp"
+#include "monitorCgi.hpp"
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500
 
@@ -22,6 +25,8 @@
 // #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 // #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 // #include <csignal>
+
+
 
 class clsFlow
 {
@@ -34,6 +39,7 @@ private:
     clsEpollHandler _epoll;
     std::vector<clsServerSock> _allServers;
     std::map<short, short> _clientIdByFd;
+    std::map<short, short> _IdByPipe;
     std::stack<short> _clientsAvailable;
 
     void _initializeStatics();
@@ -43,13 +49,20 @@ private:
     void _registerServersSockets();
     short _getClient();
     void _freeClient(short clientFd);
-    fdTypes _fdType(int fd);
     void _newClientProcess(int serverFd);
     void _clientProcess(int fd, uint32_t event);
-    bool _eventsEroorHandle(epoll_event &client);
+    bool _eventsEroorHandle(epoll_event &client, fdTypes &TypeFd);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
     bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
+    void _popPipe(short pipe);
+    void _pushPipe(short pipe, short indexClient);
+    void _pipeFlow(int fd);
+
 public:
     clsFlow();
+    ~clsFlow();
     void EventLoop();
+
 };
+
+#endif

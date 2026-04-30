@@ -1,8 +1,9 @@
 #ifndef REQUESTHANDLER_HPP
 #define REQUESTHANDLER_HPP
 
-#include "../../Utils/HttpError.hpp"
+
 #include "../Header/HeaderFiles.hpp"
+#include "../../Utils/HttpError.hpp"
 #include "../ParseRequest/Request/HttpTypes.hpp"
 #include "../ParseRequest/Request/HeaderTable.hpp"
 #include <map>
@@ -76,7 +77,7 @@ public:
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
 	const std::string*		getPathCgi() const;
-	bool					getDefaultErrorPage();
+	bool					getDefaultErrorPage()const ;
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
 	const std::string&		getBody() const;

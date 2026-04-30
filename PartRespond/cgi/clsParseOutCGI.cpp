@@ -6,34 +6,47 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 10:55:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/29 20:05:49 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(DataRequest);
+clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(DataRequest)
 {
     _BytesBody = 0;
     _FoundBody = false;
+    _IsConnectoin = true;
     _ProcessIsFinish = false;
-    _MaxSizeHeaders = 4000;
     _CountSizeHeaders = 0;
-    _MaxSizeBody = 40000;
     _Fdout = -1;
+    _ModTransferData = false;
+    _Erno = false;
+    _Body.resize(MAX_BODY);
+    _HeadersFieldDuplicate.resize(MAX_HEADERS);
+    _Line.resize(MAX_HEADERS);
+    _NameHeader.resize(MAX_HEADERS);
+    _ValueHeader.resize(MAX_HEADERS);
+    _InternalRedirectSrc.resize(1000);
+    _FileNameFromDisk.resize(1000);
+    if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
+        || _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
+    {
+        _Status = 500;
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Erno = true;
+        return ;
+    }
 
-    _Body.resize(_MaxSizeBody);
-    _HeadersFieldDuplicate.resize(_MaxSizeHeaders);
-    _HeadersFieldDuplicate.clear();
-    _Line.resize(_MaxSizeHeaders);
-    _Line.clear();
-    _NameHeader.resize(_MaxSizeHeaders);
     _NameHeader.clear();
-    _ValueHeader.resize(_MaxSizeHeaders);
+    _HeadersFieldDuplicate.clear();
+    _Line.clear();
+    _InternalRedirectSrc.clear();
     _ValueHeader.clear();
+    _FileNameFromDisk.clear();
 
-    HelperFunctions::ft_memset(_ExistHeaders, -1, 3);
-    HelperFunctions::ft_memset(_Mod, -1, 10);
+    HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
+    HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
 bool clsParseOutCGI::_IsSpecialChar(char C)
@@ -45,7 +58,7 @@ bool clsParseOutCGI::_IsSpecialChar(char C)
 
 bool clsParseOutCGI::_IsValidHeaderValueChar(unsigned char C)
 {
-    return (C == '\t' || (C >= ' ' && C <= 126) || (C >= 128 && C <= 255));
+    return (C == '\t' || (C >= ' ' && C <= 126) || (C >= 128));
 }
 
 bool clsParseOutCGI::_CheckValidNameHeader(std::string &HeaderName, short Start, short End)
@@ -102,22 +115,21 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
 {
     int Skeep = HelperFunctions::SkeeSep(_ValueHeader, " \t");
     if (_HeadersField.count(_NameHeader))
-    {
+    {        
         if (!_NameHeader.compare("location") || !_NameHeader.compare("status") || !_NameHeader.compare("content-type"))
             return false;
-        else if (_NameHeader == "set-cookie")
+        else if (!_NameHeader.compare("set-cookie"))
         {
             _HeadersFieldDuplicate += Str;
             _HeadersFieldDuplicate += "\r\n";
         }
-        else if (Skeep != (int)_ValueHeader.length() && Skeep)
+        else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
         {
             _HeadersField[_NameHeader] += ",";                
             _HeadersField[_NameHeader] += _ValueHeader;
-            
         }
     }
-    else if (Skeep != (int)_ValueHeader.length() && Skeep)
+    else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
         _HeadersField[_NameHeader] = _ValueHeader;
     _NameHeader.clear();
     _ValueHeader.clear();
@@ -146,9 +158,9 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
             return false;
     if (!_NameHeader.compare("content-type"))
             _ExistHeaders[stHeadersCGI::CONTENT_TYPE] = stHeadersCGI::CONTENT_TYPE;
-    if (!_NameHeader.compare("location"))
+    else if (!_NameHeader.compare("location"))
         _ExistHeaders[stHeadersCGI::LOCATION] = stHeadersCGI::LOCATION;
-    if (!_NameHeader.compare("status"))
+    else if (!_NameHeader.compare("status"))
         _ExistHeaders[stHeadersCGI::STATUS] = stHeadersCGI::STATUS;
     else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
         || !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
@@ -165,9 +177,9 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 void clsParseOutCGI::_Connection(bool Isclose)
 {
     if (Isclose)
-        _HeadersFieldFinal += "Connection: keep-alive";
+        _HeadersFieldFinal += "Connection: keep-alive\r\n";
     else
-        _HeadersFieldFinal += "Connection: Close";
+        _HeadersFieldFinal += "Connection: Close\r\n";
 }
 
 void clsParseOutCGI::_StatusNormal()
@@ -219,7 +231,7 @@ void clsParseOutCGI::_HeaderResponseCGI()
     _HeadersFieldFinal += _HeadersFieldDuplicate;
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
-    if (_Mod[stMod::CHUNK] != stMod::CHUNK && _BytesBody)
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
     _Date();
     _Server();
@@ -227,12 +239,23 @@ void clsParseOutCGI::_HeaderResponseCGI()
     _HeadersFieldFinal += "\r\n";
 }
 
-void clsParseOutCGI::_GeneratePhisiaclPath()
+void clsParseOutCGI::_InitialInternalRedirect()
 {
+    short Pos = 0;
     _ValueHeader = _HeadersField["location"];
     short Skeep = HelperFunctions::SkeeSep(_ValueHeader, " \t");
-    // _DataRequest.
-    
+    if (_ValueHeader[Skeep] != '/')
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 502;
+        _ErrorRespnseHandling();
+        return ;
+    }
+    _Status = 200;
+    Pos = HelperFunctions::SkeepAtLast(_ValueHeader," \t");
+    if (Pos < 0)
+        Pos = _ValueHeader.length();
+    HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -245,19 +268,13 @@ void clsParseOutCGI::_BuilResponsedredirection()
     if (_LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 2 && _BytesBody)
         _HeaderResponseCGI();
     else if (!CountValidHeader && _LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
+    {
         _HeaderResponseCGI();
+        
+    }
     else if(_HeadersField.size() == 1 && !_BytesBody)
     {
-        if (access(NULL, F_OK) == -1)
-        {
-            _Mod[stMod::ERROR] = stMod::ERROR;
-            _Status = 404;
-            _ErrorRespnseHandling();
-            return ;
-        }
-        _GeneratePhisiaclPath();
-        _StoredInFileOrStr();
-        _HeaderResponseCGI();
+        _InitialInternalRedirect();
     }
     else
     {
@@ -267,13 +284,15 @@ void clsParseOutCGI::_BuilResponsedredirection()
     }
 }
 
-void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
+void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 {
+    // std::cout << "------> "<<Arr << std::endl;
+    _Counter = 0;
     if (_FoundBody)
         return ;
     bool Flag = false;
-    HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
-    if (_CountSizeHeaders > _MaxSizeHeaders)
+    HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
+    if (_CountSizeHeaders > MAX_HEADERS)
     {
         _Status = 413;
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -282,13 +301,13 @@ void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
     while(Flag)
     {
         Flag = false;
-        if (_CountSizeHeaders > _MaxSizeHeaders)
+        if (_CountSizeHeaders > MAX_HEADERS)
         {
             _Status = 413;
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-        if (_Line != "\r\n")
+        if (_Line.compare("\r\n"))
         {
             if (!_ValidHeaders(_Line))
             {
@@ -303,26 +322,26 @@ void clsParseOutCGI::_ReceivingHeaders(std::string &Data)
             return;
         }
         _Line.clear();
-        HelperFunctions::GetCleanLineHeader(Data, _Line, &_CountSizeHeaders, &Flag);
+        HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
     }
 }
 
 void clsParseOutCGI::_CreatFileTemp()
 {
     char Arr[20] =  "/tmp/CGIout.XXXXXX\0";
-    char *temp = mktemp(Arr);
-    if (!temp)
+    _Fdout = mkstemp(Arr);
+    if (_Fdout == -1)
     {
-        _Status = 502;
+        _Status = 500;
         _Mod[stMod::ERROR] = stMod::ERROR;
         return ;
     }
-    _FileNameFromDisk =  temp;
+    _FileNameFromDisk =  Arr;
 }
 
-void clsParseOutCGI::_ReceivingBody(std::string &Data)
+void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 {
-    if (_FoundBody && _BytesBody < 40000)
+    if (_FoundBody && _BytesBody < MAX_BODY)
     {
         if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
              _ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
@@ -332,48 +351,47 @@ void clsParseOutCGI::_ReceivingBody(std::string &Data)
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       _BytesBody += Data.size();
+       _BytesBody += ((Length - _Counter  < 0)? 0 : Length - _Counter);
        if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
         {
             _Status = 502;
             _Mod[stMod::ERROR] = stMod::ERROR;
             return ;
         }
-       if (_BytesBody > _MaxSizeBody)
+       if (_BytesBody > MAX_BODY)
        {
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             _CreatFileTemp();
             if (_Mod[stMod::ERROR] == stMod::ERROR)
                 return ;
-            if ((_Fdout = open(_FileNameFromDisk.c_str(),O_CREAT | O_WRONLY, 0644)) == -1)
+            if (write(_Fdout, &_Body[0], _Body.size()) == -1)
             {
-                _Status = 502;
+                _Status = 500;
                 _Mod[stMod::ERROR] = stMod::ERROR;
                 return ;
             }
-            write(_Fdout, &_Body[0], _Body.size());
-            write(_Fdout, &Data[0], Data.size());
-            Data.clear();
+            // std::cout<< _CountSizeHeaders<< " <--- '"<<Arr[_Counter]<<"' ---> " << Length << std::endl;
+            if (write(_Fdout, &Arr[_Counter], ((Length - _Counter  < 0)? 0 : Length - _Counter)) == -1)
+            {
+                _Status = 500;
+                _Mod[stMod::ERROR] = stMod::ERROR;
+                return ;
+            }
             _Body.clear();
        }
        else
-       {
-           _Body += Data;
-           Data.clear();
-       }
+            HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
     }
-    else if (_BytesBody > _MaxSizeBody)
+    else if (_BytesBody > MAX_BODY)
     {
-        write(_Fdout, &Data[0], Data.size());
-        Data.clear();
+        _BytesBody += Length;
+        write(_Fdout, Arr, Length);
     }
 }
-
 
 void clsParseOutCGI::_StoredInFileOrStr()
 {
     struct stat MetaData;
-    _Body = "";
     if (stat(_FileNameFromDisk.c_str(), &MetaData) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -381,19 +399,19 @@ void clsParseOutCGI::_StoredInFileOrStr()
         return ;
     }
     _BytesBody = MetaData.st_size;
-    if (_BytesBody > _MaxSizeBody)
+    if (_BytesBody > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
         return ;
     }
-    int FD = open(_FileNameFromDisk.c_str(), O_RDONLY, 644);
+    int FD = open(_FileNameFromDisk.c_str(), O_RDONLY | O_CLOEXEC, 644); // add by yadib
     if (FD < 0)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         return ;
     }
-    if (read(FD,&_Body[0],40000) == -1)
+    if (read(FD,&_Body[0],MAX_BODY) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
@@ -406,40 +424,34 @@ void clsParseOutCGI::_StoredInFileOrStr()
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-    _Body.clear();
-    _HeadersField.clear();
-    _HeadersFieldDuplicate.clear();
-    _HeadersFieldFinal.clear();
-    close(_Pipe_Fd);
-    stErrorPagedata ErrorPageConf = _DataRequest.getErrorPage(_Status);
-    if (ErrorPageConf.response)
+    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
+    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
+    // else
     {
-        if (ErrorPageConf.response != -1)
-            _Status = ErrorPageConf.response;
-        _ErrorPage.ResponseError(_Status, ErrorPageConf.uri);
-    }
-    else
+        _Mod[stMod::ERROR] = stMod::ERROR; // add by adib
         _ErrorPage.ResponseError(_Status, "");
-    _Body = _ErrorPage.GetBody();
-    _HeadersFieldFinal = _ErrorPage.GetHeaderField();
-    _FileNameFromDisk = _ErrorPage.GetFileFromDisk();
+        _ModTransferData = true;
+        _BodyPointer = &_ErrorPage.GetBody();
+        _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        _BytesBody = _ErrorPage.GetBodySize();
+        _IsConnectoin = _ErrorPage.GetIsConnection();
+    }
 }
 
-void clsParseOutCGI::ReceivingData(std::string &Data)
+void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
-    if (_Mod[stMod::ERROR] == stMod::ERROR)
-        return ;
-    _ReceivingHeaders(Data);
-    _ReceivingBody(Data);
+    _ReceivingHeaders(Arr, Length);
+    _ReceivingBody(Arr, Length);
     if (_Mod[stMod::ERROR] == stMod::ERROR)
     {
         _ErrorRespnseHandling();
         return ;
     }
-    // if not complete so skeep to finishing processe
     if (!_ProcessIsFinish)
         return ;
-    else if (!_FoundBody)
+    else if (!_FoundBody || (!_BytesBody &&
+            _ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE))
     {
         _Status = 502;
         _Mod[stMod::ERROR] = stMod::ERROR;
@@ -448,7 +460,8 @@ void clsParseOutCGI::ReceivingData(std::string &Data)
     }
     else
         close(_Fdout);
-    if (_HeadersField.count("location"))
+    std::cout << "----> " << _BytesBody << std::endl;
+    if (_ExistHeaders[stHeadersCGI::LOCATION] == stHeadersCGI::LOCATION)
     {
         _Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
         _BuilResponsedredirection();
@@ -475,13 +488,13 @@ void clsParseOutCGI::_CachControl()
 
 void clsParseOutCGI::_Server()
 {
-    _HeadersFieldFinal += "Server: HTTP/1.1\r\n";
+    _HeadersFieldFinal += "Server: faste-server\r\n";
 }
 
 void clsParseOutCGI::_ContentLength()
 {
     _HeadersFieldFinal += "Content-Length: ";
-    HelperFunctions::NumToStr(_BytesBody, _HeaderFeild);
+    HelperFunctions::NumToStr(_BytesBody, _HeadersFieldFinal);
     _HeadersFieldFinal +="\r\n";
 }
 
@@ -490,10 +503,7 @@ const std::string &clsParseOutCGI::GetHeadersFieldFinal()
     return _HeadersFieldFinal;
 }
 
-void clsParseOutCGI::SetPipe_Fd(int Pipe_Fd)
-{
-    _Pipe_Fd = Pipe_Fd;
-}
+
 void clsParseOutCGI::SetProcessIsFinish(bool ProcessIsFinish)
 {
     _ProcessIsFinish = ProcessIsFinish;
@@ -508,4 +518,77 @@ const std::string &clsParseOutCGI::GetFileNameBody()
 {
     return _FileNameFromDisk;
 }
-clsParseOutCGI::~clsParseOutCGI(){}
+const std::string *clsParseOutCGI::GetBodyPointer()
+{
+   return _BodyPointer;
+}
+const std::string *clsParseOutCGI::GetHeaderFeildPointer()
+{
+    return _HeaderFeildPointer;
+}
+const std::string *clsParseOutCGI::GetFileFromDiskPointer()
+{
+    return _FileFromDiskPointer;
+}
+
+bool clsParseOutCGI::GetModTransferData() const
+{
+    return _ModTransferData;
+}
+
+stMod::eMod *clsParseOutCGI::GetMod()
+{
+    return _Mod;
+}
+
+short clsParseOutCGI::GetStatus()
+{
+    return _Status;
+}
+
+std::string &clsParseOutCGI::GetInternalRedirectSrc()
+{
+    return _InternalRedirectSrc;
+}
+
+void clsParseOutCGI::Reset()
+{
+    _Body.clear();
+    if (!_HeadersField.empty())
+        _HeadersField.clear();
+    _HeadersFieldDuplicate.clear();
+    _HeadersFieldFinal.clear();
+    _Line.clear();
+    _BytesBody = 0;
+    _IsConnectoin = true;
+    _FoundBody = false;
+    _ProcessIsFinish = false;
+    _Erno = false;
+    _NameHeader.clear();
+    _ValueHeader.clear();
+    _CountSizeHeaders = 0;
+    _ModTransferData = 0;
+    _ErrorPage.Reset();
+    HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
+    HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
+}
+
+size_t clsParseOutCGI::GetSizeBody()
+{
+    return _BytesBody;
+}
+
+ bool clsParseOutCGI::GetIsConnection()
+ {
+    return _IsConnectoin;
+ }
+
+bool clsParseOutCGI::GetErno()
+{
+   return _Erno;
+}
+clsParseOutCGI::~clsParseOutCGI()
+{
+    if (_Fdout != -1)
+        close(_Fdout);
+}

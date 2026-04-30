@@ -19,14 +19,11 @@ int hexCharToDec(char c) {
 long HelperFunctions::hexToDec(const std::string& hex)
 {
 	long decimalValue = 0;
-	
 	for (std::size_t i = 0; i < hex.length(); ++i)
 	{
 		int digit = hexCharToDec(hex[i]);
-		
 		if (digit == -1)
 			return -1;
-		
 		decimalValue = (decimalValue << 4) | digit;
 	}
 	return decimalValue;
@@ -55,7 +52,6 @@ bool HelperFunctions::is_numeric(const std::string& str) {
 	return true;
 }
 
-
 bool HelperFunctions::is_CTLsString(const std::string& str) {
 	for (size_t i = 0; i < str.length(); i++)
 		if (std::iscntrl(str[i])) return true;
@@ -64,7 +60,6 @@ bool HelperFunctions::is_CTLsString(const std::string& str) {
 
 bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
 {
-
 	for (size_t i = POS; i < str.size(); i++)
 	{
 		if (str[i] == ' ' || str[i] == '\t')
@@ -131,7 +126,6 @@ std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string&
 		else
 			current += value[i];
 	}
-
 	current = normalizeLWS(current);
 	if (!current.empty())
 		result.push_back(current);
@@ -172,13 +166,10 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	struct stat info;
 	if (stat(path.c_str(), &info) != 0)
 		return (403);
-
 	if (expectDir && !S_ISDIR(info.st_mode))
 		return (403);
-
 	if (!expectDir && S_ISDIR(info.st_mode))
 		return (403);
-
 	return (200);
 }
 
@@ -187,7 +178,6 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
 		return result;
-
 	for (int i = (int)view.len - 1; i >= 0; --i) {
 		char current = view.Data[i];
 		
@@ -201,10 +191,8 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 	}
 	return result;
 }
-
 s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
 {
-
 	s_view result;
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
@@ -265,9 +253,54 @@ bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
-char HelperFunctions::_PoinerType[10] = {0};
+char HelperFunctions::_PoinerType[50];
+char  **HelperFunctions::_ENV_VAR_CONST;
+bool HelperFunctions::_Flag = false;
 
-bool HelperFunctions::CmpWord(char *Str, const std::string &Word, short SizeStr) {
+void HelperFunctions::StoreVarConst()
+{
+	_ENV_VAR_CONST = new(std::nothrow) char*[10];
+	if (_ENV_VAR_CONST)
+		HelperFunctions::ft_memset(_ENV_VAR_CONST, 0,(sizeof(_ENV_VAR_CONST) * 10));
+	if (_ENV_VAR_CONST && !_Flag)
+	{
+		_Flag = true;
+		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
+		if (!_ENV_VAR_CONST[0])
+			return ;
+		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
+		if (!_ENV_VAR_CONST[1])
+			return ;
+		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
+		if (!_ENV_VAR_CONST[2])
+			return ;
+		_ENV_VAR_CONST[3] = ft_strdup("GATEWAY_INTERFACE=CGI/1.1");
+		if (!_ENV_VAR_CONST[3])
+			return ;
+		_ENV_VAR_CONST[4] = ft_strdup("REMOTE_IDENT=\"\"");
+		if (!_ENV_VAR_CONST[4])
+			return ;
+		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
+		if (!_ENV_VAR_CONST[5])
+			return ;
+	}
+}
+
+char *HelperFunctions::GetENV_VAR_CONST(short Index)
+{
+	if (!_ENV_VAR_CONST || Index > 8)
+		return NULL;
+	return _ENV_VAR_CONST[Index];
+}
+
+char **HelperFunctions::GetPointer_ENV_VAR_CONST()
+{
+	if (!_ENV_VAR_CONST)
+		return NULL;
+	return _ENV_VAR_CONST;
+}
+
+bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;
 
     while (i < SizeStr && i < (short)Word.length())
@@ -291,7 +324,8 @@ bool HelperFunctions::IsStringDigit(const std::string &StringDigit, short Start,
 	return true;
 }
 
-bool HelperFunctions::Iswhaitspace(char C) {
+bool HelperFunctions::Iswhaitspace(char C)
+{
 	return (C == ' ' || C == '\t');
 }
 
@@ -301,15 +335,18 @@ void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
 		if (std::isalpha(Str[i]))
 			Str[i] = std::tolower(Str[i]);
 }
-std::string HelperFunctions::ConvertStringToUpper(std::string &Str) {
-    for (size_t i = 0; i < Str.size(); i++) {
+std::string HelperFunctions::ConvertStringToUpper(std::string &Str)
+{
+    for (size_t i = 0; i < Str.size(); i++)
+	{
         if (std::isalpha(Str[i]))
             Str[i] = std::toupper(Str[i]);
     }
     return Str;
 }
 
-bool HelperFunctions::Ischar(const std::string &Sep, char C) {
+bool HelperFunctions::Ischar(const std::string &Sep, char C)
+{
 	for (size_t i = 0; i < Sep.size(); i++)
 	{
 		if (Sep[i] == C)
@@ -324,6 +361,14 @@ int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep)
 	while (i < (int)Str.size() && Ischar(Sep, Str[i]))
 		i++;
 	return i;
+}
+
+int HelperFunctions::SkeepAtLast(const std::string& Str, const std::string &Sep)
+{
+	int End = Str.length() - 1;
+	while (End >= 0 && Ischar(Sep, Str[End]))
+			End--;
+	return End;
 }
 
 int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
@@ -344,27 +389,24 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 	return SizeByte;
 }
 
-void HelperFunctions::GetCleanLineHeader(std::string &BigData, std::string &CleanLine ,short *MaxSizeHeader, bool *Flag)
+void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
-	short i = 0;
-
-	while(i < (short)BigData.length() && BigData[i] != '\n')
+	while(i < LengthData && BigData[i] != '\n')
 	{
-		(*MaxSizeHeader)++;
-		if ((*MaxSizeHeader) > 4000)
+		(MaxSizeHeader)++;
+		if ((MaxSizeHeader) > 4000)
 			return ;
 		CleanLine += BigData[i];
 		i++;
 	}
 	if (BigData[i] == '\n')
 	{
-		(*MaxSizeHeader)++;
+		(MaxSizeHeader)++;
 		CleanLine += BigData[i];
-		BigData.erase(0, (++i));
-		(*Flag) = true;
+		(Flag) = true;
+		i++;
 	}
-	else
-		BigData.erase(0, (++i));
+	
 }
 
 std::string HelperFunctions::GTMHTTP(tm* GMT)
@@ -447,11 +489,11 @@ char	*HelperFunctions::ft_strdup(const char *src)
 	return (dest_dup);
 }
 
-void	HelperFunctions::free_matrex(char ***matrex)
+void	HelperFunctions::free_matrex(char ***matrex, short IndexStart)
 {
 	int	i;
 
-	i = 0;
+	i = IndexStart;
 	if (!*matrex)
 		return ;
 	while ((*matrex)[i])
@@ -519,53 +561,6 @@ void HelperFunctions::NumToStr(int Number, std::string &Str)
     }
 }
 
-char	*HelperFunctions::ft_itoa_negative(int n, char *int_char)
-{
-	long	num;
-	int		len;
-
-	len = len_int(n);
-	num = n;
-	if (num < 0)
-	{
-		int_char[0] = '-';
-		num *= -1;
-	}
-	while (len > 1)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[len_int(n)] = '\0';
-	return ((int_char));
-}
-
-char	*HelperFunctions::ft_itoa(int n)
-{
-	long	num;
-	char	*int_char;
-	int		len;
-	int		prev_len;
-
-	len = len_int(n);
-	prev_len = len;
-	num = n;
-	int_char = new(std::nothrow) char[len + 1];
-	if (!int_char)
-		return (NULL);
-	if (num < 0)
-		return (ft_itoa_negative(n, int_char));
-	while (len)
-	{
-		int_char[len - 1] = ((num % 10) + '0');
-		num = (num / 10);
-		len--;
-	}
-	int_char[prev_len] = '\0';
-	return ((int_char));
-}
-
 const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
     size_t Pos;
@@ -575,7 +570,7 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
         _PoinerType[0] = '\0';
         return _PoinerType;
     }
-    while (i < 10 && Pos < Str.length())
+    while (i < 49 && Pos < Str.length())
     {
         _PoinerType[i] = Str[Pos];
         Pos++;
@@ -604,6 +599,7 @@ void HelperFunctions::StoredDefaultType()
 {
 	if (_TypeContent.empty())
 	{
+		
 		_TypeContent[".html"] = "text/html";
 		_TypeContent[".htm"]  = "text/html";
 		_TypeContent[".css"]  = "text/css";
@@ -612,6 +608,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".jpeg"] = "image/jpeg";
 		_TypeContent[".png"]  = "image/png";
 		_TypeContent[".txt"]  = "text/plain";
+		_TypeContent[".mp4"]  = "application/mp4";
 	}
  }
 
@@ -624,17 +621,18 @@ const char *HelperFunctions::GetType(const std::string &Type)
 
 void HelperFunctions::StoredBodys()
  {
-	_Body[200] = "Body200";
-	_Body[201] = "Body201";
-	_Body[204] = "Body204";
-	_Body[301] = "Body301";
-	_Body[302] = "Body302";
-	_Body[400] = "Body400";
-	_Body[403] = "Body403";
-	_Body[404] = "Body404";
-	_Body[500] = "Body500";
-	_Body[501] = "Body501";
-	_Body[502] = "Body502";
+	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
+	_Body[201] = "html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
+	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
+	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
+	_Body[302] = "<html><head><title>302 found</title></head><body><center><h1>302 found</h1></center><hr><center>faste server</center></body></html";
+	_Body[400] = "<html><head><title>400 Bad Request</title></head><body><center><h1>400 Bad Request</h1></center><hr><center>faste server</center></body></html>";
+	_Body[403] = "<html><head><title> 403 Forbidden</title></head><body><center><h1> 403 Forbidden</h1></center><hr><center>faste server</center></body></html>";
+	_Body[404] = "<html><head><title>404 Not Foud</title></head><body><center><h1>404 Not Foud</h1></center><hr><center>faste server</center></body></html>";
+	_Body[500] = "<html><head><title>500 Internal Server Error</title></head><body><center><h1>500 Internal Server Error</h1></center><hr><center>faste server</center></body></html>";
+	_Body[501] = "<html><head><title>501 Not Implemented</title></head><body><center><h1>501 Not Implemented</h1></center><hr><center>faste server</center></body></html>";
+	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
+	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
  
  }
  void HelperFunctions::StoredMessage()
@@ -650,6 +648,7 @@ void HelperFunctions::StoredBodys()
 	_Message[500] = "Internal Server Error";
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
+	_Message[504] = "Gateway Timeout";
  }
 
  const char *HelperFunctions::GetStatusMessage(int Status) 
@@ -699,6 +698,16 @@ void HelperFunctions::CopyStr(const std::string &Str_src, std::string &Str_new, 
 	}
 }
 
+void HelperFunctions::CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length)
+{
+	short i = Start;
+	while(i < Length)
+	{
+		Str_new += Str_src[i];
+		i++;
+	}
+}
+
 short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep, short Start)
 {
     short i = Start;
@@ -712,3 +721,55 @@ short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep
     }
     return (count);
 }
+
+stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
+{
+	int status;
+	int exit_code = waitpid(pid, &status, WNOHANG);
+
+	if (exit_code == 0)
+		return stEventProcess::RUNINNG;
+	else if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 0)
+			return stEventProcess::THE_END;
+		else
+			return stEventProcess::END_UNKNOW;
+	}
+	else
+		return stEventProcess::END_UNKNOW;
+
+}
+
+
+bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
+{
+    time_t timeNow = time(NULL);
+    if (timeNow - startInS >= Timeout)
+        return true;
+    return false;
+}
+
+int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
+{
+	int flags = fcntl(fd, F_GETFL, 0);
+
+	if (flags == -1)
+		return -1;
+
+	if (closeOnExec)
+	{
+		int fdFlags = fcntl(fd, F_GETFD, 0);
+		if (fdFlags != -1)
+		{
+			fcntl(fd, F_SETFD, fdFlags | FD_CLOEXEC);
+		}
+	}
+
+	else
+		flags |= O_NONBLOCK;
+
+	fcntl(fd, F_SETFL, flags);
+	return 0;
+}
+

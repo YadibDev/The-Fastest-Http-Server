@@ -22,7 +22,6 @@ using namespace std;
 class clsServerSock
 {
 private:
-    struct sockaddr_in temp;
     bool closeAtEnd;
     size_t _totalInterfaces;
     size_t _totalSocks;
@@ -46,6 +45,7 @@ public:
     clsServerConfig *getBlock();
     int tryAcceptNewClient(int sockServer, sockaddr_in *addr);
     const set<int> &getServerSockets();
+    void freeAllSockets();
 };
 
 #endif
