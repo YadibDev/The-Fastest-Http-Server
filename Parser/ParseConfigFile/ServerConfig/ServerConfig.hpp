@@ -17,7 +17,7 @@ private:
 
     short                               _flags;
     std::vector<sockaddr_in>            _listens;
-    s_uri_entry                         _root;           // Changed
+    std::string                         _root;           // Changed
     std::vector<s_uri_entry>            _index;          // Changed
     std::map<short, stErrorPagedata>    _error_pages;
     bool                                _autoindex;
@@ -45,11 +45,11 @@ public:
     bool    parseBlockServer();
 
     std::vector<sockaddr_in>            getListens() const;
-    std::map<short, stErrorPagedata>    getErrorPages() const;
+    const std::map<short, stErrorPagedata>    &getErrorPages() const;
     size_t                              getMaxBodySize() const;
     const std::vector<clsLocation> &    getLocationExact() const;
     const std::vector<clsLocation> &    getLocationPrefix() const;
-    const s_uri_entry                   &getRoot() const;    // Changed
+    const std::string                   &getRoot() const;    // Changed
     const std::vector<s_uri_entry>      &getIndex() const;   // Changed
     const stReturnData                  &getReturn() const;
     bool                                getAutoIndex() const;

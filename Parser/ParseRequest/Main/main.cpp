@@ -183,7 +183,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"POST /websites/ HTTP/1.1\r\n"
+    	"GET /test2.py HTTP/1.1\r\n"
     	"Host: 127.0.0.1 \r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
@@ -266,7 +266,7 @@ int main()
 	std::cout << "Method : " << Method << std::endl;
 	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
 	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
-	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
+	std::cout << "Return value : " << RequestHandler.getReturn().value.raw_path << std::endl;
 	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
 	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
 	std::cout << "Path Translated : " << RequestHandler.getPathTranslated() << std::endl;

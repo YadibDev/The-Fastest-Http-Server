@@ -40,7 +40,7 @@ public:
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
-	static bool	joinArr(char *buffer, char *AddStr, size_t size)
+	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
 
 
 

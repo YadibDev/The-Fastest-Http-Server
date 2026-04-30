@@ -113,9 +113,10 @@ struct s_uri_entry {
 		}
 	}
 
-	void	setSview(s_view &sv_path)
+	void	setSview(const s_view &sv_path)
 	{
-		sv_raw_path = sv_path;
+		sv_raw_path.Data = sv_path.Data;
+		sv_raw_path.len = sv_path.len;
 	}
 
 	void AddRedirectCount() { redirect_count++; }

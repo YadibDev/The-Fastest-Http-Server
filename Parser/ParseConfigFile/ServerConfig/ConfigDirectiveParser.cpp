@@ -157,29 +157,43 @@ sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx)
 }
 
 stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
-	stReturnData ReturData;
-	ctx.parser.advance();
-	char* end;
+    stReturnData returnData;
+    char* end;
 
-	ReturData.code = std::strtol(ctx.parser.peek().value.c_str(), &end, 10);
-	if (*end != '\0')
-	{
-		std::cout << ReturData.code << std::endl;
-		ReturData.code = -1;
-	}
+    ctx.parser.advance();
 
-	if (ctx.parser.advance().type != TOKEN_WORD) {
-		ctx.error.setStatus(400, "Syntax Error: Expected URI after return code");
-		return ReturData;
-	}
-	ReturData.value = ctx.parser.peek().value;
+    const Token<TokenType>& first = ctx.parser.peek();
+    long code = std::strtol(first.value.c_str(), &end, 10);
+    bool isNumeric = (*end == '\0');
 
-	if (ctx.parser.advance().type != TOKEN_SEMICOLON) {
-		ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
-	}
-	ctx.parser.advance();
-	skipWhitespace(ctx.parser);
-	return ReturData;
+    if (!isNumeric) {
+        if (first.value.compare(0, 7, "http://") != 0 &&
+            first.value.compare(0, 8, "https://") != 0) {
+            ctx.error.setStatus(400, "invalid return value \"" + first.value + "\"");
+            return returnData;
+        }
+        returnData.code = 302;
+        returnData.value.raw_path = first.value;
+        ctx.parser.advance();
+    }
+    else {
+        returnData.code = (int)code;
+        ctx.parser.advance();
+
+        if (ctx.parser.peek().type == TOKEN_WORD) {
+            returnData.value.raw_path = ctx.parser.peek().value;
+            ctx.parser.advance();
+        }
+    }
+
+    if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
+        ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
+        return returnData;
+    }
+    ctx.parser.advance();
+    skipWhitespace(ctx.parser);
+
+    return returnData;
 }
 
 std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
@@ -254,7 +268,7 @@ short ConfigDirectiveParser::parseMethods(s_parse_context& ctx) {
 
 bool	isValidStatusCode(short code)
 {
-    return code >= 100 && code <= 599;
+	return code >= 100 && code <= 599;
 }
 
 std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx) {
@@ -267,54 +281,55 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 
 	while (ctx.parser.peek().type == TOKEN_WORD && HelperFunctions::is_numeric(ctx.parser.peek().value))
 	{
-	    short code = (short)std::atoi(ctx.parser.peek().value.c_str());
-	    if (!isValidStatusCode(code))
-	        return (ctx.error.setStatus(400, "Invalid status code in error_page"), errorMap);
-	    codes.push_back(code);
-	    ctx.parser.advance();
+		short code = (short)std::atoi(ctx.parser.peek().value.c_str());
+		if (!isValidStatusCode(code))
+			return (ctx.error.setStatus(400, "Invalid status code in error_page"), errorMap);
+		codes.push_back(code);
+		ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type == TOKEN_WORD && ctx.parser.peek().value[0] == '=')
 	{
-	    std::string &resStr = ctx.parser.peek().value;
-	    if (resStr.size() > 1)
-	        responseOverride = (short)std::atoi(resStr.substr(1).c_str());
-	    ctx.parser.advance();
+		std::string &resStr = ctx.parser.peek().value;
+		if (resStr.size() > 1)
+			responseOverride = (short)std::atoi(resStr.substr(1).c_str());
+		ctx.parser.advance();
 	}
 
 	if (ctx.parser.peek().type == TOKEN_WORD)
 	{
-	    uri = ctx.parser.peek().value;
-	    ctx.parser.advance();
+		uri = ctx.parser.peek().value;
+		ctx.parser.advance();
 	}
 	else
-	    return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), errorMap);
+		return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), errorMap);
 
 	stErrorPagedata data;
-	data.uri = uri;
+	data.uri.raw_path = uri;
 
-	if (UriParser::isAbsoluteURI(uri))
+	if (uri[0] != '/')
 	{
-	    if (responseOverride != -1) {
-	        if (responseOverride != 301 && responseOverride != 302 && 
-	            responseOverride != 303 && responseOverride != 307 && responseOverride != 308) {
-	            return (ctx.error.setStatus(400, "Invalid redirect code for external URL"), errorMap);
-	        }
-	    }
+		if (responseOverride != -1)
+		{
+			if (responseOverride != 301 && responseOverride != 302 && 
+				responseOverride != 303 && responseOverride != 307 && responseOverride != 308) {
+				responseOverride = 302;
+			}
+		}
 		else
-	        responseOverride = 302;
+			responseOverride = 302;
 	}
 
 	data.response = responseOverride;
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-	    return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
+		return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
 		
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
 
 	for (size_t i = 0; i < codes.size(); ++i)
-	    errorMap[codes[i]] = data;
+		errorMap[codes[i]] = data;
 
 	return errorMap;
 }
@@ -324,11 +339,11 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 // Private Helpers
 
 
-void	ConfigDirectiveParser::DefineUri(s_uri_entry &uri, const std::map<std::string, std::string> &cgi_pass)
+void	ConfigDirectiveParser::DefineUri(s_uri_entry &uri)
 {
 	if (uri.getPath()[0] == '/')
 		uri.flags.is_abs_path = true;
-	else if (UriParser::isAbsoluteURI(uri.getPath()))
+	else if (!uri.raw_path.compare(0, 7, "http://"))
 		uri.flags.is_abs_uri = true;
 	else
 		uri.flags.is_relative = true;

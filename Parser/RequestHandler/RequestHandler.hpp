@@ -10,7 +10,7 @@
 #include <string>
 
 #define MAX_PATH_LEN 4096
-#define INTERNALE_LOOP 10
+#define INTERNAL_LOOP 10
 
 class RequestHandler {
 private:
@@ -60,7 +60,7 @@ public:
 	void					setStatusError(short statusError);
 	void					setError(const HttpError &error);
 
-	bool					ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
+	bool					ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 

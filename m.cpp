@@ -1,12 +1,31 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
-int main()
+
+class A {
+public:               // جعل المنشئ والعناصر عامة لتتمكن main من الوصول إليها
+    std::string str;
+    char *ptr;
+
+    A() {
+        str = "Hello";
+        ptr = &str[0];  // مؤشر إلى أول حرف في السلسلة
+    }
+};
+
+void    d(std::vector<A> &vA)
 {
-    int a = 5;
-    int *b = &a;
-    int &c = *b;
+    A a;
+    std::cout << (a.ptr) << std::endl;
+    vA.push_back(a);
+}
 
+int main() {
 
-    c = 1000;
-    std::cout << a << std::endl;
+    std::vector<A> vA;
+    d(vA);
+    std::cout << (vA[0].ptr) << std::endl;
+
+    return 0;
 }

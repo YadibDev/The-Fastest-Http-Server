@@ -21,7 +21,11 @@ class ProcessRequestHandler
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
 	static std::string			getIndex(const clsLocation* bestLocation, HttpError &error);
 	static bool					createPhysicalPath(const clsLocation* bestLocation, char *destBuffer, s_uri_entry& newUri, HttpError &error);
-	static bool					handleDirectory(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, HttpError &error);
+	static bool					handleDirectory(const clsServerConfig* serverConfig,
+											const clsLocation* bestLocation,
+											RequestHandler* handler,
+											s_uri_entry& newUri,
+											HttpError &error);
 	static	const clsLocation* findBestLocation(
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
@@ -30,9 +34,8 @@ class ProcessRequestHandler
 										const clsServerConfig* serverConfig,
 										RequestHandler* handler,
 										s_uri_entry& newUri,
-										HttpError &error)
-	static bool					handleCgi(const clsLocation* bestLocation, RequestHandler* handler,
-												const s_view &requestUri, char *PhysicalPath);
+										HttpError &error);
+	static bool					handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath);
 	static stReturnData			buildReturnFromPathAndStatus(s_uri_entry& newUri, short codeStatus, s_view &Host, const std::string &Port);
 	static void					convertToAbsUri(s_uri_entry& entry, const s_view& host, const std::string& port);
 

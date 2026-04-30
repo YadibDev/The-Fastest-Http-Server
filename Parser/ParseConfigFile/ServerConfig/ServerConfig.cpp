@@ -5,8 +5,7 @@ clsServerConfig::clsServerConfig(s_parse_context &ctxs) : ctx(ctxs)
 	_max_body_size = 1048576; 
 	
 	// Root default initialization
-	_root.raw_path = "default";
-	_root.initView();
+	_root = "default";
 
 	// Index default initialization
 	s_uri_entry defaultIndex;
@@ -21,8 +20,7 @@ clsServerConfig::~clsServerConfig() {}
 
 bool    clsServerConfig::ParseRoot()
 {
-	_root.raw_path = ConfigDirectiveParser::ParseRoot(ctx);
-	_root.initView();
+	_root = ConfigDirectiveParser::ParseRoot(ctx);
 	if (ctx.error.isError())
 		return (false);
 	return (true);
@@ -45,13 +43,7 @@ bool    clsServerConfig::ParseIndex()
 
 bool    clsServerConfig::ParseLocation()
 {
-	// Extracting raw strings for the clsLocation constructor (C++98/11 compatibility)
-	std::vector<std::string> rawIndices;
-	for (size_t i = 0; i < _index.size(); ++i) {
-		rawIndices.push_back(_index[i].raw_path);
-	}
-
-	clsLocation loc(ctx, _root.raw_path, rawIndices, _max_body_size, _autoindex);
+	clsLocation loc(ctx, _root, _index, _max_body_size, _autoindex);
 	loc.parseLocation();
 	
 	if (!loc.getError().isError())
@@ -145,13 +137,13 @@ bool    clsServerConfig::ParseServerDirective()
 
 void    clsServerConfig::initUri()
 {
-	ConfigDirectiveParser::DefineUri(_return.value, _error_pages);
+	ConfigDirectiveParser::DefineUri(_return.value);
 	_return.value.initView();
 
 	size_t i = 0;
 	while (i < _index.size())
 	{
-		ConfigDirectiveParser::DefineUri(_index[i], _error_pages);
+		ConfigDirectiveParser::DefineUri(_index[i]);
 		_index[i].initView();
 		i++;
 	}
@@ -159,16 +151,14 @@ void    clsServerConfig::initUri()
 	std::map<short, stErrorPagedata>::iterator it_err;
 	for (it_err = _error_pages.begin(); it_err != _error_pages.end(); ++it_err)
 	{
-		ConfigDirectiveParser::DefineUri(it_err->second.uri, _error_pages);
+		ConfigDirectiveParser::DefineUri(it_err->second.uri);
 		it_err->second.uri.initView();
 	}
 
-	ConfigDirectiveParser::DefineUri(_return.value, _error_pages);
+	ConfigDirectiveParser::DefineUri(_return.value);
 	_return.value.initView();
-	ConfigDirectiveParser::DefineUri(_return.value, _error_pages);
+	ConfigDirectiveParser::DefineUri(_return.value);
 	_return.value.initView();
-
-	_root.initView();
 }
 
 bool    clsServerConfig::parseBlockServer()
@@ -194,12 +184,12 @@ bool    clsServerConfig::parseBlockServer()
 }
 
 // Getters updated for s_uri_entry
-const s_uri_entry &clsServerConfig::getRoot() const { return _root; }
+const std::string &clsServerConfig::getRoot() const { return _root; }
 const std::vector<s_uri_entry> &clsServerConfig::getIndex() const { return _index; }
 
 // Other Getters
 std::vector<sockaddr_in> clsServerConfig::getListens() const { return _listens; }
-std::map<short, stErrorPagedata> clsServerConfig::getErrorPages() const { return _error_pages; }
+const std::map<short, stErrorPagedata> &clsServerConfig::getErrorPages() const { return _error_pages; }
 size_t clsServerConfig::getMaxBodySize() const { return _max_body_size; }
 const std::vector<clsLocation> &clsServerConfig::getLocationExact() const { return _LocationExact; }
 const std::vector<clsLocation> &clsServerConfig::getLocationPrefix() const { return _LocationPrefix; }

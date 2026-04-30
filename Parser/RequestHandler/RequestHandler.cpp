@@ -26,7 +26,7 @@ void RequestHandler::reset()
 	_version.reset();
 	_PathInfo.reset();
 	_ScriptName.reset();
-	_ServerPort.reset();
+	_ServerPort = "";
 
 	_PathTranslated.clear();
 	_body.clear();
@@ -45,7 +45,7 @@ void RequestHandler::reset()
 
 RequestHandler::~RequestHandler() {}
 
-bool	RequestHandler::ExtractCgiMetadata(const s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass)
 {
 	if (!newUri.getView().Data || newUri.getView().len == 0)
 		return false;
@@ -142,7 +142,7 @@ void    RequestHandler::setHeader(HeaderTable	Header)
 
 void    RequestHandler::setPathCgi(const std::string* pathCgi) { _pathCgi = pathCgi; }
 
-void    RequestHandler::setReturn(const stReturnData& returnData) { _return = returnData; }
+void    RequestHandler::setReturn(const stReturnData &returnData) { _return = returnData; }
 
 void	RequestHandler::setReturnVal(stReturnData returnData) { _return = returnData; }
 

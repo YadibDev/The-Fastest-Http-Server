@@ -245,7 +245,7 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 }
 
 
-bool	HelperFunctions::joinArr(char *buffer, char *AddStr, size_t size)
+bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
 {
 	size_t nullTerminite = ft_strlen(buffer);
 	size_t sizeAddStr = ft_strlen(AddStr);
