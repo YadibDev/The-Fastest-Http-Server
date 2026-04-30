@@ -206,13 +206,10 @@ void clsBody::_handleChunk(uint16_t &ofset)
             return;
         }
     }
-    std::cout << "shifting Data\n"
-              << std::endl;
-    std::cout << "fd ==> " << this->fd << std::endl;
-    std::cout << "ofset ==> " << ofset << std::endl;
-    std::cout << "t ==> " << t << std::endl;
-    std::cout << "removes byes ==> " << totRemoves << std::endl;
-    shiftingData(arr, totRemoves, (ofset - totRemoves)); // add tot removes > 0 before do this
+
+    if (totRemoves != 0 && totRemoves < ofset)
+        shiftingData(arr, totRemoves, (ofset - totRemoves));
+
     ofset -= totRemoves;
     cur = 0;
     t -= totRemoves;
