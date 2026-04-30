@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 20:12:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/30 19:55:18 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,11 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    // if (_Mod[stMod::NOTINTERNALRE] != _Mod[stMod::NOTINTERNALRE])
-    //     _Mod[stMod::INTERNALRE] = stMod::INTERNALRE;
-    // else
+    if (_Mod[stMod::INTERNALRE] != _Mod[stMod::INTERNALRE])
+        return ;
+    else
     {
-        if (_DataRequest.getDefaultErrorPage())
+        if (!_DataRequest.getDefaultErrorPage())
             _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
         else
             _ErrorPage.ResponseError(_Status,"");
