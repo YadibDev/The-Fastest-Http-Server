@@ -15,6 +15,7 @@
 #include <string>
 #include <ctime>
 #include <sys/stat.h>
+#include <cstring>
 #include "../Parser/ParseRequest//Request/HttpTypes.hpp"
 
 
@@ -34,8 +35,8 @@ struct stEventData
 class HelperFunctions
 {
 public:
-    static s_view  find_first_of_view(s_view view, const char* set);
-    static s_view  extract_between(s_view view, const char* start_set, const char* end_set);
+	static s_view  find_first_of_view(s_view view, const char* set);
+	static s_view  extract_between(s_view view, const char* start_set, const char* end_set);
 	static void skipWhitespace(const std::string &str, size_t &pos);
 	static bool isCRLF(const std::string &str);
 	static long hexToDec(const std::string &hex);
@@ -51,6 +52,7 @@ public:
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
+	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
 
 
     // achraf part
@@ -99,7 +101,16 @@ public:
     static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
-    static bool ConvertStrToNum(const char *arr, long &num, short base = 10); //
+
+    template<typename T>
+    static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
+    {
+        char *end;
+        num = strtol(arr, &end, base);
+        if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+            return false;
+        return true;
+    }
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

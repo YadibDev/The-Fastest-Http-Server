@@ -26,7 +26,7 @@ void RequestHandler::reset()
 	_version.reset();
 	_PathInfo.reset();
 	_ScriptName.reset();
-	_ServerPort.reset();
+	_ServerPort = "";
 
 	_PathTranslated.clear();
 	_body.clear();
@@ -43,18 +43,16 @@ void RequestHandler::reset()
 	_error = HttpError();
 }
 
-
 RequestHandler::~RequestHandler() {}
 
-
-bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::string, std::string> &cgi_pass)
+bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass)
 {
-	if (!uri.Data || uri.len == 0)
+	if (!newUri.getView().Data || newUri.getView().len == 0)
 		return false;
 
-	const char* start = uri.Data;
+	const char* start = newUri.getView().Data;
 	const char* current = start;
-	const char* end = start + uri.len - 1;
+	const char* end = start + newUri.getView().len - 1;
 
 	while (current <= end)
 	{
@@ -94,6 +92,7 @@ bool	RequestHandler::ExtractCgiMetadata(const s_view &uri, const std::map<std::s
 	return false;
 }
 
+
 void	RequestHandler::computePathTranslated(const std::string& rootPath)
 {
 	size_t totalSize = rootPath.size() + _PathInfo.len;
@@ -132,7 +131,7 @@ void RequestHandler::setPathTranslated(std::string pathTranslated) {
 	_PathTranslated = pathTranslated;
 }
 
-void RequestHandler::setServerPort(const s_view serverPort) {
+void RequestHandler::setServerPort(const std::string &serverPort) {
 	_ServerPort = serverPort;
 }
 
@@ -143,7 +142,7 @@ void    RequestHandler::setHeader(HeaderTable	Header)
 
 void    RequestHandler::setPathCgi(const std::string* pathCgi) { _pathCgi = pathCgi; }
 
-void    RequestHandler::setReturn(const stReturnData& returnData) { _return = returnData; }
+void    RequestHandler::setReturn(const stReturnData &returnData) { _return = returnData; }
 
 void	RequestHandler::setReturnVal(stReturnData returnData) { _return = returnData; }
 
@@ -176,7 +175,7 @@ const std::string &RequestHandler::getPathTranslated() const {
 	return _PathTranslated;
 }
 
-const s_view& RequestHandler::getServerPort() const {
+const std::string &RequestHandler::getServerPort() const {
 	return _ServerPort;
 }
 

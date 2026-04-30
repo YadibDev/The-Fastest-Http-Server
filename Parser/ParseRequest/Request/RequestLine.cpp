@@ -97,9 +97,9 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 {
 	if (!_uriReady)
 	{
-		skipSpaceLastIndex(buffer, size, _offset);
-		if (_offset > size)
-			return true;
+		if (' ' != buffer[_offset])
+			return (_error.setStatus(400, "Bad Request") , false);
+		_offset++;
 		_uriParser.init(_offset);
 		_uriReady = true;
 	}
@@ -125,10 +125,10 @@ bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 
 	if (!_versionReady)
 	{
-		skipSpaceLastIndex(buffer, size, _offset);
-		if (_offset > size)
-			return true;
-		
+		if (' ' != buffer[_offset])
+			return (_error.setStatus(400, "Bad Request") , false);
+
+		_offset++;
 		_version.Data = (char *)&buffer[_offset];
 		_version.len = 0;
 		_versionReady = true;

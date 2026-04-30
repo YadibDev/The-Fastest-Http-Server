@@ -1,6 +1,6 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 8192
+#define CHUNK_LIMIT SIZE_BUFFER
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
@@ -90,20 +90,24 @@ int clsClient::_ReadDataForReq()
     if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
-        size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.request_metadata[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
+
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
+            _state = CONNECTION_CLOSED;
     }
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
         // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
-        size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
         if (size > 0)
             idx += size;
+
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
+            _state = CONNECTION_CLOSED;
     }
-    if (size == 0)
-        _state = CONNECTION_CLOSED;
 
     return size;
 }
@@ -120,7 +124,7 @@ void clsClient::ProcessRequest()
 
     int size = _ReadDataForReq(); // reading data for request
 
-    if (_state == CONNECTION_CLOSED || size == -1)
+    if (_state == CONNECTION_CLOSED || size == -1 || size == 0)
         return;
 
     if (_Requester._state == RequestParser::STATE_BODY)
@@ -303,42 +307,38 @@ void clsClient::freeRessources()
     // _monitorCGI.freeCgiRessources();
     // _ResponderProecss.GetclsResponse().Reset();
 
-    // std::cout << "===socket===" << std::endl;
-
-    // std::cout << _socket << std::endl;
     if (this->_socket > 0)
-         close(this->_socket);
-    // std::cout << "===socket end===\n"<< std::endl;
+    {
+        close(this->_socket);
+    }
     _socket = -1;
 }
 
 void clsClient::logs()
 {
-    // string arr[3] = {"GET", "POST", "DELETE"};
-    // std::cout << "\n================= log start =================" << std::endl;
-    // const RequestLine &reqLine = _Requester.getRequestLine();
-    // std::cout << arr[(int)reqLine.getMethod()] << " ";
-    // for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
-    //     std::cout << reqLine.getRequestURI().getPath().Data[i];
-    // std::cout << " ";
-    // for (int i = 0; i < reqLine.getVersion().len; i++)
-    //     std::cout << reqLine.getVersion().Data[i];
-    // for (int i = 0; i < 6; i++)
-    // {
-    //     if (this->_theData.known_headers[i].Hash != -1)
-    //     {
-    //         cout << std::endl;
-    //         // for (int i = 0; i < this->_theData.known_headers[i].key.len; i++)
-    //         //     std::cout << this->_theData.known_headers[i].key.Data[i];
-    //         // std::cout << ": ";
-    //         // for (int i = 0; i < this->_theData.known_headers[i].val.len; i++)
-    //         //     std::cout << this->_theData.known_headers[i].val.Data[i];
-    //     }
-    // }
-    // std::cout << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << std::endl;
-    // std::cout << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
-    // std::cout << "\n================= log end =================\n"
-    //           << std::endl;
+    static std::ofstream logFile("./logs/logfile.txt");
+
+    if (logFile.is_open())
+    {
+        string arr[3] = {"GET", "POST", "DELETE"};
+        logFile << "\n================= log start client =================" << endl;
+
+        _theData.request_metadata[_theData.read_offset] = '\0';
+        logFile << this->_theData.request_metadata << std::endl;
+
+        const RequestLine &reqLine = _Requester.getRequestLine();
+        logFile << arr[(int)reqLine.getMethod()] << " ";
+        for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+            logFile << reqLine.getRequestURI().getPath().Data[i];
+        logFile << " ";
+        for (int i = 0; i < reqLine.getVersion().len; i++)
+            logFile << reqLine.getVersion().Data[i];
+
+        logFile << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << endl;
+        logFile << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+        logFile << "\n================= log end =================\n"
+                << endl;
+    }
 }
 
 void clsClient::initializeCGI()

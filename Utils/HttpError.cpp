@@ -5,6 +5,11 @@ HttpError::HttpError() : _codeStatus(0), _msgError("")
     
 }
 
+void	HttpError::reset()
+{
+    _codeStatus = 0;
+}
+
 HttpError::HttpError(int code, std::string msg) : _codeStatus(code), _msgError(msg) {}
 
 int HttpError::getCodeStatus() const { 

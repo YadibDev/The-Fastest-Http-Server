@@ -2,6 +2,7 @@
 #define ___CLIENT_HPP___
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>

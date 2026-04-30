@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 20:02:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/30 20:07:12 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,7 +397,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-	if (_Mod[stMod::INTERNALRE] != _Mod[stMod::INTERNALRE])
+	if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
 		return ;
 	// else
 	// {

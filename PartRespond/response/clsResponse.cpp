@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 19:55:18 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/04/30 20:07:00 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void clsResponse::_InitialHeaders()
             _Redirction();
         else
         {
-            _Body = _DataRequest.getReturn().value;
+            _Body = _DataRequest.getReturn().value.raw_path;
             _BodySize = _Body.size();
         }
     }
@@ -102,7 +102,7 @@ void clsResponse::_InitialHeaders()
 void clsResponse::_ErrorRespnseHandling()
 {
     _ErrorPage.Reset();
-    if (_Mod[stMod::INTERNALRE] != _Mod[stMod::INTERNALRE])
+    if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
         return ;
     else
     {
@@ -160,7 +160,7 @@ void clsResponse::_Transfer_Encoding()
 void clsResponse::_Redirction()
 {
    _HeaderFeild += "Location: ";
-   _HeaderFeild += _DataRequest.getReturn().value;
+   _HeaderFeild += _DataRequest.getReturn().value.raw_path;
    _HeaderFeild += "\r\n";
 }
 void clsResponse::_Date()

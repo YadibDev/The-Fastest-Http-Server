@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:01:35 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/27 17:01:15 by yadib            ###   ########.fr       */
+/*   Updated: 2026/04/29 14:53:28 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 
 # define MAX_HEADERS  2000
-# define MAX_BODY  8192 - MAX_HEADERS
+# define MAX_BODY  SIZE_BUFFER - MAX_HEADERS
 
 enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 

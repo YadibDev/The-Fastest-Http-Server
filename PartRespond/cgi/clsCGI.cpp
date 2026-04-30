@@ -239,7 +239,7 @@ bool clsCGI::_childeProcesse()
     // }
     // if (dup2(Fd, 0) == -1)
     //     return (close(Fd), close(_pip[1]), true);
-    chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
+    // chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);

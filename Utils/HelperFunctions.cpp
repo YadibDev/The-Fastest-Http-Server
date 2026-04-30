@@ -233,6 +233,19 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 }
 
 
+bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
+{
+	size_t nullTerminite = ft_strlen(buffer);
+	size_t sizeAddStr = ft_strlen(AddStr);
+
+	if ((sizeAddStr + nullTerminite) >= size)
+		return false;
+
+	memcpy(&buffer[nullTerminite], AddStr, sizeAddStr);
+	buffer[nullTerminite + sizeAddStr] = '\0';
+	return true;
+}
+
 
 
 // Achraf
@@ -760,11 +773,3 @@ int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 	return 0;
 }
 
-bool HelperFunctions::ConvertStrToNum(const char *arr, long &num, short base)
-{
-	char *end;
-	num = strtol(arr, &end, base);
-	if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
-		return false;
-	return true;
-}
