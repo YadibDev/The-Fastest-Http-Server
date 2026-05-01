@@ -22,7 +22,6 @@ cd "nginx-$NGINX_VERSION"
 
 # Configure install path (no root needed)
 ./configure --prefix="$PREFIX" \
-            --with-http_ssl_module \
             --with-http_v2_module
 
 # Build and install

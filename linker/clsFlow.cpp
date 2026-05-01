@@ -147,59 +147,27 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         int fd = client.data.fd;
 
         if (client.events & EPOLLERR)
-        {
             std::cout << "EPOLLERR" << std::endl;
-            if (TypeFd == PIPE)
-            {
-                int index = _IdByPipe[fd];
-                if (_clientsArr[index].monitorCgi())
-                    _popPipe(fd);
-            }
-            else if (TypeFd == CLIENT_SOCK)
-                _freeClient(fd);
-            else if (TypeFd == SERVER_SOCK)
-                std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-                          << std::endl;
-        }
         else if (client.events & EPOLLHUP)
-        {
-            std::cout << "EPOLLHUP" << std::endl;
-            if (TypeFd == PIPE)
-            {
-                int index = _IdByPipe[fd];
-                if (_clientsArr[index].monitorCgi())
-                    _popPipe(fd);
-            }
-            else if (TypeFd == CLIENT_SOCK)
-                _freeClient(fd);
-            else if (TypeFd == SERVER_SOCK)
-            {
-                std::cout << "----------" << std::endl;
-                ;
-                if (client.events & EPOLLIN)
-                    std::cout << "EPOOLLLIN\n";
-                std::cout << fd << std::endl;
-                std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-                          << std::endl;
-                std::cout << "----------" << std::endl;
-            }
-        }
+            std::cout
+                << "EPOLLHUP" << std::endl;
         else
-        {
-            // std::cout << "EPOLLRDHUP" << std::endl;
-            if (TypeFd == PIPE)
-            {
-                int index = _IdByPipe[fd];
-                if (_clientsArr[index].monitorCgi())
-                    _popPipe(fd);
-            }
-            else if (TypeFd == CLIENT_SOCK)
-                _freeClient(fd);
-            else if (TypeFd == SERVER_SOCK)
-                std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-                          << std::endl;
-        }
+            std::cout << "EPOLLRDHUP" << std::endl;
 
+        if (TypeFd == PIPE)
+        {
+            int index = _IdByPipe[fd];
+            if (_clientsArr[index].monitorCgi())
+                _popPipe(fd);
+        }
+        else if (TypeFd == CLIENT_SOCK)
+            _freeClient(fd);
+        // else if (TypeFd == SERVER_SOCK)
+        // {
+        //     std::cout << fd << std::endl;
+        //     std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
+        //               << std::endl;
+        // }
         return true;
     }
     return false;
