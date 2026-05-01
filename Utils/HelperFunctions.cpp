@@ -722,10 +722,10 @@ short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep
     return (count);
 }
 
-stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
+stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int op)
 {
 	int status;
-	int exit_code = waitpid(pid, &status, WNOHANG);
+	int exit_code = waitpid(pid, &status, op);
 
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;

@@ -47,8 +47,11 @@ public:
             return;
         if (pid != -1 && stateProcess == stEventProcess::RUNINNG)
         {
-            kill(pid, SIGKILL);
-            HelperFunctions::checkProcessStatus(pid);
+            if (HelperFunctions::checkProcessStatus(pid) == stEventProcess::RUNINNG)
+            {
+                kill(pid, SIGKILL);
+                HelperFunctions::checkProcessStatus(pid, 0);
+            }
             stateProcess = stEventProcess::END_WITH_TIMOUT;
         }
         if (pipe != -1 && stateData == stEventData::STILL_EXIST)
@@ -69,23 +72,27 @@ public:
         {
             if (stateData == stEventData::STILL_EXIST)
                 close(pipe);
+            pipe = -1;
+            pid = -1;
             stateData = stEventData::END_PIPE;
             return -1;
         }
 
-        short reads = read(pipe, buffer, bufferSize);
-
+        short reads = 0;
+        if (pipe != -1)
+            reads = read(pipe, buffer, bufferSize);
         if (reads == 0 || (stateProcess == stEventProcess::THE_END && reads < bufferSize))
         {
-            // std::cout << "=========\n";
-            // std::cout << "process end with success return 0\n\n";
-            // std::cout << "=========\n";
-            if (reads == 0)
-                stateProcess = stEventProcess::THE_END;
-            close(pipe);
-            pipe = -1;
+            if (pipe != -1)
+                close(pipe);
             stateData = stEventData::END_PIPE;
         }
+        if (stateProcess == stEventProcess::THE_END)
+            pid = -1;
+        if (stateData == stEventData::END_PIPE)
+            pipe = -1;
+
+
         return reads;
     }
 

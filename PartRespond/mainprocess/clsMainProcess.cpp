@@ -151,6 +151,7 @@ void clsMainProcess::MainProcess()
 
 void clsMainProcess::Reset()
 {
+    this->_RunCGI = false;
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
     _Response.Reset(); // reset error page also

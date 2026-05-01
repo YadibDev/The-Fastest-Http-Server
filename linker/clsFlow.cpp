@@ -151,7 +151,9 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
             std::cout << "EPOLLERR" << std::endl;
             if (TypeFd == PIPE)
             {
-                _popPipe(fd);
+                int index = _IdByPipe[fd];
+                if (_clientsArr[index].monitorCgi())
+                    _popPipe(fd);
             }
             else if (TypeFd == CLIENT_SOCK)
                 _freeClient(fd);
@@ -159,12 +161,14 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
                 std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
                           << std::endl;
         }
-        else if (client.events & EPOLLRDHUP)
+        else if (client.events & EPOLLHUP)
         {
-            std::cout << "EPOLLRDHUP" << std::endl;
+            std::cout << "EPOLLHUP" << std::endl;
             if (TypeFd == PIPE)
             {
-                _popPipe(fd);
+                int index = _IdByPipe[fd];
+                if (_clientsArr[index].monitorCgi())
+                    _popPipe(fd);
             }
             else if (TypeFd == CLIENT_SOCK)
                 _freeClient(fd);
@@ -182,7 +186,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else
         {
-            // std::cout << "EPOLLHUP" << std::endl;
+            // std::cout << "EPOLLRDHUP" << std::endl;
             if (TypeFd == PIPE)
             {
                 int index = _IdByPipe[fd];
