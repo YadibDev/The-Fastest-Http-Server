@@ -1,7 +1,7 @@
 import socket
 
 host = "127.0.0.1"
-port = 8082
+port = 8083
 path = "/test2.py"
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
