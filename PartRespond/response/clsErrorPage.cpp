@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 19:58:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/01 10:48:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void clsErrorPage::_StoredInFileOrStr()
 void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
 {
     _Status = Status;
-    short PrevStatus = Status;
     if (!FilePageError.empty())
     {
         _FileFromDisk = FilePageError;
@@ -105,8 +104,8 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         {
             _Type = HelperFunctions::GetType(".html"); 
             _FileFromDisk = "";
-            _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
-            _Body = HelperFunctions::GetBody(PrevStatus);
+            _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(_Status));
+            _Body = HelperFunctions::GetBody(_Status);
             _HeadersErrorResponse();
             return ;
         }
