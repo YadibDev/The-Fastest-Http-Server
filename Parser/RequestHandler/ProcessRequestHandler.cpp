@@ -322,6 +322,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		return true;
 	}
 
+	// copy remove
 	stErrorPagedata foundData = it->second;
 	foundData.uri.initView();
 	if (!internalRedirect(foundData.uri, serverConfig, handler, error))

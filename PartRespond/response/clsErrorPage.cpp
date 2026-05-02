@@ -103,7 +103,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
         _StoredInFileOrStr();
         if (_Erno)
         {
-            _Type = HelperFunctions::GetType(".html"); 
+            _Type = HelperFunctions::GetType(".html");
             _FileFromDisk = "";
             _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(PrevStatus));
             _Body = HelperFunctions::GetBody(PrevStatus);
