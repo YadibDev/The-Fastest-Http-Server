@@ -5,14 +5,14 @@ ProcessRequestHandler::ProcessRequestHandler()
 }
 
 
-static bool	viewEqualsString(s_view view, const std::string &str)
+static bool	viewEqualsString(const s_view &view, const std::string &str)
 {
 	if (view.len != str.size())
 		return false;
 	return (std::memcmp(view.Data, str.data(), view.len) == 0);
 }
 
-static bool	viewStartsWithString(s_view view, const std::string &prefix)
+static bool	viewStartsWithString(const s_view &view, const std::string &prefix)
 {
 	if (view.len < prefix.size())
 		return false;
@@ -22,7 +22,7 @@ static bool	viewStartsWithString(s_view view, const std::string &prefix)
 const clsLocation* ProcessRequestHandler::findBestLocation(
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
-	s_view							uri)
+	const s_view &uri)
 {
 	const clsLocation* best = NULL;
 
