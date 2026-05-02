@@ -49,7 +49,7 @@ int clsBody::_createUploadStoreFile()
     int fd = -1;
     if (this->uploadStore)
     {
-        std::cout << uploadStore << std::endl;
+        std::cout << *uploadStore << std::endl;
     }
 
     return fd;
