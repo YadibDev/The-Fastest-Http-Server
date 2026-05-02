@@ -120,7 +120,7 @@ struct s_uri_entry {
 	}
 
 	void AddRedirectCount() { redirect_count++; }
-	s_view getView() const { return sv_raw_path; }
+	const s_view &getView() const { return sv_raw_path; }
 };
 
 struct stReturnData {    

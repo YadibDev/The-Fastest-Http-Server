@@ -29,7 +29,7 @@ class ProcessRequestHandler
 	static	const clsLocation* findBestLocation(
 	const std::vector<clsLocation>	&LocationExact,
 	const std::vector<clsLocation>	&LocationPrefix,
-	s_view							uri);
+	const s_view							&uri);
 	static bool 				handlePath(const clsLocation* bestLocation,
 										const clsServerConfig* serverConfig,
 										RequestHandler* handler,
