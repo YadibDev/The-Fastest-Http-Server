@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 20:07:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/01 11:37:43 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		_Status = 502;
-		// _ErrorRespnseHandling();
 		return ;
 	}
 	_Status = 200;
@@ -268,14 +267,9 @@ void clsParseOutCGI::_BuilResponsedredirection()
 	if (_LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 2 && _BytesBody)
 		_HeaderResponseCGI();
 	else if (!CountValidHeader && _LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
-	{
 		_HeaderResponseCGI();
-		
-	}
 	else if(_HeadersField.size() == 1 && !_BytesBody)
-	{
 		_InitialInternalRedirect();
-	}
 	else
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
@@ -370,7 +364,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 				close(_Fdout);
 				return ;
 			}
-			// std::cout<< _CountSizeHeaders<< " <--- '"<<Arr[_Counter]<<"' ---> " << Length << std::endl;
 			if (write(_Fdout, &Arr[_Counter], ((Length - _Counter  < 0)? 0 : Length - _Counter)) == -1)
 			{
 				_Status = 500;
