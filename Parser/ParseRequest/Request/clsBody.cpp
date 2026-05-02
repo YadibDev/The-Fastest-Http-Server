@@ -29,6 +29,9 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
+    if (this->removeFile)
+        remove(_fileName.c_str());
+    this->removeFile = false;
     this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
@@ -41,9 +44,21 @@ void clsBody::Reset()
     fd = -1;
 }
 
+int clsBody::_createUploadStoreFile()
+{
+    int fd = -1;
+    if (this->uploadStore)
+    {
+        std::cout << uploadStore << std::endl;
+    }
+
+    return fd;
+
+}
 // working on normal body without chunk
 bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path)
 {
+    (void)path;
     uint16_t &offset = *off;
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
@@ -57,7 +72,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
             _isChunk = false;
             const char *content_leng_str = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
 
-            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength > (long)maxBodySize)
+            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength > (long)maxBodySize || _contentLength < 0)
             {
                 if (_contentLength > (long)maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
@@ -70,14 +85,20 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         }
 
         if (isCgi)
+        {
             fd = mkstemp(&_fileName[0]);
+            removeFile = true;
+        }
         else
-            fd = open(path, O_CREAT | O_CLOEXEC | O_WRONLY | O_TRUNC, 0644); // i may change this
+        {
+            fd = _createUploadStoreFile();
+        }
 
         if (fd == -1)
         {
             _errorPage.setStatus(500, "Internal Server Error:");
             _state = clsBody::DONE_WIHTERROR;
+            removeFile = false;
             return false;
         }
 
@@ -93,7 +114,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    uint16_t &size = chunkHelp.size;
+    short &size = chunkHelp.size;
 
     if (arr[t] == '\r')
     {
@@ -107,7 +128,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
         {
             t += 2;
             totRemoves += t - cur;
-            if (HelperFunctions::ConvertStrToNum(&arr[cur], size, 16) == false)
+            if (HelperFunctions::ConvertStrToNum(&arr[cur], size, 16) == false || size < 0)
             {
                 _errorPage.setStatus(400, "Bad Request");
                 error = true;
@@ -135,7 +156,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    uint16_t &size = chunkHelp.size;
+    short &size = chunkHelp.size;
 
     int temp;
     if (ofset - t < size)
@@ -225,9 +246,11 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    std::cout << "stroe normal body\n"
-              << std::endl;
-    int temp = write(this->fd, data.io_chunk, offset); // i will change this
+    int toWrite = std::max(offset + writeSize, _contentLength);
+    int temp = 0;
+
+    if (toWrite > 0)
+        temp = write(this->fd, data.io_chunk, offset);
     if (temp == -1)
     {
         _errorPage.setStatus(500, "Internal Server Error:");
@@ -266,6 +289,11 @@ void clsBody::ParseBody(uint16_t &offset, const size_t &maxBodySize)
     }
 }
 
+void clsBody::setUploadStore(const std::string *ptr)
+{
+    this->uploadStore = ptr;
+}
+
 ssize_t clsBody::getBodySize()
 {
     return _contentLength;
@@ -278,13 +306,8 @@ HttpError clsBody::getError()
 
 clsBody::~clsBody()
 {
-    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
-    this->_state = clsBody::SETTING_VARS;
-    this->_isChunk = false;
-    this->_contentLength = 0;
-    writeSize = 0;
-    chunkHelp.Reset();
-    _errorPage.setStatus(0);
+    if (this->removeFile)
+        remove(_fileName.c_str());
     if (fd != -1)
         close(fd);
     fd = -1;

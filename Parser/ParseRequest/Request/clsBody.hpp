@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "Header.hpp"
+#include <cstdio>
 #include <unistd.h>
 #include "../../../Utils/HelperFunctions.hpp"
 class clsRequest;
@@ -12,7 +13,7 @@ class clsRequest;
 
 struct chunkVars
 {
-    uint16_t size;
+    short size;
     uint16_t cur;
     uint16_t trav;
     bool readsize;
@@ -34,6 +35,7 @@ public: // time to debug
     chunkVars chunkHelp;
     long writeSize;
     std::string _fileName;
+    const std::string *uploadStore;
     HttpError _errorPage;
     int fd;
     long    _contentLength;
@@ -41,6 +43,9 @@ public: // time to debug
     void _handleChunk(uint16_t &ofset);
     bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
     bool _saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves);
+    int _createUploadStoreFile();
+
+    bool removeFile;
 public:
     enum step
     {
@@ -57,11 +62,12 @@ public:
     const std::string &getFileName() const;
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
-    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path);
+    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path = NULL);
     void ParseBody(uint16_t &offset, const size_t &maxBodySize);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
+    void setUploadStore(const std::string *ptr);
     HttpError getError();
 
 };
