@@ -19,19 +19,21 @@ enum flowAutoIndex
     CAN_PUSH,
     I_CANT_PUSH,
     END_TAG,
-    DONE
+    LAST_CHUNKED,
+    DONE_AUTO_INDEX,
+    ERROR_AUTO_INDEX
 };
 
 class clsAutoIndex
 {
 private:
-    static string headAutoIndexPreffix = "<!DOCTYPE html><style>table{font-size:20px;font-family:arial,sans-serif;border-collapse:collapse;}td,th{text-align:left;overflow:hidden;text-overflow:ellipsis;padding:10px;max-width:170px;}</style><body><h1>Index of ";
-    static string headAutoIndexSuffix = "</h1><hr><table><tr><th>Name</th><th>file type</th></tr>";
-    static string endAutoIndex = "</table></body>";
-    static string preffRow = "<tr>";
-    static string preffCol = "<td>";
-    static string suffCol = "</td>";
-    static string suffRow = "</tr>";
+    static string headAutoIndexPreffix;
+    static string headAutoIndexSuffix;
+    static string endAutoIndex;
+    static string preffRow;
+    static string preffCol;
+    static string suffCol;
+    static string suffRow;
 
     DIR *streamDir;
     dirent *ptrDir;
@@ -39,10 +41,24 @@ private:
     const char *dir;
     short physicalDirSize;
     short dirSize;
-    flowAutoIndex flowEnum = START;
+    char *ptrSize;
+    flowAutoIndex flowEnum;
+
+    short _pushHeaderAutoIndex(char *buffer, short &start);
+    flowAutoIndex _canPush(short nameSize, short availableSize);
+    flowAutoIndex _insertRow(char *buffer, short &start, short &pushbytes, short limitSize);
+    short _pushNewRow(char *buffer, short &start, char *file, unsigned char FILE_TYPE);
+    short addDataToChar(char *buffer, const char *src, short &start, short len, bool encode = false);
+    short _pushLink(char *buffer, short &start, char *file, unsigned char FILE_TYPE);
+    short _pushTypeFile(char *buffer, short &start, unsigned char FILE_TYPE);
+    void _addSizeChunk(short pushBytes, bool lastChunk = false);
+    short _closeAutoIndex(char *buffer, short &start, short sizeLeft);
+
 public:
+    clsAutoIndex();
+    ~clsAutoIndex();
     void initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize);
-    
-}
+    flowAutoIndex insertAutoDirective(char *buffer, short &start, short limitSize);
+};
 
 #endif
