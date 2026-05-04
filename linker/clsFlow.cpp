@@ -7,7 +7,6 @@ void clsFlow::_initializeStatics()
     HelperFunctions::StoredBodys();
     HelperFunctions::StoredMessage();
     HelperFunctions::StoredMessage();
-    // signal(SIGINT, function);
 }
 
 void clsFlow::_createBlocksServers(const char *configFile)
@@ -72,8 +71,6 @@ void clsFlow::_createServers()
     }
     if (_totalServers == 0)
         throw std::runtime_error("Error\nthere is no server or there is a problem in all the servers");
-    // debug
-    // std::cout << "total servers created [" << _totalServers << "]" << std::endl;
 }
 
 void clsFlow::_initializeDataBase()
@@ -162,12 +159,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (TypeFd == CLIENT_SOCK)
             _freeClient(fd);
-        // else if (TypeFd == SERVER_SOCK)
-        // {
-        //     std::cout << fd << std::endl;
-        //     std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-        //               << std::endl;
-        // }
         return true;
     }
     return false;
@@ -182,7 +173,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
     _clientIdByFd[newClient] = blockId;
 
     if (_epoll.addClient(newClient, EPOLLIN) == false)
-        return false; // watch by epoll
+        return false;
     client.initializeClient(addr, newClient, block);
     return true;
 }
@@ -271,7 +262,6 @@ void clsFlow::_pipeFlow(int fd)
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
-    // update flow of checkins is it a pipe or a server
     if (TypeFd == CLIENT_SOCK)
         _clientProcess(fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)
