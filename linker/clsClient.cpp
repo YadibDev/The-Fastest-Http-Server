@@ -19,7 +19,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
 {
     _theData.Reset();
     _fdRespond = 0;
-    _FirstConnection = HelperFunctions::getCurrentTimeInMs();
+    _FirstConnection = HelperFunctions::getCurrentTimeInS();
     _socket = fd;
     _addr = addr,
     this->block = block;
@@ -44,12 +44,12 @@ unsigned int clsClient::GetIp() const
     return ntohl(_addr.sin_addr.s_addr);
 }
 
-size_t clsClient::GetTimeConnection() const
+long clsClient::GetTimeConnection() const
 {
     return _FirstConnection;
 }
 
-size_t clsClient::GetLastConnection() const
+long clsClient::GetLastConnection() const
 {
     return _LastConnection;
 }

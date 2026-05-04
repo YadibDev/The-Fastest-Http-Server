@@ -280,14 +280,53 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
         _pipeFlow(fd);
 }
 
+void clsFlow::_tryTimeOutClients()
+{
+    if (_clientIdByFd.size())
+    {
+        short clientFd;
+        short index;
+        std::map<short, short>::iterator it = _clientIdByFd.begin();
+        std::map<short, short>::iterator end = _clientIdByFd.end();
+        while (it != end)
+        {
+            clientFd = it->first;
+            index = it->second;
+            size_t timeConected = _clientsArr[index].GetLastConnection();
+            it++;
+            if (HelperFunctions::isTimeout(timeConected, TIMEOUT_CLIENT))
+            {
+                this->_freeClient(clientFd);
+            }
+        }
+    }
+
+}
+
+void clsFlow::_tryTimeOutCgi()
+{
+    if (_IdByPipe.size())
+    {
+        std::map<short, short>::iterator it = _IdByPipe.begin();
+        std::map<short, short>::iterator end = _IdByPipe.end();
+        while (it != end)
+        {
+            int pipeFd = it->first;
+            int index = it->second;
+            it++;
+            if (_clientsArr[index].timeoutCgi())
+                _popPipe(pipeFd);
+        }
+    }
+}
+
 void clsFlow::EventLoop()
 {
     int nFds = 0;
     fdTypes TypeFd;
     while (1)
     {
-
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1000)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 500)))
         {
             for (int i = 0; i < nFds; i++)
             {
@@ -306,27 +345,9 @@ void clsFlow::EventLoop()
                 else
                     _flowProcess(fd, TypeFd, i);
             }
-
-            // cgi timeout
-            if (_IdByPipe.size())
-            {
-                std::map<short, short>::iterator it = _IdByPipe.begin();
-                std::map<short, short>::iterator end = _IdByPipe.end();
-                while (it != end)
-                {
-                    int pipeFd = it->first;
-                    int index = it->second;
-                    if (_clientsArr[index].timeoutCgi())
-                    {
-                        it++;
-                        _popPipe(pipeFd);
-                    }
-                    else
-                        it++;
-                }
-            }
-            // if (_clientIdByFd.size());// add logic of client timeout
         }
+        _tryTimeOutCgi();
+        _tryTimeOutClients();
     }
 }
 

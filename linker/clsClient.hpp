@@ -48,8 +48,8 @@ private:
     int _fdRespond;
     ssize_t bytesToSend;
     ssize_t bodyLimit;
-    size_t _LastConnection; // update connection in ms
-    size_t _FirstConnection; // first established connection in ms mile seconds
+    long _LastConnection; // update connection in ms
+    long _FirstConnection; // first established connection in ms mile seconds
     stPollRequest _dataForReq;
     PollOfClient _theData;
     sockaddr_in _addr;       // ip and port of the client
@@ -78,8 +78,8 @@ public:
     const clinetState &GetState() const;
     unsigned short GetPort() const;
     unsigned int GetIp() const;
-    size_t GetTimeConnection() const;
-    size_t GetLastConnection() const;
+    long GetTimeConnection() const;
+    long GetLastConnection() const;
     int getPipeCgi();
 
 
