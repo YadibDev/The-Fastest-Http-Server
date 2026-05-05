@@ -35,7 +35,7 @@ void clsFlow::_createBlocksServers(const char *configFile)
     lexerConfig.addCommentRule("#", "\n");
     lexerConfig.addWithSpace(" \t\n");
     static GenericLexer<TokenType> lexer(configeData, lexerConfig);
-    static std::vector<Token<TokenType> > Lexer = lexer.tokenize();
+    static std::vector<Token<TokenType>> Lexer = lexer.tokenize();
     static clsParse<TokenType> Data(Lexer, TOKEN_EOF);
     static clsParseConfigueFile ConfigFile(Data);
 
@@ -149,8 +149,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         if (client.events & EPOLLERR)
             std::cout << "EPOLLERR" << std::endl;
         else if (client.events & EPOLLHUP)
-            std::cout
-                << "EPOLLHUP" << std::endl;
+            std::cout << "EPOLLHUP" << std::endl;
         else
             std::cout << "EPOLLRDHUP" << std::endl;
 
@@ -162,12 +161,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (TypeFd == CLIENT_SOCK)
             _freeClient(fd);
-        // else if (TypeFd == SERVER_SOCK)
-        // {
-        //     std::cout << fd << std::endl;
-        //     std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
-        //               << std::endl;
-        // }
         return true;
     }
     return false;
@@ -177,7 +170,10 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 {
     int blockId = this->_getClient();
     if (blockId == -1)
+    {
+        close(newClient);
         return false; // can't add client
+    }
     clsClient &client = _clientsArr[blockId];
     _clientIdByFd[newClient] = blockId;
 
@@ -300,7 +296,6 @@ void clsFlow::_tryTimeOutClients()
             }
         }
     }
-
 }
 
 void clsFlow::_tryTimeOutCgi()
