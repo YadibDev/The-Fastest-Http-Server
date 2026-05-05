@@ -19,7 +19,7 @@
 #include "monitorCgi.hpp"
 #define EVENTS_MAX 150
 #define MAX_CLIENTS 500
-
+#define TIMEOUT_CLIENT 60
 // #include <vector>
 // #include "PartRespond/mainprocess/Webserv.hpp"
 // #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
@@ -57,6 +57,9 @@ private:
     void _popPipe(short pipe);
     void _pushPipe(short pipe, short indexClient);
     void _pipeFlow(int fd);
+    void _tryTimeOutClients();
+    void _tryTimeOutCgi();
+
 
 public:
     clsFlow(const char *configFile);

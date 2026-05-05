@@ -10,9 +10,9 @@ void clsFlow::_initializeStatics()
     // signal(SIGINT, function);
 }
 
-void clsFlow::_createBlocksServers()
+void clsFlow::_createBlocksServers(const char *configFile)
 {
-    int fd = open("configs/default.conf", O_RDONLY);
+    int fd = open(configFile, O_RDONLY);
     if (fd == -1)
     {
         throw std::runtime_error("fail to open config file");
@@ -130,11 +130,11 @@ void clsFlow::_registerServersSockets()
     std::cout << "Register Server Sockets by success\n";
 }
 
-clsFlow::clsFlow()
+clsFlow::clsFlow(const char *configFile)
 {
     _clientsArr = NULL;
     _initializeStatics();
-    _createBlocksServers();
+    _createBlocksServers(configFile);
     _createServers();
     _registerServersSockets();
     _initializeDataBase();
@@ -213,10 +213,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     client.ProcessBoth(event);
     const clinetState &status = client.GetState();
 
-    // if (status == BEGIN || status == CONNECTION_CLOSED)
-    // {
-    //     client.logs();
-    // }
+    if (status == BEGIN || status == CONNECTION_CLOSED)
+    {
+        client.logs();
+    }
 
     if (status == CONNECTION_CLOSED)
         _freeClient(fd);

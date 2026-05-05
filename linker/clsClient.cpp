@@ -1,6 +1,5 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT SIZE_BUFFER
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
@@ -90,7 +89,7 @@ int clsClient::_ReadDataForReq()
     if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
-        size = recv(_socket, &_theData.request_metadata[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.request_metadata[idx], (SIZE_BUFFER - idx), 0);
         if (size > 0)
             idx += size;
 
@@ -100,7 +99,7 @@ int clsClient::_ReadDataForReq()
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
         uint16_t &idx = _theData.read_body;
-        size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), 0);
         if (size > 0)
             idx += size;
 
@@ -147,9 +146,9 @@ void clsClient::ProcessRequest()
     }
 }
 
-ssize_t clsClient::_addSizeChunkToStr()
+short clsClient::_addSizeChunkToStr()
 {
-    ssize_t byteCanSend = CHUNK_LIMIT - bytesToSend - 8 - 2;
+    short byteCanSend = SIZE_BUFFER - bytesToSend - 8 - 2;
     char *respondBuffer = this->_theData.io_chunk;
 
     if (byteCanSend <= 0)
@@ -161,7 +160,7 @@ ssize_t clsClient::_addSizeChunkToStr()
         bytesToSend += 5;
         return 0;
     }
-    byteCanSend = min(byteCanSend, bodyLimit);
+    byteCanSend = min<ssize_t>(byteCanSend, bodyLimit);
 
     std::string lengthHex = HelperFunctions::Convert_Hex("0123456789abcdef", byteCanSend);
     lengthHex += "\r\n";
@@ -172,12 +171,16 @@ ssize_t clsClient::_addSizeChunkToStr()
     return byteCanSend;
 }
 
-void clsClient::LoadAutoIndex()
+void clsClient::_LoadAutoIndex( clsResponse &_Responder)
 {
-    
+    char *respondBuffer = this->_theData.io_chunk;
+
+    bool isFinished = _Responder.fetchAutoIndex(respondBuffer, bytesToSend, SIZE_BUFFER - bytesToSend);
+    if (isFinished)
+        _state = AUTO_INDEX_DONE;
 }
 
-void clsClient::_SendRespond(const clsResponse &_Responder)
+void clsClient::_SendRespond( clsResponse &_Responder)
 {
     ssize_t s = 0;
     ssize_t nBytes;
@@ -204,10 +207,10 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
     else if (_BodyPlace == bodyPlaceEnum::AUTO_INDEX)
     {
-        LoadAutoIndex();
+        _LoadAutoIndex(_Responder);
     }
 
-    nBytes = send(_socket, respondBuffer, bytesToSend, MSG_DONTWAIT);
+    nBytes = send(_socket, respondBuffer, bytesToSend, 0);
 
     if (nBytes != -1)
     {
@@ -216,7 +219,7 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
         bytesToSend -= nBytes;
     }
 
-    if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0))
+    if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0 && bytesToSend == 0) || _state == AUTO_INDEX_DONE)
     {
         _state = BEGIN;
         if (_Responder.GetIsConnection() == false)
@@ -317,10 +320,6 @@ void clsClient::ProcessBoth(uint32_t events)
 void clsClient::freeRessources()
 {
     ResetAll();
-    // _Requester.init();
-    // _monitorCGI.freeCgiRessources();
-    // _ResponderProecss.GetclsResponse().Reset();
-
     if (this->_socket > 0)
     {
         close(this->_socket);
@@ -364,10 +363,6 @@ void clsClient::initializeCGI()
 
 bool clsClient::monitorCgi()
 {
-    // static int i = 0;
-    // std::cout << "================\n";
-    // std::cout << i++ << endl;
-    // std::cout << "================\n";
 
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();

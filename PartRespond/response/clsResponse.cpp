@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 14:11:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 14:32:19 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void clsResponse::MakeResponse()
             _Type = HelperFunctions::GetType(".html");
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
+            std::cout << "enter";
             AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(), "/" , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), 1);
         }
         
@@ -121,13 +122,9 @@ void clsResponse::_ErrorRespnseHandling()
             _ErrorPage.ResponseError(_Status,"");
         _ModTransferData = true;
         _BodySize =  _ErrorPage.GetBodySize();
-        std::cout << _ErrorPage.GetBodySize() << std::endl;
         _BodyPointer = &_ErrorPage.GetBody();
-        std::cout << _ErrorPage.GetBody() << std::endl;
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-        std::cout << _ErrorPage.GetHeaderField() << std::endl;
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-        std::cout << _ErrorPage.GetFileFromDisk() << std::endl;
         _IsConnection = _ErrorPage.GetIsConnection();
     }
     
