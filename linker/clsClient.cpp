@@ -172,6 +172,11 @@ ssize_t clsClient::_addSizeChunkToStr()
     return byteCanSend;
 }
 
+void clsClient::LoadAutoIndex()
+{
+    
+}
+
 void clsClient::_SendRespond(const clsResponse &_Responder)
 {
     ssize_t s = 0;
@@ -188,7 +193,6 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
             else
                 _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY | O_CLOEXEC); // error if fd == -1
         }
-
         int sizeToRead = _addSizeChunkToStr();
         if (sizeToRead)
         {
@@ -197,6 +201,10 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
             memcpy(&respondBuffer[bytesToSend], "\r\n", 2);
             bytesToSend += 2;
         }
+    }
+    else if (_BodyPlace == bodyPlaceEnum::AUTO_INDEX)
+    {
+        LoadAutoIndex();
     }
 
     nBytes = send(_socket, respondBuffer, bytesToSend, MSG_DONTWAIT);
@@ -235,6 +243,11 @@ void clsClient::_initalizeRespondBuffer()
         Body = Respond.GetBodyPointer()->c_str();
         fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
     }
+    else if (Respond.IsAutoIndex())
+    {
+        bytesToSend += Respond.GetHeaderFeild().size();
+        Header = Respond.GetHeaderFeild().c_str();
+    }
     else
     {
         bytesToSend += Respond.GetHeaderFeild().size();
@@ -245,7 +258,9 @@ void clsClient::_initalizeRespondBuffer()
 
     memcpy(&respondBuffer[0], Header, bytesToSend);
 
-    if (fileExist == false)
+    if (Respond.IsAutoIndex())
+        _BodyPlace = bodyPlaceEnum::AUTO_INDEX;
+    else if (fileExist == false)
     {
         _BodyPlace = bodyPlaceEnum::RAM;
         memcpy(&respondBuffer[bytesToSend], Body, Respond.GetSizeBody());
