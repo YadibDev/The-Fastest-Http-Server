@@ -37,7 +37,8 @@ struct bodyPlaceEnum
     {
         NONE,
         RAM,
-        DISK
+        DISK,
+        AUTO_INDEX
     };
 };
 

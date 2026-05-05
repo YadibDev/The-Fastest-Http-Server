@@ -7,11 +7,12 @@ void clsFlow::_initializeStatics()
     HelperFunctions::StoredBodys();
     HelperFunctions::StoredMessage();
     HelperFunctions::StoredMessage();
+    // signal(SIGINT, function);
 }
 
-void clsFlow::_createBlocksServers(const char *configFile)
+void clsFlow::_createBlocksServers()
 {
-    int fd = open(configFile, O_RDONLY);
+    int fd = open("configs/default.conf", O_RDONLY);
     if (fd == -1)
     {
         throw std::runtime_error("fail to open config file");
@@ -71,6 +72,8 @@ void clsFlow::_createServers()
     }
     if (_totalServers == 0)
         throw std::runtime_error("Error\nthere is no server or there is a problem in all the servers");
+    // debug
+    // std::cout << "total servers created [" << _totalServers << "]" << std::endl;
 }
 
 void clsFlow::_initializeDataBase()
@@ -127,11 +130,11 @@ void clsFlow::_registerServersSockets()
     std::cout << "Register Server Sockets by success\n";
 }
 
-clsFlow::clsFlow(const char *configFile)
+clsFlow::clsFlow()
 {
     _clientsArr = NULL;
     _initializeStatics();
-    _createBlocksServers(configFile);
+    _createBlocksServers();
     _createServers();
     _registerServersSockets();
     _initializeDataBase();
@@ -159,6 +162,12 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
         }
         else if (TypeFd == CLIENT_SOCK)
             _freeClient(fd);
+        // else if (TypeFd == SERVER_SOCK)
+        // {
+        //     std::cout << fd << std::endl;
+        //     std::cout << "SERVER SOCK HAPEN ON IT AN ERROR WHAT SHOULD I DO ??????????\n"
+        //               << std::endl;
+        // }
         return true;
     }
     return false;
@@ -173,7 +182,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
     _clientIdByFd[newClient] = blockId;
 
     if (_epoll.addClient(newClient, EPOLLIN) == false)
-        return false;
+        return false; // watch by epoll
     client.initializeClient(addr, newClient, block);
     return true;
 }
@@ -262,6 +271,7 @@ void clsFlow::_pipeFlow(int fd)
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
+    // update flow of checkins is it a pipe or a server
     if (TypeFd == CLIENT_SOCK)
         _clientProcess(fd, _clientsEvents[indexEvent].events);
     else if (TypeFd == SERVER_SOCK)
@@ -270,14 +280,53 @@ void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
         _pipeFlow(fd);
 }
 
+void clsFlow::_tryTimeOutClients()
+{
+    if (_clientIdByFd.size())
+    {
+        short clientFd;
+        short index;
+        std::map<short, short>::iterator it = _clientIdByFd.begin();
+        std::map<short, short>::iterator end = _clientIdByFd.end();
+        while (it != end)
+        {
+            clientFd = it->first;
+            index = it->second;
+            size_t timeConected = _clientsArr[index].GetLastConnection();
+            it++;
+            if (HelperFunctions::isTimeout(timeConected, TIMEOUT_CLIENT))
+            {
+                this->_freeClient(clientFd);
+            }
+        }
+    }
+
+}
+
+void clsFlow::_tryTimeOutCgi()
+{
+    if (_IdByPipe.size())
+    {
+        std::map<short, short>::iterator it = _IdByPipe.begin();
+        std::map<short, short>::iterator end = _IdByPipe.end();
+        while (it != end)
+        {
+            int pipeFd = it->first;
+            int index = it->second;
+            it++;
+            if (_clientsArr[index].timeoutCgi())
+                _popPipe(pipeFd);
+        }
+    }
+}
+
 void clsFlow::EventLoop()
 {
     int nFds = 0;
     fdTypes TypeFd;
     while (1)
     {
-
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1000)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 500)))
         {
             for (int i = 0; i < nFds; i++)
             {
@@ -296,27 +345,9 @@ void clsFlow::EventLoop()
                 else
                     _flowProcess(fd, TypeFd, i);
             }
-
-            // cgi timeout
-            if (_IdByPipe.size())
-            {
-                std::map<short, short>::iterator it = _IdByPipe.begin();
-                std::map<short, short>::iterator end = _IdByPipe.end();
-                while (it != end)
-                {
-                    int pipeFd = it->first;
-                    int index = it->second;
-                    if (_clientsArr[index].timeoutCgi())
-                    {
-                        it++;
-                        _popPipe(pipeFd);
-                    }
-                    else
-                        it++;
-                }
-            }
-            // if (_clientIdByFd.size());// add logic of client timeout
         }
+        _tryTimeOutCgi();
+        _tryTimeOutClients();
     }
 }
 
