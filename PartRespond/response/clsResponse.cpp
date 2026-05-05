@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/04 14:35:00 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 13:09:02 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,20 @@ void clsResponse::MakeResponse()
         return ;
     if (_Mod[stMod::GET] == stMod::GET)
     {
-        _FileFromDisk = _DataRequest.getPhysicalPath();
-        _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
-        _StoredInFileOrStr();
-
+        if (!_DataRequest.getAutoIndex())
+        {
+            _FileFromDisk = _DataRequest.getPhysicalPath();
+            _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk));
+            _StoredInFileOrStr();
+        }
+        else
+        {
+            _Type = HelperFunctions::GetType(".html");
+            _Mod[stMod::CHUNK] = stMod::CHUNK;
+            _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
+            AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(), "/" , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), 1);
+        }
+        
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
@@ -77,7 +87,7 @@ void clsResponse::_InitialHeaders()
             _BodySize = _Body.size();
         }
     }
-    if (_BodySize)
+    if (_BodySize || _Mod[stMod::AUTOINDEX] == stMod::AUTOINDEX)
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
@@ -317,5 +327,9 @@ size_t clsResponse::GetSizeBody() const
 bool clsResponse::GetErnoVar()
 {
     return _Erno;
+}
+bool clsResponse::IsAutoIndex()
+{
+    return (_Mod[stMod::AUTOINDEX] == stMod::AUTOINDEX);
 }
 clsResponse::~clsResponse(){}

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 20:09:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 13:06:13 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "../mainprocess/librarys.hpp"
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
-
+#include "clsAutoIndex.hpp"
 
 class clsResponse
 {
@@ -38,6 +38,7 @@ class clsResponse
         const std::string *_HeaderFeildPointer;
         const std::string *_FileFromDiskPointer;
         const RequestHandler &_DataRequest;
+        clsAutoIndex AutoIndex;
 
         const std::string GetTypeData(const std::string &Type);
         void _ErrorRespnseHandling();
@@ -76,6 +77,7 @@ class clsResponse
         bool GetModTransferData() const;
         size_t GetSizeBody() const;
         void SetSizeBody(int size);
+        bool IsAutoIndex();
         void SetIsConnection(bool IsConnection);
 
         ~clsResponse();

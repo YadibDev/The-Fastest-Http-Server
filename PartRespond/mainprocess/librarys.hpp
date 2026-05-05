@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   librarys.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:01:35 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 14:53:28 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/05 12:10:41 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ enum eSatat {UPLOAD = -5, REDIRECTION, CHUNK, CGI};
 
 struct stMod
 {
-    enum eMod {EMPTY, UPLOAD , GET, POST, DELETE, REDIRECTION, CHUNK, ERROR, INTERNALRE, NOTINTERNALRE};
+    enum eMod {EMPTY, UPLOAD , GET, POST, DELETE, REDIRECTION, CHUNK, ERROR, INTERNALRE, AUTOINDEX};
 };
 
 #include "../../Utils/HelperFunctions.hpp"

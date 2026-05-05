@@ -1,4 +1,4 @@
-#include "../Utils/HelperFunctions.hpp"
+#include "../../Utils/HelperFunctions.hpp"
 #include <stdio.h>
 #include <unistd.h>
 #include <fstream>
@@ -19,7 +19,7 @@ enum flowAutoIndex
     CAN_PUSH,
     I_CANT_PUSH,
     END_TAG,
-    LAST_CHUNKED,
+    LAST_CHUNKED_AUTO,
     DONE_AUTO_INDEX,
     ERROR_AUTO_INDEX
 };

@@ -174,7 +174,7 @@ void clsAutoIndex::_addSizeChunk(short pushBytes, bool lastChunk)
 
 short clsAutoIndex::_closeAutoIndex(char *buffer, short &start, short sizeLeft)
 {
-    bool canPush = (sizeLeft >= this->endAutoIndex.size());
+    bool canPush = (sizeLeft >= (short)this->endAutoIndex.size());
 
     if (canPush == false)
         return 0;
@@ -184,7 +184,7 @@ short clsAutoIndex::_closeAutoIndex(char *buffer, short &start, short sizeLeft)
         ptrSize = &buffer[start];
         start += 6;
     }
-    flowEnum = LAST_CHUNKED;
+    flowEnum = LAST_CHUNKED_AUTO;
     return addDataToChar(buffer, this->endAutoIndex.c_str(), start, this->endAutoIndex.size());
 }
 
@@ -242,7 +242,7 @@ flowAutoIndex clsAutoIndex::insertAutoDirective(char *buffer, short &start, shor
         pushbytes += 6;
     }
 
-    if (flowEnum == LAST_CHUNKED && limitSize - pushbytes - 5 >= 0)
+    if (flowEnum == LAST_CHUNKED_AUTO && limitSize - pushbytes - 5 >= 0)
     {
         ptrSize = &buffer[start];
         _addSizeChunk(0, true);
