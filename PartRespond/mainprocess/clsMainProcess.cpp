@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/01 16:59:43 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/04 14:25:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void clsMainProcess::_InitializeCGI()
 void clsMainProcess::_PartDeleteMethod()
 {
     _Response.SetMod(stMod::DELETE);
-    _Response.SetStatus(200);
+    _Response.SetStatus(204);
     _Response.MakeResponse();
 }
 
@@ -153,8 +153,8 @@ void clsMainProcess::Reset()
     this->_RunCGI = false;
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
-    _Response.Reset(); // reset error page also
-    _eventProcess = stEventProcess::RUNINNG; // add by adib
+    _Response.Reset();
+    _eventProcess = stEventProcess::RUNINNG; 
 }
 
 clsCGI &clsMainProcess::GetclsCGI()

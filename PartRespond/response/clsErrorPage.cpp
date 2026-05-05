@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/01 11:02:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/03 21:16:24 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,18 @@ void clsErrorPage::_HeadersErrorResponse()
  
 void clsErrorPage::_StoredInFileOrStr()
 {
-    // struct stat MetaData;
+    struct stat MetaData;
     _Body.clear();
     if (_FileFromDisk.empty())
         return ;
-    // if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
-    // {
-    //     _Mod[stMod::ERROR] = stMod::ERROR;
-    //     _Status = 500;
-    //     _Erno = true;
-    //     return ;
-    // }
-    // _BodySize = MetaData.st_size;
+    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 500;
+        _Erno = true;
+        return ;
+    }
+    _BodySize = MetaData.st_size;
     if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;

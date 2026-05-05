@@ -134,7 +134,7 @@ void clsClient::ProcessRequest()
 
     if (_Requester.isError())
     {
-        if (ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+        if (!ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }

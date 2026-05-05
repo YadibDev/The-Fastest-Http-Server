@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/01 11:36:06 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/04 14:35:00 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void clsResponse::MakeResponse()
 void clsResponse::_InitialHeaders()
 {
     _StatusLine();
-    if (_Mod[stMod::CHUNK] != stMod::CHUNK)
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK && _Mod[stMod::DELETE] != stMod::DELETE)
         _ContentLength();
     if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
     {
@@ -81,8 +81,6 @@ void clsResponse::_InitialHeaders()
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
-    _Date();
-    _Server();
     if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->Hash != -1)
     {
         if (HelperFunctions::CmpWord(_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONNECTION)->val.Data,
@@ -96,12 +94,13 @@ void clsResponse::_InitialHeaders()
     }
     else
         _Connection(true);
+    _Date();
+    _Server();
    _HeaderFeild += "\r\n";
 }
 
 void clsResponse::_ErrorRespnseHandling()
 {
-    _ErrorPage.Reset();
     if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
         return ;
     else
@@ -111,11 +110,14 @@ void clsResponse::_ErrorRespnseHandling()
         else
             _ErrorPage.ResponseError(_Status,"");
         _ModTransferData = true;
-        _IsConnection = false;
         _BodySize =  _ErrorPage.GetBodySize();
+        std::cout << _ErrorPage.GetBodySize() << std::endl;
         _BodyPointer = &_ErrorPage.GetBody();
+        std::cout << _ErrorPage.GetBody() << std::endl;
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+        std::cout << _ErrorPage.GetHeaderField() << std::endl;
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+        std::cout << _ErrorPage.GetFileFromDisk() << std::endl;
         _IsConnection = _ErrorPage.GetIsConnection();
     }
     

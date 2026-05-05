@@ -3,386 +3,506 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleeky Pro - Premium Photography & Nature</title>
-    <link rel="stylesheet" href="templatemo-sleeky-pro.css">
-<!-- TemplateMo 598 Sleeky Pro
-https://templatemo.com/tm-598-sleeky-pro
+    <title>Maison Dorée — Fine Gold Jewelry</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="templatemo-maison-style.css">
+    <!--
+
+TemplateMo 611 Maison Doree
+
+https://templatemo.com/tm-611-maison-doree
+
 -->
 </head>
 <body>
     <!-- Header -->
-    <header class="header" id="header">
-        <nav class="nav-container">
-            <a href="#home" class="logo-container">
-                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FF6B6B"/>
-                            <stop offset="100%" style="stop-color:#7FFFD4"/>
-                        </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="45" fill="url(#logoGradient)" opacity="0.1"/>
-                    <path d="M20 60 L35 40 L50 55 L65 35 L80 50" stroke="url(#logoGradient)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="35" cy="40" r="3" fill="url(#logoGradient)"/>
-                    <circle cx="50" cy="55" r="3" fill="url(#logoGradient)"/>
-                    <circle cx="65" cy="35" r="3" fill="url(#logoGradient)"/>
-                    <rect x="25" y="65" width="50" height="125" rx="7" fill="url(#logoGradient)" opacity="0.3"/>
-                </svg>
-                <span class="logo-text">Sleeky Pro</span>
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <button class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </nav>
-    </header>
-
-    <!-- Hero Section with Slider -->
-    <section id="home" class="hero">
-        <div class="slider-container">
-            <div class="progress-ring">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            
-            <div class="slider-stage" id="sliderStage"></div>
-            <!-- You can edit slider images in JS file -->
-            <!-- Edit templatemo-sleeky-scripts.js for image path / image filenames -->
-            <div class="text-overlay" id="textOverlay">
-                <h2 class="slide-title" id="slideTitle">Mountain Peak</h2>
-                <p class="slide-description" id="slideDescription">Majestic snow-capped mountains reaching towards the endless sky, showcasing nature's raw beauty and power.</p>
-            </div>
-            
-            <button class="nav-arrow prev" id="prevArrow" aria-label="Previous"></button>
-            <button class="nav-arrow next" id="nextArrow" aria-label="Next"></button>
-            
-            <div class="controls">
-                <button class="control-btn play-pause-btn" id="playPauseBtn" title="Play/Pause">
-                    <span class="play-icon"></span>
-                    <span class="pause-icon"></span>
+    <header class="site-header" id="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo">Maison <span>Dorée</span></a>
+                
+                <nav class="nav-main">
+                    <a href="#collections">Collections</a>
+                    <a href="#story">Our Story</a>
+                    <a href="#craftsmanship">Craftsmanship</a>
+                    <a href="#contact">Visit Us</a>
+                    <a href="#contact" class="nav-cta">Book Appointment</a>
+                </nav>
+                
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
-            
-            <div class="dots" id="dots"></div>
-            <div class="thumbnails-container" id="thumbnails"></div>
+        </div>
+    </header>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" id="mobileNavClose">×</button>
+        <ul class="mobile-nav-links">
+            <li><a href="#collections">Collections</a></li>
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#craftsmanship">Craftsmanship</a></li>
+            <li><a href="#contact">Visit Us</a></li>
+        </ul>
+        <div class="mobile-nav-cta">
+            <a href="#contact" class="btn-primary">Book Appointment</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="text-label hero-tagline">Artisan Gold Jewelry Since 1987</p>
+            <h1 class="heading-display hero-title">
+                Where Gold<br>Becomes <em>Art</em>
+            </h1>
+            <p class="text-body hero-description">
+                Each piece in our collection is handcrafted by master artisans, 
+                transforming the finest gold into wearable works of art that 
+                tell your unique story.
+            </p>
+            <div class="hero-actions">
+                <a href="#collections" class="btn-primary">Explore Collections</a>
+                <a href="#story" class="btn-text">Our Heritage</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-slide active" data-title="Serpentine Collection" data-price="From $2,400">
+                <img src="images/maison-hero-01.jpg" 
+                     alt="Serpentine gold jewelry collection">
+            </div>
+            <div class="hero-slide" data-title="Aurora Pendant" data-price="From $4,850">
+                <img src="images/maison-hero-02.jpg" 
+                     alt="Aurora gold pendant necklace">
+            </div>
+            <div class="hero-slide" data-title="Heritage Rings" data-price="From $3,200">
+                <img src="images/maison-hero-03.jpg" 
+                     alt="Heritage gold ring collection">
+            </div>
+            <div class="hero-image-overlay">
+                <p class="overlay-title" id="heroTitle">Serpentine Collection</p>
+                <p class="overlay-price" id="heroPrice">From $2,400</p>
+            </div>
         </div>
     </section>
-
-    <!-- Services Section -->
-    <section id="services" class="section services">
-        <div class="section-container">
+    
+    <!-- Featured Piece -->
+    <section class="featured-piece">
+        <div class="container">
+            <div class="featured-grid">
+                <div class="featured-image-wrapper">
+                    <div class="featured-image">
+                        <img src="images/maison-hero-02.jpg" 
+                             alt="Handcrafted gold necklace">
+                    </div>
+                    <div class="featured-badge">New Arrival</div>
+                </div>
+                <div class="featured-content">
+                    <p class="text-label featured-label">Featured Piece</p>
+                    <h2 class="heading-display featured-title">
+                        Aurora Pendant
+                    </h2>
+                    <p class="text-body featured-description">
+                        Inspired by the ethereal dance of northern lights, 
+                        the Aurora Pendant captures the fluid movement of light 
+                        through hand-hammered 22-karat gold. Each surface catches 
+                        and reflects light differently, creating a mesmerizing 
+                        display of golden hues.
+                    </p>
+                    <div class="featured-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Material</span>
+                            <span class="detail-value">22K Yellow Gold</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Weight</span>
+                            <span class="detail-value">18.5 grams</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Chain Length</span>
+                            <span class="detail-value">18 inches (adjustable)</span>
+                        </div>
+                    </div>
+                    <p class="featured-price">$4,850</p>
+                    <a href="#contact" class="btn-primary">Inquire About This Piece</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Collections -->
+    <section class="collections" id="collections">
+        <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Services</h2>
-                <p class="section-subtitle">Advanced photography solutions powered by cutting-edge technology and unmatched expertise in extreme environments.</p>
+                <div class="section-header-left">
+                    <h2 class="heading-display section-title">Our Collections</h2>
+                    <p class="text-body section-subtitle">
+                        Discover pieces crafted for every chapter of your story
+                    </p>
+                </div>
+                <a href="#" class="btn-text">View All Collections</a>
             </div>
             
-            <div class="services-container">
-                <div class="services-tabs">
-                    <div class="service-tab active" data-service="photography">
-                        <span class="service-tab-icon">📸</span>
-                        <h3>Cinematic Photography</h3>
-                        <p>Ultra-high resolution captures</p>
+            <div class="collections-grid">
+                <div class="collection-item">
+                    <div class="collection-image">
+                        <img src="images/maison-hero-03.jpg" 
+                             alt="Bridal jewelry collection">
                     </div>
-                    
-                    <div class="service-tab" data-service="expeditions">
-                        <span class="service-tab-icon">🏔️</span>
-                        <h3>Alpine Expeditions</h3>
-                        <p>Extreme altitude adventures</p>
-                    </div>
-                    
-                    <div class="service-tab" data-service="prints">
-                        <span class="service-tab-icon">🎨</span>
-                        <h3>Fine Art Prints</h3>
-                        <p>Museum-grade collections</p>
+                    <div class="collection-overlay">
+                        <h3 class="collection-name">Bridal</h3>
+                        <p class="collection-count">24 pieces</p>
                     </div>
                 </div>
                 
-                <div class="services-content">
-                    <div class="service-content active" id="photography">
-                        <div class="service-content-icon">📸</div>
-                        <h2>Cinematic Landscape Photography</h2>
-                        <p>Utilizing Phase One IQ4 150MP medium format cameras paired with Zeiss Otus lenses, we deliver unprecedented image quality that reveals every detail of nature's masterpieces. <a href="https://timermo.com" rel="nofollow" target="_blank">TimerMo</a> is a beautifully designed, feature-rich timer application.</p>
-                        <p>Our specialized golden hour and blue hour captures combine advanced HDR techniques with focus stacking to create images that transcend traditional photography.</p>
-                        <ul class="service-features">
-                            <li>150MP RAW files with 15 stops dynamic range</li>
-                            <li>Weather pattern tracking for optimal lighting</li>
-                            <li>Advanced focus stacking for infinite depth</li>
-                            <li>Color-calibrated workflow with 99% Adobe RGB</li>
-                            <li>Drone integration for impossible perspectives</li>
-                        </ul>
+                <div class="collection-item">
+                    <div class="collection-image">
+                        <img src="images/maison-doree-01.jpg" 
+                             alt="Everyday gold jewelry">
                     </div>
-                    
-                    <div class="service-content" id="expeditions">
-                        <div class="service-content-icon">🏔️</div>
-                        <h2>Alpine Expedition Photography</h2>
-                        <p>Multi-day backcountry expeditions to remote peaks above 12,000 feet, accessible only by helicopter or multi-day trek. Our certified IFMGA mountain guides ensure safety while capturing impossible shots.</p>
-                        <p>Each expedition is limited to 3 participants and includes professional drone pilots, survival gear, and satellite communication systems.</p>
-                        <ul class="service-features">
-                            <li>IFMGA certified mountain guides</li>
-                            <li>Professional-grade drone cinematography</li>
-                            <li>Satellite emergency communication</li>
-                            <li>Weather-sealed camera systems rated to -40°F</li>
-                            <li>Helicopter access to remote locations</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="service-content" id="prints">
-                        <div class="service-content-icon">🎨</div>
-                        <h2>Museum-Grade Fine Art Prints</h2>
-                        <p>Hand-selected archival pigment prints on premium Japanese Kozo paper, printed using 12-color K3 pigment technology for 200+ year archival stability.</p>
-                        <p>Each print includes detailed metadata: GPS coordinates, elevation, weather conditions, and the complete story behind the capture.</p>
-                        <ul class="service-features">
-                            <li>Limited editions of 25 pieces maximum</li>
-                            <li>Hand-signed and numbered by the artist</li>
-                            <li>Custom museum-quality framing available</li>
-                            <li>Certificate of authenticity with each purchase</li>
-                            <li>Available in sizes up to 72"×48"</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section about">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">The Future of Nature Photography</h2>
-                <p class="section-subtitle">Where cutting-edge technology meets artistic vision to document Earth's most extraordinary landscapes.</p>
-            </div>
-            
-            <div class="about-grid">
-                <div class="about-timeline">
-                    <div class="timeline-line"></div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-year">2009</div>
-                        <div class="timeline-title">Genesis in the Rockies</div>
-                        <div class="timeline-description">21-day solo expedition through Canadian Rockies. Documented climate change effects on alpine glaciers using early digital medium format systems.</div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-year">2015</div>
-                        <div class="timeline-title">National Geographic Recognition</div>
-                        <div class="timeline-description">First photographer to capture Aurora Borealis from 14,000+ feet elevation. Featured on National Geographic cover for breakthrough high-altitude night photography.</div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-year">2019</div>
-                        <div class="timeline-title">Smithsonian Acquisition</div>
-                        <div class="timeline-description">Three-piece collection acquired by Smithsonian Institution. Pioneered "patience photography" - waiting 72+ hours in extreme conditions for perfect conditions.</div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-year">2024</div>
-                        <div class="timeline-title">AI-Enhanced Workflow</div>
-                        <div class="timeline-description">Revolutionary integration of AI weather prediction and machine learning for optimal capture timing. Reducing expedition failure rate to under 5%.</div>
+                    <div class="collection-overlay">
+                        <h3 class="collection-name">Everyday Elegance</h3>
+                        <p class="collection-count">36 pieces</p>
                     </div>
                 </div>
                 
-                <div class="about-tech">
-                    <div class="tech-card">
-                        <div class="tech-icon">🤖</div>
-                        <div class="tech-title">AI Weather Intelligence</div>
-                        <div class="tech-description">Proprietary algorithms analyze 15+ meteorological data sources to predict optimal shooting windows with 94% accuracy up to 72 hours in advance.</div>
+                <div class="collection-item">
+                    <div class="collection-image">
+                        <img src="images/maison-doree-02.jpg" 
+                             alt="Statement gold pieces">
                     </div>
-                    
-                    <div class="tech-card">
-                        <div class="tech-icon">🛰️</div>
-                        <div class="tech-title">Satellite Reconnaissance</div>
-                        <div class="tech-description">Real-time satellite imagery integration allows dynamic route planning and hazard avoidance during expeditions to previously inaccessible locations.</div>
-                    </div>
-                    
-                    <div class="tech-card">
-                        <div class="tech-icon">🎯</div>
-                        <div class="tech-title">Precision Capture Systems</div>
-                        <div class="tech-description">Sub-millimeter camera positioning using GPS-guided stabilization systems ensures perfect composition even in 80+ mph mountain winds.</div>
+                    <div class="collection-overlay">
+                        <h3 class="collection-name">Statement</h3>
+                        <p class="collection-count">18 pieces</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="stats-futuristic">
-                <div class="stat-futuristic">
-                    <h4>47</h4>
-                    <p>National Parks</p>
+                
+                <div class="collection-item">
+                    <div class="collection-image">
+                        <img src="images/maison-doree-03.jpg" 
+                             alt="Heritage collection">
+                    </div>
+                    <div class="collection-overlay">
+                        <h3 class="collection-name">Heritage</h3>
+                        <p class="collection-count">12 pieces</p>
+                    </div>
                 </div>
-                <div class="stat-futuristic">
-                    <h4>2.3M</h4>
-                    <p>Miles Traveled</p>
-                </div>
-                <div class="stat-futuristic">
-                    <h4>-40°F</h4>
-                    <p>Coldest Shoot</p>
-                </div>
-                <div class="stat-futuristic">
-                    <h4>99.7%</h4>
-                    <p>Client Satisfaction</p>
+                
+                <div class="collection-item">
+                    <div class="collection-image">
+                        <img src="images/maison-doree-04.jpg" 
+                             alt="Men's gold collection">
+                    </div>
+                    <div class="collection-overlay">
+                        <h3 class="collection-name">Men's Collection</h3>
+                        <p class="collection-count">15 pieces</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="section contact">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
-                <p class="section-subtitle">Ready to plan your next adventure or commission a custom photography session? We'd love to hear from you and bring your vision to life.</p>
+    
+    <!-- Our Story -->
+    <section class="story" id="story">
+        <div class="container">
+            <div class="story-grid">
+                <div class="story-content">
+                    <p class="text-label story-label">Our Heritage</p>
+                    <h2 class="heading-display story-title">
+                        Three Generations of Golden Mastery
+                    </h2>
+                    <p class="text-body story-text">
+                        Founded in 1987 by master goldsmith Henri Beaumont, 
+                        Maison Dorée has remained a family atelier dedicated to 
+                        the art of fine gold jewelry. What began in a small 
+                        workshop in the heart of the jewelry district has 
+                        blossomed into a celebrated house known for impeccable 
+                        craftsmanship.
+                    </p>
+                    <p class="text-body story-text">
+                        Today, our third-generation artisans continue the 
+                        tradition, blending time-honored techniques with 
+                        contemporary design sensibilities. Every piece that 
+                        leaves our workshop carries the weight of this legacy.
+                    </p>
+                    <div class="story-signature">
+                        <p class="signature-name">Isabelle Beaumont</p>
+                        <p class="signature-title">Creative Director</p>
+                    </div>
+                </div>
+                <div class="story-images">
+                    <div class="story-image">
+                        <img src="images/maison-doree-05.jpg" 
+                             alt="Goldsmith at work">
+                    </div>
+                    <div class="story-image">
+                        <img src="images/maison-doree-06.jpg" 
+                             alt="Jewelry crafting detail">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Craftsmanship -->
+    <section class="craftsmanship" id="craftsmanship">
+        <div class="container">
+            <div class="craft-grid">
+                <div class="craft-content">
+                    <p class="text-label">The Art of Creation</p>
+                    <h2 class="heading-display craft-title">
+                        Crafted by Hand, Treasured Forever
+                    </h2>
+                    <p class="text-body craft-text">
+                        Each Maison Dorée piece undergoes a meticulous journey 
+                        from concept to completion. Our artisans employ 
+                        traditional goldsmithing techniques passed down through 
+                        generations, ensuring every curve, texture, and finish 
+                        meets our exacting standards.
+                    </p>
+                    <ul class="craft-list text-body">
+                        <li>Hand-selected materials from ethical sources</li>
+                        <li>Traditional lost-wax casting and hand-forging</li>
+                        <li>Multiple quality inspections at every stage</li>
+                        <li>Personalized finishing and custom sizing</li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Commission a Custom Piece</a>
+                </div>
+                <div class="craft-image-wrapper">
+                    <div class="craft-image">
+                        <img src="images/maison-doree-07.jpg" 
+                             alt="Jewelry craftsmanship workshop">
+                    </div>
+                    <div class="craft-stats">
+                        <div class="stat-item">
+                            <p class="stat-number">37</p>
+                            <p class="stat-label">Years of Excellence</p>
+                        </div>
+                        <div class="stat-item">
+                            <p class="stat-number">12</p>
+                            <p class="stat-label">Master Artisans</p>
+                        </div>
+                        <div class="stat-item">
+                            <p class="stat-number">8K+</p>
+                            <p class="stat-label">Pieces Created</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="testimonials-header">
+                <p class="text-label">Client Stories</p>
+                <h2 class="heading-display testimonials-title">Treasured by Many</h2>
+                <p class="text-body testimonials-subtitle">What our clients say about their Maison Dorée experience</p>
             </div>
             
-            <div class="contact-content">
-                <div class="contact-form">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Your Name</label>
-                            <input type="text" id="name" name="name" required>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        The attention to detail is extraordinary. My wedding set from Maison Dorée isn't just jewelry — it's a work of art that I'll cherish forever.
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="images/avatar-01.jpg" alt="Catherine W.">
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Catherine W.</p>
+                            <p class="testimonial-detail">Bridal Collection</p>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" name="subject" required>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        Working with the design team to create a custom anniversary gift was seamless. They understood my vision and exceeded expectations.
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="images/avatar-02.jpg" alt="Michael T.">
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" placeholder="Tell us about your project or adventure plans..." required></textarea>
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Michael T.</p>
+                            <p class="testimonial-detail">Custom Design</p>
                         </div>
-                        
-                        <button type="submit" class="submit-btn">Send Message</button>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        Three generations of my family have now worn pieces from Maison Dorée. The quality is unmatched and each piece tells our story.
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="images/avatar-03.jpg" alt="Eleanor M.">
+                        </div>
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Eleanor M.</p>
+                            <p class="testimonial-detail">Heritage Collection</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-content">
+                    <p class="text-label">Visit Our Atelier</p>
+                    <h2 class="heading-display contact-title">
+                        Experience Maison Dorée
+                    </h2>
+                    <p class="text-body contact-text">
+                        We invite you to visit our atelier for a personal 
+                        consultation. Discover our collections in an intimate 
+                        setting and work with our designers to create something 
+                        truly unique.
+                    </p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <p class="contact-item-label">Address</p>
+                            <p class="contact-item-value">
+                                742 Fifth Avenue, Suite 1200<br>
+                                New York, NY 10019
+                            </p>
+                        </div>
+                        <div class="contact-item">
+                            <p class="contact-item-label">Hours</p>
+                            <p class="contact-item-value">
+                                Tuesday – Saturday, 10:00 AM to 06:00 PM<br>
+                                Sunday – Monday, By Appointment
+                            </p>
+                        </div>
+                        <div class="contact-item">
+                            <p class="contact-item-label">Contact</p>
+                            <p class="contact-item-value">
+                                <a href="tel:+12125551234">+1 (212) 555-1234</a><br>
+                                <a href="mailto:hello@maisondoree.com">hello@maisondoree.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-wrapper">
+                    <h3 class="form-title">Request an Appointment</h3>
+                    <form id="appointmentForm">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="message">Tell Us About Your Visit</label>
+                            <textarea id="message" name="message" class="form-textarea" 
+                                placeholder="Interested in a specific collection? Planning a custom piece?"></textarea>
+                        </div>
+                        <button type="submit" class="form-submit">Request Appointment</button>
                     </form>
                 </div>
-                
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">📍</div>
-                        <div class="contact-details">
-                            <h4>Studio Location</h4>
-                            <p>Rocky Mountain National Park<br>Colorado, USA 80424</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">📞</div>
-                        <div class="contact-details">
-                            <h4>Phone & WhatsApp</h4>
-                            <p>+1 (555) 123-4567</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">✉️</div>
-                        <div class="contact-details">
-                            <h4>Email Address</h4>
-                            <p>hello@sleeky.photography</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">🕐</div>
-                        <div class="contact-details">
-                            <h4>Business Hours</h4>
-                            <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Weekend tours by appointment</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
-
+    
     <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-main">
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Column 1: Brand & Contact -->
                 <div class="footer-brand">
-                    <div class="footer-logo">
-                        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#FF6B6B"/>
-                                    <stop offset="100%" style="stop-color:#7FFFD4"/>
-                                </linearGradient>
-                            </defs>
-                            <circle cx="50" cy="50" r="45" fill="url(#footerLogoGradient)" opacity="0.1"/>
-                            <path d="M20 60 L35 40 L50 55 L65 35 L80 50" stroke="url(#footerLogoGradient)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="35" cy="40" r="3" fill="url(#footerLogoGradient)"/>
-                            <circle cx="50" cy="55" r="3" fill="url(#footerLogoGradient)"/>
-                            <circle cx="65" cy="35" r="3" fill="url(#footerLogoGradient)"/>
-                            <rect x="25" y="65" width="50" height="15" rx="7" fill="url(#footerLogoGradient)" opacity="0.3"/>
-                        </svg>
-                        <span class="footer-logo-text">Sleeky</span>
-                    </div>
-                    <p class="footer-description">Capturing Earth's most extraordinary landscapes through cutting-edge technology and artistic vision. From alpine expeditions to fine art prints, we document nature's masterpieces.</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-link">📘</a>
-                        <a href="#" class="social-link">📷</a>
-                        <a href="#" class="social-link">🐦</a>
-                        <a href="#" class="social-link">💼</a>
+                    <p class="footer-logo">Maison <span>Dorée</span></p>
+                    <p class="footer-tagline">
+                        Handcrafted gold jewelry of exceptional quality and timeless elegance. Family-owned atelier since 1987.
+                    </p>
+                    <div class="footer-contact-info">
+                        <p>742 Fifth Avenue, Suite 1200</p>
+                        <p>New York, NY 10019</p>
+                        <p><a href="tel:+12125551234">+1 (212) 555-1234</a></p>
+                        <p><a href="mailto:hello@maisondoree.com">hello@maisondoree.com</a></p>
                     </div>
                 </div>
                 
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">Landscape Photography</a>
-                        <a href="#" class="footer-link">Alpine Expeditions</a>
-                        <a href="#" class="footer-link">Fine Art Prints</a>
-                        <a href="#" class="footer-link">Custom Commissions</a>
-                        <a href="#" class="footer-link">Workshops</a>
-                    </div>
+                <!-- Column 2: Quick Links -->
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Collections</h4>
+                    <ul class="footer-links">
+                        <li><a href="#collections">All Collections</a></li>
+                        <li><a href="#">Bridal</a></li>
+                        <li><a href="#">Everyday Elegance</a></li>
+                        <li><a href="#">Statement Pieces</a></li>
+                        <li><a href="#">Men's Collection</a></li>
+                    </ul>
                 </div>
                 
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">About Us</a>
-                        <a href="#" class="footer-link">Our Story</a>
-                        <a href="#" class="footer-link">Careers</a>
-                        <a href="#" class="footer-link">Press</a>
-                        <a href="#" class="footer-link">Blog</a>
-                    </div>
+                <!-- Column 3: Company -->
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#story">Our Story</a></li>
+                        <li><a href="#craftsmanship">Craftsmanship</a></li>
+                        <li><a href="#contact">Visit Us</a></li>
+                        <li><a href="#">Custom Design</a></li>
+                        <li><a href="#">Care Guide</a></li>
+                    </ul>
                 </div>
                 
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">Help Center</a>
-                        <a href="#" class="footer-link">Privacy Policy</a>
-                        <a href="#" class="footer-link">Terms of Service</a>
-                        <a href="#" class="footer-link">Shipping Info</a>
-                        <a href="#" class="footer-link">Returns</a>
-                    </div>
+                <!-- Column 4: About This Website -->
+                <div class="footer-column footer-about">
+                    <h4 class="footer-column-title">About This Website</h4>
+                    <p>
+                        This is a free HTML CSS template designed for gold jewelry boutiques and luxury brands.
+                    </p>
+                    <p>
+                        You may download and use this template for your website. Please support us by keeping the credit link to <a href="https://templatemo.com" target="_blank">TemplateMo</a>.
+                    </p>
+                    <p>
+                        Images: <a href="https://unsplash.com" target="_blank">Unsplash</a>
+                    </p>
                 </div>
             </div>
             
+            <!-- Footer Bottom -->
             <div class="footer-bottom">
-                <div class="footer-copyright">
-                    © 2026 Sleeky Photography. All rights reserved.
-                </div>
-                <div class="footer-credits">
-                    Try <a href="https://timermo.com" rel="nofollow" target="_blank">Your Timer</a>
-                     | Designed by <a href="https://templatemo.com" target="_blank" rel="noopener nofollow">TemplateMo</a>
+                <p class="footer-copyright">© 2026 Maison Dorée. Design: <a href="https://templatemo.com" target="_blank" rel="nofollow">TemplateMo</a></p>
+                <div class="footer-social">
+                    <a href="#">Instagram</a>
+                    <a href="#">Pinterest</a>
+                    <a href="#">Facebook</a>
                 </div>
             </div>
         </div>
     </footer>
-
-    <script src="templatemo-sleeky-scripts.js"></script>
+    <script src="templatemo-maison-doree.js"></script>
 </body>
 </html>
-sksksskskskskks

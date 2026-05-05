@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/01 11:37:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/02 19:52:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ void clsParseOutCGI::_BuilResponsedredirection()
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		_Status = 502;
-		// _ErrorRespnseHandling();
+		_ErrorRespnseHandling();
 	}
 }
 
@@ -390,19 +390,13 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-	if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
-		return ;
-	// else
-	// {
-	//     _Mod[stMod::ERROR] = stMod::ERROR; // add by adib
-	//     _ErrorPage.ResponseError(_Status, "");
-	//     _ModTransferData = true;
-	//     _BodyPointer = &_ErrorPage.GetBody();
-	//     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-	//     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-	//     _BytesBody = _ErrorPage.GetBodySize();
-	//     _IsConnectoin = _ErrorPage.GetIsConnection();
-	// }
+	    _ErrorPage.ResponseError(_Status, "");
+	    _ModTransferData = true;
+	    _BodyPointer = &_ErrorPage.GetBody();
+	    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+	    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+	    _BytesBody = _ErrorPage.GetBodySize();
+	    _IsConnectoin = _ErrorPage.GetIsConnection();
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
@@ -411,7 +405,8 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
 	{
-		// _ErrorRespnseHandling();
+		if (_Status == 500)
+			_ErrorRespnseHandling();
 		return ;
 	}
 	if (!_ProcessIsFinish)
@@ -421,7 +416,6 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	{
 		_Status = 502;
 		_Mod[stMod::ERROR] = stMod::ERROR;
-		// _ErrorRespnseHandling();
 		return ;
 	}
 	else
