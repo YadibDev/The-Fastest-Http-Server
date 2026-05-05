@@ -35,7 +35,7 @@ void clsFlow::_createBlocksServers(const char *configFile)
     lexerConfig.addCommentRule("#", "\n");
     lexerConfig.addWithSpace(" \t\n");
     static GenericLexer<TokenType> lexer(configeData, lexerConfig);
-    static std::vector<Token<TokenType>> Lexer = lexer.tokenize();
+    static std::vector<Token<TokenType> > Lexer = lexer.tokenize();
     static clsParse<TokenType> Data(Lexer, TOKEN_EOF);
     static clsParseConfigueFile ConfigFile(Data);
 
@@ -209,10 +209,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     client.ProcessBoth(event);
     const clinetState &status = client.GetState();
 
-    if (status == BEGIN || status == CONNECTION_CLOSED)
-    {
-        client.logs();
-    }
+    // if (status == BEGIN || status == CONNECTION_CLOSED)
+    // {
+    //     client.logs();
+    // }
 
     if (status == CONNECTION_CLOSED)
         _freeClient(fd);
@@ -321,7 +321,7 @@ void clsFlow::EventLoop()
     fdTypes TypeFd;
     while (1)
     {
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 500)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)))
         {
             for (int i = 0; i < nFds; i++)
             {

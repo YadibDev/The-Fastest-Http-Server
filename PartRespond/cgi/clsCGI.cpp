@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 15:21:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 15:48:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,37 +229,30 @@ bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
     close(_pip[0]);
-    // Fd = open("_DataRequest.getFilePathBody().c_str()", O_RDONLY | O_CLOEXEC, 644);
-    // if (Fd < 0)
-    // {
-    //     close(_pip[1]);
-    //     HelperFunctions::free_matrex(&_ENV);
-    //     std::cout << "lkapo\n";
-    //     return (-500);
-    // }
-    // if (dup2(Fd, 0) == -1)
-    //     return (close(Fd), close(_pip[1]), true);
+    if (_DataRequest.getMethod() == HttpTables::M_POST)
+    {
+        Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
+        if (Fd < 0)
+        {
+            close(_pip[1]);
+            return (true);
+        }
+        if (dup2(Fd, 0) == -1)
+            return (close(Fd), close(_pip[1]), true);
+    }
     // chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
-    // close(Fd);
+    if (_DataRequest.getMethod() == HttpTables::M_POST)
+        close(Fd);
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
 
 void clsCGI::_ParentProcesse()
 {
-    // stEventProcess::eEventProcess exit_code = HelperFunctions::checkProcessStatus(_PIDCHILD);
     close(_pip[1]);
-    // if (exit_code == stEventProcess::END_UNKNOW)
-    // {
-    //     close(_pip[0]);
-    //     _FD = -1;
-    //     _Erno = true;
-    // }
-    // else
-    // {
     _IsRunCGI = true;
     _FD = _pip[0];
 }

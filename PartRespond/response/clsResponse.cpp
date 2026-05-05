@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 14:32:19 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/05 18:26:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void clsResponse::MakeResponse()
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
             std::cout << "enter";
-            AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(), "/" , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), 1);
+             
+            AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),  _DataRequest.getRequestUri().Data , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),  _DataRequest.getRequestUri().len);
         }
         
     }

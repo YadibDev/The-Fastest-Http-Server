@@ -3,20 +3,11 @@
 
 string clsAutoIndex::headAutoIndexPreffix = "<!DOCTYPE html><style>table{font-size:20px;font-family:arial,sans-serif;border-collapse:collapse;}td,th{text-align:left;overflow:hidden;text-overflow:ellipsis;padding:10px;max-width:170px;}</style><body><h1>Index of ";
 string clsAutoIndex::headAutoIndexSuffix = "</h1><hr><table><tr><th>Name</th><th>file type</th></tr>";
-string clsAutoIndex::endAutoIndex = "</table></body>";
+string clsAutoIndex::endAutoIndex = "</table></body><script>let a=document.getElementsByTagName('a');for(let i=0;i<a.length;i++)a[i].innerHTML=a[i].innerHTML.replaceAll(' ','&nbsp;')</script>";
 string clsAutoIndex::preffRow = "<tr>";
 string clsAutoIndex::preffCol = "<td>";
 string clsAutoIndex::suffCol = "</td>";
 string clsAutoIndex::suffRow = "</tr>";
-
-int is_unreserved(char c)
-{
-    return (
-               (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
-               (c >= '0' && c <= '9') ||
-               c == '-' || c == '.' || c == '_' || c == '~') ||
-           c == '/' || c == '&';
-}
 
 clsAutoIndex::clsAutoIndex()
 {
@@ -48,7 +39,12 @@ void clsAutoIndex::initializeAutoIndex(const char *physicalDir, const char *dir,
 flowAutoIndex clsAutoIndex::_canPush(short nameSize, short availableSize)
 {
     short result;
-    result = (dirSize + nameSize) * 3 + nameSize + 14 + 3 + 10 + 5 * 2 + 9; // is hardcode NO!!!! IMPROVE IT
+    result = (dirSize + nameSize) * 3;
+    result += nameSize;
+    result += preffRow.size() + suffRow.size() + preffCol.size() * 2 + suffCol.size() * 2;
+    result += 16 + 2; // preffix suffix linke and 2 for directory
+    result += 9;      // file type max
+
     if (result > availableSize)
         return I_CANT_PUSH;
     else
@@ -62,7 +58,7 @@ short clsAutoIndex::addDataToChar(char *buffer, const char *src, short &start, s
         short oldStart = start;
         for (int i = 0; i < len; i++)
         {
-            if (is_unreserved(src[i]))
+            if (UriParser::isPchar(src[i]))
                 buffer[start++] = src[i];
             else
             {
@@ -106,6 +102,8 @@ short clsAutoIndex::_pushLink(char *buffer, short &start, char *file, unsigned c
         result += addDataToChar(buffer, "/", start, 1);
     result += addDataToChar(buffer, "'>", start, 2);
     result += addDataToChar(buffer, file, start, fileLen);
+    if (FILE_TYPE == DT_DIR)
+        result += addDataToChar(buffer, "/", start, 1);
     result += addDataToChar(buffer, "</a>", start, 4);
     return result;
 }
@@ -250,4 +248,3 @@ flowAutoIndex clsAutoIndex::insertAutoDirective(char *buffer, short &start, shor
     }
     return flowEnum;
 }
-

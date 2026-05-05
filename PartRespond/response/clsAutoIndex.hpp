@@ -5,6 +5,7 @@
 #include <iostream>
 #include <dirent.h>
 #include "cstring"
+#include "../../Parser/ParseRequest/URI/NUriParser.hpp"
 #include <sys/stat.h>
 
 #ifndef CLS_AUTO_INDEX

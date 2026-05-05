@@ -111,6 +111,11 @@ void	RequestHandler::computePathTranslated(const std::string& rootPath)
 	_PathTranslated.append(_PathInfo.Data, _PathInfo.len);
 }
 
+void	RequestHandler::setRequestUri(const s_view &uri)
+{
+	_requestUri = uri;
+}
+
 void    RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
 
 void    RequestHandler::setQuery(const s_view query) { _query = query; }
@@ -181,6 +186,10 @@ const std::string &RequestHandler::getServerPort() const {
 
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
+const s_view			&RequestHandler::getRequestUri() const
+{
+	return _requestUri;
+}
 
 const HeaderTable    &RequestHandler::getHeader() const
 {
