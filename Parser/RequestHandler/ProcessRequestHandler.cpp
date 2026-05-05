@@ -104,6 +104,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 	UriStatus flags;
 	sPathType::e_path_type PathType;
 	s_uri_entry uri;
+	size_t lastIndexOfAutoindex = 0;
 
 	for (size_t i = 0; i < vindex.size(); ++i)
 	{
@@ -115,6 +116,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 		{
 			if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
 				continue ;
+			lastIndexOfAutoindex = HelperFunctions::ft_strlen(handler->getPhysicalPath());
 			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.raw_path.c_str(), MAX_PATH_LEN);
 			
 			PathType = checkPath(handler->getPhysicalPath(), flags);
@@ -138,7 +140,8 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 	if (bestLocation->getAutoIndex())
 	{
 		handler->setAutoIndex(true);
-		return true;
+		handler->getPhysicalPath()[lastIndexOfAutoindex] =  '\0';
+		return (error.reset(), true);
 	}
 	if (error.isError()) // 403, "Forbidden"
 		return false;
@@ -366,7 +369,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			return (handler->setError(error), false);
 		return false;
 	}
-
+	handler->setRequestUri(startLine.getRequestURI().getPath());
 	handler->setQuery(startLine.getRequestURI().getQuery());
 	handler->setVersion(startLine.getVersion());
 	handler->setMethod(startLine.getMethod());

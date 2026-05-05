@@ -10,9 +10,9 @@ void clsFlow::_initializeStatics()
     // signal(SIGINT, function);
 }
 
-void clsFlow::_createBlocksServers()
+void clsFlow::_createBlocksServers(const char *configFile)
 {
-    int fd = open("configs/default.conf", O_RDONLY);
+    int fd = open(configFile, O_RDONLY);
     if (fd == -1)
     {
         throw std::runtime_error("fail to open config file");
@@ -130,11 +130,11 @@ void clsFlow::_registerServersSockets()
     std::cout << "Register Server Sockets by success\n";
 }
 
-clsFlow::clsFlow()
+clsFlow::clsFlow(const char *configFile)
 {
     _clientsArr = NULL;
     _initializeStatics();
-    _createBlocksServers();
+    _createBlocksServers(configFile);
     _createServers();
     _registerServersSockets();
     _initializeDataBase();
@@ -146,13 +146,13 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
     {
         int fd = client.data.fd;
 
-        if (client.events & EPOLLERR)
-            std::cout << "EPOLLERR" << std::endl;
-        else if (client.events & EPOLLHUP)
-            std::cout
-                << "EPOLLHUP" << std::endl;
-        else
-            std::cout << "EPOLLRDHUP" << std::endl;
+        // if (client.events & EPOLLERR)
+        //     std::cout << "EPOLLERR" << std::endl;
+        // else if (client.events & EPOLLHUP)
+        //     std::cout
+        //         << "EPOLLHUP" << std::endl;
+        // else
+        //     std::cout << "EPOLLRDHUP" << std::endl;
 
         if (TypeFd == PIPE)
         {
@@ -326,7 +326,7 @@ void clsFlow::EventLoop()
     fdTypes TypeFd;
     while (1)
     {
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 500)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)))
         {
             for (int i = 0; i < nFds; i++)
             {

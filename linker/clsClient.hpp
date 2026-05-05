@@ -28,6 +28,7 @@ enum clinetState
     CGI_END,
     RESPOND_MODE,
     LAST_CHUNKED,
+    AUTO_INDEX_DONE,
     CONNECTION_CLOSED
 };
 
@@ -47,7 +48,7 @@ class clsClient
 private:
     int _socket;
     int _fdRespond;
-    ssize_t bytesToSend;
+    short bytesToSend;
     ssize_t bodyLimit;
     long _LastConnection; // update connection in ms
     long _FirstConnection; // first established connection in ms mile seconds
@@ -62,12 +63,11 @@ private:
     bodyPlaceEnum::place _BodyPlace;
     clsMonitorCGI _monitorCGI;
 
-    void _SendRespond(const clsResponse &_Responder);
+    void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
-    ssize_t _addSizeChunkToStr();
+    short _addSizeChunkToStr();
     void _initalizeRespondBuffer();
-    short    _ReadData(int fd);
-
+    void _LoadAutoIndex( clsResponse &_Responder);
 public:
     clsClient();
     void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin

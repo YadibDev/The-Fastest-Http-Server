@@ -19,6 +19,7 @@ private:
 	uint8_t								_allowMethods;
 	char								_physicalPath[MAX_PATH_LEN];
 	bool								_autoindex;
+	s_view								_requestUri;
 	s_view								_query;
 	s_view								_version;
 	s_view								_PathInfo;
@@ -43,9 +44,10 @@ public:
 	void					reset();
 
 	void					setAutoIndex(bool autoindex);
+	void					setRequestUri(const s_view &uri);
 	void					setQuery(const s_view query);
 	void					setVersion(const s_view version);
-	void					setPathInfo(s_view pathInfo);
+	void					setPathInfo(const s_view &pathInfo);
 	void					setPathTranslated(std::string pathTranslated);
 	void					setServerPort(const std::string &serverPort);
 	void					setMethod(HttpTables::eMethod method);
@@ -65,6 +67,7 @@ public:
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 
+	const s_view			&getRequestUri() const;
 	char*					getPhysicalPath() ;
 	const char*				getPhysicalPath() const;
 	bool					getAutoIndex() const;
