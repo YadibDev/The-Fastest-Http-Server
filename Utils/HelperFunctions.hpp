@@ -107,7 +107,7 @@ public:
     {
         char *end;
         num = strtol(arr, &end, base);
-        if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+        if (end[0] != '\0' && !Iswhaitspace(end[0]) && end[0] != '\r' && end[0] != '\n')
             return false;
         return true;
     }

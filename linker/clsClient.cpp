@@ -19,7 +19,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
 {
     _theData.Reset();
     _fdRespond = 0;
-    _FirstConnection = HelperFunctions::getCurrentTimeInMs();
+    _FirstConnection = HelperFunctions::getCurrentTimeInS();
     _socket = fd;
     _addr = addr,
     this->block = block;
@@ -44,12 +44,12 @@ unsigned int clsClient::GetIp() const
     return ntohl(_addr.sin_addr.s_addr);
 }
 
-size_t clsClient::GetTimeConnection() const
+long clsClient::GetTimeConnection() const
 {
     return _FirstConnection;
 }
 
-size_t clsClient::GetLastConnection() const
+long clsClient::GetLastConnection() const
 {
     return _LastConnection;
 }
@@ -99,7 +99,6 @@ int clsClient::_ReadDataForReq()
     }
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
-        // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
         size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), MSG_DONTWAIT);
         if (size > 0)
@@ -122,15 +121,15 @@ void clsClient::ProcessRequest()
         _state = REQUEST_MODE;
     }
 
-    int size = _ReadDataForReq(); // reading data for request
+    int size = _ReadDataForReq();
 
     if (_state == CONNECTION_CLOSED || size == -1 || size == 0)
         return;
 
     if (_Requester._state == RequestParser::STATE_BODY)
-        _Requester.Parse(_theData.read_body); // then pase it to parse
+        _Requester.Parse(_theData.read_body); 
     else
-        _Requester.Parse(_theData.read_offset - 1); // then pase it to parse
+        _Requester.Parse(_theData.read_offset - 1);
 
     if (_Requester.isError())
     {

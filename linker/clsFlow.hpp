@@ -43,7 +43,7 @@ private:
     std::stack<short> _clientsAvailable;
 
     void _initializeStatics();
-    void _createBlocksServers();
+    void _createBlocksServers(const char *configFile);
     void _createServers();
     void _initializeDataBase();
     void _registerServersSockets();
@@ -59,7 +59,7 @@ private:
     void _pipeFlow(int fd);
 
 public:
-    clsFlow();
+    clsFlow(const char *configFile);
     ~clsFlow();
     void EventLoop();
 

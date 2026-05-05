@@ -1,31 +1,31 @@
-#!/usr/bin/env bash
-set -e
-
-LOCATION="$HOME/goinfre" # where to install
-
-NGINX_VERSION=1.27.0
-PREFIX="$LOCATION/nginx" 
-BUILD_NGINX="$LOCATION/build_nginx"
-
-mkdir -p $BUILD_NGINX
-cd $BUILD_NGINX
-
-# Download nginx source
-if [ ! -f "nginx-$NGINX_VERSION.tar.gz" ]; then
-    curl -LO http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz
-fi
-
-# Extract
-rm -rf "nginx-$NGINX_VERSION"
-tar -xzf "nginx-$NGINX_VERSION.tar.gz"
-cd "nginx-$NGINX_VERSION"
-
-# Configure install path (no root needed)
-./configure --prefix="$PREFIX" \
-            --with-http_v2_module
-
-# Build and install
-make -j$(nproc)
-make install
-
-echo "✅ Nginx installed in $PREFIX"
+find . -name "*.cpp" | while read -r file; do
+  awk '
+    BEGIN { in_comment=0 }
+    {
+      line = $0
+      if (in_comment) {
+        comment = comment "\n" line
+        if (match(line, /\*\//)) {
+          in_comment=0
+          comment_end=RSTART+RLENGTH-1
+          comment_text = substr(comment, 1, comment_end)
+          print FILENAME ":" comment_start_line ":/*" comment_text "*/"
+          comment=""
+        }
+      } else if (match(line, /\/\*/)) {
+        in_comment=1
+        comment_start_line=NR
+        comment = substr(line, RSTART)
+        if (match(line, /\*\//, RSTART)) {
+          in_comment=0
+          comment_end=RSTART+RLENGTH-1
+          comment_text = substr(comment, 1, comment_end)
+          print FILENAME ":" comment_start_line ":/*" comment_text "*/"
+          comment=""
+        }
+      } else if (match(line, /\/\//)) {
+        print FILENAME ":" NR "://" substr(line, RSTART+2)
+      }
+    }
+  ' "$file"
+done

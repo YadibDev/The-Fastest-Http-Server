@@ -46,17 +46,6 @@ void clsServerSock::removeSocket(int fd)
     close(fd);
 }
 
-// // initilaizing the sturct with the port and ip of the passive socket
-// void clsServerSock::_initializeSockaffr(unsigned short port, unsigned int ipV4)
-// {
-//     memset(&temp, 0, sizeof(temp));
-
-//     temp.sin_port = htons(port);
-//     temp.sin_addr.s_addr = htonl(ipV4);
-//     temp.sin_family = AF_INET;
-// }
-
-// build single socket with socket and bind and listen system calls
 int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
 {
     unsigned short port = temp.sin_port;
