@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 15:52:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 19:04:05 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ class clsParseOutCGI
     void _InitialInternalRedirect();
 
 public:
-    clsParseOutCGI(const RequestHandler &_DataRequest);
+    clsParseOutCGI(RequestHandler &_DataRequest);
     const std::string &GetBody();
     const std::string &GetFileNameBody();
     const std::string &GetHeadersFieldFinal();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/25 11:21:53 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/05 19:06:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class clsCGI
         int _FD;
         bool _Erno;
         static short _LimitProcess;
-        const RequestHandler &_DataRequest;
+        RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
         std::string TempVar;
         char **_ENV;
@@ -60,7 +60,7 @@ class clsCGI
         bool _CONTENT_LENGTH();
         bool _OtherHeaders();
     public:
-        clsCGI(const RequestHandler &DataRequest);
+        clsCGI(RequestHandler &DataRequest);
         bool GetIsRunCGI();
         bool GetErno();
         int GetFdPipe();

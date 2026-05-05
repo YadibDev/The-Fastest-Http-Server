@@ -6,13 +6,13 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/02 19:52:36 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 19:04:17 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI(const RequestHandler &DataRequest) :_DataRequest(DataRequest)
+clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRequest)
 {
 	_BytesBody = 0;
 	_FoundBody = false;

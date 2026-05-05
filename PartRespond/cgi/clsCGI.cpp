@@ -6,13 +6,13 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 15:48:20 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 20:03:54 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
 short clsCGI::_LimitProcess;
-clsCGI::clsCGI(const RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
+clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
     _IsRunCGI = false;
     _ARG = NULL;
@@ -240,7 +240,11 @@ bool clsCGI::_childeProcesse()
         if (dup2(Fd, 0) == -1)
             return (close(Fd), close(_pip[1]), true);
     }
-    // chdir("/home/achamdao/Desktop/The-Fastest-Http-Server/websites/TemplateSite/template3");
+    int pos = HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()) - _DataRequest.getScriptName().len;
+    _DataRequest.getPhysicalPath()[pos] = '\0';
+    std::cout <<  _DataRequest.getPhysicalPath() << std::endl;
+    if (chdir(_DataRequest.getPhysicalPath())  == -1)
+        return (close(Fd), close(_pip[1]), true);
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
