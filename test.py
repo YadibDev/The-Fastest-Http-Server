@@ -1,11 +1,12 @@
 import socket
 
 host = "127.0.0.1"
-port = 8082
+port = 8083
 path = "/websitest/html.html"
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect((host, port))
+# التعديل: إحاطة host و port بقوسين إضافيين لتكوين tuple
+sock.connect((host, port)) 
 
 request = (
     f"GET {path} HTTP/1.1\r\n"

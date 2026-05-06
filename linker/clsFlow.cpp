@@ -348,6 +348,7 @@ void clsFlow::EventLoop()
 
 clsFlow::~clsFlow()
 {
+    // free data neseccaryly
     // HelperFunctions::free_matrex(HelperFunctions::GetENV_VAR_CONST());
     delete[] _clientsArr;
 }
