@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 14:52:32 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/06 15:46:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void clsResponse::MakeResponse()
                 , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),  _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
             {
                 _Mod[stMod::ERROR] = stMod::ERROR;
-                _Status = 404;
+                _Status =  AutoIndex.getErrorCode();
             }
         }
     }
@@ -129,6 +129,7 @@ void clsResponse::_ErrorRespnseHandling()
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
         _IsConnection = _ErrorPage.GetIsConnection();
+        _Mod[stMod::ERROR] = stMod::EMPTY;
     }
     
 
@@ -319,7 +320,10 @@ void clsResponse::SetSizeBody(int size)
  {
     _IsConnection = IsConnection;
  }
-
+short clsResponse::GetStatus()
+{
+    return _Status;
+}
 size_t clsResponse::GetSizeBody() const
 {
     return (_BodySize);
@@ -344,4 +348,8 @@ bool clsResponse::fetchAutoIndex(char * Buffer, short &Ofset, short LimitSize)
         return true;
     return false;
 }
+ bool clsResponse::IsError()
+ {
+    return (_Mod[stMod::ERROR] == _Mod[stMod::ERROR]);
+ }
 clsResponse::~clsResponse(){}
