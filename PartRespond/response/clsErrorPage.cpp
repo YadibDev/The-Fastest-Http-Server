@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 14:46:31 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:37:21 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,13 @@ clsErrorPage::clsErrorPage()
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
-        return ;
+        return;
     }
     _FileFromDisk.clear();
     _Type.clear();
     _HeaderFeild.clear();
     _Erno = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
-
 }
 
 void clsErrorPage::_HeadersErrorResponse()
@@ -44,7 +43,7 @@ void clsErrorPage::_HeadersErrorResponse()
     _Server();
     _Date();
     if (_Status == 405)
-       _Allow();
+        _Allow();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
     if (_Status == 429 || _Status == 503)
@@ -53,25 +52,25 @@ void clsErrorPage::_HeadersErrorResponse()
     _Connection();
     _HeaderFeild += "\r\n";
 }
- 
+
 void clsErrorPage::_StoredInFileOrStr()
 {
     struct stat MetaData;
     _Body.clear();
     if (_FileFromDisk.empty())
-        return ;
+        return;
     if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
-        return ;
+        return;
     }
     _BodySize = MetaData.st_size;
     if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
-        return ;
+        return;
     }
     int FD = open(_FileFromDisk.c_str(), O_RDONLY | O_CLOEXEC);
     if (FD < 0)
@@ -79,26 +78,27 @@ void clsErrorPage::_StoredInFileOrStr()
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
-        return ;
+        return;
     }
-    if (read(FD,&_Body[0],MAX_BODY) == -1)
+    if (read(FD, &_Body[0], MAX_BODY) == -1)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
         close(FD);
-        return ;
+        return;
     }
     _FileFromDisk.clear();
     close(FD);
 }
- 
+
 void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
 {
     _Status = Status;
     if (!FilePageError.empty())
     {
         _FileFromDisk = FilePageError;
+
         _StoredInFileOrStr();
         if (_Erno)
         {
@@ -107,22 +107,22 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
             _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(_Status));
             _Body = HelperFunctions::GetBody(_Status);
             _HeadersErrorResponse();
-            return ;
+            return;
         }
         else
         {
-           _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(_FileFromDisk)); 
+            _Type = HelperFunctions::GetType(HelperFunctions::GetTypeDataFile(FilePageError));
             _HeadersErrorResponse();
-            return ;
+            return;
         }
     }
     _Type = HelperFunctions::GetType(".html");
     _FileFromDisk = "";
-    _BodySize = HelperFunctions::ft_strlen( HelperFunctions::GetBody(Status));
+    _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(Status));
     _Body = HelperFunctions::GetBody(Status);
     _HeadersErrorResponse();
 }
- 
+
 void clsErrorPage::_Connection()
 {
     if (_IsConnection)
@@ -141,8 +141,8 @@ void clsErrorPage::_StatusLine()
 {
     _HeaderFeild += "HTTP/1.1 ";
     HelperFunctions::NumToStr(_Status, _HeaderFeild);
-    _HeaderFeild +=  " ";
-    _HeaderFeild += HelperFunctions::GetStatusMessage(_Status) ;
+    _HeaderFeild += " ";
+    _HeaderFeild += HelperFunctions::GetStatusMessage(_Status);
     _HeaderFeild += "\r\n";
 }
 
@@ -150,20 +150,20 @@ void clsErrorPage::_ContentLength()
 {
     _HeaderFeild += "Content-Length: ";
     HelperFunctions::NumToStr(_BodySize, _HeaderFeild);
-    _HeaderFeild +="\r\n";
+    _HeaderFeild += "\r\n";
 }
 void clsErrorPage::_ContentType()
 {
     _HeaderFeild += "Content-Type: ";
     _HeaderFeild += _Type;
-    _HeaderFeild +="\r\n";
+    _HeaderFeild += "\r\n";
 }
 
 void clsErrorPage::_Date()
 {
     _HeaderFeild += "Date: ";
     _HeaderFeild += HelperFunctions::DateTime();
-    _HeaderFeild += "\r\n";     
+    _HeaderFeild += "\r\n";
 }
 
 void clsErrorPage::_Server()
@@ -183,7 +183,7 @@ void clsErrorPage::_Allow()
 
 void clsErrorPage::_Transfer_Encoding()
 {
-   _HeaderFeild += "Transfer-Encoding: chunked\r\n";
+    _HeaderFeild += "Transfer-Encoding: chunked\r\n";
 }
 
 void clsErrorPage::SetBodySize(int BodySize)
@@ -227,10 +227,10 @@ void clsErrorPage::Reset()
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
- bool clsErrorPage::GetIsConnection()
- {
+bool clsErrorPage::GetIsConnection()
+{
     return _IsConnection;
- }
+}
 
 size_t clsErrorPage::GetBodySize() const
 {
