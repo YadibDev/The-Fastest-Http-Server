@@ -65,33 +65,6 @@ const clsLocation* ProcessRequestHandler::findBestLocation(
 // 	}
 // }
 
-sPathType::e_path_type checkPath(char *path, UriStatus &flags)
-{
-	if (!path)
-		return sPathType::PATH_NOT_FOUND;
-
-	struct stat st;
-
-	if (stat(path, &st) != 0)
-	    return sPathType::PATH_NOT_FOUND;
-
-	flags.can_read = st.st_mode & (S_IRUSR | S_IRGRP | S_IROTH);
-	flags.can_write = st.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH);
-	flags.can_execute = st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH);
-
-	if (S_ISREG(st.st_mode))
-	{
-		flags.is_file = true;
-		return sPathType::PATH_FILE;
-	}
-	else if (S_ISDIR(st.st_mode))
-	{
-		flags.is_dir = true;
-		return sPathType::PATH_DIR;
-	}
-
-	return (sPathType::PATH_OTHER);
-}
 
 bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 											const clsLocation* bestLocation,
@@ -119,7 +92,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 			lastIndexOfAutoindex = HelperFunctions::ft_strlen(handler->getPhysicalPath());
 			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.raw_path.c_str(), MAX_PATH_LEN);
 			
-			PathType = checkPath(handler->getPhysicalPath(), flags);
+			PathType = HelperFunctions::checkPath(handler->getPhysicalPath(), flags);
 			if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
 			{
 				error.setStatus(403, "Forbidden");
@@ -273,7 +246,7 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 	sPathType::e_path_type PathType;
 	memset(&flags, 0, sizeof(flags));
 
-	PathType = checkPath(handler->getPhysicalPath(), flags);
+	PathType = HelperFunctions::checkPath(handler->getPhysicalPath(), flags);
 	if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
 		return (error.setStatus(404, "Not Found"), false);
 	if (PathType == sPathType::PATH_DIR)
@@ -353,7 +326,10 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	);
 
 	if (!bestLocation)
-		return (error.setStatus(500, "Internal Server Error"), false);
+	{
+		error.setStatus(500, "Internal Server Error");
+		return (handler->setError(error), false);
+	}
 
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{

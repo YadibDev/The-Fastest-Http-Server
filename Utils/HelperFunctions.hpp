@@ -30,6 +30,63 @@ struct stEventData
 
 // achraf headers 
 
+struct UriStatus {
+	bool is_relative   : 1;
+	bool is_abs_path   : 1;
+	bool is_cgi        : 1;
+	bool is_abs_uri    : 1;
+	bool is_dir        : 1;
+	bool is_file       : 1;
+	bool is_symlink    : 1;
+
+	bool can_read      : 1;
+	bool can_write     : 1;
+	bool can_execute   : 1;
+
+	bool exists        : 1;
+};
+
+struct sPathType {
+	enum e_path_type {
+	    PATH_NOT_FOUND = 0,
+	    PATH_FILE      = 1,
+	    PATH_DIR       = 2,
+	    PATH_OTHER     = 3
+	};
+};
+
+struct s_uri_entry {
+	std::string     raw_path;
+	UriStatus       flags;
+	s_view          sv_raw_path;
+	uint8_t         redirect_count;
+
+	s_uri_entry() : raw_path("")
+	{
+		memset(&flags, 0, sizeof(flags));
+		sv_raw_path.Data = NULL;
+		sv_raw_path.len = 0;
+		redirect_count = 0;
+	}
+
+	const std::string& getPath() const { return raw_path; }
+
+	void initView() {
+		if (!raw_path.empty()) {
+			sv_raw_path.Data = &raw_path[0];
+			sv_raw_path.len = raw_path.size();
+		}
+	}
+
+	void	setSview(const s_view &sv_path)
+	{
+		sv_raw_path.Data = sv_path.Data;
+		sv_raw_path.len = sv_path.len;
+	}
+
+	void AddRedirectCount() { redirect_count++; }
+	const s_view &getView() const { return sv_raw_path; }
+};
 
 
 class HelperFunctions
@@ -53,6 +110,10 @@ public:
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
 	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
+    static sPathType::e_path_type checkPath(char *path, UriStatus &flags);
+
+
+
 
 
     // achraf part

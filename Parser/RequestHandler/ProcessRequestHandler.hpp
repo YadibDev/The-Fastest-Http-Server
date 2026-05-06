@@ -17,7 +17,7 @@ class ProcessRequestHandler
 															int originalCode, 
 											   				const stErrorPagedata& errorData);
 	static void					getPathCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass, RequestHandler* handler);
-	// static std::string			selectMethod(Methods::eMethods method);
+	// static std::string		selectMethod(Methods::eMethods method);
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
 	static std::string			getIndex(const clsLocation* bestLocation, HttpError &error);
 	static bool					createPhysicalPath(const clsLocation* bestLocation, char *destBuffer, s_uri_entry& newUri, HttpError &error);

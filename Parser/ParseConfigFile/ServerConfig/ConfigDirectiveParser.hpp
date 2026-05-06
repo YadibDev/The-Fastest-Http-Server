@@ -2,8 +2,6 @@
 #define CONFIG_DIRECTIVE_PARSER_HPP
 
 
-
-
 #include "../../Header/HeaderFiles.hpp"
 
 
@@ -57,7 +55,7 @@ public:
 private:
 	static unsigned long long				convertToBytes(long long value, char unit, HttpError& error);
 	static long long						extractNumericPart(const std::string& str, short &length);
-	static sockaddr_in						setSockaddr_in(const std::string& input);
+	static sockaddr_in						setSockaddr_in(const std::string& input, HttpError& error);
 	static uint32_t							validateIPWithSystem(const std::string& ip, int family);
 };
 

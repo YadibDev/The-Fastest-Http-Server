@@ -34,11 +34,13 @@ bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& 
 }
 
 std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
+
+	UriStatus flags;
 	ctx.parser.advance(); 
 	if (ctx.parser.peek().type != TOKEN_WORD)
 		return (ctx.error.setStatus(400, "Expected path after 'root'"), "");
 
-	std::string root;
+	std::string root = "";
 	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
 	if (ctx.error.isError()) return "";
 
@@ -49,11 +51,15 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
 
+	if (HelperFunctions::checkPath(&root[0], flags) != sPathType::PATH_DIR)
+		return (ctx.error.setStatus(400, "root Error"), "");
+
 	return root;
 }
 
 std::string		ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
 {
+	UriStatus flags;
 	ctx.parser.advance(); 
 	if (ctx.parser.peek().type != TOKEN_WORD)
 		return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
@@ -68,6 +74,9 @@ std::string		ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
 	
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
+
+	if (HelperFunctions::checkPath(&alias[0], flags) != sPathType::PATH_DIR)
+		return (ctx.error.setStatus(400, "alias Error"), "");
 
 	return alias;
 }
@@ -139,7 +148,9 @@ sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx)
 	ctx.parser.advance();
 
 	if (ctx.parser.peek().type == TOKEN_WORD) {
-		addr = setSockaddr_in(ctx.parser.peek().value);
+		addr = setSockaddr_in(ctx.parser.peek().value, ctx.error);
+		if (ctx.error.isError())
+			return addr;
 	} else {
 		ctx.error.setStatus(400, "Syntax Error: Expected address/port after 'listen'");
 		return addr;
@@ -157,42 +168,42 @@ sockaddr_in ConfigDirectiveParser::ParseListen(s_parse_context& ctx)
 }
 
 stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
-    stReturnData returnData;
-    char* end;
+	stReturnData returnData;
+	char* end;
 
-    ctx.parser.advance();
+	ctx.parser.advance();
 
-    const Token<TokenType>& first = ctx.parser.peek();
-    long code = std::strtol(first.value.c_str(), &end, 10);
-    bool isNumeric = (*end == '\0');
+	const Token<TokenType>& first = ctx.parser.peek();
+	long code = std::strtol(first.value.c_str(), &end, 10);
+	bool isNumeric = (*end == '\0');
 
-    if (!isNumeric) {
-        if (first.value.compare(0, 7, "http://") != 0) {
-            ctx.error.setStatus(400, "invalid return value \"" + first.value + "\"");
-            return returnData;
-        }
-        returnData.code = 302;
-        returnData.value.raw_path = first.value;
-        ctx.parser.advance();
-    }
-    else {
-        returnData.code = (int)code;
-        ctx.parser.advance();
+	if (!isNumeric) {
+		if (first.value.compare(0, 7, "http://") != 0) {
+			ctx.error.setStatus(400, "invalid return value \"" + first.value + "\"");
+			return returnData;
+		}
+		returnData.code = 302;
+		returnData.value.raw_path = first.value;
+		ctx.parser.advance();
+	}
+	else {
+		returnData.code = (int)code;
+		ctx.parser.advance();
 
-        if (ctx.parser.peek().type == TOKEN_WORD) {
-            returnData.value.raw_path = ctx.parser.peek().value;
-            ctx.parser.advance();
-        }
-    }
+		if (ctx.parser.peek().type == TOKEN_WORD) {
+			returnData.value.raw_path = ctx.parser.peek().value;
+			ctx.parser.advance();
+		}
+	}
 
-    if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
-        ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
-        return returnData;
-    }
-    ctx.parser.advance();
-    skipWhitespace(ctx.parser);
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
+		ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
+		return returnData;
+	}
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
 
-    return returnData;
+	return returnData;
 }
 
 std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
@@ -371,14 +382,26 @@ long long ConfigDirectiveParser::extractNumericPart(const std::string& str, shor
 	return result;
 }
 
-sockaddr_in ConfigDirectiveParser::setSockaddr_in(const std::string& input) {
+sockaddr_in ConfigDirectiveParser::setSockaddr_in(const std::string& input, HttpError& error)
+{
+
 	unsigned short port = 0;
 	std::string host = "";
 	struct sockaddr_in serv_addr;
+	size_t colonPos = input.find(':');
 	std::memset(&serv_addr, 0, sizeof(serv_addr));
 
-	URIParser::extractPort(input, port);
-	URIParser::extractHost(input, host);
+	if (colonPos == std::string::npos || colonPos == 0)
+		host = input;
+	else
+		host = input.substr(0, colonPos);
+
+	error = URIParser::extractPort(input, port);
+	if (error.isError())
+		return serv_addr;
+	error = URIParser::isValidIPv4(host);
+	if (error.isError())
+		return serv_addr;
 
 	if (host == "*" || host == "") host = "0.0.0.0";
 	

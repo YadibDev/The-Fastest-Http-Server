@@ -246,6 +246,38 @@ bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
 	return true;
 }
 
+sPathType::e_path_type HelperFunctions::checkPath(char *path, UriStatus &flags)
+{
+	if (!path)
+		return sPathType::PATH_NOT_FOUND;
+
+	struct stat st;
+
+	if (stat(path, &st) != 0)
+	    return sPathType::PATH_NOT_FOUND;
+
+	flags.can_read = st.st_mode & (S_IRUSR | S_IRGRP | S_IROTH);
+	flags.can_write = st.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH);
+	flags.can_execute = st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH);
+
+	if (S_ISREG(st.st_mode))
+	{
+		flags.is_file = true;
+		return sPathType::PATH_FILE;
+	}
+	else if (S_ISDIR(st.st_mode))
+	{
+		flags.is_dir = true;
+		return sPathType::PATH_DIR;
+	}
+
+	return (sPathType::PATH_OTHER);
+}
+
+
+
+
+
 
 
 // Achraf
