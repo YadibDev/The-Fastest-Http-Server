@@ -225,9 +225,8 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    std::cout << "stroe normal body\n"
-              << std::endl;
-    int temp = write(this->fd, data.io_chunk, offset); // i will change this
+    int toWrite = fmax(offset + writeSize, _contentLength);
+    int temp = write(this->fd, data.io_chunk, toWrite); // i will change this
     if (temp == -1)
     {
         _errorPage.setStatus(500, "Internal Server Error:");

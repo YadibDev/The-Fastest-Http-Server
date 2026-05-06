@@ -53,6 +53,9 @@ public:
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
 	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
+    static size_t join_views(char* dst, size_t dst_size, const s_view& v1, const s_view& v2);
+
+
 
 
     // achraf part
@@ -107,7 +110,7 @@ public:
     {
         char *end;
         num = strtol(arr, &end, base);
-        if (end[0] != '\r' && end[0] != '\n' && end[0] != '\0')
+        if (end[0] != '\0' && !Iswhaitspace(end[0]))
             return false;
         return true;
     }
