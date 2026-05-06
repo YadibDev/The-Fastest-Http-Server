@@ -21,12 +21,14 @@ clsAutoIndex::~clsAutoIndex()
         closedir(streamDir);
 }
 
-void clsAutoIndex::initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize)
+flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize)
 {
     if (streamDir)
         closedir(streamDir);
 
-    streamDir = NULL;
+    streamDir = opendir(physicalDir);
+    if (streamDir == NULL)
+        return ERROR_AUTO_INDEX;
     ptrDir = NULL;
     this->physicalDir = physicalDir;
     this->dir = dir;
@@ -34,6 +36,7 @@ void clsAutoIndex::initializeAutoIndex(const char *physicalDir, const char *dir,
     this->dirSize = dirSize;
     flowEnum = START;
     ptrSize = NULL;
+    return flowEnum;
 }
 
 flowAutoIndex clsAutoIndex::_canPush(short nameSize, short availableSize)
@@ -191,10 +194,6 @@ flowAutoIndex clsAutoIndex::insertAutoDirective(char *buffer, short &start, shor
     short pushbytes = 0;
     if (flowEnum == START)
     {
-        streamDir = opendir(physicalDir);
-        if (streamDir == NULL)
-            return ERROR_AUTO_INDEX;
-
         // reserve 6 bytes for size chunk
         ptrSize = &buffer[start];
         start += 6;
