@@ -565,6 +565,7 @@ const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
     size_t Pos;
     short i = 0;
+
     if ((Pos = Str.find('.')) == std::string::npos)
     {
         _PoinerType[0] = '\0';

@@ -297,6 +297,17 @@ void clsClient::ProcessRespond()
             _state = CGI_START;
             return;
         }
+        else if (Respond.IsError())
+        {
+            HttpError error;
+            std::cout << "error page" << endl;
+            if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
+            {
+                _RequestXconfig.setDefaultErrorPage(true);
+            }
+            this->_ResponderProecss.MainProcess(); // re create error page
+        }
+
         _initalizeRespondBuffer();
     }
     else if (_state == CGI_END)
