@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 20:19:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/06 11:07:01 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,7 @@ void clsResponse::MakeResponse()
         {
             _Type = HelperFunctions::GetType(".html");
             _Mod[stMod::CHUNK] = stMod::CHUNK;
-            _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
-            std::cout << "enter";
-             
+            _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;      
             AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),  _DataRequest.getRequestUri().Data , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),  _DataRequest.getRequestUri().len);
         }
         
@@ -89,7 +87,7 @@ void clsResponse::_InitialHeaders()
             _BodySize = _Body.size();
         }
     }
-    if (_BodySize || _Mod[stMod::AUTOINDEX] == stMod::AUTOINDEX)
+    if (!_Type.empty())
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
