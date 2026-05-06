@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2026/05/06 11:17:42 by achamdao         ###   ########.fr       */
+=======
+/*   Updated: 2026/05/06 13:16:36 by yadib            ###   ########.fr       */
+>>>>>>> Server
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +63,13 @@ void clsResponse::MakeResponse()
             _Type = HelperFunctions::GetType(".html");
             _Mod[stMod::CHUNK] = stMod::CHUNK;
             _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;      
-            AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),  _DataRequest.getRequestUri().Data , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),  _DataRequest.getRequestUri().len);
+            if (AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),  _DataRequest.getRequestUri().Data 
+                , HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),  _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
+            {
+                _Mod[stMod::ERROR] = stMod::ERROR;
+                _Status = 404;
+            }
         }
-        
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();

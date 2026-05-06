@@ -58,7 +58,7 @@ private:
 public:
     clsAutoIndex();
     ~clsAutoIndex();
-    void initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize);
+    flowAutoIndex initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize);
     flowAutoIndex insertAutoDirective(char *buffer, short &start, short limitSize);
 };
 

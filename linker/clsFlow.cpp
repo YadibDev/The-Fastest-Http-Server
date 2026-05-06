@@ -146,13 +146,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
     {
         int fd = client.data.fd;
 
-        if (client.events & EPOLLERR)
-            std::cout << "EPOLLERR" << std::endl;
-        else if (client.events & EPOLLHUP)
-            std::cout << "EPOLLHUP" << std::endl;
-        else
-            std::cout << "EPOLLRDHUP" << std::endl;
-
         if (TypeFd == PIPE)
         {
             int index = _IdByPipe[fd];
@@ -172,13 +165,13 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
     if (blockId == -1)
     {
         close(newClient);
-        return false; // can't add client
+        return false;
     }
     clsClient &client = _clientsArr[blockId];
     _clientIdByFd[newClient] = blockId;
 
     if (_epoll.addClient(newClient, EPOLLIN) == false)
-        return false; // watch by epoll
+        return false;
     client.initializeClient(addr, newClient, block);
     return true;
 }
@@ -192,7 +185,7 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
         return;
     }
     if (_epoll.addClient(pipe, EPOLLIN) == false)
-        return; // watch by epoll
+        return;
     _IdByPipe[pipe] = indexClient;
 }
 
@@ -222,6 +215,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     }
     else if (status == BEGIN)
     {
+        _clientsArr[fd].UpdateTime();
         _epoll.changeAbility(fd, EPOLLIN);
     }
     else if (status == CGI_START)
@@ -243,8 +237,8 @@ void clsFlow::_newClientProcess(int serverFd)
         {
             if (HelperFunctions::changeFileToNonBlocking(newClient) == -1)
             {
-                std::cout << "Fail to change client fd to non blocking\n"
-                          << std::endl;
+                close(newClient);
+                std::cout << "Fail to change client fd to non blocking" << std::endl;
                 return;
             }
 
@@ -326,11 +320,11 @@ void clsFlow::EventLoop()
             for (int i = 0; i < nFds; i++)
             {
                 int fd = (_clientsEvents[i].data.fd);
-                if (_clientIdByFd.count(fd))
+                if (_clientIdByFd.size() && _clientIdByFd.count(fd))
                 {
                     TypeFd = CLIENT_SOCK;
                 }
-                else if (_IdByPipe.count(fd))
+                else if (_IdByPipe.size() > 0 && _IdByPipe.count(fd))
                     TypeFd = PIPE;
                 else
                     TypeFd = SERVER_SOCK;
