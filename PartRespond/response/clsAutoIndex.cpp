@@ -20,7 +20,10 @@ clsAutoIndex::~clsAutoIndex()
     if (streamDir)
         closedir(streamDir);
 }
-
+short clsAutoIndex::getErrorCode()
+{
+    return _errorCode;
+}
 flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize)
 {
     if (streamDir)
@@ -28,7 +31,13 @@ flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const c
 
     streamDir = opendir(physicalDir);
     if (streamDir == NULL)
+    {
+        if (errno == ENOTDIR)
+            _errorCode = 404;
+        else
+            _errorCode = 500;
         return ERROR_AUTO_INDEX;
+    }
     ptrDir = NULL;
     this->physicalDir = physicalDir;
     this->dir = dir;
@@ -36,6 +45,7 @@ flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const c
     this->dirSize = dirSize;
     flowEnum = START;
     ptrSize = NULL;
+    _errorCode = 0;
     return flowEnum;
 }
 
