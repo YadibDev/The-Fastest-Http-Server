@@ -62,7 +62,7 @@ void clsClient::SetState(clinetState state) // set client serve state is in requ
 // methods
 void clsClient::UpdateTime() // update with the time of last reqquest
 {
-    _LastConnection = HelperFunctions::getCurrentTimeInMs();
+    _LastConnection = HelperFunctions::getCurrentTimeInS();
 }
 
 void clsClient::ResetAll()

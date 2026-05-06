@@ -2,7 +2,7 @@
 
 // geters
 
-#define DEFAULT_TEMP "/goinfre/yadib/The-Fastest-Http-Server/temp/fileXXXXXX"
+#define DEFAULT_TEMP "/tmp/fileXXXXXX"
 
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
@@ -48,9 +48,7 @@ int clsBody::_createUploadStoreFile()
 {
     int fd = -1;
     if (this->uploadStore)
-    {
-        std::cout << *uploadStore << std::endl;
-    }
+        fd = open(uploadStore->c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
 
     return fd;
 
