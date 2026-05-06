@@ -28,6 +28,7 @@ enum flowAutoIndex
 class clsAutoIndex
 {
 private:
+    short _errorCode;
     static string headAutoIndexPreffix;
     static string headAutoIndexSuffix;
     static string endAutoIndex;
@@ -55,11 +56,13 @@ private:
     void _addSizeChunk(short pushBytes, bool lastChunk = false);
     short _closeAutoIndex(char *buffer, short &start, short sizeLeft);
 
+
 public:
     clsAutoIndex();
     ~clsAutoIndex();
     flowAutoIndex initializeAutoIndex(const char *physicalDir, const char *dir, short dirPhysicalSize, short dirSize);
     flowAutoIndex insertAutoDirective(char *buffer, short &start, short limitSize);
+    short getErrorCode();
 };
 
 #endif
