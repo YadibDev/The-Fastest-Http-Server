@@ -185,7 +185,7 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"POST /uploadddd/file.txt HTTP/1.1\r\n"
+    	"GET / HTTP/1.1\r\n"
     	"Host: 127.0.0.1 \r\n"
     	"content-length: 3 \r\n"
     	"Connection: keep-alive\r\n"

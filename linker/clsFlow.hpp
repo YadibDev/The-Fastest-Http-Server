@@ -17,9 +17,9 @@
 #include <unistd.h>
 #include "clsClient.hpp"
 #include "monitorCgi.hpp"
-#define EVENTS_MAX 150
+#define EVENTS_MAX 250
 #define MAX_CLIENTS 500
-
+#define TIMEOUT_CLIENT 60
 // #include <vector>
 // #include "PartRespond/mainprocess/Webserv.hpp"
 // #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
@@ -43,7 +43,7 @@ private:
     std::stack<short> _clientsAvailable;
 
     void _initializeStatics();
-    void _createBlocksServers();
+    void _createBlocksServers(const char *configFile);
     void _createServers();
     void _initializeDataBase();
     void _registerServersSockets();
@@ -57,9 +57,12 @@ private:
     void _popPipe(short pipe);
     void _pushPipe(short pipe, short indexClient);
     void _pipeFlow(int fd);
+    void _tryTimeOutClients();
+    void _tryTimeOutCgi();
+
 
 public:
-    clsFlow();
+    clsFlow(const char *configFile);
     ~clsFlow();
     void EventLoop();
 

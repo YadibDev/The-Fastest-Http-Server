@@ -87,14 +87,6 @@ bool RequestParser::ParseBody(uint16_t size)
 
 	if (_body.getState() == clsBody::SETTING_VARS || _body.getState() >= clsBody::DONE_GOOD)
 	{
-		if (_state == STATE_BODY && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
-		{
-			if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].val.len == 1 && _request.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data[0] == '0')
-			{
-				_state = STATE_COMPLETE;
-				return true;
-			}
-		}
 		if (_request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash == -1 && _request.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash == -1)
 		{
 			_error.setStatus(411, "Length Required");
@@ -106,6 +98,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		*_request.read_body_ptr = size - _offset;
 		if (_RequestHandler->getPathCgi())
 			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
+		_body.setUploadStore(this->_RequestHandler->getUploadStore());
 	}
 
 	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());
@@ -128,29 +121,28 @@ bool RequestParser::Parse(uint16_t size)
 	if (size >= SIZE_BUFFER && _state != STATE_BODY)
 		return (_error.setStatus(413, "Content Too Large"), false);
 
-	while (_offset <= size)
+	if (_state != STATE_BODY)
 	{
-		if (_state == STATE_REQUEST_LINE)
-			ParseRequestLine(size);
-		else if (_state == STATE_HEADERS)
-			ParseHeader(size);
-		else if (_state == STATE_BODY)
+		while (_offset <= size)
 		{
-			ParseBody(size);
-			if (_state == STATE_BODY)
+			if (_state == STATE_REQUEST_LINE)
+				ParseRequestLine(size);
+			else if (_state == STATE_HEADERS)
+				ParseHeader(size);
+			else
 				break;
+
+			if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
+				_state = STATE_COMPLETE;
+
+			if (_state == STATE_COMPLETE)
+				return true;
+			else if (_error.isError())
+				return false;
 		}
-		else
-			break;
-
-		if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
-			_state = STATE_COMPLETE;
-
-		if (_state == STATE_COMPLETE)
-			return true;
-		else if (_error.isError())
-			return false;
 	}
+	if (_state == STATE_BODY)
+		ParseBody(size);
 	return true;
 }
 

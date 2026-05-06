@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 06:20:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/05 11:58:23 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
-     std::cout << _RunCGI<<" initialize cgi\n" << std::endl;
     if (!_RunCGI)
     {
         _CGI.RunCGI();
@@ -106,7 +105,7 @@ void clsMainProcess::_InitializeCGI()
 void clsMainProcess::_PartDeleteMethod()
 {
     _Response.SetMod(stMod::DELETE);
-    _Response.SetStatus(200);
+    _Response.SetStatus(204);
     _Response.MakeResponse();
 }
 
@@ -151,10 +150,11 @@ void clsMainProcess::MainProcess()
 
 void clsMainProcess::Reset()
 {
+    this->_RunCGI = false;
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
-    _Response.Reset(); // reset error page also
-    _eventProcess = stEventProcess::RUNINNG; // add by adib
+    _Response.Reset();
+    _eventProcess = stEventProcess::RUNINNG; 
 }
 
 clsCGI &clsMainProcess::GetclsCGI()

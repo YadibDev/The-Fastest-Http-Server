@@ -9,3 +9,4 @@ test.cpp
 test1.cpp
 test*
 debug
+logs/*

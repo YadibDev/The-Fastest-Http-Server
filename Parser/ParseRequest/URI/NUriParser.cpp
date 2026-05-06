@@ -65,7 +65,7 @@ bool UriParser::isSubDelim(char c) {
 }
 
 bool UriParser::isPchar(char c) {
-	return isUnreserved(c) || isSubDelim(c) || c == ':' || c == '@';
+	return isUnreserved(c) || isSubDelim(c) || c == ':' || c == '@' || c == '/';
 }
 
 bool UriParser::isHex(char c) {

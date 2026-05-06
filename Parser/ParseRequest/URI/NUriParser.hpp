@@ -25,6 +25,11 @@ public:
 	void init(uint16_t startOffset);
 	void parse(const char* buffer, uint16_t size);
 
+	// add static to this function by adib
+	static bool		isUnreserved(char c);
+	static bool		isSubDelim(char c);
+	static bool		isPchar(char c);
+
 	static bool			isAbsoluteURI(const std::string& uri);
 	bool                isComplete() const;
 	bool                isError() const;
@@ -56,9 +61,6 @@ private:
 
 	HttpError		_error;
 
-	bool		isUnreserved(char c);
-	bool		isSubDelim(char c);
-	bool		isPchar(char c);
 	bool		isHex(char c);
 	bool		isPathChar(char c);
 	bool		isQueryChar(char c);

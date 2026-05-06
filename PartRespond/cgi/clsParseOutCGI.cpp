@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/30 20:07:12 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/02 19:52:36 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		_Status = 502;
-		// _ErrorRespnseHandling();
 		return ;
 	}
 	_Status = 200;
@@ -268,19 +267,14 @@ void clsParseOutCGI::_BuilResponsedredirection()
 	if (_LocationIsClientOrLocal(_HeadersField["location"]) && CountValidHeader == 2 && _BytesBody)
 		_HeaderResponseCGI();
 	else if (!CountValidHeader && _LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
-	{
 		_HeaderResponseCGI();
-		
-	}
 	else if(_HeadersField.size() == 1 && !_BytesBody)
-	{
 		_InitialInternalRedirect();
-	}
 	else
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		_Status = 502;
-		// _ErrorRespnseHandling();
+		_ErrorRespnseHandling();
 	}
 }
 
@@ -370,7 +364,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 				close(_Fdout);
 				return ;
 			}
-			// std::cout<< _CountSizeHeaders<< " <--- '"<<Arr[_Counter]<<"' ---> " << Length << std::endl;
 			if (write(_Fdout, &Arr[_Counter], ((Length - _Counter  < 0)? 0 : Length - _Counter)) == -1)
 			{
 				_Status = 500;
@@ -397,19 +390,13 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-	if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
-		return ;
-	// else
-	// {
-	//     _Mod[stMod::ERROR] = stMod::ERROR; // add by adib
-	//     _ErrorPage.ResponseError(_Status, "");
-	//     _ModTransferData = true;
-	//     _BodyPointer = &_ErrorPage.GetBody();
-	//     _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-	//     _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-	//     _BytesBody = _ErrorPage.GetBodySize();
-	//     _IsConnectoin = _ErrorPage.GetIsConnection();
-	// }
+	    _ErrorPage.ResponseError(_Status, "");
+	    _ModTransferData = true;
+	    _BodyPointer = &_ErrorPage.GetBody();
+	    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
+	    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
+	    _BytesBody = _ErrorPage.GetBodySize();
+	    _IsConnectoin = _ErrorPage.GetIsConnection();
 }
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
@@ -418,7 +405,8 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
 	{
-		// _ErrorRespnseHandling();
+		if (_Status == 500)
+			_ErrorRespnseHandling();
 		return ;
 	}
 	if (!_ProcessIsFinish)
@@ -428,7 +416,6 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	{
 		_Status = 502;
 		_Mod[stMod::ERROR] = stMod::ERROR;
-		// _ErrorRespnseHandling();
 		return ;
 	}
 	else

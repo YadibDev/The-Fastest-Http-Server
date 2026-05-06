@@ -654,7 +654,7 @@ void HelperFunctions::StoredBodys()
 	_Body[501] = "<html><head><title>501 Not Implemented</title></head><body><center><h1>501 Not Implemented</h1></center><hr><center>faste server</center></body></html>";
 	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
 	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
- 
+	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
  }
  void HelperFunctions::StoredMessage()
  {
@@ -670,6 +670,7 @@ void HelperFunctions::StoredBodys()
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
+	_Message[405] = "405 Method Not Allowed";
  }
 
  const char *HelperFunctions::GetStatusMessage(int Status) 
@@ -743,10 +744,10 @@ short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep
     return (count);
 }
 
-stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
+stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int op)
 {
 	int status;
-	int exit_code = waitpid(pid, &status, WNOHANG);
+	int exit_code = waitpid(pid, &status, op);
 
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
@@ -765,7 +766,7 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid)
 
 bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
 {
-    time_t timeNow = time(NULL);
+    time_t timeNow = time	(NULL);
     if (timeNow - startInS >= Timeout)
         return true;
     return false;

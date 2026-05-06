@@ -97,7 +97,7 @@ public:
     static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
     static int Countword(const std::string &Str, const std::string &Sep);
     static void NumToStr(int Number, std::string &Str);
-    static stEventProcess::eEventProcess checkProcessStatus(int pid);
+    static stEventProcess::eEventProcess checkProcessStatus(int pid, int op = WNOHANG);
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
     static void StoreVarConst();
     static char *GetENV_VAR_CONST(short Index);
@@ -110,7 +110,7 @@ public:
     {
         char *end;
         num = strtol(arr, &end, base);
-        if (end[0] != '\0' && !Iswhaitspace(end[0]))
+        if (end[0] != '\0' && !Iswhaitspace(end[0]) && end[0] != '\r' && end[0] != '\n')
             return false;
         return true;
     }

@@ -28,6 +28,7 @@ enum clinetState
     CGI_END,
     RESPOND_MODE,
     LAST_CHUNKED,
+    AUTO_INDEX_DONE,
     CONNECTION_CLOSED
 };
 
@@ -37,7 +38,8 @@ struct bodyPlaceEnum
     {
         NONE,
         RAM,
-        DISK
+        DISK,
+        AUTO_INDEX
     };
 };
 
@@ -46,10 +48,10 @@ class clsClient
 private:
     int _socket;
     int _fdRespond;
-    ssize_t bytesToSend;
+    short bytesToSend;
     ssize_t bodyLimit;
-    size_t _LastConnection; // update connection in ms
-    size_t _FirstConnection; // first established connection in ms mile seconds
+    long _LastConnection; // update connection in ms
+    long _FirstConnection; // first established connection in ms mile seconds
     stPollRequest _dataForReq;
     PollOfClient _theData;
     sockaddr_in _addr;       // ip and port of the client
@@ -61,12 +63,11 @@ private:
     bodyPlaceEnum::place _BodyPlace;
     clsMonitorCGI _monitorCGI;
 
-    void _SendRespond(const clsResponse &_Responder);
+    void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
-    ssize_t _addSizeChunkToStr();
+    short _addSizeChunkToStr();
     void _initalizeRespondBuffer();
-    short    _ReadData(int fd);
-
+    void _LoadAutoIndex( clsResponse &_Responder);
 public:
     clsClient();
     void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
@@ -78,8 +79,8 @@ public:
     const clinetState &GetState() const;
     unsigned short GetPort() const;
     unsigned int GetIp() const;
-    size_t GetTimeConnection() const;
-    size_t GetLastConnection() const;
+    long GetTimeConnection() const;
+    long GetLastConnection() const;
     int getPipeCgi();
 
 
