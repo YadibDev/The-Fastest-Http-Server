@@ -262,7 +262,9 @@ void clsClient::_initalizeRespondBuffer()
     memcpy(&respondBuffer[0], Header, bytesToSend);
 
     if (Respond.IsAutoIndex())
+    {
         _BodyPlace = bodyPlaceEnum::AUTO_INDEX;
+    }
     else if (fileExist == false)
     {
         _BodyPlace = bodyPlaceEnum::RAM;
@@ -300,11 +302,11 @@ void clsClient::ProcessRespond()
         else if (Respond.IsError())
         {
             HttpError error;
-            std::cout << "error page" << endl;
             if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
             {
                 _RequestXconfig.setDefaultErrorPage(true);
             }
+            _ResponderProecss.Reset();
             this->_ResponderProecss.MainProcess(); // re create error page
         }
 

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 16:55:11 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/06 21:11:44 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ void clsErrorPage::_HeadersErrorResponse()
     _ContentType();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
-    _Server();
-    _Date();
     if (_Status == 405)
         _Allow();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
@@ -50,6 +48,8 @@ void clsErrorPage::_HeadersErrorResponse()
         _RetryAfter();
     _CheckConnection();
     _Connection();
+    _Server();
+    _Date();
     _HeaderFeild += "\r\n";
 }
 
@@ -96,6 +96,14 @@ void clsErrorPage::_StoredInFileOrStr()
 void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
 {
     _Status = Status;
+    if (_IsAutoIndex)
+    {
+        _FileFromDisk = "";
+        _Type = HelperFunctions::GetType(".html");
+        _Mod[stMod::CHUNK] = stMod::CHUNK;
+        _HeadersErrorResponse();
+        return ;
+    }
     if (!FilePageError.empty())
     {
         _FileFromDisk = FilePageError;
@@ -232,8 +240,11 @@ bool clsErrorPage::GetIsConnection()
 {
     return _IsConnection;
 }
-
-size_t clsErrorPage::GetBodySize() const
+ void clsErrorPage::SetAutoIndex(bool IsAutoIndex)
+ {
+    _IsAutoIndex = IsAutoIndex;
+ }
+ size_t clsErrorPage::GetBodySize() const
 {
     return this->_BodySize;
 }
