@@ -1,8 +1,8 @@
 import socket
 
 host = "127.0.0.1"
-port = 8083
-path = "/websitest/html.html"
+port = 8082
+path = "http://localhost:8082/000000000000000//1000000000000000000000000000//1000000000000000000000000000//1000000000000000000000000000//1000000000000000000000000000//1000"
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # التعديل: إحاطة host و port بقوسين إضافيين لتكوين tuple
