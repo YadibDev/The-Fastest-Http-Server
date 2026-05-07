@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 16:01:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:49:29 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         _Response.SetStatus(_eventProcess);
         _Response.SetMod(stMod::ERROR);
     }
+    std::cout << "event : " << _eventProcess<< std::endl;
 }
 
 void clsMainProcess::_InitializeCGI()
@@ -81,11 +82,8 @@ void clsMainProcess::_InitializeCGI()
    if (_CGI.GetErno())
    {
         _eventProcess = stEventProcess::END_UNKNOW;
-        _ErrorPage.ResponseError(500, "");
-        _Response.SetBodyPointer(&_ErrorPage.GetBody());
-        _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
-        _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
-        _Response.SetModTransferData(true);
+        _Response.SetStatus(500);
+        _Response.SetMod(stMod::ERROR);
    }
    
 }

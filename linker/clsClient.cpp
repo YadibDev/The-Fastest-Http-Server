@@ -237,6 +237,9 @@ void clsClient::_handleInternal()
     // support internal location in future
     if (Respond.IsError())
     {
+        std::cout << "is respond Errror \n"
+                  << std::endl;
+        ;
         HttpError error;
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
@@ -300,7 +303,6 @@ int clsClient::getPipeCgi()
     return _ResponderProecss.GetclsCGI().GetFdPipe();
 }
 
-
 void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
@@ -317,11 +319,11 @@ void clsClient::ProcessRespond()
             _state = CGI_START;
             return;
         }
-
         _initalizeRespondBuffer();
     }
     else if (_state == CGI_END)
     {
+        std::cout << "cgi end" << std::endl;
         _initalizeRespondBuffer();
         _state = RESPOND_MODE;
     }
@@ -420,7 +422,7 @@ bool clsClient::timeoutCgi()
 {
     if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
         return true;
-    if (_monitorCGI.TimeoutCgi())
+    if (_monitorCGI.TimeoutCgi()) // update also the process
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
@@ -429,8 +431,9 @@ bool clsClient::timeoutCgi()
     }
     else if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
     {
-        std::cout << "cgi end\n";
         this->_state = CGI_END;
+        _ResponderProecss.setEventProcess(_monitorCGI.getStateProcess());
+        _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }
     return false;
