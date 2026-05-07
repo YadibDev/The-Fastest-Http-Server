@@ -317,7 +317,7 @@ void clsFlow::EventLoop()
     fdTypes TypeFd;
     while (1)
     {
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)) > 0)
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 100 * 1024)) > 0)
         {
             for (int i = 0; i < nFds; i++)
             {
@@ -341,8 +341,6 @@ void clsFlow::EventLoop()
         }
         _tryTimeOutCgi();
         _tryTimeOutClients();
-        std::cout << "out the loop\n";
-        
     }
 }
 

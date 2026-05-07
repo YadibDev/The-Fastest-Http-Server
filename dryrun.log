@@ -1,0 +1,40 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/goinfre/yadib/The-Fastest-Http-Server'
+c++ -Wall -Wextra -Werror --std=c++98  -g Utils/HelperFunctions.cpp -c -MMD  -o Utils/HelperFunctions.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Utils/HttpError.cpp -c -MMD  -o Utils/HttpError.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Utils/Lexer.cpp -c -MMD  -o Utils/Lexer.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp -c -MMD  -o Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseConfigFile/LocationConfig/LocationConfig.cpp -c -MMD  -o Parser/ParseConfigFile/LocationConfig/LocationConfig.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp -c -MMD  -o Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp -c -MMD  -o Parser/ParseConfigFile/ServerConfig/ServerConfig.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/Header.cpp -c -MMD  -o Parser/ParseRequest/Request/Header.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/HeaderTable.cpp -c -MMD  -o Parser/ParseRequest/Request/HeaderTable.o
+ 
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/RequestLine.cpp -c -MMD  -o Parser/ParseRequest/Request/RequestLine.o
+ 
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/RequestParser.cpp -c -MMD  -o Parser/ParseRequest/Request/RequestParser.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/Utils.cpp -c -MMD  -o Parser/ParseRequest/Request/Utils.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/URI/NUriParser.cpp -c -MMD  -o Parser/ParseRequest/URI/NUriParser.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/URI/URI.cpp -c -MMD  -o Parser/ParseRequest/URI/URI.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/URI/URIParser.cpp -c -MMD  -o Parser/ParseRequest/URI/URIParser.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/RequestHandler/ProcessRequestHandler.cpp -c -MMD  -o Parser/RequestHandler/ProcessRequestHandler.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/RequestHandler/RequestHandler.cpp -c -MMD  -o Parser/RequestHandler/RequestHandler.o
+c++ -Wall -Wextra -Werror --std=c++98  -g Parser/ParseRequest/Request/clsBody.cpp -c -MMD  -o Parser/ParseRequest/Request/clsBody.o
+ 
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/mainprocess/clsMainProcess.cpp -c -MMD  -o PartRespond/mainprocess/clsMainProcess.o
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/response/clsResponse.cpp -c -MMD  -o PartRespond/response/clsResponse.o
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/response/clsErrorPage.cpp -c -MMD  -o PartRespond/response/clsErrorPage.o
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/cgi/clsCGI.cpp -c -MMD  -o PartRespond/cgi/clsCGI.o
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/cgi/clsParseOutCGI.cpp -c -MMD  -o PartRespond/cgi/clsParseOutCGI.o
+c++ -Wall -Wextra -Werror --std=c++98  -g PartRespond/response/clsAutoIndex.cpp -c -MMD  -o PartRespond/response/clsAutoIndex.o
+ 
+c++ -Wall -Wextra -Werror --std=c++98  -g server/clsEpollHandler.cpp -c -MMD  -o server/clsEpollHandler.o
+c++ -Wall -Wextra -Werror --std=c++98  -g server/clsServerSock.cpp -c -MMD  -o server/clsServerSock.o
+c++ -Wall -Wextra -Werror --std=c++98  -g server/testing.cpp -c -MMD  -o server/testing.o
+ 
+c++ -Wall -Wextra -Werror --std=c++98  -g serverMain.cpp -c -MMD  -o serverMain.o
+c++ -Wall -Wextra -Werror --std=c++98  -g linker/clsClient.cpp -c -MMD  -o linker/clsClient.o
+c++ -Wall -Wextra -Werror --std=c++98  -g linker/clsFlow.cpp -c -MMD  -o linker/clsFlow.o
+c++ -Wall -Wextra -Werror --std=c++98  -g  Utils/HelperFunctions.o Utils/HttpError.o Utils/Lexer.o Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.o Parser/ParseConfigFile/LocationConfig/LocationConfig.o Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.o Parser/ParseConfigFile/ServerConfig/ServerConfig.o Parser/ParseRequest/Request/Header.o Parser/ParseRequest/Request/HeaderTable.o Parser/ParseRequest/Request/RequestLine.o Parser/ParseRequest/Request/RequestParser.o Parser/ParseRequest/Request/Utils.o Parser/ParseRequest/URI/NUriParser.o Parser/ParseRequest/URI/URI.o Parser/ParseRequest/URI/URIParser.o Parser/RequestHandler/ProcessRequestHandler.o Parser/RequestHandler/RequestHandler.o Parser/ParseRequest/Request/clsBody.o PartRespond/mainprocess/clsMainProcess.o PartRespond/response/clsResponse.o PartRespond/response/clsErrorPage.o PartRespond/cgi/clsCGI.o PartRespond/cgi/clsParseOutCGI.o PartRespond/response/clsAutoIndex.o server/clsEpollHandler.o server/clsServerSock.o server/testing.o serverMain.o linker/clsClient.o linker/clsFlow.o -o webserv
+make: Leaving directory '/goinfre/yadib/The-Fastest-Http-Server'
+ 
