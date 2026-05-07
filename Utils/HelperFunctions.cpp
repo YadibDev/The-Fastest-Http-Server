@@ -636,6 +636,7 @@ void HelperFunctions::StoredBodys()
 	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
 	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
 	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
+	_Body[414] = "<html><head><title>414 URI Too Long</title></head><body><center><h1>414 URI Too Long</h1></center><hr><center>faste server</center></body></html>";
  }
  void HelperFunctions::StoredMessage()
  {
@@ -652,6 +653,7 @@ void HelperFunctions::StoredBodys()
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
 	_Message[405] = "405 Method Not Allowed";
+	_Message[414] = "414 URI Too Long";
  }
 
  const char *HelperFunctions::GetStatusMessage(int Status) 
