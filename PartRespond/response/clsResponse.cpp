@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:55:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:18:42 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void clsResponse::MakeResponse()
             _StoredInFileOrStr();
         }
         else
-        _InitialAutoIndex();
+            _InitialAutoIndex();
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
@@ -71,15 +71,13 @@ void clsResponse::_InitialAutoIndex()
     _Mod[stMod::CHUNK] = stMod::CHUNK;
     _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
     if (AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),
-        _DataRequest.getRequestUri().Data, HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), 
-            _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
+                                      _DataRequest.getRequestUri().Data, HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),
+                                      _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = AutoIndex.getErrorCode();
     }
-    std::cout << HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()) << std::endl;
-    std::cout << "uri len" << _DataRequest.getRequestUri().len << std::endl;
- }
+}
 
 void clsResponse::_InitialHeaders()
 {

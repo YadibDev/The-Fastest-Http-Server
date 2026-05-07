@@ -304,7 +304,9 @@ void clsFlow::_tryTimeOutCgi()
             int index = it->second;
             it++;
             if (_clientsArr[index].timeoutCgi())
+            {
                 _popPipe(pipeFd);
+            }
         }
     }
 }
@@ -334,9 +336,13 @@ void clsFlow::EventLoop()
                 else
                     _flowProcess(fd, TypeFd, i);
             }
+            _tryTimeOutCgi();
+            _tryTimeOutClients();
         }
         _tryTimeOutCgi();
         _tryTimeOutClients();
+        std::cout << "out the loop\n";
+        
     }
 }
 
