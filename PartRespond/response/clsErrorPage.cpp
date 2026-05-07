@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:13:36 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 14:14:48 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ clsErrorPage::clsErrorPage()
     _IsConnection = false;
     _BodySize = 0;
     _Type.resize(500);
+    _IsAutoIndex = false;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(MAX_HEADERS);
     _Body.resize(MAX_BODY);
@@ -233,6 +234,7 @@ void clsErrorPage::Reset()
     _Erno = false;
     _FileFromDisk = "";
     _Body = "";
+    _IsAutoIndex = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 

@@ -426,7 +426,8 @@ std::string HelperFunctions::DateTime()
 	return GTMHTTP(GMT);
 }
 
-std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num) {
+std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num)
+{
 	int		i = 0;
 	std::string	MaxHex;
 	std::string	Result;

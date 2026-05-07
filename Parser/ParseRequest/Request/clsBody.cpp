@@ -258,8 +258,6 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
     }
 
     writeSize += temp;
-    std::cout << "write size =====> " << writeSize << std::endl;
-    std::cout << "_contentLength size =====> " << _contentLength << std::endl;
     offset -= temp;
 
     if (offset > 0)

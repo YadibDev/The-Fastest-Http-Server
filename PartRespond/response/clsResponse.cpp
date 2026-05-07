@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:10:29 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 14:14:40 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void clsResponse::MakeResponse()
 }
 
 void clsResponse::_InitialAutoIndex()
-{
+ {
     _Type = HelperFunctions::GetType(".html");
     _Mod[stMod::CHUNK] = stMod::CHUNK;
     _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
