@@ -68,7 +68,7 @@ private:
     short _addSizeChunkToStr();
     void _initalizeRespondBuffer();
     void _LoadAutoIndex( clsResponse &_Responder);
-    void _handleInternal()
+    void _handleInternal();
 
 public:
     clsClient();

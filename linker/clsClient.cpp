@@ -255,7 +255,7 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
-    _handleInternal() // beta;
+    _handleInternal(); // beta;
     if (Respond.GetModTransferData())
     {
         bytesToSend += Respond.GetHeaderFeildPointer()->size();
