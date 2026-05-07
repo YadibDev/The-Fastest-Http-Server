@@ -38,6 +38,12 @@ public:
             freeCgiRessources();
             return true;
         }
+        else if (stateProcess == stEventProcess::RUNINNG)
+        {
+            stateProcess = HelperFunctions::checkProcessStatus(pid);
+            if (stateProcess != stEventProcess::RUNINNG)
+                pid = -1;
+        }
         return false;
     }
 

@@ -1,6 +1,5 @@
 #include "clsClient.hpp"
 
-
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
     // _Requester.init();
@@ -126,7 +125,7 @@ void clsClient::ProcessRequest()
         return;
 
     if (_Requester._state == RequestParser::STATE_BODY)
-        _Requester.Parse(_theData.read_body); 
+        _Requester.Parse(_theData.read_body);
     else
         _Requester.Parse(_theData.read_offset - 1);
 
@@ -171,7 +170,7 @@ short clsClient::_addSizeChunkToStr()
     return byteCanSend;
 }
 
-void clsClient::_LoadAutoIndex( clsResponse &_Responder)
+void clsClient::_LoadAutoIndex(clsResponse &_Responder)
 {
     char *respondBuffer = this->_theData.io_chunk;
 
@@ -180,7 +179,7 @@ void clsClient::_LoadAutoIndex( clsResponse &_Responder)
         _state = AUTO_INDEX_DONE;
 }
 
-void clsClient::_SendRespond( clsResponse &_Responder)
+void clsClient::_SendRespond(clsResponse &_Responder)
 {
     ssize_t s = 0;
     ssize_t nBytes;
@@ -232,6 +231,22 @@ void clsClient::_SendRespond( clsResponse &_Responder)
     }
 }
 
+void clsClient::_handleInternal()
+{
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    // support internal location in future
+    if (Respond.IsError())
+    {
+        HttpError error;
+        if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
+        _ResponderProecss.Reset();
+        this->_ResponderProecss.MainProcess(); // re create error page
+    }
+}
+
 void clsClient::_initalizeRespondBuffer()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
@@ -239,6 +254,8 @@ void clsClient::_initalizeRespondBuffer()
     const char *Body;
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
+
+    _handleInternal() // beta;
     if (Respond.GetModTransferData())
     {
         bytesToSend += Respond.GetHeaderFeildPointer()->size();
@@ -283,6 +300,7 @@ int clsClient::getPipeCgi()
     return _ResponderProecss.GetclsCGI().GetFdPipe();
 }
 
+
 void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
@@ -298,16 +316,6 @@ void clsClient::ProcessRespond()
         {
             _state = CGI_START;
             return;
-        }
-        else if (Respond.IsError())
-        {
-            HttpError error;
-            if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
-            {
-                _RequestXconfig.setDefaultErrorPage(true);
-            }
-            _ResponderProecss.Reset();
-            this->_ResponderProecss.MainProcess(); // re create error page
         }
 
         _initalizeRespondBuffer();
@@ -417,6 +425,12 @@ bool clsClient::timeoutCgi()
         _state = CGI_END;
         _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
         _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+    else if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
+    {
+        std::cout << "cgi end\n";
+        this->_state = CGI_END;
         return true;
     }
     return false;

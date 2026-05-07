@@ -68,6 +68,8 @@ private:
     short _addSizeChunkToStr();
     void _initalizeRespondBuffer();
     void _LoadAutoIndex( clsResponse &_Responder);
+    void _handleInternal()
+
 public:
     clsClient();
     void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
