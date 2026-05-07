@@ -14,6 +14,7 @@ clsBody::clsBody(stPollRequest &p) : data(p)
     writeSize = 0;
     chunkHelp.Reset();
     _errorPage.setStatus(0);
+    removeFile = false;
 }
 
 const std::string &clsBody::getFileName() const
