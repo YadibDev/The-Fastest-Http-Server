@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:14:40 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:17:35 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,13 @@ void clsResponse::_InitialAutoIndex()
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = AutoIndex.getErrorCode();
     }
+<<<<<<< HEAD
 }
+=======
+    std::cout << HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()) << std::endl;
+    std::cout << "uri len" << _DataRequest.getRequestUri().len << std::endl;
+ }
+>>>>>>> Respond
 
 void clsResponse::_InitialHeaders()
 {
@@ -126,7 +132,7 @@ void clsResponse::_ErrorRespnseHandling()
         if (!_DataRequest.getDefaultErrorPage())
         {
             if (_DataRequest.getAutoIndex())
-            {
+            {                
                 _InitialAutoIndex();
                 if (_Mod[stMod::ERROR] == stMod::ERROR)
                     _Mod[stMod::AUTOINDEX] = stMod::EMPTY;

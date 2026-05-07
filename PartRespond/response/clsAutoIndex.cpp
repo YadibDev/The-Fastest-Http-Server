@@ -28,7 +28,6 @@ flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const c
 {
     if (streamDir)
         closedir(streamDir);
-
     streamDir = opendir(physicalDir);
     if (streamDir == NULL)
     {
