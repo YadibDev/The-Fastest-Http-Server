@@ -32,7 +32,7 @@ flowAutoIndex clsAutoIndex::initializeAutoIndex(const char *physicalDir, const c
     streamDir = opendir(physicalDir);
     if (streamDir == NULL)
     {
-        if (errno == ENOTDIR)
+        if (errno == ENOTDIR || errno == ENOENT)
             _errorCode = 404;
         else
             _errorCode = 500;

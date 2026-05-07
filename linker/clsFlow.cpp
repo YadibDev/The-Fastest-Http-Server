@@ -315,7 +315,7 @@ void clsFlow::EventLoop()
     fdTypes TypeFd;
     while (1)
     {
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)) > 0)
         {
             for (int i = 0; i < nFds; i++)
             {
