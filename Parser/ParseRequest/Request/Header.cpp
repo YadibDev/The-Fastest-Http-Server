@@ -251,6 +251,7 @@ bool    Header::parseCR(uint16_t size)
 	if (!canRead(size)) return true;
 	if (_request.request_metadata[_offset] != '\r')
 		return (_error.setStatus(400, "Bad Request"), false);
+	_request.request_metadata[_offset] = '\0';
 	_offset++;
 	_state = HttpTables::STATE_LF;
 	return true;
