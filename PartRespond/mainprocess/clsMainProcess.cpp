@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 11:58:23 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:49:29 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,8 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
         {
             _eventProcess = stEventProcess::END_WITH_PARSE;
-            _Response.SetBodyPointer(parseCgi.GetBodyPointer());
-            _Response.SetHeaderFeildPointer(parseCgi.GetHeaderFeildPointer());
-            _Response.SetFileFromDiskPointer(parseCgi.GetFileFromDiskPointer());
-            _Response.SetSizeBody(parseCgi.GetSizeBody());
+            _Response.SetMod(stMod::ERROR);
             _Response.SetStatus(parseCgi.GetStatus());
-            _Response.SetIsConnection(parseCgi.GetIsConnection());
-            _Response.SetModTransferData(true);
         }
         else
         {
@@ -67,16 +62,10 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
-        _ErrorPage.Reset();
-        _ErrorPage.ResponseError(_eventProcess, "");
-        _Response.SetBodyPointer(&_ErrorPage.GetBody());
-        _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
-        _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
-        _Response.SetSizeBody(_ErrorPage.GetBodySize());
         _Response.SetStatus(_eventProcess);
-        _Response.SetIsConnection(_ErrorPage.GetIsConnection());
-        _Response.SetModTransferData(true);
+        _Response.SetMod(stMod::ERROR);
     }
+    std::cout << "event : " << _eventProcess<< std::endl;
 }
 
 void clsMainProcess::_InitializeCGI()
@@ -93,11 +82,8 @@ void clsMainProcess::_InitializeCGI()
    if (_CGI.GetErno())
    {
         _eventProcess = stEventProcess::END_UNKNOW;
-        _ErrorPage.ResponseError(500, "");
-        _Response.SetBodyPointer(&_ErrorPage.GetBody());
-        _Response.SetHeaderFeildPointer(&_ErrorPage.GetHeaderField());
-        _Response.SetFileFromDiskPointer(&_ErrorPage.GetFileFromDisk());
-        _Response.SetModTransferData(true);
+        _Response.SetStatus(500);
+        _Response.SetMod(stMod::ERROR);
    }
    
 }

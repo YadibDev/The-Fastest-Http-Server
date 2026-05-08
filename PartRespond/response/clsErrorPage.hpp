@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/29 20:07:30 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/06 20:53:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class clsErrorPage
         std::string _HeaderFeild;
         std::string _FileFromDisk;
         bool _IsConnection;
+        bool _IsAutoIndex;
         size_t _BodySize;
         bool _Erno;
 
@@ -52,6 +53,7 @@ class clsErrorPage
         void ResponseError(int Status, const std::string &FilePageError);
         bool GetIsConnection();
         void Reset();
+        void SetAutoIndex(bool IsAutoIndex);
         ~clsErrorPage();
 };
 #endif

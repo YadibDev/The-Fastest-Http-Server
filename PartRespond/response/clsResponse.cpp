@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 16:38:06 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:44:19 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,7 @@ void clsResponse::MakeResponse()
             _StoredInFileOrStr();
         }
         else
-        {
-            _Type = HelperFunctions::GetType(".html");
-            _Mod[stMod::CHUNK] = stMod::CHUNK;
-            _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
-            if (AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(), _DataRequest.getRequestUri().Data, HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
-            {
-                _Mod[stMod::ERROR] = stMod::ERROR;
-                _Status = AutoIndex.getErrorCode();
-            }
-        }
+            _InitialAutoIndex();
     }
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
@@ -71,6 +62,20 @@ void clsResponse::MakeResponse()
     {
         _ErrorRespnseHandling();
         return;
+    }
+}
+
+void clsResponse::_InitialAutoIndex()
+{
+    _Type = HelperFunctions::GetType(".html");
+    _Mod[stMod::CHUNK] = stMod::CHUNK;
+    _Mod[stMod::AUTOINDEX] = stMod::AUTOINDEX;
+    if (AutoIndex.initializeAutoIndex(_DataRequest.getPhysicalPath(),
+                                      _DataRequest.getRequestUri().Data, HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()),
+                                      _DataRequest.getRequestUri().len) == ERROR_AUTO_INDEX)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = AutoIndex.getErrorCode();
     }
 }
 
@@ -117,8 +122,23 @@ void clsResponse::_ErrorRespnseHandling()
         return;
     else
     {
+        _Mod[stMod::ERROR] = stMod::EMPTY;
         if (!_DataRequest.getDefaultErrorPage())
-            _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+        {
+            if (_DataRequest.getAutoIndex())
+            {
+                _InitialAutoIndex();
+                if (_Mod[stMod::ERROR] == stMod::ERROR)
+                    _Mod[stMod::AUTOINDEX] = stMod::EMPTY;
+                else
+                    _ErrorPage.SetAutoIndex(_DataRequest.getAutoIndex());
+            }
+            if (_Mod[stMod::ERROR] != stMod::ERROR)
+                _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+            else
+                _ErrorPage.ResponseError(_Status, "");
+            _Mod[stMod::ERROR] = stMod::EMPTY;
+        }
         else
             _ErrorPage.ResponseError(_Status, "");
         _ModTransferData = true;
@@ -127,7 +147,6 @@ void clsResponse::_ErrorRespnseHandling()
         _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
         _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
         _IsConnection = _ErrorPage.GetIsConnection();
-        _Mod[stMod::ERROR] = stMod::EMPTY;
     }
 }
 

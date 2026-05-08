@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 16:37:21 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 14:14:48 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ clsErrorPage::clsErrorPage()
     _IsConnection = false;
     _BodySize = 0;
     _Type.resize(500);
+    _IsAutoIndex = false;
     _FileFromDisk.resize(1000);
     _HeaderFeild.resize(MAX_HEADERS);
     _Body.resize(MAX_BODY);
@@ -40,8 +41,6 @@ void clsErrorPage::_HeadersErrorResponse()
     _ContentType();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK)
         _ContentLength();
-    _Server();
-    _Date();
     if (_Status == 405)
         _Allow();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
@@ -50,6 +49,8 @@ void clsErrorPage::_HeadersErrorResponse()
         _RetryAfter();
     _CheckConnection();
     _Connection();
+    _Server();
+    _Date();
     _HeaderFeild += "\r\n";
 }
 
@@ -75,6 +76,7 @@ void clsErrorPage::_StoredInFileOrStr()
     int FD = open(_FileFromDisk.c_str(), O_RDONLY | O_CLOEXEC);
     if (FD < 0)
     {
+
         _Mod[stMod::ERROR] = stMod::ERROR;
         _Status = 500;
         _Erno = true;
@@ -95,6 +97,14 @@ void clsErrorPage::_StoredInFileOrStr()
 void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
 {
     _Status = Status;
+    if (_IsAutoIndex)
+    {
+        _FileFromDisk = "";
+        _Type = HelperFunctions::GetType(".html");
+        _Mod[stMod::CHUNK] = stMod::CHUNK;
+        _HeadersErrorResponse();
+        return ;
+    }
     if (!FilePageError.empty())
     {
         _FileFromDisk = FilePageError;
@@ -224,6 +234,7 @@ void clsErrorPage::Reset()
     _Erno = false;
     _FileFromDisk = "";
     _Body = "";
+    _IsAutoIndex = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
@@ -231,8 +242,11 @@ bool clsErrorPage::GetIsConnection()
 {
     return _IsConnection;
 }
-
-size_t clsErrorPage::GetBodySize() const
+ void clsErrorPage::SetAutoIndex(bool IsAutoIndex)
+ {
+    _IsAutoIndex = IsAutoIndex;
+ }
+ size_t clsErrorPage::GetBodySize() const
 {
     return this->_BodySize;
 }

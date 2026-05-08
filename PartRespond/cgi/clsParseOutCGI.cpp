@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 19:04:17 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/07 16:04:29 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,8 +405,6 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
 	{
-		if (_Status == 500)
-			_ErrorRespnseHandling();
 		return ;
 	}
 	if (!_ProcessIsFinish)

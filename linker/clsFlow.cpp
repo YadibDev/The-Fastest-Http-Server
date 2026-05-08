@@ -304,7 +304,9 @@ void clsFlow::_tryTimeOutCgi()
             int index = it->second;
             it++;
             if (_clientsArr[index].timeoutCgi())
+            {
                 _popPipe(pipeFd);
+            }
         }
     }
 }
@@ -315,7 +317,7 @@ void clsFlow::EventLoop()
     fdTypes TypeFd;
     while (1)
     {
-        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024 * 1024)))
+        while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 100 * 1024)) > 0)
         {
             for (int i = 0; i < nFds; i++)
             {
@@ -334,6 +336,8 @@ void clsFlow::EventLoop()
                 else
                     _flowProcess(fd, TypeFd, i);
             }
+            _tryTimeOutCgi();
+            _tryTimeOutClients();
         }
         _tryTimeOutCgi();
         _tryTimeOutClients();
