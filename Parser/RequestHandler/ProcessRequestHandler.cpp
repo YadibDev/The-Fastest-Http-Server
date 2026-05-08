@@ -312,9 +312,9 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 
 void ProcessRequestHandler::finalizeErrorState(RequestHandler* handler, 
 											   int originalCode, 
-											   const stErrorPagedata& errorData) 
+											   short response) 
 {
-	int finalCode = (errorData.response != -1) ? errorData.response : originalCode;
+	int finalCode = (response != -1) ? response : originalCode;
 
 	handler->setStatusError(finalCode);
 }
@@ -330,7 +330,7 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 
 	if (it == ErrorPagedata.end())
 	{
-		finalizeErrorState(handler, originalCode, stErrorPagedata());
+		finalizeErrorState(handler, originalCode, -1);
 		return false;
 	}
 
@@ -344,16 +344,18 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 	}
 
 	// copy remove
-	stErrorPagedata foundData = it->second;
-	foundData.uri.initView();
-	if (!internalRedirect(foundData.uri, serverConfig, handler, error))
+	s_uri_entry uri;
+	uri.sv_raw_path.Data = it->second.uri.sv_raw_path.Data;
+	uri.sv_raw_path.len = it->second.uri.sv_raw_path.len;
+
+	if (!internalRedirect(uri, serverConfig, handler, error))
 	{
 		originalCode = error.getCodeStatus();	
-		finalizeErrorState(handler, originalCode, foundData);
+		finalizeErrorState(handler, originalCode, it->second.response);
 		return false;
 	}
 
-	finalizeErrorState(handler, originalCode, foundData);
+	finalizeErrorState(handler, originalCode, it->second.response);
 	return true;
 }
 
@@ -422,6 +424,7 @@ bool ProcessRequestHandler::internalRedirect(
 		serverConfig->getLocationPrefix(),
 		newUri.getView()
 	);
+
 	if (!newLocation)
 		return (error.setStatus(404, "Not Found"), false);
 
@@ -432,8 +435,8 @@ bool ProcessRequestHandler::internalRedirect(
 
 	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
 		return false;
+	handler->setRequestUri(newUri.getView());
 	handler->setError(error);
-
 	return true;
 }
 

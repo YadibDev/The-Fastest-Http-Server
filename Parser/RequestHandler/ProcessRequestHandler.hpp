@@ -15,7 +15,7 @@ class ProcessRequestHandler
 {
 	static void					finalizeErrorState(RequestHandler* handler, 
 															int originalCode, 
-											   				const stErrorPagedata& errorData);
+											   				short response);
 	static void					getPathCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass, RequestHandler* handler);
 	// static std::string			selectMethod(Methods::eMethods method);
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);

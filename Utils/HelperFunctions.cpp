@@ -251,7 +251,7 @@ bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
 	return true;
 }
 
-size_t HelperFunctions::join_views(char* dst, size_t dst_size, const s_view& v1, const s_view& v2)
+size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2)
 {
     if (v1.len + v2.len + 1 > dst_size)
         return 0;

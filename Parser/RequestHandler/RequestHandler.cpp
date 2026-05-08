@@ -32,7 +32,7 @@ void RequestHandler::reset()
 	_body.clear();
 	_filePathBody.clear();
 
-	_method = HttpTables::M_UNKNOWN;
+	_method = HttpTables::M_GET;
 	_allowMethods = 0;
 
 
