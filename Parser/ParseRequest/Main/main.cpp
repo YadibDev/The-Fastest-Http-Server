@@ -183,8 +183,8 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET /test2.py HTTP/1.1\r\n"
-    	"Host: 127.0.0.1 \r\n"
+    	"GET / HTTP/1.1\r\n"
+    	"Host: FE80:0000:0000:0000:0202:B3FF:FE1E:8329 \r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
     	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
@@ -247,7 +247,8 @@ int main()
 
 
 	int size = strlen(http_request);
-	Parser.Parse(size);
+	Parser.Parse(1);
+	Parser.Parse(size - 2);
 	if (Parser.isComplete())
 		std::cout << "\nIsComplete\n\n";
 

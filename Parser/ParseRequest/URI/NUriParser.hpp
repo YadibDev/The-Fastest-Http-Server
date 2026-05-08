@@ -4,6 +4,7 @@
 #include "../Request/HttpTypes.hpp"
 #include "../Request/Utils.hpp"
 #include "../../../Utils/HttpError.hpp"
+#include "../../../Utils/HelperFunctions.hpp"
 #include <cctype>
 
 class UriParser {

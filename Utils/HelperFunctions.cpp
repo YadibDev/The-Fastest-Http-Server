@@ -109,6 +109,11 @@ bool HelperFunctions::myIsspace(std::string str, size_t pos)
 	return (false);
 }
 
+bool HelperFunctions::isspaceTabOrSp(char c)
+{
+	return (c == ' ' || c == '\t');
+}
+
 std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string& value)
 {
 	std::vector<std::string> result;
