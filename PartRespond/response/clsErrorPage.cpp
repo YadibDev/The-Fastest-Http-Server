@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:14:48 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/07 21:45:51 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
     if (!FilePageError.empty())
     {
         _FileFromDisk = FilePageError;
-
+        std::cout << "----> "<<_FileFromDisk << std::endl;
         _StoredInFileOrStr();
         if (_Erno)
         {
