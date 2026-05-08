@@ -251,6 +251,27 @@ bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
 	return true;
 }
 
+size_t HelperFunctions::join_views(char* dst, size_t dst_size, const s_view& v1, const s_view& v2)
+{
+    if (v1.len + v2.len + 1 > dst_size)
+        return 0;
+
+    memcpy(dst, v1.Data, v1.len);
+    memcpy(dst + v1.len, v2.Data, v2.len);
+
+    dst[v1.len + v2.len] = '\0';
+
+    return (v1.len + v2.len);
+}
+
+
+
+
+
+
+
+
+
 
 
 // Achraf

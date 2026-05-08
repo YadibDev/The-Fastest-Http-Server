@@ -11,8 +11,10 @@ sock.connect((host, port))
 request = (
     f"GET       {path}           HTTP/1.1\r\n"
     f"Host: {host}:{port}\r\n"
+    f"content-length: 4\r\n"
     f"Connection: close\r\n"
     f"\r\n"
+    "abca"
 )
 
 sock.send(request.encode())

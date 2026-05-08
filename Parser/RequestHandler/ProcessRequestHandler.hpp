@@ -35,6 +35,11 @@ class ProcessRequestHandler
 										RequestHandler* handler,
 										s_uri_entry& newUri,
 										HttpError &error);
+	static bool						validateAndFinalizePhysicalPath(const clsLocation* bestLocation,
+															RequestHandler* handler,
+															s_uri_entry& newUri,
+															HttpError &error);
+
 	static bool					handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath);
 	static stReturnData			buildReturnFromPathAndStatus(s_uri_entry& newUri, short codeStatus, s_view &Host, const std::string &Port);
 	static void					convertToAbsUri(s_uri_entry& entry, const s_view& host, const std::string& port);
