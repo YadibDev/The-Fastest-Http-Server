@@ -142,9 +142,21 @@ clsFlow::clsFlow(const char *configFile)
 
 bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 {
-    if ((client.events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
+    if ((client.events & (EPOLLERR | EPOLLHUP)))
     {
         int fd = client.data.fd;
+
+        if (client.events & EPOLLOUT)
+            std::cout << "EPLLOUT ALSO ";
+        if (TypeFd == PIPE)
+            std::cout << "PIPE ";
+        else if (TypeFd == CLIENT_SOCK)
+            std::cout << "CLIENT ";
+        
+        if (client.events & EPOLLERR)
+            std::cout << " and EPOLLERR" << std::endl;
+        else
+            std::cout << " and EPOLLHUP" << std::endl;
 
         if (TypeFd == PIPE)
         {
@@ -215,7 +227,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
     }
     else if (status == BEGIN)
     {
-        _clientsArr[fd].UpdateTime();
+        _clientsArr[index].UpdateTime();
         _epoll.changeAbility(fd, EPOLLIN);
     }
     else if (status == CGI_START)
