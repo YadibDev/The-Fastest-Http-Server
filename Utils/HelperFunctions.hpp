@@ -61,7 +61,7 @@ public:
 
     // achraf part
     static unsigned long getCurrentTimeInMs();
-    static long getCurrentTimeInS();
+    static long int getCurrentTimeInS();
 	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
     static bool IsStringDigit(const std::string &StringDigit, short Start, short End);

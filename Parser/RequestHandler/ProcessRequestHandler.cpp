@@ -65,7 +65,7 @@ const clsLocation* ProcessRequestHandler::findBestLocation(
 // 	}
 // }
 
-sPathType::e_path_type checkPath(char *path, UriStatus &flags)
+sPathType::e_path_type checkPath(char *path, UriStatus &flags, size_t &size)
 {
 	if (!path)
 		return sPathType::PATH_NOT_FOUND;
@@ -75,6 +75,7 @@ sPathType::e_path_type checkPath(char *path, UriStatus &flags)
 	if (stat(path, &st) != 0)
 		return sPathType::PATH_NOT_FOUND;
 
+	size = st.st_size;
 	flags.can_read = st.st_mode & (S_IRUSR | S_IRGRP | S_IROTH);
 	flags.can_write = st.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH);
 	flags.can_execute = st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH);
@@ -99,7 +100,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 											s_uri_entry& newUri,
 											HttpError &error)
 {
-	bool flagType = true;
+	bool isRelativePath = true;
 	const std::vector<s_uri_entry> &vindex = bestLocation->getIndex();
 	UriStatus flags;
 	sPathType::e_path_type PathType;
@@ -110,16 +111,16 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 	{
 		error.reset();
 		uri = vindex[i];
-		flagType = uri.flags.is_relative;
+		isRelativePath = uri.flags.is_relative;
 		uri.redirect_count = newUri.redirect_count;
-		if (flagType)
+		if (isRelativePath)
 		{
 			if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
 				continue ;
 			lastIndexOfAutoindex = HelperFunctions::ft_strlen(handler->getPhysicalPath());
 			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.raw_path.c_str(), MAX_PATH_LEN);
-			
-			PathType = checkPath(handler->getPhysicalPath(), flags);
+			size_t size = 0;
+			PathType = checkPath(handler->getPhysicalPath(), flags, size);
 			if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
 			{
 				error.setStatus(403, "Forbidden");
@@ -130,7 +131,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 		}
 		if (!internalRedirect(uri, serverConfig, handler, error))
 		{
-			if (flagType)
+			if (isRelativePath)
 				continue ;
 			return false;
 		}
@@ -257,8 +258,10 @@ bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* b
 	UriStatus flags;
 	sPathType::e_path_type PathType;
 	memset(&flags, 0, sizeof(flags));
+	size_t size = 0;
 
-	PathType = checkPath(handler->getPhysicalPath(), flags);
+	PathType = checkPath(handler->getPhysicalPath(), flags, size);
+	handler->setSizeFile(size);
 
 	if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
 		return (error.setStatus(404, "Not Found"), false);
@@ -417,7 +420,7 @@ bool ProcessRequestHandler::internalRedirect(
 	handler->reset();
 
 	if (newUri.redirect_count > INTERNAL_LOOP)
-		return (error.setStatus(500, "Internal Server Error"), false);
+		return (error.setStatus(508, "Loop Detected"), false);
 	newUri.AddRedirectCount();
 	const clsLocation* newLocation = findBestLocation(
 		serverConfig->getLocationExact(),
@@ -435,7 +438,7 @@ bool ProcessRequestHandler::internalRedirect(
 
 	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
 		return false;
-	handler->setRequestUri(newUri.getView());
+	handler->setRequestUri(newUri.getView()); 
 	handler->setError(error);
 	return true;
 }

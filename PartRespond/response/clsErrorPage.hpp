@@ -41,7 +41,7 @@ class clsErrorPage
         void _Allow();
         void _RetryAfter();
         void _Transfer_Encoding();
-        void _StoredInFileOrStr();
+        void _StoredInFileOrStr(size_t sizeBody);
         void _CheckConnection();
     public:
         clsErrorPage();
@@ -50,7 +50,7 @@ class clsErrorPage
         const std::string &GetHeaderField();
         const std::string &GetBody();
         const std::string &GetFileFromDisk();
-        void ResponseError(int Status, const std::string &FilePageError);
+        void ResponseError(int Status, const std::string &FilePageError, size_t sizeBody);
         bool GetIsConnection();
         void Reset();
         void SetAutoIndex(bool IsAutoIndex);

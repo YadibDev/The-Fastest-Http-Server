@@ -390,7 +390,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
-	    _ErrorPage.ResponseError(_Status, "");
+	    _ErrorPage.ResponseError(_Status, "", 0);
 	    _ModTransferData = true;
 	    _BodyPointer = &_ErrorPage.GetBody();
 	    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();

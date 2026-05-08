@@ -54,20 +54,13 @@ void clsErrorPage::_HeadersErrorResponse()
     _HeaderFeild += "\r\n";
 }
 
-void clsErrorPage::_StoredInFileOrStr()
+void clsErrorPage::_StoredInFileOrStr(size_t sizeBody)
 {
-    struct stat MetaData;
     _Body.clear();
     if (_FileFromDisk.empty())
         return;
-    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        _Erno = true;
-        return;
-    }
-    _BodySize = MetaData.st_size;
+    
+    _BodySize = sizeBody;
     if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;
@@ -94,7 +87,7 @@ void clsErrorPage::_StoredInFileOrStr()
     close(FD);
 }
 
-void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
+void clsErrorPage::ResponseError(int Status, const std::string &FilePageError, size_t sizeBody)
 {
     _Status = Status;
     if (_IsAutoIndex)
@@ -109,7 +102,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError)
     {
         _FileFromDisk = FilePageError;
 
-        _StoredInFileOrStr();
+        _StoredInFileOrStr(sizeBody);
         if (_Erno)
         {
             _Type = HelperFunctions::GetType(".html");

@@ -116,6 +116,11 @@ void	RequestHandler::setRequestUri(const s_view &uri)
 	_requestUri = uri;
 }
 
+void	RequestHandler::setSizeFile(size_t sizeFile)
+{
+	_sizeFile = sizeFile;
+}
+
 void    RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
 
 void    RequestHandler::setQuery(const s_view query) { _query = query; }
@@ -163,6 +168,12 @@ void    RequestHandler::setError(const HttpError &error) { _error = error; }
 
 // edited by achraf i add const 
 // char* RequestHandler::getPhysicalPath() const { return _physicalPath; }
+
+size_t	RequestHandler::getSizeFile() const
+{
+	return _sizeFile;
+}
+
 const char* RequestHandler::getPhysicalPath() const{ return _physicalPath; }
 char* RequestHandler::getPhysicalPath() { return _physicalPath; }
 

@@ -476,9 +476,9 @@ unsigned long HelperFunctions::getCurrentTimeInMs()
     return getCurrentTimeInS() * 1000;
 }
 
-long HelperFunctions::getCurrentTimeInS()
+long int HelperFunctions::getCurrentTimeInS()
 {
-	long Time;
+	long int Time;
 	Time = time(0);
 	return (Time);
 }
@@ -785,24 +785,10 @@ bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
 
 int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 {
-	int flags = fcntl(fd, F_GETFL, 0);
-
-	if (flags == -1)
-		return -1;
-
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
+        return -1;
+    return 0;
 	if (closeOnExec)
-	{
-		int fdFlags = fcntl(fd, F_GETFD, 0);
-		if (fdFlags != -1)
-		{
-			fcntl(fd, F_SETFD, fdFlags | FD_CLOEXEC);
-		}
-	}
-
-	else
-		flags |= O_NONBLOCK;
-
-	fcntl(fd, F_SETFL, flags);
-	return 0;
+		return closeOnExec;
 }
 
