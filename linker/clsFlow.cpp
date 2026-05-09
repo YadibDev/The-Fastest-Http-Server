@@ -146,17 +146,17 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
     {
         int fd = client.data.fd;
 
-        if (client.events & EPOLLOUT)
-            std::cout << "EPLLOUT ALSO ";
-        if (TypeFd == PIPE)
-            std::cout << "PIPE ";
-        else if (TypeFd == CLIENT_SOCK)
-            std::cout << "CLIENT ";
+        // if (client.events & EPOLLOUT)
+        //     std::cout << "EPLLOUT ALSO ";
+        // if (TypeFd == PIPE)
+        //     std::cout << "PIPE ";
+        // else if (TypeFd == CLIENT_SOCK)
+        //     std::cout << "CLIENT ";
         
-        if (client.events & EPOLLERR)
-            std::cout << " and EPOLLERR" << std::endl;
-        else
-            std::cout << " and EPOLLHUP" << std::endl;
+        // if (client.events & EPOLLERR)
+        //     std::cout << " and EPOLLERR" << std::endl;
+        // else
+        //     std::cout << " and EPOLLHUP" << std::endl;
 
         if (TypeFd == PIPE)
         {

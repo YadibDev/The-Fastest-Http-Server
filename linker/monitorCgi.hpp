@@ -3,7 +3,7 @@
 #ifndef monitor_cgi_0000
 #define monitor_cgi_0000
 
-#define CGI_TIMEOUT 25
+#define CGI_TIMEOUT 15
 
 class clsMonitorCGI
 {

@@ -432,6 +432,9 @@ bool clsClient::timeoutCgi()
     {
         this->_state = CGI_END;
         _ResponderProecss.setEventProcess(_monitorCGI.getStateProcess());
+        std::cout << "=============\n";
+        std::cout << _monitorCGI.getStateProcess();
+        std::cout << "=============" << std::endl;;
         _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }
