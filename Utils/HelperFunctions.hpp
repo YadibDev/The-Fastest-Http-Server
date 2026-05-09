@@ -46,18 +46,22 @@ public:
 	static bool checkIfTheFirstWord(std::string str, std::string Start, size_t POS);
 	static std::string normalizeLWS(const std::string &input);
 	static bool isLWS(char c);
+    static bool isspaceTabOrSp(char c);
 	static bool myIsspace(std::string str, size_t pos);
 	static std::vector<std::string> splitCommaSeparated(const std::string &value);
 	static bool strIsSpace(const std::string &str);
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
-	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
+    static bool	joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size);
+    static size_t join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2);
+
+
 
 
     // achraf part
     static unsigned long getCurrentTimeInMs();
-    static long getCurrentTimeInS();
+    static long int getCurrentTimeInS();
 	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
     static bool IsStringDigit(const std::string &StringDigit, short Start, short End);

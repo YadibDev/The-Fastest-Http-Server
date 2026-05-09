@@ -16,7 +16,7 @@
 clsResponse::clsResponse(RequestHandler &DataRequest) : _DataRequest(DataRequest)
 {
     _Status = 0;
-    _BodySize = 0;
+    _BodySize = DataRequest.getSizeFile();
 
     _IsConnection = true;
     _SizeHeaders = 0;
@@ -134,13 +134,13 @@ void clsResponse::_ErrorRespnseHandling()
                     _ErrorPage.SetAutoIndex(_DataRequest.getAutoIndex());
             }
             if (_Mod[stMod::ERROR] != stMod::ERROR)
-                _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath());
+                _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath(), _DataRequest.getSizeFile());
             else
-                _ErrorPage.ResponseError(_Status, "");
+                _ErrorPage.ResponseError(_Status, "", 0);
             _Mod[stMod::ERROR] = stMod::EMPTY;
         }
         else
-            _ErrorPage.ResponseError(_Status, "");
+            _ErrorPage.ResponseError(_Status, "", 0);
         _ModTransferData = true;
         _BodySize = _ErrorPage.GetBodySize();
         _BodyPointer = &_ErrorPage.GetBody();
@@ -204,16 +204,10 @@ void clsResponse::_Server()
 
 void clsResponse::_StoredInFileOrStr()
 {
-    struct stat MetaData;
     if (_FileFromDisk.empty())
         return;
-    if (stat(_FileFromDisk.c_str(), &MetaData) == -1)
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        return;
-    }
-    _BodySize = MetaData.st_size;
+
+    _BodySize = _DataRequest.getSizeFile();
     if (_BodySize > MAX_BODY)
     {
         _Mod[stMod::CHUNK] = stMod::CHUNK;

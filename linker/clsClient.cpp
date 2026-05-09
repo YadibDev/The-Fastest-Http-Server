@@ -239,6 +239,7 @@ bool clsClient::_handleInternal()
     if (Respond.IsError())
     {
         HttpError error;
+
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);

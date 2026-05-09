@@ -109,6 +109,11 @@ bool HelperFunctions::myIsspace(std::string str, size_t pos)
 	return (false);
 }
 
+bool HelperFunctions::isspaceTabOrSp(char c)
+{
+	return (c == ' ' || c == '\t');
+}
+
 std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string& value)
 {
 	std::vector<std::string> result;
@@ -233,18 +238,36 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 }
 
 
-bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
+bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size)
 {
-	size_t nullTerminite = ft_strlen(buffer);
-	size_t sizeAddStr = ft_strlen(AddStr);
-
-	if ((sizeAddStr + nullTerminite) >= size)
+	if ((AddStrSize + BufferSize) >= size)
 		return false;
 
-	memcpy(&buffer[nullTerminite], AddStr, sizeAddStr);
-	buffer[nullTerminite + sizeAddStr] = '\0';
+	memcpy(&buffer[BufferSize], AddStr, AddStrSize);
+	buffer[BufferSize + AddStrSize] = '\0';
 	return true;
 }
+
+size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2)
+{
+    if (v1.len + v2.len + 1 > dst_size)
+        return 0;
+
+    memcpy(dst, v1.Data, v1.len);
+    memcpy(dst + v1.len, v2.Data, v2.len);
+
+    dst[v1.len + v2.len] = '\0';
+
+    return (v1.len + v2.len);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -463,9 +486,9 @@ unsigned long HelperFunctions::getCurrentTimeInMs()
     return getCurrentTimeInS() * 1000;
 }
 
-long HelperFunctions::getCurrentTimeInS()
+long int HelperFunctions::getCurrentTimeInS()
 {
-	long Time;
+	long int Time;
 	Time = time(0);
 	return (Time);
 }
@@ -772,25 +795,11 @@ bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
 
 int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 {
-	int flags = fcntl(fd, F_GETFL, 0);
-
-	if (flags == -1)
-		return -1;
-
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
+        return -1;
+    return 0;
 	if (closeOnExec)
-	{
-		int fdFlags = fcntl(fd, F_GETFD, 0);
-		if (fdFlags != -1)
-		{
-			fcntl(fd, F_SETFD, fdFlags | FD_CLOEXEC);
-		}
-	}
-
-	else
-		flags |= O_NONBLOCK;
-
-	fcntl(fd, F_SETFL, flags);
-	return 0;
+		return closeOnExec;
 }
 
 int HelperFunctions::FindChar(char *Arr, int length, char c)

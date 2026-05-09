@@ -9,7 +9,6 @@ RequestParser::RequestParser(stPollRequest &request, RequestHandler *requestHand
 	  _ServerConfig(NULL),
 	  _RequestHandler(requestHandler),
 	  _state(STATE_REQUEST_LINE)
-//   _body(request)
 {
 }
 

@@ -133,8 +133,8 @@ bool    Header::makeKnownHeader()
 {
 	if (_request.known_headers[_currentHeader].key.Data == NULL)
 	{
-		if (_currentHeader == HttpTables::H_HOST || _currentHeader == HttpTables::H_CONTENT_LENGTH)
-			if (_request.known_headers[HttpTables::H_HOST].Hash != -1 || _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
+		if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1)
+			|| (_currentHeader == HttpTables::H_CONTENT_LENGTH && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1))
 				return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
 
 		_request.known_headers[_currentHeader].Hash = _hash;
@@ -251,6 +251,7 @@ bool    Header::parseCR(uint16_t size)
 	if (!canRead(size)) return true;
 	if (_request.request_metadata[_offset] != '\r')
 		return (_error.setStatus(400, "Bad Request"), false);
+	_request.request_metadata[_offset] = '\0';
 	_offset++;
 	_state = HttpTables::STATE_LF;
 	return true;
