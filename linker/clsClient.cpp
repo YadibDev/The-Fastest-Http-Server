@@ -264,6 +264,8 @@ void clsClient::_initalizeRespondBuffer()
         return ;
     }
 
+    _state = RESPOND_MODE;
+
     if (Respond.GetModTransferData())
     {
         bytesToSend += Respond.GetHeaderFeildPointer()->size();
@@ -330,7 +332,6 @@ void clsClient::ProcessRespond()
     else if (_state == CGI_END)
     {
         _initalizeRespondBuffer();
-        _state = RESPOND_MODE;
     }
 
     if (_state == RESPOND_MODE)
@@ -344,7 +345,11 @@ void clsClient::ProcessBoth(uint32_t events)
     if ((events & EPOLLIN) == EPOLLIN)
         ProcessRequest();
     else if ((events & EPOLLOUT) == EPOLLOUT)
+    {
         ProcessRespond();
+        if (_state == START_RESPOND)
+            ProcessRespond();
+    }
 }
 
 void clsClient::freeRessources()
