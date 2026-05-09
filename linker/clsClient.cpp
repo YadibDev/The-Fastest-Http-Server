@@ -237,9 +237,9 @@ void clsClient::_handleInternal()
     // support internal location in future
     if (Respond.IsError())
     {
-        std::cout << "is respond Errror \n"
-                  << std::endl;
-        ;
+        // std::cout << "is respond Errror \n"
+        //           << std::endl;
+        // ;
         HttpError error;
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {

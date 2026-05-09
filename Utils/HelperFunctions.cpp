@@ -411,21 +411,32 @@ void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &Clean
 	
 }
 
-std::string HelperFunctions::GTMHTTP(tm* GMT)
+void HelperFunctions::GTMHTTP(tm* GMT, std::string &Str)
 {
 	const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	std::stringstream ss;
-	ss << Days[GMT->tm_wday] << ", " << GMT->tm_mday << " " << Months[GMT->tm_mon] << " " 
-	   << GMT->tm_year + 1900 << " " << GMT->tm_hour << ":" << GMT->tm_min << ":" << GMT->tm_sec << " GMT";
-	return ss.str();
+	Str += Days[GMT->tm_wday];
+	Str += ", ";
+	NumToStr(GMT->tm_mday, Str);
+	Str += " ";
+	Str += Months[GMT->tm_mon];
+	Str += " ";
+	NumToStr(GMT->tm_year + 1900, Str);
+	Str += " ";
+	NumToStr(GMT->tm_hour, Str);
+	Str += ":";
+	NumToStr(GMT->tm_min, Str);
+	Str += ":";
+	NumToStr(GMT->tm_sec, Str);
+	Str += "GMT";
 }
 
-std::string HelperFunctions::DateTime()
+void HelperFunctions::DateTime(std::string &Str)
 {
 	time_t Time = time(0);
 	tm* GMT = gmtime(&Time);
-	return GTMHTTP(GMT);
+	GTMHTTP(GMT, Str);
 }
 
 std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num)

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 11:45:03 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/09 14:20:18 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseO
 
 bool clsCGI::_MakeEnv()
 {
-    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV]; // 
+    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV];
     if (!_ENV)
         return (false);
     HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));

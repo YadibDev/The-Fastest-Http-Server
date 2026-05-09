@@ -69,9 +69,8 @@ public:
     static int SkeeSep(const std::string &Str, const std::string &Sep);
     static int SkeeSep(const std::string &Str, char Sep);
     static int ReadData(int FD, std::string &Data, ssize_t Size);
-    static std::string GetNextLine(int FD, std::string &BigData, ssize_t Size);
-    static std::string GTMHTTP(tm *GMT);
-    static std::string DateTime();
+    static void GTMHTTP(tm *GMT, std::string &Str);
+    static void DateTime(std::string &Str);
     static std::string Convert_Hex(const std::string &Str, int Num);
     static char	*ft_strdup(const char *src);
     static void	free_matrex(char ***matrex, short IndexStart);
