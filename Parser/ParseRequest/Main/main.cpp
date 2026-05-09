@@ -256,6 +256,7 @@ int main()
 
 	if (Parser.isError())
 	{
+
 		if (!ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error))
 		{
 			RequestHandler.setDefaultErrorPage(true);

@@ -241,6 +241,7 @@ void clsClient::_handleInternal()
                   << std::endl;
         ;
         HttpError error;
+
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);

@@ -110,15 +110,17 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 	for (size_t i = 0; i < vindex.size(); ++i)
 	{
 		error.reset();
-		uri = vindex[i];
-		isRelativePath = uri.flags.is_relative;
+		uri.sv_raw_path.Data = vindex[i].sv_raw_path.Data;
+		uri.sv_raw_path.len = vindex[i].sv_raw_path.len;
+	
+		isRelativePath = vindex[i].flags.is_relative;
 		uri.redirect_count = newUri.redirect_count;
 		if (isRelativePath)
 		{
 			if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
 				continue ;
 			lastIndexOfAutoindex = HelperFunctions::ft_strlen(handler->getPhysicalPath());
-			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.raw_path.c_str(), MAX_PATH_LEN);
+			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.sv_raw_path.Data, lastIndexOfAutoindex, uri.sv_raw_path.len, MAX_PATH_LEN);
 			size_t size = 0;
 			PathType = checkPath(handler->getPhysicalPath(), flags, size);
 			if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
@@ -126,7 +128,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 				error.setStatus(403, "Forbidden");
 				continue ;
 			}
-			uri.raw_path.insert(0, newUri.sv_raw_path.Data, newUri.sv_raw_path.len);
+			uri.raw_path.insert(0, newUri.sv_raw_path.Data, newUri.sv_raw_path.len); // handle this Add s_view with s_view
 			uri.initView();
 		}
 		if (!internalRedirect(uri, serverConfig, handler, error))
@@ -346,7 +348,6 @@ bool ProcessRequestHandler::generateErrorPath(short originalCode,
 		return true;
 	}
 
-	// copy remove
 	s_uri_entry uri;
 	uri.sv_raw_path.Data = it->second.uri.sv_raw_path.Data;
 	uri.sv_raw_path.len = it->second.uri.sv_raw_path.len;
@@ -389,7 +390,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	handler->setMethod(startLine.getMethod());
 
 	handler->setReturn((bestLocation->getReturn().code != -1) ? bestLocation->getReturn() : serverConfig->getReturn());
-
+	
 	if (handler->getReturn().code != -1)
 		return true;
 
@@ -404,13 +405,14 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			}
 		}		
 	}
+	handler->setRequestUri(startLine.getRequestURI().getPath());
+
 	if (!handlePath(bestLocation, serverConfig, handler, uri, error))
 	{
 		if (error.isError())
 			return (handler->setError(error), false);
 		return false;
 	}
-	handler->setRequestUri(startLine.getRequestURI().getPath());
 	handler->setQuery(startLine.getRequestURI().getQuery());
 	handler->setVersion(startLine.getVersion());
 	return true;
@@ -438,13 +440,12 @@ bool ProcessRequestHandler::internalRedirect(
 		return (error.setStatus(404, "Not Found"), false);
 
 	handler->setReturn((newLocation->getReturn().code != -1) ? newLocation->getReturn() : serverConfig->getReturn());
-
+	handler->setRequestUri(newUri.getView());
 	if (handler->getReturn().code != -1)
 		return true;
 
 	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
 		return false;
-	handler->setRequestUri(newUri.getView()); 
 	handler->setError(error);
 	return true;
 }
