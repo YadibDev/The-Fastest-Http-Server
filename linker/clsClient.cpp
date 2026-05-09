@@ -323,7 +323,6 @@ void clsClient::ProcessRespond()
     }
     else if (_state == CGI_END)
     {
-        std::cout << "cgi end" << std::endl;
         _initalizeRespondBuffer();
         _state = RESPOND_MODE;
     }

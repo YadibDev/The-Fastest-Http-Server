@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 16:26:02 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/09 16:29:26 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
         _Response.SetStatus(_eventProcess);
         _Response.SetMod(stMod::ERROR);
     }
-    std::cout << "event : " << _eventProcess<< std::endl;
 }
 
 void clsMainProcess::_InitializeCGI()

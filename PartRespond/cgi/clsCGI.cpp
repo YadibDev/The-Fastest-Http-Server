@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 14:20:18 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/09 16:29:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseO
     if (TempVar.empty())
     {
         _Erno = true;
-        return ;
+        return;
     }
     TempVar.clear();
 }
@@ -35,7 +35,7 @@ bool clsCGI::_MakeEnv()
     _ENV = new(std::nothrow) char*[SIZE_VAR_ENV];
     if (!_ENV)
         return (false);
-    HelperFunctions::ft_memset(_ENV,0,(sizeof(_ENV) * SIZE_VAR_ENV));
+    HelperFunctions::ft_memset(_ENV, 0, (sizeof(_ENV) * SIZE_VAR_ENV));
     if (!_SERVER_SOFTWARE())
         return false;
     if (!_SERVER_NAME())
@@ -85,7 +85,7 @@ bool clsCGI::_SERVER_SOFTWARE()
 }
 bool clsCGI::_SERVER_NAME()
 {
-     if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
         return (false);
     _Counter++;
     return (true);
@@ -99,7 +99,7 @@ bool clsCGI::_SERVER_PROTOCOL()
 }
 bool clsCGI::_GATEWAY_INTERFACE()
 {
-    if (!(_ENV[_Counter] =HelperFunctions::GetENV_VAR_CONST(3)))
+    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(3)))
         return (false);
     _Counter++;
     return (true);
@@ -212,7 +212,7 @@ bool clsCGI::_OtherHeaders()
 }
 bool clsCGI::_StoredArgs()
 {
-    _ARG = new(std::nothrow) char*[3];
+    _ARG = new (std::nothrow) char *[3];
     if (!_ARG)
         return (false);
     _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
@@ -250,6 +250,7 @@ bool clsCGI::_childeProcesse()
     close(_pip[1]);
     if (_DataRequest.getMethod() == HttpTables::M_POST)
         close(Fd);
+    
     execve(_ARG[0], _ARG, _ENV);
     return true;
 }
@@ -275,20 +276,20 @@ void clsCGI::RunCGI()
 {
     if (!_InintialVar())
     {
-        HelperFunctions::free_matrex(&_ENV , 6);
+        HelperFunctions::free_matrex(&_ENV, 6);
         HelperFunctions::free_matrex(&_ARG, 0);
         _Erno = true;
         _FD = -1;
-        return ;
+        return;
     }
     _PIDCHILD = fork();
     if (_PIDCHILD < 0)
     {
         close(_pip[0]);
         close(_pip[1]);
-       _Erno = true;
-       _FD = -1;
-       return ;
+        _Erno = true;
+        _FD = -1;
+        return;
     }
     _StartTime = HelperFunctions::getCurrentTimeInS();
     if (_PIDCHILD == 0)
@@ -297,13 +298,13 @@ void clsCGI::RunCGI()
             exit(1);
     }
     else
-       _ParentProcesse();
-    return ;
+        _ParentProcesse();
+    return;
 }
 
 void clsCGI::Reset()
 {
-    HelperFunctions::free_matrex(&_ENV , 6);
+    HelperFunctions::free_matrex(&_ENV, 6);
     HelperFunctions::free_matrex(&_ARG, 0);
     _Counter = 0;
 }
@@ -315,14 +316,14 @@ bool clsCGI::GetIsRunCGI()
 
 void clsCGI::SetIsRunCGI(bool IsRunCGI)
 {
-   _IsRunCGI = IsRunCGI;
+    _IsRunCGI = IsRunCGI;
 }
 
 clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 {
     return _ParseOutCGI;
 }
- int clsCGI::GetPid()
+int clsCGI::GetPid()
 {
     return _PIDCHILD;
 }
@@ -330,8 +331,7 @@ clsParseOutCGI &clsCGI::GetclsParseOutCGI()
 const time_t &clsCGI::getStartTime() const
 {
     return this->_StartTime;
-}; 
-
+};
 
 int clsCGI::GetFdPipe()
 {
@@ -343,9 +343,8 @@ bool clsCGI::GetErno()
 }
 clsCGI::~clsCGI()
 {
-    HelperFunctions::free_matrex(&_ENV , 6);
+    HelperFunctions::free_matrex(&_ENV, 6);
     HelperFunctions::free_matrex(&_ARG, 0);
     _pip[0] = -1;
     _pip[1] = -1;
 }
-
