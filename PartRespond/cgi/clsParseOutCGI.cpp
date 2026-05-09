@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 16:04:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/08 14:27:44 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else
 		return (false);
 	if ((Pos = Str.find(':')) == std::string::npos)
-		return (false);    
+		return (false);
 	if (!_CheckValidNameHeader(Str, 0, Pos))
 		return (false);
 	if (!_CheckValidValueHeader(Str, Pos + 1, Str.length()))
@@ -390,6 +390,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
+	//if was useless in future delete it
 	    _ErrorPage.ResponseError(_Status, "");
 	    _ModTransferData = true;
 	    _BodyPointer = &_ErrorPage.GetBody();
@@ -404,9 +405,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingHeaders(Arr, Length);
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
-	{
 		return ;
-	}
 	if (!_ProcessIsFinish)
 		return ;
 	else if (!_FoundBody || (!_BytesBody &&

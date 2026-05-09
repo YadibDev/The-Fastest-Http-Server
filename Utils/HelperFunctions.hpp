@@ -111,6 +111,8 @@ public:
             return false;
         return true;
     }
+    static int FindChar(char *Arr, int length, char c);
+    static int FindCharFromLast(char *Arr, int length, char c);
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

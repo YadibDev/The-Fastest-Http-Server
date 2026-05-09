@@ -391,6 +391,8 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 
 void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
+	if (!BigData)
+		return ;
 	while(i < LengthData && BigData[i] != '\n')
 	{
 		(MaxSizeHeader)++;
@@ -649,11 +651,11 @@ void HelperFunctions::StoredBodys()
 	_Message[400] = "Bad Request";
 	_Message[403] = "Forbidden";
 	_Message[404] = "Not Found";
+	_Message[405] = "405 Method Not Allowed";
 	_Message[500] = "Internal Server Error";
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
-	_Message[405] = "405 Method Not Allowed";
 	_Message[414] = "414 URI Too Long";
 	_Message[411] = "411 ULength Required";
  }
@@ -778,5 +780,32 @@ int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 
 	fcntl(fd, F_SETFL, flags);
 	return 0;
+}
+
+int HelperFunctions::FindChar(char *Arr, int length, char c)
+{
+	int i = 0;
+	if (!Arr)
+		return i;
+	while (i < length)
+	{
+		if (Arr[i] == c)
+			return i;
+		i++;
+	}
+	return i;
+}
+int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
+{
+	int i = length - 1;
+	if (!Arr)
+		return i;
+	while (i >= 0)
+	{
+		if (Arr[i] == c)
+			return i;
+		i--;
+	}
+	return i;
 }
 

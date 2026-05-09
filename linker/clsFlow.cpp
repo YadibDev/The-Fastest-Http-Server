@@ -78,8 +78,8 @@ void clsFlow::_createServers()
 
 void clsFlow::_initializeDataBase()
 {
-    _clientsArr = new clsClient[MAX_CLIENTS];
-    for (int i = 0; i < MAX_CLIENTS; i++)
+    _clientsArr = new clsClient[maxClient];
+    for (int i = 0; i < maxClient; i++)
         _clientsAvailable.push(i);
 }
 
@@ -130,7 +130,7 @@ void clsFlow::_registerServersSockets()
     std::cout << "Register Server Sockets by success\n";
 }
 
-clsFlow::clsFlow(const char *configFile)
+clsFlow::clsFlow(const char *configFile, long maxClient) : maxClient(maxClient)
 {
     _clientsArr = NULL;
     _initializeStatics();

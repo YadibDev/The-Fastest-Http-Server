@@ -59,10 +59,10 @@ private:
     void _pipeFlow(int fd);
     void _tryTimeOutClients();
     void _tryTimeOutCgi();
-
+    const long maxClient;
 
 public:
-    clsFlow(const char *configFile);
+    clsFlow(const char *configFile, long maxClient);
     ~clsFlow();
     void EventLoop();
 
