@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 16:34:03 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/09 21:08:28 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,6 +272,7 @@ bool clsCGI::_InintialVar()
         return (false);
     return (true);
 }
+
 void clsCGI::RunCGI()
 {
     if (!_InintialVar())
@@ -306,7 +307,9 @@ void clsCGI::Reset()
 {
     HelperFunctions::free_matrex(&_ENV, 6);
     HelperFunctions::free_matrex(&_ARG, 0);
+    _IsRunCGI = false;
     _Counter = 0;
+    _Erno = false;
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -341,6 +344,7 @@ bool clsCGI::GetErno()
 {
     return _Erno;
 }
+
 clsCGI::~clsCGI()
 {
     HelperFunctions::free_matrex(&_ENV, 6);
