@@ -129,6 +129,7 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 				continue ;
 			}
 			uri.raw_path.insert(0, newUri.sv_raw_path.Data, newUri.sv_raw_path.len); // handle this Add s_view with s_view
+			uri.raw_path.insert(newUri.sv_raw_path.len, uri.sv_raw_path.Data, uri.sv_raw_path.len);
 			uri.initView();
 		}
 		if (!internalRedirect(uri, serverConfig, handler, error))
