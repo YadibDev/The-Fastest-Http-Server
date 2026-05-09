@@ -231,23 +231,22 @@ void clsClient::_SendRespond(clsResponse &_Responder)
     }
 }
 
-void clsClient::_handleInternal()
+bool clsClient::_handleInternal()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
+
     // support internal location in future
     if (Respond.IsError())
     {
-        // std::cout << "is respond Errror \n"
-        //           << std::endl;
-        // ;
         HttpError error;
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
         _ResponderProecss.Reset();
-        this->_ResponderProecss.MainProcess(); // re create error page
+        return true;
     }
+    return false;
 }
 
 void clsClient::_initalizeRespondBuffer()
@@ -258,7 +257,12 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
-    _handleInternal(); // beta;
+    if (_handleInternal())
+    {
+        _state = START_RESPOND;
+        return ;
+    }
+
     if (Respond.GetModTransferData())
     {
         bytesToSend += Respond.GetHeaderFeildPointer()->size();
@@ -316,6 +320,7 @@ void clsClient::ProcessRespond()
 
         if (this->_ResponderProecss.isRunCgi())
         {
+            std::cout << "cgi start" << std::endl;
             _state = CGI_START;
             return;
         }
@@ -328,7 +333,9 @@ void clsClient::ProcessRespond()
     }
 
     if (_state == RESPOND_MODE)
+    {
         _SendRespond(Respond);
+    }
 }
 
 void clsClient::ProcessBoth(uint32_t events)
@@ -432,6 +439,7 @@ bool clsClient::timeoutCgi()
     {
         this->_state = CGI_END;
         _ResponderProecss.setEventProcess(_monitorCGI.getStateProcess());
+
         _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }

@@ -29,18 +29,27 @@ void HandlerSignal(int sig)
 int main(int ac, const char *av[])
 {
     const char *configFile = "configs/default.conf";
-    if (ac > 2)
+    long maxClients = 500;
+    if (ac > 3)
     {
-        std::cout << "./webserv [you can add configFile as an argument]" << std::endl;
+        std::cout << "./webserv [config file path] [optional max client default = 500]" << std::endl;
         return 1;
     }
-    else if (ac == 2)
+    if (ac >= 2)
         configFile = av[1];
+    if (ac == 3)
+    {
+        if (HelperFunctions::ConvertStrToNum(av[2], maxClients) == false || maxClients <= 0)
+        {
+            std::cout << "fail to convert max client to number or max client <= 0" << std::endl;
+            return 1;
+        }
+    }
 
     try
     {
         signal(SIGINT, HandlerSignal);
-        clsFlow flow(configFile);
+        clsFlow flow(configFile, maxClients);
         flow.EventLoop();
     }
     catch (std::exception &e)
