@@ -782,3 +782,30 @@ int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 	return 0;
 }
 
+int HelperFunctions::FindChar(char *Arr, int length, char c)
+{
+	int i = 0;
+	if (!Arr)
+		return i;
+	while (i < length)
+	{
+		if (Arr[i] == c)
+			return i;
+		i++;
+	}
+	return i;
+}
+int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
+{
+	int i = length - 1;
+	if (!Arr)
+		return i;
+	while (i >= 0)
+	{
+		if (Arr[i] == c)
+			return i;
+		i--;
+	}
+	return i;
+}
+

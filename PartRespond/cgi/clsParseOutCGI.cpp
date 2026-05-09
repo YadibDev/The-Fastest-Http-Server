@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 16:10:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/08 14:27:44 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else
 		return (false);
 	if ((Pos = Str.find(':')) == std::string::npos)
-		return (false);    
+		return (false);
 	if (!_CheckValidNameHeader(Str, 0, Pos))
 		return (false);
 	if (!_CheckValidValueHeader(Str, Pos + 1, Str.length()))
@@ -405,9 +405,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingHeaders(Arr, Length);
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
-	{
 		return ;
-	}
 	if (!_ProcessIsFinish)
 		return ;
 	else if (!_FoundBody || (!_BytesBody &&
