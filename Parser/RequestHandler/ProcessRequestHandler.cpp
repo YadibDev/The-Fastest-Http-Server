@@ -387,6 +387,12 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 
 	uri.setSview(startLine.getRequestURI().getPath());
 	handler->setMethod(startLine.getMethod());
+
+	handler->setReturn((bestLocation->getReturn().code != -1) ? bestLocation->getReturn() : serverConfig->getReturn());
+
+	if (handler->getReturn().code != -1)
+		return true;
+
 	if ((handler->getMethod() == HttpTables::M_POST))
 	{
 		if (!handler->ExtractCgiMetadata(uri, bestLocation->getCgiPass()))
@@ -398,7 +404,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			}
 		}		
 	}
-	if (!internalRedirect(uri, serverConfig, handler, error))
+	if (!handlePath(bestLocation, serverConfig, handler, uri, error))
 	{
 		if (error.isError())
 			return (handler->setError(error), false);
