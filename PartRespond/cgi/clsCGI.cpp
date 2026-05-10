@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/10 21:27:45 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 22:41:47 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,10 @@ clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseO
     _Erno = false;
     _pip[0] = -1;
     _pip[1] = -1;
-    _Buffer = NULL;
 }
 
 bool clsCGI::_MakeEnv()
 {
-    if (!_Buffer)
-        return false;
     if (!_SERVER_SOFTWARE())
         return false;
     if (!_SERVER_NAME())
@@ -149,11 +146,13 @@ bool clsCGI::_REMOTE_HOST()
 }
 bool clsCGI::_REMOTE_ADDR()
 {
-    short Length = HelperFunctions::ft_strlen("REMOTE_ADDR=\"\"");
+    short Length = HelperFunctions::ft_strlen("REMOTE_ADDR=");
     if (_Offset == SIZE_BUFFER)
         return false;
     _ENV[_Counter] = &_Buffer[_Offset];
-    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_ADDR=\"\"", SIZE_BUFFER, _Offset, Length);
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_ADDR=", SIZE_BUFFER, _Offset, Length);
+    Length = HelperFunctions::ft_strlen(_IPClient);
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], _IPClient, SIZE_BUFFER, _Offset, Length);
     if (_Offset == SIZE_BUFFER)
         return false;
     _Counter++;
@@ -192,11 +191,13 @@ bool clsCGI::_REMOTE_USER()
 
 bool clsCGI::_SERVER_PORT()
 {
-    short Length = HelperFunctions::ft_strlen("SERVER_PORT=\"\"");
+    short Length = HelperFunctions::ft_strlen("SERVER_PORT=");
     if (_Offset == SIZE_BUFFER)
         return false;
     _ENV[_Counter] = &_Buffer[_Offset];
-    HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]), "SERVER_PORT=\"\"", SIZE_BUFFER, _Offset, Length);
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "SERVER_PORT=", SIZE_BUFFER, _Offset, Length);
+    Length = HelperFunctions::ft_strlen(_PortServer);
+    HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]), _PortServer, SIZE_BUFFER, _Offset, Length);
     if (_Offset == SIZE_BUFFER)
         return false;
     _ENV[_Counter] = &_Buffer[_Offset];
@@ -363,7 +364,12 @@ bool clsCGI::_CONTENT_LENGTH()
 
 bool clsCGI::_OtherHeaders()
 {
-    // _DataRequest.getHeader().getKnownHeader().
+    int i = 0;
+    while (i < SIZE_UNKNOW_HEADER)
+    {
+        // _DataRequest.getHeader().getUnknownHeader(0)->val.
+
+    }
     return (true);
 }
 bool clsCGI::_StoredArgs()
@@ -430,8 +436,6 @@ void clsCGI::RunCGI()
 {
     if (!_InintialVar())
     {
-        // HelperFunctions::free_matrex(&_ENV, 6);
-        // HelperFunctions::free_matrex(&_ARG, 0);
         _Erno = true;
         _FD = -1;
         return;
@@ -458,9 +462,6 @@ void clsCGI::RunCGI()
 
 void clsCGI::Reset()
 {
-    // HelperFunctions::free_matrex(&_ENV, 6);
-    // HelperFunctions::free_matrex(&_ARG, 0);
-    _Buffer = NULL;
     _IsRunCGI = false;
     _Counter = 0;
     _Offset = 0;
@@ -505,10 +506,14 @@ void clsCGI::SetBuffer(char *Buffer)
     _Buffer = Buffer;
 }
 
+void clsCGI::SetPortS_and_IPC(char *IPC, char *PosrtS)
+{
+    _IPClient = IPC;
+    _PortServer = PosrtS;
+}
+
 clsCGI::~clsCGI()
 {
-    // HelperFunctions::free_matrex(&_ENV, 6);
-    // HelperFunctions::free_matrex(&_ARG, 0);
     _pip[0] = -1;
     _pip[1] = -1;
 }

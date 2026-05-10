@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/10 21:30:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 21:35:46 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ class clsCGI
         static short _LimitProcess;
         short _Offset;
         char *_Buffer;
+        char *_PortServer;
+        char *_IPClient;
         RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
         std::string TempVar;
