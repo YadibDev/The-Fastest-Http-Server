@@ -30,7 +30,7 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
 
     clsCGI & cgi = _ResponderProecss.GetclsCGI();
     cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
-    // cgi.SetPortS_and_IPC(ClientIp, portServer.c_str());
+    cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
 }
 
 const clinetState &clsClient::GetState() const
