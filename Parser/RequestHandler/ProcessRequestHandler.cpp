@@ -75,6 +75,8 @@ sPathType::e_path_type checkPath(char *path, UriStatus &flags, size_t &size)
 	if (stat(path, &st) != 0)
 		return sPathType::PATH_NOT_FOUND;
 
+
+	
 	size = st.st_size;
 	flags.can_read = st.st_mode & (S_IRUSR | S_IRGRP | S_IROTH);
 	flags.can_write = st.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH);
