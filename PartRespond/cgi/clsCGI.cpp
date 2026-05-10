@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/10 09:30:28 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 09:58:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ bool clsCGI::_SERVER_PORT()
 
 bool clsCGI::_REQUEST_METHOD()
 {
-    char c_Method[3][8] ={"GET\0", "POST\0", NULL};
+    char c_Method[3][8] ={"GET", "POST", ""};
     u_int8_t Method = 0;
     if (_DataRequest.getMethod() == HttpTables::M_GET)
         Method = 0;
