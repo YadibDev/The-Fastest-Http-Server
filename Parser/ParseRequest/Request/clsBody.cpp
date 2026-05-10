@@ -40,6 +40,7 @@ void clsBody::Reset()
     writeSize = 0;
     chunkHelp.Reset();
     _errorPage.setStatus(0);
+
     if (fd != -1)
         close(fd);
     fd = -1;
@@ -49,7 +50,9 @@ int clsBody::_createUploadStoreFile()
 {
     int fd = -1;
     if (this->uploadStore)
+    {
         fd = open(uploadStore->c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    }
 
     return fd;
 
@@ -64,6 +67,9 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
     {
         this->Reset();
 
+        this->maxBodySize = maxBodySize;
+        bodyHasLimit = maxBodySize != 0;
+
         if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != -1)
             _isChunk = true;
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
@@ -71,7 +77,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
             _isChunk = false;
             const char *content_leng_str = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
 
-            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength > (long)maxBodySize || _contentLength < 0)
+            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || (bodyHasLimit && _contentLength > (long)maxBodySize) || _contentLength < 0)
             {
                 if (_contentLength > (long)maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
@@ -95,6 +101,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
         if (fd == -1)
         {
+            // did i must check errno or not
             _errorPage.setStatus(500, "Internal Server Error:");
             _state = clsBody::DONE_WIHTERROR;
             removeFile = false;
@@ -103,7 +110,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
         _state = clsBody::READING_BODY;
     }
-    ParseBody(offset, maxBodySize); // i must change name of it
+    ParseBody(offset); // i must change name of it
     return true;
 }
 
@@ -195,7 +202,8 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     
     return false;
 }
-void clsBody::_handleChunk(uint16_t &ofset)
+
+void clsBody::_handleChunk(uint16_t &ofset) // add here max
 {
     // pointing to data
     char *arr = data.io_chunk;
@@ -220,6 +228,13 @@ void clsBody::_handleChunk(uint16_t &ofset)
             if (_saveChunkBody(ofset, error, totRemoves))
                 break;
         }
+        
+        if (maxBodySize - totRemoves < 0 && bodyHasLimit)
+        {
+            error = true;
+            this->_errorPage.setStatus(413, "Content Too Large");
+        }
+
         if (error)
         {
             _state = clsBody::DONE_WIHTERROR;
@@ -230,6 +245,8 @@ void clsBody::_handleChunk(uint16_t &ofset)
     if (totRemoves != 0 && totRemoves < ofset)
         shiftingData(arr, totRemoves, (ofset - totRemoves));
 
+    if (bodyHasLimit)
+        maxBodySize -= totRemoves;
     ofset -= totRemoves;
     cur = 0;
     t -= totRemoves;
@@ -267,9 +284,8 @@ void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
         _state = clsBody::DONE_GOOD;
 }
 
-void clsBody::ParseBody(uint16_t &offset, const size_t &maxBodySize)
+void clsBody::ParseBody(uint16_t &offset)
 {
-    (void)maxBodySize; // unused right now
 
     if (_isChunk == false)
     {

@@ -2,7 +2,6 @@
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
-    // _Requester.init();
     this->_socket = -1;
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;
@@ -25,6 +24,10 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _state = BEGIN;
     _Requester.init(block);
     _RequestXconfig.reset();
+
+    // inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
+    
+    // _ResponderProecss.GetclsCGI.seters(ip, port);
 }
 
 const clinetState &clsClient::GetState() const

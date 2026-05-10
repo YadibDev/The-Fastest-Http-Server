@@ -141,7 +141,9 @@ bool RequestParser::Parse(uint16_t size)
 		}
 	}
 	if (_state == STATE_BODY)
+	{
 		ParseBody(size);
+	}
 	return true;
 }
 
