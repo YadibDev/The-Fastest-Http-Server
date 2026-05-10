@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/10 22:41:47 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 22:42:52 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,7 +368,7 @@ bool clsCGI::_OtherHeaders()
     while (i < SIZE_UNKNOW_HEADER)
     {
         // _DataRequest.getHeader().getUnknownHeader(0)->val.
-
+        i++;
     }
     return (true);
 }
