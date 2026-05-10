@@ -259,6 +259,7 @@ void clsClient::_initalizeRespondBuffer()
 
     if (_handleInternal())
     {
+        std::cout << "Start Respond again\n";
         _state = START_RESPOND;
         return ;
     }
