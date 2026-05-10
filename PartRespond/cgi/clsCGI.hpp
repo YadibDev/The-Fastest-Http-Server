@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 19:06:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 16:04:02 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,13 @@ class clsCGI
         int _FD;
         bool _Erno;
         static short _LimitProcess;
+        short _Offset;
+        char *_Buffer;
         RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
         std::string TempVar;
-        char **_ENV;
-        char **_ARG;
+        char *_ENV[SIZE_VAR_ENV];
+        char *_ARG[3];
         int _pip[2];
         uint8_t _Counter;
         std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
@@ -70,6 +72,7 @@ class clsCGI
         void SetIsRunCGI(bool IsRunCGI);
         const time_t &getStartTime() const;
         void Reset();
+        void SetBuffer(char *Buffer);
         ~clsCGI();
 };
 
