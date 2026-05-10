@@ -25,9 +25,10 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _Requester.init(block);
     _RequestXconfig.reset();
 
-    // inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
+    inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
     
-    // _ResponderProecss.GetclsCGI.seters(ip, port);
+    _ResponderProecss.GetclsCGI().SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
+    
 }
 
 const clinetState &clsClient::GetState() const

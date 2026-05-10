@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/10 09:58:20 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 21:12:48 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,18 @@ short clsCGI::_LimitProcess;
 clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
     _IsRunCGI = false;
-    _ARG = NULL;
-    _ENV = NULL;
     _Counter = 0;
+    _Offset = 0;
     _Erno = false;
     _pip[0] = -1;
     _pip[1] = -1;
-    TempVar.resize(MAX_HEADERS);
-    if (TempVar.empty())
-    {
-        _Erno = true;
-        return;
-    }
-    TempVar.clear();
+    _Buffer = NULL;
 }
 
 bool clsCGI::_MakeEnv()
 {
-    _ENV = new(std::nothrow) char*[SIZE_VAR_ENV];
-    if (!_ENV)
-        return (false);
-    HelperFunctions::ft_memset(_ENV, 0, (sizeof(_ENV) * SIZE_VAR_ENV));
+    if (!_Buffer)
+        return false;
     if (!_SERVER_SOFTWARE())
         return false;
     if (!_SERVER_NAME())
@@ -78,169 +69,295 @@ bool clsCGI::_MakeEnv()
 }
 bool clsCGI::_SERVER_SOFTWARE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(0)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("SERVER_NAME=FastServer");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "SERVER_NAME=FastServer", SIZE_BUFFER, _Offset,Length);
+    if (_Offset == SIZE_BUFFER)
+    return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_SERVER_NAME()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(1)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("SERVER_SOFTWARE=FastHTTP/1.1");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+   HelperFunctions::ft_str_copy(&_Buffer[_Offset], "SERVER_SOFTWARE=FastHTTP/1.1", SIZE_BUFFER, _Offset,Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_SERVER_PROTOCOL()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(2)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("SERVER_PROTOCOL=HTTP/1.1");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "SERVER_PROTOCOL=HTTP/1.1", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_GATEWAY_INTERFACE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(3)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("GATEWAY_INTERFACE=CGI/1.1");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "GATEWAY_INTERFACE=CGI/1.1", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_REMOTE_IDENT()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(4)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("REMOTE_IDENT=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_IDENT=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_REMOTE_HOST()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::GetENV_VAR_CONST(5)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("REMOTE_HOST=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_HOST=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 bool clsCGI::_REMOTE_ADDR()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_ADDR=\"\"")))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("REMOTE_ADDR=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_ADDR=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_AUTH_TYPE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("AUTH_TYPE=\"\"")))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("AUTH_TYPE=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "AUTH_TYPE=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_REMOTE_USER()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REMOTE_USER=\"\"")))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("REMOTE_USER=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REMOTE_USER=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_SERVER_PORT()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SERVER_PORT=\"\"")))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("SERVER_PORT=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]), "SERVER_PORT=\"\"", SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_REQUEST_METHOD()
 {
-    char c_Method[3][8] ={"GET", "POST", ""};
+    char c_Method[2][8] ={"GET", "POST"};
     u_int8_t Method = 0;
-    if (_DataRequest.getMethod() == HttpTables::M_GET)
-        Method = 0;
-    else
-        Method = 1;
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("REQUEST_METHOD=", c_Method[Method], 0)))
-        return (false);   
+    Method = (_DataRequest.getMethod() == HttpTables::M_GET);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    short Length = HelperFunctions::ft_strlen("REQUEST_METHOD=");
+    HelperFunctions::ft_str_copy(&_Buffer[_Offset], "REQUEST_METHOD=", SIZE_BUFFER, _Offset, Length);
+    Length = HelperFunctions::ft_strlen(c_Method[Method]);
+    HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),  c_Method[Method], SIZE_BUFFER, _Offset, Length);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_PATH_INFO()
 {
+    short Length = 0;
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     if (!_DataRequest.getPathInfo().len)
     {
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
-            return (false);
+        Length = HelperFunctions::ft_strlen("PATH_INFO=\"\"");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset], "PATH_INFO=\"\"", SIZE_BUFFER, _Offset, Length);
     }
     else
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("PATH_INFO=", _DataRequest.getPathInfo().Data, 0)))
-            return (false);   
+    {
+        Length = HelperFunctions::ft_strlen("PATH_INFO=");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset], "PATH_INFO=", SIZE_BUFFER, _Offset, Length);
+        HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]), _DataRequest.getPathInfo().Data, SIZE_BUFFER, _Offset, _DataRequest.getPathInfo().len);
+    }
+     if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_PATH_TRANSLATED()
 {
+    short Length = 0;
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     if (_DataRequest.getPathTranslated().empty())
     {
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
-            return (false);
+        Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=\"\"");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "PATH_TRANSLATED=\"\"", SIZE_BUFFER, _Offset, Length);
     }
     else
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("PATH_TRANSLATED=", _DataRequest.getPathTranslated().c_str(), 0)))
-        return (false);    
+    {
+        Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "PATH_TRANSLATED=", SIZE_BUFFER, _Offset, Length);
+        HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),  _DataRequest.getPathTranslated().c_str(), SIZE_BUFFER, _Offset, _DataRequest.getPathTranslated().length());
+    }
+     if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_SCRIPT_NAME()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("SCRIPT_NAME=", _DataRequest.getScriptName().Data, 0)))
-        return (false);
+    short Length = HelperFunctions::ft_strlen("SCRIPT_NAME=");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+     HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "SCRIPT_NAME=", SIZE_BUFFER, _Offset, Length);
+     HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),  _DataRequest.getScriptName().Data, SIZE_BUFFER, _Offset, _DataRequest.getScriptName().len);
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_QUERY_STRING()
 {
+    short Length = 0;
+     if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
     if (!_DataRequest.getQuery().len)
     {
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-            return (false);
+        Length = HelperFunctions::ft_strlen("QUERY_STRING=\"\"");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "QUERY_STRING=\"\"", SIZE_BUFFER, _Offset, Length);
     }
     else
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("QUERY_STRING=", _DataRequest.getQuery().Data, 0)))
-            return (false);
+    {
+        Length = HelperFunctions::ft_strlen("QUERY_STRING=");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "QUERY_STRING=", SIZE_BUFFER, _Offset, Length);
+        HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),  _DataRequest.getQuery().Data, SIZE_BUFFER, _Offset, _DataRequest.getQuery().len);
+    }
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_CONTENT_TYPE()
 {
-    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->Hash != -1)
+    short Length = 0;
+     if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->Hash == -1)
     {
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
-            return (false);
+        Length = HelperFunctions::ft_strlen("CONTENT_TYPE=\"\"");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "CONTENT_TYPE=\"\"", SIZE_BUFFER, _Offset, Length);
     }
     else
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("CONTENT_TYPE=",
-                _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->val.Data, 0)))
-            return (false);
+    {
+        Length = HelperFunctions::ft_strlen("CONTENT_TYPE=");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "CONTENT_TYPE=", SIZE_BUFFER, _Offset, Length);
+        HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),
+             _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->val.Data, SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->val.len);
+    }
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
 bool clsCGI::_CONTENT_LENGTH()
 {
-    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->Hash != -1)
+    short Length = 0;
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->Hash == -1)
     {
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
-            return (false);
+        Length = HelperFunctions::ft_strlen("CONTENT_LENGTH=\"\"");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "CONTENT_LENGTH=\"\"", SIZE_BUFFER, _Offset, Length);
     }
     else
-        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("CONTENT_LENGTH=",
-                _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->val.Data, 0)))
-            return (false);
+    {
+        Length = HelperFunctions::ft_strlen("CONTENT_LENGTH=");
+        HelperFunctions::ft_str_copy(&_Buffer[_Offset],  "CONTENT_LENGTH=", SIZE_BUFFER, _Offset, Length);
+        HelperFunctions::ft_str_copy(((_Offset == SIZE_BUFFER)?  &_Buffer[_Offset - 1] : &_Buffer[_Offset]),
+             _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->val.Data, SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->val.len);
+    }
+    if (_Offset == SIZE_BUFFER)
+        return false;
     _Counter++;
+    _Offset++;
     return (true);
 }
 
@@ -250,13 +367,10 @@ bool clsCGI::_OtherHeaders()
 }
 bool clsCGI::_StoredArgs()
 {
-    _ARG = new (std::nothrow) char *[3];
-    if (!_ARG)
-        return (false);
-    _ARG[0] = HelperFunctions::ft_strdup(_DataRequest.getPathCgi()->c_str());
+    _ARG[0] = (char *)_DataRequest.getPathCgi()->c_str();
     if (!_ARG[0])
         return (false);
-    _ARG[1] = HelperFunctions::ft_strdup(_DataRequest.getPhysicalPath());
+    _ARG[1] = _DataRequest.getPhysicalPath();
     if (!_ARG[1])
         return (false);
     _ARG[2] = NULL;
@@ -315,8 +429,8 @@ void clsCGI::RunCGI()
 {
     if (!_InintialVar())
     {
-        HelperFunctions::free_matrex(&_ENV, 6);
-        HelperFunctions::free_matrex(&_ARG, 0);
+        // HelperFunctions::free_matrex(&_ENV, 6);
+        // HelperFunctions::free_matrex(&_ARG, 0);
         _Erno = true;
         _FD = -1;
         return;
@@ -343,10 +457,12 @@ void clsCGI::RunCGI()
 
 void clsCGI::Reset()
 {
-    HelperFunctions::free_matrex(&_ENV, 6);
-    HelperFunctions::free_matrex(&_ARG, 0);
+    // HelperFunctions::free_matrex(&_ENV, 6);
+    // HelperFunctions::free_matrex(&_ARG, 0);
+    _Buffer = NULL;
     _IsRunCGI = false;
     _Counter = 0;
+    _Offset = 0;
     _Erno = false;
 }
 
@@ -383,10 +499,15 @@ bool clsCGI::GetErno()
     return _Erno;
 }
 
+void clsCGI::SetBuffer(char *Buffer)
+{
+    _Buffer = Buffer;
+}
+
 clsCGI::~clsCGI()
 {
-    HelperFunctions::free_matrex(&_ENV, 6);
-    HelperFunctions::free_matrex(&_ARG, 0);
+    // HelperFunctions::free_matrex(&_ENV, 6);
+    // HelperFunctions::free_matrex(&_ARG, 0);
     _pip[0] = -1;
     _pip[1] = -1;
 }

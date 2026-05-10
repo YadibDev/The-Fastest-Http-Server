@@ -118,6 +118,7 @@ public:
     static int FindChar(char *Arr, int length, char c);
     static int FindCharFromLast(char *Arr, int length, char c);
     static char	*ft_strjoin(const char *s1, const char *s2, char free_yes);
+    static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_src);
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

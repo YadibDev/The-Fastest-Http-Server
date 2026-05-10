@@ -878,3 +878,19 @@ int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
 	return i;
 }
 
+void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_src)
+{
+	short i = 0;
+	while (Offset < LengthBuffer && Offset < LengthStr_src)
+	{
+		Buffer[Offset] = Str_src[i];
+		Offset++;
+		i++;
+	}
+	if (!Offset || Offset != LengthBuffer)
+		Buffer[Offset] = '\0';
+	else
+		Buffer[LengthBuffer - 1] = '\0';
+}
+
+
