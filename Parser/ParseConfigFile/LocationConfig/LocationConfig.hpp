@@ -31,7 +31,7 @@ private:
 	bool    ParseUploadStore();
 	bool    ParseCgiPass();
 	bool    ParseErrorPage();
-	bool    ParseLocationDirective();
+	bool    ParseLocationDirective(s_parse_context &ctx);
 	enBlocksDirective   getLocationDirectiveType(const std::string& key);
 	
 	public:
