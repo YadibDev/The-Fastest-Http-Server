@@ -239,11 +239,12 @@ bool clsClient::_handleInternal()
     if (Respond.IsError())
     {
         HttpError error;
-
+        _RequestXconfig.reset();
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
+
         _ResponderProecss.Reset();
         return true;
     }
@@ -261,7 +262,7 @@ void clsClient::_initalizeRespondBuffer()
     if (_handleInternal())
     {
         _state = START_RESPOND;
-        return ;
+        return;
     }
 
     _state = RESPOND_MODE;
@@ -323,7 +324,6 @@ void clsClient::ProcessRespond()
 
         if (this->_ResponderProecss.isRunCgi())
         {
-            std::cout << "cgi start" << std::endl;
             _state = CGI_START;
             return;
         }
