@@ -12,7 +12,7 @@ clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester
     _state = BEGIN;
 }
 
-void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block)
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer)
 {
     _theData.Reset();
     _fdRespond = 0;
@@ -26,9 +26,11 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _RequestXconfig.reset();
 
     inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
-    
-    _ResponderProecss.GetclsCGI().SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
-    
+    HelperFunctions::NumToStr(portServer, this->_serverPort);
+
+    clsCGI & cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
+    // cgi.SetPortS_and_IPC(ClientIp, portServer.c_str());
 }
 
 const clinetState &clsClient::GetState() const

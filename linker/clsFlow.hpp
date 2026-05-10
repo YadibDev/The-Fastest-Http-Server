@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stack>
+
 #include "../server/clsEpollHandler.hpp"
 #include "../server/clsServerSock.hpp"
 #include <unistd.h>
@@ -53,7 +54,7 @@ private:
     void _clientProcess(int fd, uint32_t event);
     bool _eventsEroorHandle(epoll_event &client, fdTypes &TypeFd);
     void _flowProcess(int fd, fdTypes &TypeFd, int indexEvent);
-    bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block);
+    bool _insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block, uint16_t port);
     void _popPipe(short pipe);
     void _pushPipe(short pipe, short indexClient);
     void _pipeFlow(int fd);
