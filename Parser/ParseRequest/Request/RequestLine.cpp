@@ -51,6 +51,8 @@ bool    RequestLine::selectMethod(const char *buffer, uint16_t size)
 	if (_offset > size)
 		return true;
 
+	_state = STATE_METHOD;
+
 	if (buffer[_offset] == 'G')
 		_methodType = HttpTables::M_GET;
 	else if (buffer[_offset] == 'P')
@@ -62,7 +64,6 @@ bool    RequestLine::selectMethod(const char *buffer, uint16_t size)
 
 	_method.Data = (char *)&buffer[_offset];
 	_methodIndex = 0;
-	_state = STATE_METHOD;
 	return true;
 }
 
@@ -97,11 +98,13 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 {
 	if (!_uriReady)
 	{
-		if (' ' != buffer[_offset])
-			return (_error.setStatus(400, "Bad Request") , false);
-		_offset++;
-		_uriParser.init(_offset);
-		_uriReady = true;
+	    while (_offset < size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
+	        _offset++;
+	
+	    if (_offset >= size) return true;
+
+	    _uriParser.init(_offset);
+	    _uriReady = true;
 	}
 
 	_uriParser.parse(buffer, size);
@@ -123,16 +126,19 @@ bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 {
 	const char *expectedPrefix = "HTTP/1.";
 
-	if (!_versionReady)
-	{
-		if (' ' != buffer[_offset])
-			return (_error.setStatus(400, "Bad Request") , false);
+    if (!_versionReady)
+    {
+        while (_offset <= size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
+            _offset++;
 
-		_offset++;
-		_version.Data = (char *)&buffer[_offset];
-		_version.len = 0;
-		_versionReady = true;
-	}
+        if (_offset > size)
+            return true;
+
+        _version.Data = (char *)&buffer[_offset];
+        _version.len = 0;
+        _versionReady = true;
+    }
+
 
 	while (_versionIndex < 7 && _offset <= size)
 	{

@@ -36,6 +36,7 @@ private:
 	const std::string*					_upload_store;
 	HttpError							_error;
 	short								_statusError;
+	size_t								_sizeFile;
 
 public:
 	RequestHandler(stPollRequest& request);
@@ -43,6 +44,7 @@ public:
 
 	void					reset();
 
+	void					setSizeFile(size_t sizeFile);
 	void					setAutoIndex(bool autoindex);
 	void					setRequestUri(const s_view &uri);
 	void					setQuery(const s_view query);
@@ -67,6 +69,8 @@ public:
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
 	// edited by achraf i add const 
+
+	size_t					getSizeFile() const;
 	const s_view			&getRequestUri() const;
 	char*					getPhysicalPath() ;
 	const char*				getPhysicalPath() const;

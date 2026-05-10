@@ -174,6 +174,8 @@ void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* ra
 	req.known_headers    = client.known_headers;
 	req.unknown_headers  = client.unknown_headers;
 	req.io_chunk         = client.io_chunk;
+	req.read_body_ptr         = &client.read_body;
+
 }
 
 int main()
@@ -183,8 +185,8 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-    	"GET /test2.py HTTP/1.1\r\n"
-    	"Host: 127.0.0.1 \r\n"
+    	"GET / HTTP/1.1\r\n"
+    	"Host: FE80:0000:0000:0000:0202:B3FF:FE1E:8329 \r\n"
     	"Connection: keep-alive\r\n"
     	"Cache-Control: max-age=0\r\n"
     	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
@@ -200,7 +202,8 @@ int main()
     	"Sec-Fetch-User: ?1\r\n"
     	"Sec-Fetch-Dest: document\r\n"
     	"Accept-Encoding: gzip, deflate, br\r\n"
-    	"\r\n\0";
+    	"\r\n"
+		"abs\0";
 
 	setPollRequestData(req, client, http_request);
 
@@ -209,7 +212,6 @@ int main()
 	configeData.resize(1025);
 
 	read(fd, &configeData[0], 1024);
-
 
 
 	// fd, configeData, 1024
@@ -247,12 +249,14 @@ int main()
 
 
 	int size = strlen(http_request);
-	Parser.Parse(size);
+	Parser.Parse(1);
+	Parser.Parse(size - 2);
 	if (Parser.isComplete())
 		std::cout << "\nIsComplete\n\n";
 
 	if (Parser.isError())
 	{
+
 		if (!ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error))
 		{
 			RequestHandler.setDefaultErrorPage(true);

@@ -140,6 +140,17 @@ void    clsServerConfig::initUri()
 	ConfigDirectiveParser::DefineUri(_return.value);
 	_return.value.initView();
 
+
+	for(size_t i = 0; i < _LocationExact.size(); i++)
+	{
+		_LocationExact[i].initUri();
+	}
+
+	for(size_t i = 0; i < _LocationPrefix.size(); i++)
+	{
+		_LocationPrefix[i].initUri();
+	}
+
 	size_t i = 0;
 	while (i < _index.size())
 	{
@@ -179,7 +190,6 @@ bool    clsServerConfig::parseBlockServer()
 
 	ctx.parser.advance();
 	ConfigDirectiveParser::skipWhitespace(ctx.parser);
-	initUri();
 	return true;
 }
 

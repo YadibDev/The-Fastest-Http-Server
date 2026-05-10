@@ -109,6 +109,11 @@ bool HelperFunctions::myIsspace(std::string str, size_t pos)
 	return (false);
 }
 
+bool HelperFunctions::isspaceTabOrSp(char c)
+{
+	return (c == ' ' || c == '\t');
+}
+
 std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string& value)
 {
 	std::vector<std::string> result;
@@ -233,18 +238,36 @@ s_view	HelperFunctions::extract_between(s_view view, const char* start_set, cons
 }
 
 
-bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t size)
+bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size)
 {
-	size_t nullTerminite = ft_strlen(buffer);
-	size_t sizeAddStr = ft_strlen(AddStr);
-
-	if ((sizeAddStr + nullTerminite) >= size)
+	if ((AddStrSize + BufferSize) >= size)
 		return false;
 
-	memcpy(&buffer[nullTerminite], AddStr, sizeAddStr);
-	buffer[nullTerminite + sizeAddStr] = '\0';
+	memcpy(&buffer[BufferSize], AddStr, AddStrSize);
+	buffer[BufferSize + AddStrSize] = '\0';
 	return true;
 }
+
+size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2)
+{
+    if (v1.len + v2.len + 1 > dst_size)
+        return 0;
+
+    memcpy(dst, v1.Data, v1.len);
+    memcpy(dst + v1.len, v2.Data, v2.len);
+
+    dst[v1.len + v2.len] = '\0';
+
+    return (v1.len + v2.len);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -463,9 +486,9 @@ unsigned long HelperFunctions::getCurrentTimeInMs()
     return getCurrentTimeInS() * 1000;
 }
 
-long HelperFunctions::getCurrentTimeInS()
+long int HelperFunctions::getCurrentTimeInS()
 {
-	long Time;
+	long int Time;
 	Time = time(0);
 	return (Time);
 }
@@ -772,25 +795,11 @@ bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
 
 int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 {
-	int flags = fcntl(fd, F_GETFL, 0);
-
-	if (flags == -1)
-		return -1;
-
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
+        return -1;
+    return 0;
 	if (closeOnExec)
-	{
-		int fdFlags = fcntl(fd, F_GETFD, 0);
-		if (fdFlags != -1)
-		{
-			fcntl(fd, F_SETFD, fdFlags | FD_CLOEXEC);
-		}
-	}
-
-	else
-		flags |= O_NONBLOCK;
-
-	fcntl(fd, F_SETFL, flags);
-	return 0;
+		return closeOnExec;
 }
 
 int HelperFunctions::FindChar(char *Arr, int length, char c)
@@ -806,6 +815,55 @@ int HelperFunctions::FindChar(char *Arr, int length, char c)
 	}
 	return i;
 }
+
+char	*HelperFunctions::ft_strcpy(char *dest, const char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+char	*HelperFunctions::ft_strjoin(const char *s1, const char *s2, char free_yes)
+{
+	size_t	len1;
+	size_t	len2;
+	char	*new_str;
+
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+	{
+		new_str = ft_strdup(s1);
+		if (free_yes)
+			delete[] (s1);
+		return (new_str);
+	}
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	new_str = new(std::nothrow) char[len1 + len2 + 1];
+	if (!new_str)
+	{
+		if (free_yes)
+			delete[] (s1);
+		return (NULL);
+	}
+	ft_strcpy(new_str, s1);
+	ft_strcpy(new_str + len1, s2);
+	if (free_yes)
+			delete[] (s1);
+	return (new_str);
+}
+
+
 int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
 {
 	int i = length - 1;

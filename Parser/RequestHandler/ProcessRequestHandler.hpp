@@ -15,7 +15,7 @@ class ProcessRequestHandler
 {
 	static void					finalizeErrorState(RequestHandler* handler, 
 															int originalCode, 
-											   				const stErrorPagedata& errorData);
+											   				short response);
 	static void					getPathCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass, RequestHandler* handler);
 	// static std::string			selectMethod(Methods::eMethods method);
 	static bool					isMethodAllowed(HttpTables::eMethod method, uint8_t allowedMethods);
@@ -35,6 +35,11 @@ class ProcessRequestHandler
 										RequestHandler* handler,
 										s_uri_entry& newUri,
 										HttpError &error);
+	static bool						validateAndFinalizePhysicalPath(const clsLocation* bestLocation,
+															RequestHandler* handler,
+															s_uri_entry& newUri,
+															HttpError &error);
+
 	static bool					handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath);
 	static stReturnData			buildReturnFromPathAndStatus(s_uri_entry& newUri, short codeStatus, s_view &Host, const std::string &Port);
 	static void					convertToAbsUri(s_uri_entry& entry, const s_view& host, const std::string& port);

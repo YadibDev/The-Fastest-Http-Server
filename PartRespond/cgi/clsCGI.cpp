@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 16:34:03 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/10 09:58:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,31 +152,49 @@ bool clsCGI::_SERVER_PORT()
 
 bool clsCGI::_REQUEST_METHOD()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("REQUEST_METHOD=\"\"")))
-        return (false);
+    char c_Method[3][8] ={"GET", "POST", ""};
+    u_int8_t Method = 0;
+    if (_DataRequest.getMethod() == HttpTables::M_GET)
+        Method = 0;
+    else
+        Method = 1;
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("REQUEST_METHOD=", c_Method[Method], 0)))
+        return (false);   
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_PATH_INFO()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
-        return (false);
+    if (!_DataRequest.getPathInfo().len)
+    {
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_INFO=\"\"")))
+            return (false);
+    }
+    else
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("PATH_INFO=", _DataRequest.getPathInfo().Data, 0)))
+            return (false);   
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_PATH_TRANSLATED()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
-        return (false);
+    if (_DataRequest.getPathTranslated().empty())
+    {
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("PATH_TRANSLATED=\"\"")))
+            return (false);
+    }
+    else
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("PATH_TRANSLATED=", _DataRequest.getPathTranslated().c_str(), 0)))
+        return (false);    
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_SCRIPT_NAME()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("SCRIPT_NAME=\"\"")))
+    if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("SCRIPT_NAME=", _DataRequest.getScriptName().Data, 0)))
         return (false);
     _Counter++;
     return (true);
@@ -184,24 +202,44 @@ bool clsCGI::_SCRIPT_NAME()
 
 bool clsCGI::_QUERY_STRING()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
-        return (false);
+    if (!_DataRequest.getQuery().len)
+    {
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("QUERY_STRING=\"\"")))
+            return (false);
+    }
+    else
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("QUERY_STRING=", _DataRequest.getQuery().Data, 0)))
+            return (false);
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_CONTENT_TYPE()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
-        return (false);
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->Hash != -1)
+    {
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_TYPE=\"\"")))
+            return (false);
+    }
+    else
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("CONTENT_TYPE=",
+                _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_TYPE)->val.Data, 0)))
+            return (false);
     _Counter++;
     return (true);
 }
 
 bool clsCGI::_CONTENT_LENGTH()
 {
-    if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
-        return (false);
+    if (_DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->Hash != -1)
+    {
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strdup("CONTENT_LENGTH=\"\"")))
+            return (false);
+    }
+    else
+        if (!(_ENV[_Counter] = HelperFunctions::ft_strjoin("CONTENT_LENGTH=",
+                _DataRequest.getHeader().getKnownHeader(HttpTables::H_CONTENT_LENGTH)->val.Data, 0)))
+            return (false);
     _Counter++;
     return (true);
 }
@@ -272,6 +310,7 @@ bool clsCGI::_InintialVar()
         return (false);
     return (true);
 }
+
 void clsCGI::RunCGI()
 {
     if (!_InintialVar())
@@ -306,7 +345,9 @@ void clsCGI::Reset()
 {
     HelperFunctions::free_matrex(&_ENV, 6);
     HelperFunctions::free_matrex(&_ARG, 0);
+    _IsRunCGI = false;
     _Counter = 0;
+    _Erno = false;
 }
 
 bool clsCGI::GetIsRunCGI()
@@ -341,6 +382,7 @@ bool clsCGI::GetErno()
 {
     return _Erno;
 }
+
 clsCGI::~clsCGI()
 {
     HelperFunctions::free_matrex(&_ENV, 6);

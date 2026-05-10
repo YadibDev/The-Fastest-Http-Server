@@ -46,18 +46,22 @@ public:
 	static bool checkIfTheFirstWord(std::string str, std::string Start, size_t POS);
 	static std::string normalizeLWS(const std::string &input);
 	static bool isLWS(char c);
+    static bool isspaceTabOrSp(char c);
 	static bool myIsspace(std::string str, size_t pos);
 	static std::vector<std::string> splitCommaSeparated(const std::string &value);
 	static bool strIsSpace(const std::string &str);
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
 	static short    isValidPath(const std::string& path, bool expectDir);
 	static s_view find_last_of_view(s_view view, const char* set);
-	static bool	joinArr(char *buffer, const char *AddStr, size_t size);
+    static bool	joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size);
+    static size_t join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2);
+
+
 
 
     // achraf part
     static unsigned long getCurrentTimeInMs();
-    static long getCurrentTimeInS();
+    static long int getCurrentTimeInS();
 	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
     static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
     static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
@@ -100,6 +104,7 @@ public:
     static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
+    static char	*ft_strcpy(char *dest, const char *src);
 
     template<typename T>
     static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
@@ -112,6 +117,7 @@ public:
     }
     static int FindChar(char *Arr, int length, char c);
     static int FindCharFromLast(char *Arr, int length, char c);
+    static char	*ft_strjoin(const char *s1, const char *s2, char free_yes);
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;

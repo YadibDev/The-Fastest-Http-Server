@@ -33,16 +33,16 @@ private:
 	bool    ParseErrorPage();
 	bool    ParseLocationDirective();
 	enBlocksDirective   getLocationDirectiveType(const std::string& key);
-	void	initUri();
-
-public:
+	
+	public:
 	clsLocation();
 	clsLocation(s_parse_context& ctxs, const std::string &sRoot
-				, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
-	clsLocation(const clsLocation &loc);
-
-	bool                                        parseLocation();
-	
+		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
+		clsLocation(const clsLocation &loc);
+		
+		bool                                        parseLocation();
+		
+	void	initUri();
 	const std::string							&getRoot() const;
 	const std::string							&getAlias() const;
 	const std::vector<s_uri_entry>              &getIndex() const;
