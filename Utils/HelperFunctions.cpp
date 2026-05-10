@@ -815,6 +815,55 @@ int HelperFunctions::FindChar(char *Arr, int length, char c)
 	}
 	return i;
 }
+
+char	*HelperFunctions::ft_strcpy(char *dest, const char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+char	*HelperFunctions::ft_strjoin(const char *s1, const char *s2, char free_yes)
+{
+	size_t	len1;
+	size_t	len2;
+	char	*new_str;
+
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+	{
+		new_str = ft_strdup(s1);
+		if (free_yes)
+			delete[] (s1);
+		return (new_str);
+	}
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	new_str = new(std::nothrow) char[len1 + len2 + 1];
+	if (!new_str)
+	{
+		if (free_yes)
+			delete[] (s1);
+		return (NULL);
+	}
+	ft_strcpy(new_str, s1);
+	ft_strcpy(new_str + len1, s2);
+	if (free_yes)
+			delete[] (s1);
+	return (new_str);
+}
+
+
 int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
 {
 	int i = length - 1;

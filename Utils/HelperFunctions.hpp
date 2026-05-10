@@ -104,6 +104,7 @@ public:
     static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
+    static char	*ft_strcpy(char *dest, const char *src);
 
     template<typename T>
     static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
@@ -116,6 +117,7 @@ public:
     }
     static int FindChar(char *Arr, int length, char c);
     static int FindCharFromLast(char *Arr, int length, char c);
+    static char	*ft_strjoin(const char *s1, const char *s2, char free_yes);
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
