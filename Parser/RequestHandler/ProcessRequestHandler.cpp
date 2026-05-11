@@ -65,6 +65,7 @@ const clsLocation* ProcessRequestHandler::findBestLocation(
 // 	}
 // }
 
+<<<<<<< HEAD
 sPathType::e_path_type checkPath(char *path, UriStatus &flags, size_t &size)
 {
 	if (!path)
@@ -95,6 +96,8 @@ sPathType::e_path_type checkPath(char *path, UriStatus &flags, size_t &size)
 
 	return (sPathType::PATH_OTHER);
 }
+=======
+>>>>>>> Server
 
 bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 											const clsLocation* bestLocation,
@@ -122,9 +125,15 @@ bool ProcessRequestHandler::handleDirectory(const clsServerConfig* serverConfig,
 			if (!createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri, error))
 				continue ;
 			lastIndexOfAutoindex = HelperFunctions::ft_strlen(handler->getPhysicalPath());
+<<<<<<< HEAD
 			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.sv_raw_path.Data, lastIndexOfAutoindex, uri.sv_raw_path.len, MAX_PATH_LEN);
 			size_t size = 0;
 			PathType = checkPath(handler->getPhysicalPath(), flags, size);
+=======
+			HelperFunctions::joinArr(handler->getPhysicalPath(), uri.raw_path.c_str(), MAX_PATH_LEN);
+			
+			PathType = HelperFunctions::checkPath(handler->getPhysicalPath(), flags);
+>>>>>>> Server
 			if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
 			{
 				error.setStatus(403, "Forbidden");
@@ -380,7 +389,10 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	);
 
 	if (!bestLocation)
-		return (error.setStatus(500, "Internal Server Error"), false);
+	{
+		error.setStatus(500, "Internal Server Error");
+		return (handler->setError(error), false);
+	}
 
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{
