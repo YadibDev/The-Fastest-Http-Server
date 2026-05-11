@@ -4,6 +4,7 @@
 #include "HttpTypes.hpp"
 #include "Utils.hpp"
 #include "../../../Utils/HttpError.hpp"
+#include "../../../Utils/HelperFunctions.hpp"
 
 class Header {
 private:
