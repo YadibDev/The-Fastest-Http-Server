@@ -244,7 +244,16 @@ bool clsClient::_handleInternal()
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
     // support internal location in future
-    if (Respond.IsError())
+    if (_internalCounter == MAX_INTERNAL_LOOP)
+    {
+        HttpError error;
+        error.setStatus(508, "internal error page");
+        _RequestXconfig.setDefaultErrorPage(true);
+        _RequestXconfig.setError(true);
+        _ResponderProecss.Reset();
+        return true;
+    }
+    else if (Respond.IsError())
     {
         HttpError error;
         _RequestXconfig.reset();
@@ -269,6 +278,7 @@ void clsClient::_initalizeRespondBuffer()
 
     if (_handleInternal())
     {
+        _internalCounter++;
         _state = START_RESPOND;
         return;
     }
@@ -353,7 +363,10 @@ void clsClient::ProcessRespond()
 void clsClient::ProcessBoth(uint32_t events)
 {
     if ((events & EPOLLIN) == EPOLLIN)
+    {
+        _internalCounter = 0;
         ProcessRequest();
+    }
     else if ((events & EPOLLOUT) == EPOLLOUT)
     {
         ProcessRespond();

@@ -15,6 +15,7 @@
 #include "monitorCgi.hpp"
 
 #define CLIENT_TIMEOUT 60
+#define MAX_INTERNAL_LOOP 10
 
 using namespace std;
 
@@ -64,6 +65,7 @@ private:
     clinetState _state;
     bodyPlaceEnum::place _BodyPlace;
     clsMonitorCGI _monitorCGI;
+    short   _internalCounter;
 
     void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
