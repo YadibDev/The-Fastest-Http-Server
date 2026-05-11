@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 15:15:00 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 15:52:39 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,7 +385,7 @@ bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
     close(_pip[0]);
-    if (_DataRequest.getMethod() == HttpTables::M_POST)
+    if (!_DataRequest.getFilePathBody().empty())
     {
         Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
         if (Fd < 0)
@@ -396,15 +396,17 @@ bool clsCGI::_childeProcesse()
         if (dup2(Fd, 0) == -1)
             return (close(Fd), close(_pip[1]), true);
     }
-    // int Start = HelperFunctions::FindChar(_DataRequest.getPhysicalPath(), HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), '.');
-    // int Pos = HelperFunctions::FindCharFromLast(_DataRequest.getPhysicalPath(), Start, '/');
-    // _DataRequest.getPhysicalPath()[Pos] = '\0';
-    // if (chdir(_DataRequest.getPhysicalPath())  == -1)
-    //     return (close(Fd), close(_pip[1]), true);
+    int Start = HelperFunctions::FindChar(_DataRequest.getPhysicalPath(), HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), '.');
+    int Pos = HelperFunctions::FindCharFromLast(_DataRequest.getPhysicalPath(), Start, '/');
+    char C = _DataRequest.getPhysicalPath()[Pos];
+    _DataRequest.getPhysicalPath()[Pos] = '\0';
+    if (chdir(_DataRequest.getPhysicalPath())  == -1)
+        return (close(Fd), close(_pip[1]), true);
+    _DataRequest.getPhysicalPath()[Pos] = C;
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
-    if (_DataRequest.getMethod() == HttpTables::M_POST)
+    if (!_DataRequest.getFilePathBody().empty())
         close(Fd);
     
     execve(_ARG[0], _ARG, _ENV);

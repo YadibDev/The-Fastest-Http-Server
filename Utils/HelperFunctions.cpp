@@ -884,7 +884,6 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 	while (Offset < LengthBuffer && i < LengthStr_src)
 	{
 		Buffer[Offset] = Str_src[i];
-		std::cout << Buffer[Offset] ;
 		Offset++;
 		i++;
 	}
@@ -892,7 +891,6 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 		Buffer[Offset] = '\0';
 	else
 		Buffer[LengthBuffer - 1] = '\0';
-	std::cout<< std::endl;
 }
 
 
