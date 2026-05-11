@@ -39,6 +39,7 @@ public:
 	const s_view&       getAuthority() const;
 	const s_view&       getHost() const;
 	const s_view&       getPath() const;
+	s_view&       getPath();
 	const s_view&       getQuery() const;
 	const s_view&       getFragment() const;
 	const HttpError&    getError() const;

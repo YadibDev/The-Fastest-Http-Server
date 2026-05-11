@@ -403,6 +403,7 @@ unsigned short			UriParser::getPort()		const { return _port; }
 const s_view&			UriParser::getAuthority()	const { return _authority; }
 const s_view&			UriParser::getHost()		const { return _host; }
 const s_view&			UriParser::getPath()		const { return _path; }
+s_view&					UriParser::getPath()			{ return _path; }
 const s_view&			UriParser::getQuery()		const { return _query; }
 const s_view&			UriParser::getFragment()	const { return _fragment; }
 const HttpError&		UriParser::getError()		const { return _error; }

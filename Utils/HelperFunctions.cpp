@@ -261,6 +261,47 @@ size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v
     return (v1.len + v2.len);
 }
 
+void	HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
+{
+    size_t r = 0;
+    size_t w = 0;
+
+    while (r < length)
+    {
+
+		if (path[r] == '/' && path[r + 1] == '/') {
+    		r++;
+    		continue;
+		}
+
+    	if (path[r] == '/' && path[r + 1] == '.' && path[r + 2] == '.' && 
+                (path[r + 3] == '/' || path[r + 3] == '\0'))
+        {
+            r += 3;
+            
+            if (w > 0)
+            {
+                w--;
+                while (w > 0 && path[w] != '/')
+                    w--;
+            }
+        }
+    	if (path[r] == '.' && path[r + 1] == '.'  && 
+                (path[r + 2] == '/' || path[r + 2] == '\0'))
+        {
+            r += 2;
+			w = 0;
+        }
+        else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
+            r += 2;
+		else if (path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
+            r += 1;
+        else
+            path[w++] = path[r++];
+    }
+
+    path[w] = '\0';
+}
 
 
 

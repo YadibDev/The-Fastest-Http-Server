@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 19:43:38 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 20:12:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,7 @@ bool clsCGI::_PATH_TRANSLATED()
     if (_Offset == SIZE_BUFFER)
         return false;
     _ENV[_Counter] = &_Buffer[_Offset];
-    if (_DataRequest.getPathTranslated().empty())
+    if (!(&_DataRequest.getPathTranslated()[0]))
     {
         Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=\"\"");
         HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=\"\"", SIZE_BUFFER, _Offset, Length, 0);
@@ -260,7 +260,8 @@ bool clsCGI::_PATH_TRANSLATED()
     {
         Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=");
         HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=", SIZE_BUFFER, _Offset, Length, 0);
-        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getPathTranslated().c_str(), SIZE_BUFFER, _Offset, _DataRequest.getPathTranslated().length(), 0);
+        Length = HelperFunctions::ft_strlen(&_DataRequest.getPathTranslated()[0]);
+        HelperFunctions::ft_str_copy(_Buffer,  &_DataRequest.getPathTranslated()[0], SIZE_BUFFER, _Offset, Length, 0);
     }
      if (_Offset == SIZE_BUFFER)
         return false;
@@ -376,7 +377,7 @@ bool clsCGI::_ConcatonateValueHeaders(int CountHeaders)
 
 bool clsCGI::_AddKeyHeader(int CountHeaders)
 {
-    HelperFunctions::ft_str_copy(_Buffer,  "HTTP_", SIZE_BUFFER, _Offset, 6, 0);
+    HelperFunctions::ft_str_copy(_Buffer,  "HTTP_", SIZE_BUFFER, _Offset, 5, 0);
     HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.Data,
          SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.len, 1);
     HelperFunctions::ft_str_copy(_Buffer,  "=", SIZE_BUFFER, _Offset, 1, 0);

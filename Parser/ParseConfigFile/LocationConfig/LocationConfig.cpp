@@ -189,7 +189,7 @@ enBlocksDirective clsLocation::getLocationDirectiveType(const std::string& key) 
 	return L_DIR_UNKNOWN;
 }
 
-bool clsLocation::ParseLocationDirective() {
+bool clsLocation::ParseLocationDirective(s_parse_context &ctx) {
 	if (ctx.parser.peek().type != TOKEN_WORD) return (false);
 	std::string directive = ctx.parser.peek().value;
 	enBlocksDirective dirType = getLocationDirectiveType(directive);
@@ -204,7 +204,7 @@ bool clsLocation::ParseLocationDirective() {
 		case L_DIR_UPLOAD_STORE: return ParseUploadStore();
 		case L_DIR_CGI_PASS: return ParseCgiPass();
 		case L_DIR_ERROR_PAGE: return ParseErrorPage();
-		default: return (false);
+		default: return (ctx.error.setStatus(400, "Error in " + directive), false);
 	}
 }
 
@@ -213,7 +213,7 @@ bool clsLocation::parseLocation() {
 	if (!ConfigDirectiveParser::parseLocationPath(ctx, _locationData))
 		return false;
 	while (ctx.parser.peek().type != TOKEN_RBRACE && ctx.parser.peek().type != TOKEN_EOF)
-		if (!ParseLocationDirective())
+		if (!ParseLocationDirective(ctx))
 			return (false);
 	if (ctx.parser.peek().type != TOKEN_RBRACE)
 		return (ctx.error.setStatus(400, "Error in }"), false);
