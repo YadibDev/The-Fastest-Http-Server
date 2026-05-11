@@ -4,88 +4,62 @@
 using namespace std;
 
 
-void    RemoveDotSegments(char *buffer, short length)
+#include <stdbool.h>
+#include <stddef.h>
+
+void RemoveDotSegmentsDirect(char *path)
 {
-	short offset = 0;
-	short startDote = 0;
-	short offsetDir = offset;
-	short tmpOffsetDir = offset;
-	bool	newFolder = false;
+    size_t r = 0;
+    size_t w = 0;
 
-	while (offset < length)
-	{
-		startDote = offset;
-		if (buffer[offset] == '.')
-		{
-			if (offset == 0 || buffer[offset - 1] == '/') // offset == 1 for this test ../
-			{
-				startDote -= (offset && buffer[offset - 1] == '/');
-				if (offset < length + 1 && buffer[1 + offset] == '.')
-				{
-					offset += 2;
-					while (startDote != offset)
-						buffer[startDote++] = '\0';
+    while (path[r] != '\0')
+    {
 
-					do
-					{
-						buffer[offsetDir++] = '\0';
-
-					} while ((buffer[offsetDir] != '/' && buffer[offsetDir] != '\0') && offsetDir < length);
-					
-					while (offsetDir > 0 && buffer[offsetDir] != '/')
-						offsetDir--;
-				}
-				else if (offset < length + 1 && buffer[1 + offset] == '/')
-				{
-					buffer[offset++] = '\0';
-					buffer[offset] = '\0';
-				}
-			}
+		if (path[r] == '/' && path[r + 1] == '/') {
+    		r++;
+    		continue;
 		}
-		if (buffer[offset] = '/')
-		{
-			if (newFolder)
-			{
-				newFolder = false;
-				offsetDir = tmpOffsetDir;
-			}
-			else
-				newFolder = true;
-			tmpOffsetDir = offset;
-		}
-		
 
-		offset++;
-	}
+    	if (path[r] == '/' && path[r + 1] == '.' && path[r + 2] == '.' && 
+                (path[r + 3] == '/' || path[r + 3] == '\0'))
+        {
+            r += 3;
+            
+            if (w > 0)
+            {
+                w--;
+                while (w > 0 && path[w] != '/')
+                    w--;
+            }
+        }
+    	if (path[r] == '.' && path[r + 1] == '.'  && 
+                (path[r + 2] == '/' || path[r + 2] == '\0'))
+        {
+            r += 2;
+			w = 0;
+        }
+        else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
+            r += 2;
+		else if (path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
+            r += 1;
+        else
+            path[w++] = path[r++];
+    }
 
-	short numberZero = 0;
-	offset = 0;
-
-	for (int i = 0; i < length; i++)
-	{
-		if (buffer[i] == '\0')
-			std::cout << "\\0";
-		else
-			std::cout << buffer[i];
-	}
-	std::cout << endl;
-
-	while (offset < length)
-	{
-
-		if (buffer[offset] == '\0')
-			numberZero++;
-		else
-			buffer[offset - numberZero] = buffer[offset];
-		offset++;
-	}
+    path[w] = '\0';
 }
+
+
 
 int main ()
 {
-	char buffer[100] = "as/.././a/../a/./../b/c/../e";
+	char buffer[100] = "/aa/../b/a/../f";
 	cout << buffer << endl;
-	RemoveDotSegments(&buffer[0], strlen(buffer));
+	RemoveDotSegmentsDirect(&buffer[0]);
 	cout << buffer << endl;
+
+	// RemoveDotSegments(&buffer[0], strlen(buffer));
+	// cout << buffer << endl;
+
 
 }

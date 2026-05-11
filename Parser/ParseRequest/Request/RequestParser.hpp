@@ -12,7 +12,7 @@
 
 class RequestParser
 {
-public: // testing
+public:
 
 	stPollRequest	&_request;
 	uint16_t		_offset;
@@ -40,6 +40,7 @@ public:
 	bool				isError() const;
 	const RequestLine	&getRequestLine() const; // refrence add
 	HttpError			getError() const;
+	
 };
 
 #endif

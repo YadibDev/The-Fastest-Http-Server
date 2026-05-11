@@ -14,6 +14,7 @@ RequestHandler::RequestHandler(stPollRequest& request)
 	_query.len = 0;
 	_version.Data = NULL;
 	_version.len = 0;
+	_PathTranslated.resize(4096);
 }
 
 void RequestHandler::reset()
@@ -26,10 +27,8 @@ void RequestHandler::reset()
 	_version.reset();
 	_PathInfo.reset();
 	_ScriptName.reset();
-	_ServerPort = "";
 
 	_PathTranslated.clear();
-	_body.clear();
 	_filePathBody.clear();
 
 	_method = HttpTables::M_GET;
@@ -50,16 +49,16 @@ bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std:
 	if (!newUri.getView().Data || newUri.getView().len == 0)
 		return false;
 
-	const char* start = newUri.getView().Data;
-	const char* current = start;
-	const char* end = start + newUri.getView().len - 1;
+	char* start = newUri.getView().Data;
+	char* current = start;
+	char* end = start + newUri.getView().len - 1;
 
 	while (current <= end)
 	{
 		if (*current == '.')
 		{
-			const char* extStart = current;
-			const char* extEnd = extStart;
+			char* extStart = current;
+			char* extEnd = extStart;
 
 			while (extEnd <= end && *extEnd != '/')
 				++extEnd;
@@ -93,22 +92,39 @@ bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std:
 }
 
 
-void	RequestHandler::computePathTranslated(const std::string& rootPath)
+void	RequestHandler::computePathTranslated(const std::string& rootPath, const clsServerConfig* serverConfig)
 {
-	size_t totalSize = rootPath.size() + _PathInfo.len;
 
-	bool needSlash = (!rootPath.empty() && rootPath[rootPath.size() - 1] != '/' && _PathInfo.len > 0 && _PathInfo.Data[0] != '/');
+	bool	isExist = false;
+	const clsLocation* newLocation = ProcessRequestHandler::findBestLocation(
+		serverConfig->getLocationExact(),
+		serverConfig->getLocationPrefix(),
+		_PathInfo
+	);
+	s_uri_entry newUri;
 
-	if (needSlash)
-		totalSize += 1;
+	if (newLocation)
+	{
+		if (PathResolver::createPhysicalPath(newLocation, &_PathTranslated[0], _PathInfo, _error))
+			isExist = true;
+	}
 
-	_PathTranslated.reserve(totalSize);
-	_PathTranslated.append(rootPath);
+	if (!isExist)
+	{
+		size_t totalSize = rootPath.size() + _PathInfo.len;
 
-	if (needSlash)
-		_PathTranslated += '/';
+		bool needSlash = (!rootPath.empty() && rootPath[rootPath.size() - 1] != '/' && _PathInfo.len > 0 && _PathInfo.Data[0] != '/');
 
-	_PathTranslated.append(_PathInfo.Data, _PathInfo.len);
+		if (needSlash)
+			totalSize += 1;
+
+		_PathTranslated.append(rootPath);
+
+		if (needSlash)
+			_PathTranslated += '/';
+
+		_PathTranslated.append(_PathInfo.Data, _PathInfo.len);
+	}
 }
 
 void	RequestHandler::setRequestUri(const s_view &uri)
@@ -141,9 +157,6 @@ void RequestHandler::setPathTranslated(std::string pathTranslated) {
 	_PathTranslated = pathTranslated;
 }
 
-void RequestHandler::setServerPort(const std::string &serverPort) {
-	_ServerPort = serverPort;
-}
 
 void    RequestHandler::setHeader(HeaderTable	Header)
 {
@@ -158,7 +171,6 @@ void	RequestHandler::setReturnVal(stReturnData returnData) { _return = returnDat
 
 void    RequestHandler::setUploadStore(const std::string* uploadStore) { _upload_store = uploadStore; }
 
-void    RequestHandler::setBody(const std::string& body) { _body = body; }
 
 void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _filePathBody = filePathBody; }
 
@@ -191,9 +203,6 @@ const std::string &RequestHandler::getPathTranslated() const {
 	return _PathTranslated;
 }
 
-const std::string &RequestHandler::getServerPort() const {
-	return _ServerPort;
-}
 
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
@@ -221,7 +230,6 @@ const stReturnData& RequestHandler::getReturn() const { return _return; }
 
 const std::string* RequestHandler::getUploadStore() const { return _upload_store; }
 
-const std::string& RequestHandler::getBody() const { return _body; }
 
 const std::string& RequestHandler::getFilePathBody() const { return _filePathBody; }
 
