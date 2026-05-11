@@ -31,8 +31,10 @@ struct chunkVars
 class clsBody
 {
 public: // time to debug
+    bool bodyHasLimit;
     stPollRequest &data;
     chunkVars chunkHelp;
+    long maxBodySize;
     long writeSize;
     std::string _fileName;
     const std::string *uploadStore;
@@ -63,7 +65,7 @@ public:
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
     bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path = NULL);
-    void ParseBody(uint16_t &offset, const size_t &maxBodySize);
+    void ParseBody(uint16_t &offset);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 

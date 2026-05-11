@@ -46,6 +46,8 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
+    char ClientIp[INET_ADDRSTRLEN];
+    std::string _serverPort;
     int _socket;
     int _fdRespond;
     short bytesToSend;
@@ -72,7 +74,7 @@ private:
 
 public:
     clsClient();
-    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block); // initialize_state_by_begin
+    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer);
     void freeRessources();
 
     ~clsClient();
