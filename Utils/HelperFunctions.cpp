@@ -265,13 +265,10 @@ size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v
 
 
 
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> Server
 
 
 // Achraf
