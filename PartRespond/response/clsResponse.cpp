@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 15:38:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 21:16:06 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,16 @@ clsResponse::clsResponse(RequestHandler &DataRequest) : _DataRequest(DataRequest
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
 
+void clsResponse::_DeleteResource()
+{
+    if (remove(_DataRequest.getPhysicalPath()) == -1)
+    {
+        _Mod[stMod::ERROR] = stMod::ERROR;
+        _Status = 403;
+        return;
+    }
+}
+
 void clsResponse::MakeResponse()
 {
     if (_Erno)
@@ -56,6 +66,8 @@ void clsResponse::MakeResponse()
         else
             _InitialAutoIndex();
     }
+    else if (_Mod[stMod::DELETE] == stMod::DELETE)
+        _DeleteResource();
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
     if (_Mod[stMod::ERROR] == stMod::ERROR)

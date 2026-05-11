@@ -180,7 +180,12 @@ bool    Header::selectHeaderSlot()
 
 bool    Header::storeValue()
 {
-	uint16_t valueLen = _offset - _valueStart;
+	uint16_t tmpOffset = _offset;
+
+	while (HelperFunctions::isspaceTabOrSp(_request.request_metadata[tmpOffset - 1]))
+		--tmpOffset;
+
+	uint16_t valueLen = tmpOffset - _valueStart;
 	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == INVALID_INDEX)
 	{
 		_request.known_headers[_currentHeader].val.Data = (char *)&_request.request_metadata[_valueStart];

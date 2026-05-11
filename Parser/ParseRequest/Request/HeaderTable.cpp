@@ -29,7 +29,14 @@ const s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) con
 	return &_request.known_headers[h];
 }
 
-const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) {
+const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) const{
+	if (index >= SIZE_UNKNOW_HEADER || index == INVALID_INDEX)
+		return NULL;
+	return &_request.unknown_headers[index];
+}
+// modified by achraf here
+// add this function without const
+s_header_slot* HeaderTable::getUnknownHeader(uint8_t index){
 	if (index >= SIZE_UNKNOW_HEADER || index == INVALID_INDEX)
 		return NULL;
 	return &_request.unknown_headers[index];

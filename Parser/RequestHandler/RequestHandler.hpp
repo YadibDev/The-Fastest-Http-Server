@@ -6,6 +6,9 @@
 #include "../../Utils/HttpError.hpp"
 #include "../ParseRequest/Request/HttpTypes.hpp"
 #include "../ParseRequest/Request/HeaderTable.hpp"
+#include "../ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
+#include "ProcessRequestHandler.hpp"
+#include "PathResolver.hpp"
 #include <map>
 #include <vector>
 #include <string>
@@ -24,10 +27,8 @@ private:
 	s_view								_version;
 	s_view								_PathInfo;
 	s_view								_ScriptName;
-	std::string							_ServerPort;
 	std::string							_PathTranslated;
 	stReturnData						_return;
-	std::string							_body;
 	std::string							_filePathBody;
 	HttpTables::eMethod					_method;
 	HeaderTable							_Header;
@@ -60,14 +61,13 @@ public:
 	void					setReturn(const stReturnData& returnData);
 	void					setReturnVal(stReturnData returnData);
 	void					setUploadStore(const std::string* uploadStore);
-	void					setBody(const std::string& body);
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setStatusError(short statusError);
 	void					setError(const HttpError &error);
 
 	bool					ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
-	void					computePathTranslated(const std::string& rootPath);
+	void					computePathTranslated(const std::string& rootPath, const clsServerConfig* serverConfig);
 	// edited by achraf i add const 
 
 	size_t					getSizeFile() const;
@@ -83,11 +83,12 @@ public:
     const std::string		&getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
+	// edited by achraf
+	HeaderTable    &getHeader();
 	const std::string*		getPathCgi() const;
 	bool					getDefaultErrorPage()const ;
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
-	const std::string&		getBody() const;
 	const std::string&		getFilePathBody() const;
 	short					getStatusError();
 	const HttpError&		getError() const;

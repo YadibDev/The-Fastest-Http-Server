@@ -26,12 +26,13 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _state = BEGIN;
     _Requester.init(block);
     _RequestXconfig.reset();
+    _serverPort.clear();
 
     inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
     HelperFunctions::NumToStr(portServer, this->_serverPort);
 
-    // clsCGI &cgi = _ResponderProecss.GetclsCGI();
-    // cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
 }
 
 const clinetState &clsClient::GetState() const
@@ -343,6 +344,8 @@ void clsClient::ProcessRespond()
 
     if (_state == RESPOND_MODE)
     {
+        std::cout << "body size " << Respond.GetSizeBody() << " size body" << std::endl;
+        std::cout << "body size " << std::endl;
         _SendRespond(Respond);
     }
 }

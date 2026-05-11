@@ -261,6 +261,47 @@ size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v
     return (v1.len + v2.len);
 }
 
+void	HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
+{
+    size_t r = 0;
+    size_t w = 0;
+
+    while (r < length)
+    {
+
+		if (path[r] == '/' && path[r + 1] == '/') {
+    		r++;
+    		continue;
+		}
+
+    	if (path[r] == '/' && path[r + 1] == '.' && path[r + 2] == '.' && 
+                (path[r + 3] == '/' || path[r + 3] == '\0'))
+        {
+            r += 3;
+            
+            if (w > 0)
+            {
+                w--;
+                while (w > 0 && path[w] != '/')
+                    w--;
+            }
+        }
+    	if (path[r] == '.' && path[r + 1] == '.'  && 
+                (path[r + 2] == '/' || path[r + 2] == '\0'))
+        {
+            r += 2;
+			w = 0;
+        }
+        else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
+            r += 2;
+		else if (path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
+            r += 1;
+        else
+            path[w++] = path[r++];
+    }
+
+    path[w] = '\0';
+}
 
 
 
@@ -878,16 +919,24 @@ int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
 	return i;
 }
 
-void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_src)
+void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_src, bool Flag)
 {
 	short i = 0;
-	while (Offset < LengthBuffer && Offset < LengthStr_src)
+	while (Offset < LengthBuffer && i < LengthStr_src)
 	{
-		Buffer[Offset] = Str_src[i];
+		if (Flag)
+		{
+			if (Str_src[i] == '-')
+				Buffer[Offset] = '_';
+			else
+				Buffer[Offset] = std::toupper(Str_src[i]);
+		}
+		else
+			Buffer[Offset] = Str_src[i];
 		Offset++;
 		i++;
 	}
-	if (!Offset || Offset != LengthBuffer)
+	if (Offset != LengthBuffer)
 		Buffer[Offset] = '\0';
 	else
 		Buffer[LengthBuffer - 1] = '\0';

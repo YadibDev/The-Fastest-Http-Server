@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 20:10:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 21:02:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class clsResponse
         void _Date();
         void _Server();
         void _InitialAutoIndex();
+        void _DeleteResource();
     public:
         void Reset();
         clsResponse(RequestHandler &_DataRequest);
