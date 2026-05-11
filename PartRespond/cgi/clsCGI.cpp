@@ -409,11 +409,6 @@ bool clsCGI::_OtherHeaders()
         i++;
     }
     i = 0;
-    while (i < SIZE_VAR_ENV )
-    {
-        std::cout << _ENV[i] << std::endl;
-        i++;
-    }
     return (true);
 }
 bool clsCGI::_StoredArgs()

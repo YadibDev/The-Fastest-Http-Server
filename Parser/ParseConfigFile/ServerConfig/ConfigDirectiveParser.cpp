@@ -302,8 +302,7 @@ bool	isValidStatusCode(short code)
 	return code >= 100 && code <= 599;
 }
 
-std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx) {
-	std::map<short, stErrorPagedata> errorMap;
+bool ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx, std::map<short, stErrorPagedata> &error_pages) {
 	std::vector<short> codes;
 	short responseOverride = -1;
 	std::string uri = "";
@@ -314,7 +313,7 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 	{
 		short code = (short)std::atoi(ctx.parser.peek().value.c_str());
 		if (!isValidStatusCode(code))
-			return (ctx.error.setStatus(400, "Invalid status code in error_page"), errorMap);
+			return (ctx.error.setStatus(400, "Invalid status code in error_page"), false);
 		codes.push_back(code);
 		ctx.parser.advance();
 	}
@@ -333,7 +332,7 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 		ctx.parser.advance();
 	}
 	else
-		return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), errorMap);
+		return (ctx.error.setStatus(400, "Syntax Error: Missing URI in error_page"), false);
 
 	stErrorPagedata data;
 	data.uri.raw_path = uri;
@@ -354,15 +353,14 @@ std::map<short, stErrorPagedata> ConfigDirectiveParser::ParseErrorPage(s_parse_c
 	data.response = responseOverride;
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-		return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), errorMap);
+		return (ctx.error.setStatus(400, "Syntax Error: Missing ';' after error_page"), false);
 		
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
 
 	for (size_t i = 0; i < codes.size(); ++i)
-		errorMap[codes[i]] = data;
-
-	return errorMap;
+		error_pages[codes[i]] = data;
+	return true;
 }
 
 

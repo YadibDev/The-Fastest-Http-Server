@@ -128,7 +128,6 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
     {
         if (handler->getPathInfo().len)
             handler->computePathTranslated(bestLocation->getRoot(), serverConfig);
-        return true;
     }
 
     return validateAndFinalizePhysicalPath(bestLocation, handler, newUri, error);
@@ -253,7 +252,7 @@ bool ProcessRequestHandler::internalRedirect(
 
     if (newUri.redirect_count > INTERNAL_LOOP)
         return (error.setStatus(508, "Loop Detected"), false);
-    
+
     newUri.AddRedirectCount();
 
     const clsLocation* newLocation = findBestLocation(
