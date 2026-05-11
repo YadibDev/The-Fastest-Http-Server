@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsErrorPage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 14:14:48 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/09 21:18:17 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void clsErrorPage::_ContentType()
 void clsErrorPage::_Date()
 {
     _HeaderFeild += "Date: ";
-    _HeaderFeild += HelperFunctions::DateTime();
+    HelperFunctions::DateTime(_HeaderFeild);
     _HeaderFeild += "\r\n";
 }
 

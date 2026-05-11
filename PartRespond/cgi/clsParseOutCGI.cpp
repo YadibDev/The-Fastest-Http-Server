@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/07 16:04:29 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/09 21:18:07 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else
 		return (false);
 	if ((Pos = Str.find(':')) == std::string::npos)
-		return (false);    
+		return (false);
 	if (!_CheckValidNameHeader(Str, 0, Pos))
 		return (false);
 	if (!_CheckValidValueHeader(Str, Pos + 1, Str.length()))
@@ -250,7 +250,6 @@ void clsParseOutCGI::_InitialInternalRedirect()
 		_Status = 502;
 		return ;
 	}
-	_Status = 200;
 	Pos = HelperFunctions::SkeepAtLast(_ValueHeader," \t");
 	if (Pos < 0)
 		Pos = _ValueHeader.length();
@@ -269,12 +268,16 @@ void clsParseOutCGI::_BuilResponsedredirection()
 	else if (!CountValidHeader && _LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
 		_HeaderResponseCGI();
 	else if(_HeadersField.size() == 1 && !_BytesBody)
+	{
+		_Mod[stMod::ERROR] = stMod::ERROR;
+		_Status = 404;
 		_InitialInternalRedirect();
+		
+	}
 	else
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		_Status = 502;
-		_ErrorRespnseHandling();
 	}
 }
 
@@ -390,6 +393,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::_ErrorRespnseHandling()
 {
+	//if was useless in future delete it
 	    _ErrorPage.ResponseError(_Status, "", 0);
 	    _ModTransferData = true;
 	    _BodyPointer = &_ErrorPage.GetBody();
@@ -404,9 +408,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingHeaders(Arr, Length);
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
-	{
 		return ;
-	}
 	if (!_ProcessIsFinish)
 		return ;
 	else if (!_FoundBody || (!_BytesBody &&
@@ -435,9 +437,10 @@ void clsParseOutCGI::_Transfer_Encoding()
 void clsParseOutCGI::_Date()
 {
 	_HeadersFieldFinal += "Date: ";
-	_HeadersFieldFinal += HelperFunctions::DateTime();
+	HelperFunctions::DateTime(_HeadersFieldFinal);
 	_HeadersFieldFinal += "\r\n";
 }
+
 void clsParseOutCGI::_CachControl()
 {
 	_HeadersFieldFinal +=  "Cache-Control: no-store\r\n";

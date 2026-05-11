@@ -78,9 +78,9 @@ void clsFlow::_createServers()
 
 void clsFlow::_initializeDataBase()
 {
-	_clientsArr = new clsClient[MAX_CLIENTS];
-	for (int i = 0; i < MAX_CLIENTS; i++)
-		_clientsAvailable.push(i);
+    _clientsArr = new clsClient[maxClient];
+    for (int i = 0; i < maxClient; i++)
+        _clientsAvailable.push(i);
 }
 
 short clsFlow::_getClient()
@@ -130,7 +130,7 @@ void clsFlow::_registerServersSockets()
 	std::cout << "Register Server Sockets by success\n";
 }
 
-clsFlow::clsFlow(const char *configFile)
+clsFlow::clsFlow(const char *configFile, long maxClient) : maxClient(maxClient)
 {
 	_clientsArr = NULL;
 	_initializeStatics();
@@ -146,17 +146,17 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 	{
 		int fd = client.data.fd;
 
-		// if (client.events & EPOLLOUT)
-		//     std::cout << "EPLLOUT ALSO ";
-		// if (TypeFd == PIPE)
-		//     std::cout << "PIPE ";
-		// else if (TypeFd == CLIENT_SOCK)
-		//     std::cout << "CLIENT ";
-		
-		// if (client.events & EPOLLERR)
-		//     std::cout << " and EPOLLERR" << std::endl;
-		// else
-		//     std::cout << " and EPOLLHUP" << std::endl;
+        // if (client.events & EPOLLOUT)
+        //     std::cout << "EPLLOUT ALSO ";
+        // if (TypeFd == PIPE)
+        //     std::cout << "PIPE ";
+        // else if (TypeFd == CLIENT_SOCK)
+        //     std::cout << "CLIENT ";
+        
+        // if (client.events & EPOLLERR)
+        //     std::cout << " and EPOLLERR" << std::endl;
+        // else
+        //     std::cout << " and EPOLLHUP" << std::endl;
 
 		if (TypeFd == PIPE)
 		{
@@ -171,7 +171,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 	return false;
 }
 
-bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block)
+bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *block, uint16_t port)
 {
 	int blockId = this->_getClient();
 	if (blockId == -1)
@@ -184,7 +184,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 	if (_epoll.addClient(newClient, EPOLLIN) == false)
 		return false;
-	client.initializeClient(addr, newClient, block);
+	client.initializeClient(addr, newClient, block, port);
 	return true;
 }
 
@@ -214,10 +214,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	// if (status == BEGIN || status == CONNECTION_CLOSED)
-	// {
-	//     client.logs();
-	// }
+	if (status == BEGIN || status == CONNECTION_CLOSED)
+	{
+	    client.logs();
+	}
 
 	if (status == CONNECTION_CLOSED)
 		_freeClient(fd);
@@ -247,14 +247,19 @@ void clsFlow::_newClientProcess(int serverFd)
 		int newClient = server.tryAcceptNewClient(serverFd, &addr);
 		if (newClient > 0)
 		{
-			if (HelperFunctions::changeFileToNonBlocking(newClient) == -1)
+			// i may change this get port to functoino
+			sockaddr_in tempAddress;
+			socklen_t temp = sizeof(tempAddress);
+			int status = getsockname(serverFd, (sockaddr *)&tempAddress, &temp);
+
+			if (HelperFunctions::changeFileToNonBlocking(newClient) == -1 || status == -1)
 			{
 				close(newClient);
 				std::cout << "Fail to change client fd to non blocking" << std::endl;
 				return;
 			}
 
-			_insertClient(newClient, addr, server.getBlock());
+			_insertClient(newClient, addr, server.getBlock(), ntohs(tempAddress.sin_port));
 			break;
 		}
 		else if (newClient == -1)

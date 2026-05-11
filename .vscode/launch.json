@@ -4,17 +4,9 @@
       "type": "lldb",
       "request": "launch",
       "name": "Launch",
-      "program": "${workspaceFolder}/webserv",
+      "program": "/goinfre/yadib/The-Fastest-Http-Server/webserv",
       "args": [],
       "cwd": "${workspaceFolder}"
-    },
-    {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "lldb",
-      "request": "launch",
-      "args": [],
-      "cwd": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server",
-      "program": "/mnt/homes/achamdao/Desktop/The-Fastest-Http-Server/build/Debug/outDebug"
     }
   ]
 }

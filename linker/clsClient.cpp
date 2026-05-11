@@ -2,7 +2,6 @@
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
-    // _Requester.init();
     this->_socket = -1;
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;
@@ -13,7 +12,7 @@ clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester
     _state = BEGIN;
 }
 
-void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block)
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer)
 {
     _theData.Reset();
     _fdRespond = 0;
@@ -25,6 +24,13 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _state = BEGIN;
     _Requester.init(block);
     _RequestXconfig.reset();
+
+    inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
+    HelperFunctions::NumToStr(portServer, this->_serverPort);
+
+    clsCGI & cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
+    cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
 }
 
 const clinetState &clsClient::GetState() const
@@ -231,24 +237,24 @@ void clsClient::_SendRespond(clsResponse &_Responder)
     }
 }
 
-void clsClient::_handleInternal()
+bool clsClient::_handleInternal()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
+
     // support internal location in future
     if (Respond.IsError())
     {
-        std::cout << "is respond Errror \n"
-                  << std::endl;
-        ;
         HttpError error;
-
+        _RequestXconfig.reset();
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
+
         _ResponderProecss.Reset();
-        this->_ResponderProecss.MainProcess(); // re create error page
+        return true;
     }
+    return false;
 }
 
 void clsClient::_initalizeRespondBuffer()
@@ -259,7 +265,14 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
-    _handleInternal(); // beta;
+    if (_handleInternal())
+    {
+        _state = START_RESPOND;
+        return;
+    }
+
+    _state = RESPOND_MODE;
+
     if (Respond.GetModTransferData())
     {
         bytesToSend += Respond.GetHeaderFeildPointer()->size();
@@ -325,11 +338,12 @@ void clsClient::ProcessRespond()
     else if (_state == CGI_END)
     {
         _initalizeRespondBuffer();
-        _state = RESPOND_MODE;
     }
 
     if (_state == RESPOND_MODE)
+    {
         _SendRespond(Respond);
+    }
 }
 
 void clsClient::ProcessBoth(uint32_t events)
@@ -337,7 +351,11 @@ void clsClient::ProcessBoth(uint32_t events)
     if ((events & EPOLLIN) == EPOLLIN)
         ProcessRequest();
     else if ((events & EPOLLOUT) == EPOLLOUT)
+    {
         ProcessRespond();
+        if (_state == START_RESPOND)
+            ProcessRespond();
+    }
 }
 
 void clsClient::freeRessources()
@@ -433,6 +451,7 @@ bool clsClient::timeoutCgi()
     {
         this->_state = CGI_END;
         _ResponderProecss.setEventProcess(_monitorCGI.getStateProcess());
+
         _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }

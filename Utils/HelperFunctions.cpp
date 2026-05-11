@@ -455,6 +455,8 @@ int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 
 void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
+	if (!BigData)
+		return ;
 	while(i < LengthData && BigData[i] != '\n')
 	{
 		(MaxSizeHeader)++;
@@ -473,21 +475,32 @@ void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &Clean
 	
 }
 
-std::string HelperFunctions::GTMHTTP(tm* GMT)
+void HelperFunctions::GTMHTTP(tm* GMT, std::string &Str)
 {
 	const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	std::stringstream ss;
-	ss << Days[GMT->tm_wday] << ", " << GMT->tm_mday << " " << Months[GMT->tm_mon] << " " 
-	   << GMT->tm_year + 1900 << " " << GMT->tm_hour << ":" << GMT->tm_min << ":" << GMT->tm_sec << " GMT";
-	return ss.str();
+	Str += Days[GMT->tm_wday];
+	Str += ", ";
+	NumToStr(GMT->tm_mday, Str);
+	Str += " ";
+	Str += Months[GMT->tm_mon];
+	Str += " ";
+	NumToStr(GMT->tm_year + 1900, Str);
+	Str += " ";
+	NumToStr(GMT->tm_hour, Str);
+	Str += ":";
+	NumToStr(GMT->tm_min, Str);
+	Str += ":";
+	NumToStr(GMT->tm_sec, Str);
+	Str += "GMT";
 }
 
-std::string HelperFunctions::DateTime()
+void HelperFunctions::DateTime(std::string &Str)
 {
 	time_t Time = time(0);
 	tm* GMT = gmtime(&Time);
-	return GTMHTTP(GMT);
+	GTMHTTP(GMT, Str);
 }
 
 std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num)
@@ -713,11 +726,11 @@ void HelperFunctions::StoredBodys()
 	_Message[400] = "Bad Request";
 	_Message[403] = "Forbidden";
 	_Message[404] = "Not Found";
+	_Message[405] = "405 Method Not Allowed";
 	_Message[500] = "Internal Server Error";
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
-	_Message[405] = "405 Method Not Allowed";
 	_Message[414] = "414 URI Too Long";
 	_Message[411] = "411 ULength Required";
  }
@@ -829,4 +842,104 @@ int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 	if (closeOnExec)
 		return closeOnExec;
 }
+
+int HelperFunctions::FindChar(char *Arr, int length, char c)
+{
+	int i = 0;
+	if (!Arr)
+		return i;
+	while (i < length)
+	{
+		if (Arr[i] == c)
+			return i;
+		i++;
+	}
+	return i;
+}
+
+char	*HelperFunctions::ft_strcpy(char *dest, const char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+char	*HelperFunctions::ft_strjoin(const char *s1, const char *s2, char free_yes)
+{
+	size_t	len1;
+	size_t	len2;
+	char	*new_str;
+
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+	{
+		new_str = ft_strdup(s1);
+		if (free_yes)
+			delete[] (s1);
+		return (new_str);
+	}
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	new_str = new(std::nothrow) char[len1 + len2 + 1];
+	if (!new_str)
+	{
+		if (free_yes)
+			delete[] (s1);
+		return (NULL);
+	}
+	ft_strcpy(new_str, s1);
+	ft_strcpy(new_str + len1, s2);
+	if (free_yes)
+			delete[] (s1);
+	return (new_str);
+}
+
+
+int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
+{
+	int i = length - 1;
+	if (!Arr)
+		return i;
+	while (i >= 0)
+	{
+		if (Arr[i] == c)
+			return i;
+		i--;
+	}
+	return i;
+}
+
+void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_src, bool Flag)
+{
+	short i = 0;
+	while (Offset < LengthBuffer && i < LengthStr_src)
+	{
+		if (Flag)
+		{
+			if (Str_src[i] == '-')
+				Buffer[Offset] = '_';
+			else
+				Buffer[Offset] = std::toupper(Str_src[i]);
+		}
+		else
+			Buffer[Offset] = Str_src[i];
+		Offset++;
+		i++;
+	}
+	if (Offset != LengthBuffer)
+		Buffer[Offset] = '\0';
+	else
+		Buffer[LengthBuffer - 1] = '\0';
+}
+
 

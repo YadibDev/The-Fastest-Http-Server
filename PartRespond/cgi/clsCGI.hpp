@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 19:06:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 18:36:42 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,15 @@ class clsCGI
         int _FD;
         bool _Erno;
         static short _LimitProcess;
+        short _Offset;
+        char *_Buffer;
+        const char *_PortServer;
+        const char *_IPClient;
         RequestHandler &_DataRequest;
         clsParseOutCGI _ParseOutCGI;
         std::string TempVar;
-        char **_ENV;
-        char **_ARG;
+        char *_ENV[SIZE_VAR_ENV];
+        char *_ARG[3];
         int _pip[2];
         uint8_t _Counter;
         std::string _BuildVarEnv(const std::string &HeaderName,const std::string  &Value);
@@ -59,6 +63,8 @@ class clsCGI
         bool _CONTENT_TYPE();
         bool _CONTENT_LENGTH();
         bool _OtherHeaders();
+        bool _ConcatonateValueHeaders(int CountHeaders);
+        bool _AddKeyHeader(int CountHeaders);
     public:
         clsCGI(RequestHandler &DataRequest);
         bool GetIsRunCGI();
@@ -70,6 +76,8 @@ class clsCGI
         void SetIsRunCGI(bool IsRunCGI);
         const time_t &getStartTime() const;
         void Reset();
+        void SetBuffer(char *Buffer);
+        void SetPortS_and_IPC(const char *IPC, const char *PosrtS);
         ~clsCGI();
 };
 

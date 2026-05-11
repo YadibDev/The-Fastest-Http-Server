@@ -215,6 +215,12 @@ const HeaderTable    &RequestHandler::getHeader() const
 {
 	return _Header;
 }
+//add by achraf without const
+HeaderTable    &RequestHandler::getHeader()
+{
+	return _Header;
+}
+
 
 const s_view	&RequestHandler::getScriptName() const
 {
