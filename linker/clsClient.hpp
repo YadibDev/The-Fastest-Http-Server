@@ -101,6 +101,7 @@ public:
     bool monitorCgi();
     void logs();
     bool timeoutCgi();
+    void forceStopCgi();
     void initializeCGI();
 
 };

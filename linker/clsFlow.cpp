@@ -78,9 +78,9 @@ void clsFlow::_createServers()
 
 void clsFlow::_initializeDataBase()
 {
-    _clientsArr = new clsClient[maxClient];
-    for (int i = 0; i < maxClient; i++)
-        _clientsAvailable.push(i);
+	_clientsArr = new clsClient[maxClient];
+	for (int i = 0; i < maxClient; i++)
+		_clientsAvailable.push(i);
 }
 
 short clsFlow::_getClient()
@@ -146,23 +146,18 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 	{
 		int fd = client.data.fd;
 
-        // if (client.events & EPOLLOUT)
-        //     std::cout << "EPLLOUT ALSO ";
-        // if (TypeFd == PIPE)
-        //     std::cout << "PIPE ";
-        // else if (TypeFd == CLIENT_SOCK)
-        //     std::cout << "CLIENT ";
-        
-        // if (client.events & EPOLLERR)
-        //     std::cout << " and EPOLLERR" << std::endl;
-        // else
-        //     std::cout << " and EPOLLHUP" << std::endl;
-
 		if (TypeFd == PIPE)
 		{
 			int index = _IdByPipe[fd];
-			if (_clientsArr[index].monitorCgi())
-				_popPipe(fd);
+			if (client.events == EPOLLHUP)
+			{
+				if (_clientsArr[index].monitorCgi())
+					_popPipe(fd);
+			}
+			else
+			{
+				_clientsArr[index].forceStopCgi();
+			}
 		}
 		else if (TypeFd == CLIENT_SOCK)
 			_freeClient(fd);
@@ -216,7 +211,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 
 	if (status == BEGIN || status == CONNECTION_CLOSED)
 	{
-	    client.logs();
+		client.logs();
 	}
 
 	if (status == CONNECTION_CLOSED)
