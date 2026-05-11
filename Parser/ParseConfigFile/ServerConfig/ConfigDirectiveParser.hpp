@@ -43,7 +43,7 @@ public:
 	static sockaddr_in						ParseListen(s_parse_context& ctx);
 	static stReturnData						ParseReturn(s_parse_context& ctx);
 	static std::string						ParseUploadStore(s_parse_context& ctx);
-	static std::map<short, stErrorPagedata>	ParseErrorPage(s_parse_context& ctx);
+	static bool 							ParseErrorPage(s_parse_context& ctx, std::map<short, stErrorPagedata> &error_pages);
 	static void								ParseCGI(s_parse_context& ctx, std::map<std::string, std::string>& cgiMap);
 	static short							parseMethods(s_parse_context& ctx);
 	static std::string						parseAlias(s_parse_context& ctx);

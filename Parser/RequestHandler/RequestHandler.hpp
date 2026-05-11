@@ -83,8 +83,8 @@ public:
     const std::string		&getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
-	// edited by achraf
-	HeaderTable    &getHeader();
+	// edited by achra
+	HeaderTable    			&getHeader();
 	const std::string*		getPathCgi() const;
 	bool					getDefaultErrorPage()const ;
 	const stReturnData&		getReturn() const;

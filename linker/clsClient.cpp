@@ -10,6 +10,8 @@ clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester
     _dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
     _state = BEGIN;
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
 }
 
 void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer)
@@ -24,12 +26,12 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
     _state = BEGIN;
     _Requester.init(block);
     _RequestXconfig.reset();
+    _serverPort.clear();
 
     inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
     HelperFunctions::NumToStr(portServer, this->_serverPort);
 
-    clsCGI & cgi = _ResponderProecss.GetclsCGI();
-    cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
     cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
 }
 
@@ -242,7 +244,16 @@ bool clsClient::_handleInternal()
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
     // support internal location in future
-    if (Respond.IsError())
+    if (_internalCounter == MAX_INTERNAL_LOOP)
+    {
+        _internalCounter = 0;
+        _RequestXconfig.reset();
+        _RequestXconfig.setDefaultErrorPage(true);
+        _RequestXconfig.setStatusError(508);
+        _ResponderProecss.Reset();
+        return true;
+    }
+    else if (Respond.IsError())
     {
         HttpError error;
         _RequestXconfig.reset();
@@ -250,7 +261,6 @@ bool clsClient::_handleInternal()
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
-
         _ResponderProecss.Reset();
         return true;
     }
@@ -265,8 +275,10 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
+    std::cout << _internalCounter << std::endl;
     if (_handleInternal())
     {
+        _internalCounter++;
         _state = START_RESPOND;
         return;
     }
@@ -349,7 +361,10 @@ void clsClient::ProcessRespond()
 void clsClient::ProcessBoth(uint32_t events)
 {
     if ((events & EPOLLIN) == EPOLLIN)
+    {
+        _internalCounter = 0;
         ProcessRequest();
+    }
     else if ((events & EPOLLOUT) == EPOLLOUT)
     {
         ProcessRespond();
@@ -456,4 +471,9 @@ bool clsClient::timeoutCgi()
         return true;
     }
     return false;
+}
+
+void clsClient::forceStopCgi()
+{
+    _monitorCGI.freeCgiRessources();
 }
