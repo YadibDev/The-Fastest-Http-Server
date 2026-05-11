@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 20:12:31 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 23:08:55 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseO
     _Erno = false;
     _pip[0] = -1;
     _pip[1] = -1;
+    HelperFunctions::ft_memset(_ARG,0,3 * sizeof(char *));
+    HelperFunctions::ft_memset(_ENV,0,SIZE_VAR_ENV * sizeof(char *));
 }
 
 bool clsCGI::_MakeEnv()
@@ -62,6 +64,7 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_OtherHeaders())
         return false;
+    _ENV[_Counter] = NULL;
     return (true);
 }
 bool clsCGI::_SERVER_SOFTWARE()
@@ -251,7 +254,7 @@ bool clsCGI::_PATH_TRANSLATED()
     if (_Offset == SIZE_BUFFER)
         return false;
     _ENV[_Counter] = &_Buffer[_Offset];
-    if (!(&_DataRequest.getPathTranslated()[0]))
+    if (!(_DataRequest.getPathTranslated()[0]))
     {
         Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=\"\"");
         HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=\"\"", SIZE_BUFFER, _Offset, Length, 0);
@@ -371,6 +374,7 @@ bool clsCGI::_ConcatonateValueHeaders(int CountHeaders)
             HelperFunctions::ft_str_copy(_Buffer,  ",", SIZE_BUFFER, _Offset, 1, 0);
         if (_Offset == SIZE_BUFFER)
             return false;
+        _Buffer[_Offset]= '\0';
     }
     return true;
 }
@@ -402,18 +406,12 @@ bool clsCGI::_OtherHeaders()
                 return false;
             if (!_ConcatonateValueHeaders(i))
                 return false;
+            _Offset++;
+            _Counter++;
         }
-        _Offset++;
-        _Counter++;
+        i++;
         if (_Offset == SIZE_BUFFER)
             return false;
-        i++;
-    }
-    i = 0;
-    while (i < SIZE_VAR_ENV )
-    {
-        std::cout << _ENV[i] << std::endl;
-        i++;
     }
     return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 21:18:07 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 22:31:38 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRe
 	_ValueHeader.resize(MAX_HEADERS);
 	_InternalRedirectSrc.resize(1000);
 	_FileNameFromDisk.resize(1000);
+	
 	if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
 		|| _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
 	{
@@ -514,6 +515,7 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
 void clsParseOutCGI::Reset()
 {
 	_Body.clear();
+	_FileNameFromDisk.clear();
 	if (!_HeadersField.empty())
 		_HeadersField.clear();
 	_HeadersFieldDuplicate.clear();
@@ -528,6 +530,7 @@ void clsParseOutCGI::Reset()
 	_ValueHeader.clear();
 	_CountSizeHeaders = 0;
 	_ModTransferData = 0;
+	_Fdout = -1;
 	_ErrorPage.Reset();
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
