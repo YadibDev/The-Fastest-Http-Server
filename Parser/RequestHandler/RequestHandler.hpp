@@ -68,7 +68,6 @@ public:
 	bool					ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass);
 	bool					HandlerCgi(const s_view &uri, const std::map<std::string, std::string> &cgi_pass);
 	void					computePathTranslated(const std::string& rootPath);
-	// edited by achraf i add const 
 
 	size_t					getSizeFile() const;
 	const s_view			&getRequestUri() const;
@@ -83,6 +82,8 @@ public:
     const std::string		&getServerPort() const;
 	HttpTables::eMethod		getMethod() const;
 	const HeaderTable		&getHeader() const;
+	// edited by achra
+	HeaderTable    &getHeader();
 	const std::string*		getPathCgi() const;
 	bool					getDefaultErrorPage()const ;
 	const stReturnData&		getReturn() const;

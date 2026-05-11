@@ -34,6 +34,13 @@ const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) const{
 		return NULL;
 	return &_request.unknown_headers[index];
 }
+// modified by achraf here
+// add this function without const
+s_header_slot* HeaderTable::getUnknownHeader(uint8_t index){
+	if (index >= SIZE_UNKNOW_HEADER || index == INVALID_INDEX)
+		return NULL;
+	return &_request.unknown_headers[index];
+}
 
 void HeaderTable::linkThisHeader(uint8_t newIndex, uint8_t currentIndex)
 {

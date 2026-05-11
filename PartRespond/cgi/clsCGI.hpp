@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 11:56:15 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 18:36:42 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ class clsCGI
         bool _CONTENT_TYPE();
         bool _CONTENT_LENGTH();
         bool _OtherHeaders();
+        bool _ConcatonateValueHeaders(int CountHeaders);
+        bool _AddKeyHeader(int CountHeaders);
     public:
         clsCGI(RequestHandler &DataRequest);
         bool GetIsRunCGI();
