@@ -94,7 +94,7 @@ bool    clsLocation::ParseMethods() {
 }
 
 bool    clsLocation::ParseErrorPage() {
-	_error_pages = ConfigDirectiveParser::ParseErrorPage(ctx);
+	ConfigDirectiveParser::ParseErrorPage(ctx, _error_pages);
 	return !ctx.error.isError();
 }
 

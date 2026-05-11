@@ -712,6 +712,7 @@ void HelperFunctions::StoredBodys()
 	_Body[501] = "<html><head><title>501 Not Implemented</title></head><body><center><h1>501 Not Implemented</h1></center><hr><center>faste server</center></body></html>";
 	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
 	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
+	_Body[508] = "<html><head><title>508 Loop Detected</title></head><body><center><h1>508 Loop Detected</h1></center><hr><center>faste server</center></body></html>";
 	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
 	_Body[414] = "<html><head><title>414 URI Too Long</title></head><body><center><h1>414 URI Too Long</h1></center><hr><center>faste server</center></body></html>";
 	_Body[411] = "<html><head><title>411 ULength Required</title></head><body><center><h1>411 ULength Required</h1></center><hr><center>faste server</center></body></html>";
@@ -731,6 +732,7 @@ void HelperFunctions::StoredBodys()
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
+	_Message[508] = "Loop Detected";
 	_Message[414] = "414 URI Too Long";
 	_Message[411] = "411 ULength Required";
  }

@@ -70,7 +70,7 @@ bool    clsServerConfig::ParseListen()
 
 bool    clsServerConfig::ParseErrorPage()
 {
-	_error_pages = ConfigDirectiveParser::ParseErrorPage(ctx);
+	ConfigDirectiveParser::ParseErrorPage(ctx, _error_pages);
 	return !ctx.error.isError();
 }
 

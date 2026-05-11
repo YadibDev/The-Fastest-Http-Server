@@ -246,10 +246,10 @@ bool clsClient::_handleInternal()
     // support internal location in future
     if (_internalCounter == MAX_INTERNAL_LOOP)
     {
-        HttpError error;
-        error.setStatus(508, "internal error page");
+        _internalCounter = 0;
+        _RequestXconfig.reset();
         _RequestXconfig.setDefaultErrorPage(true);
-        _RequestXconfig.setError(true);
+        _RequestXconfig.setStatusError(508);
         _ResponderProecss.Reset();
         return true;
     }
@@ -261,7 +261,6 @@ bool clsClient::_handleInternal()
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
-
         _ResponderProecss.Reset();
         return true;
     }
@@ -276,6 +275,7 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
+    std::cout << _internalCounter << std::endl;
     if (_handleInternal())
     {
         _internalCounter++;
@@ -354,8 +354,6 @@ void clsClient::ProcessRespond()
 
     if (_state == RESPOND_MODE)
     {
-        std::cout << "body size " << Respond.GetSizeBody() << " size body" << std::endl;
-        std::cout << "body size " << std::endl;
         _SendRespond(Respond);
     }
 }
