@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 16:29:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/11 22:40:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _Response(Reques
 {
     _RunCGI = false;
 }
-clsMainProcess::~clsMainProcess() {} // free right way
+clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
