@@ -939,9 +939,9 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 		i++;
 	}
 	if (Offset != LengthBuffer)
-		Buffer[Offset] = '\0';
+		Buffer[Offset] = '&';
 	else
-		Buffer[LengthBuffer - 1] = '\0';
+		Buffer[LengthBuffer - 1] = '&';
 }
 
 
