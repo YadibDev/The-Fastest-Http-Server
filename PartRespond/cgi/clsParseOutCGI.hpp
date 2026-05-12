@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 19:04:05 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/12 21:47:45 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,25 @@ class clsParseOutCGI
     stHeadersCGI::eHeaders _ExistHeaders[4];
     bool _FoundBody;
     bool _Erno;
-    std::string _InternalRedirectSrc;
     short _Status;
     short _Counter;
     size_t _BytesBody;
     bool _IsConnectoin;
     bool _ProcessIsFinish;
+    const RequestHandler &_DataRequest;
     std::string _Body;
+    std::string &_HeadersFieldFinal;
+    std::string &_FileNameFromDisk;
+    std::string &_InternalRedirectSrc;
     std::string _NameHeader;
     std::string _ValueHeader;
-    std::string _FileNameFromDisk;
-    clsErrorPage _ErrorPage;
-    const RequestHandler &_DataRequest;
     short _CountSizeHeaders;
     std::map<std::string, std::string> _HeadersField;
     std::string _HeadersFieldDuplicate;
-    std::string _HeadersFieldFinal;
     std::string _Line;
-    std::string _NameFileBody;
-    const std::string *_BodyPointer;
-    const std::string *_HeaderFeildPointer;
-    const std::string *_FileFromDiskPointer;
     bool _ModTransferData;
     int _Fdout;
     bool _CheckValidNameHeader(std::string &HeaderName, short Start, short End);
-    void _ErrorRespnseHandling();
     bool _LocationIsClientOrLocal(std::string &Location);
     bool _ParseStatus(const std::string &StatusLineValue);
     bool _MakeHeadersResponse(std::string &StatusLine);
@@ -85,13 +79,10 @@ class clsParseOutCGI
     void _InitialInternalRedirect();
 
 public:
-    clsParseOutCGI(RequestHandler &_DataRequest);
+    clsParseOutCGI(RequestHandler &_DataRequest, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
     const std::string &GetBody();
     const std::string &GetFileNameBody();
     const std::string &GetHeadersFieldFinal();
-    const std::string *GetBodyPointer();
-    const std::string *GetHeaderFeildPointer();
-    const std::string *GetFileFromDiskPointer();
     stMod::eMod *GetMod();
     void ReceivingData(const char *Arr, short Length);
     void SetProcessIsFinish(bool ProcessIsFinish);

@@ -6,13 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 22:31:38 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/12 21:49:19 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRequest)
+clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest, std::string &HeadersFieldFinal, std::string &FileNameFromDisk, std::string &InternalRedirectSrc)
+	 :_DataRequest(DataRequest), _HeadersFieldFinal(HeadersFieldFinal), _FileNameFromDisk(FileNameFromDisk), _InternalRedirectSrc(InternalRedirectSrc)
 {
 	_BytesBody = 0;
 	_FoundBody = false;
@@ -22,14 +23,12 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRe
 	_Fdout = -1;
 	_ModTransferData = false;
 	_Erno = false;
-	_Body.resize(MAX_BODY);
 	_HeadersFieldDuplicate.resize(MAX_HEADERS);
 	_Line.resize(MAX_HEADERS);
 	_NameHeader.resize(MAX_HEADERS);
 	_ValueHeader.resize(MAX_HEADERS);
-	_InternalRedirectSrc.resize(1000);
-	_FileNameFromDisk.resize(1000);
-	
+	_Body.resize(MAX_BODY);
+
 	if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
 		|| _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
 	{
@@ -39,12 +38,11 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRe
 		return ;
 	}
 
-	_NameHeader.clear();
-	_HeadersFieldDuplicate.clear();
-	_Line.clear();
-	_InternalRedirectSrc.clear();
-	_ValueHeader.clear();
-	_FileNameFromDisk.clear();
+	_NameHeader = "";
+	_Body = "";
+	_ValueHeader = "";
+	_HeadersFieldDuplicate = "";
+	_Line = "";
 
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -392,17 +390,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 	}
 }
 
-void clsParseOutCGI::_ErrorRespnseHandling()
-{
-	//if was useless in future delete it
-	    _ErrorPage.ResponseError(_Status, "", 0);
-	    _ModTransferData = true;
-	    _BodyPointer = &_ErrorPage.GetBody();
-	    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-	    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-	    _BytesBody = _ErrorPage.GetBodySize();
-	    _IsConnectoin = _ErrorPage.GetIsConnection();
-}
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
@@ -479,18 +466,6 @@ const std::string &clsParseOutCGI::GetFileNameBody()
 {
 	return _FileNameFromDisk;
 }
-const std::string *clsParseOutCGI::GetBodyPointer()
-{
-   return _BodyPointer;
-}
-const std::string *clsParseOutCGI::GetHeaderFeildPointer()
-{
-	return _HeaderFeildPointer;
-}
-const std::string *clsParseOutCGI::GetFileFromDiskPointer()
-{
-	return _FileFromDiskPointer;
-}
 
 bool clsParseOutCGI::GetModTransferData() const
 {
@@ -514,24 +489,23 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
 
 void clsParseOutCGI::Reset()
 {
-	_Body.clear();
-	_FileNameFromDisk.clear();
+	_Body = "";
+	_FileNameFromDisk = "";
 	if (!_HeadersField.empty())
 		_HeadersField.clear();
-	_HeadersFieldDuplicate.clear();
-	_HeadersFieldFinal.clear();
-	_Line.clear();
+	_HeadersFieldDuplicate = "";
+	_HeadersFieldFinal = "";
+	_Line = "";
 	_BytesBody = 0;
 	_IsConnectoin = true;
 	_FoundBody = false;
 	_ProcessIsFinish = false;
 	_Erno = false;
-	_NameHeader.clear();
-	_ValueHeader.clear();
+	_NameHeader = "";
+	_ValueHeader = "";
 	_CountSizeHeaders = 0;
 	_ModTransferData = 0;
 	_Fdout = -1;
-	_ErrorPage.Reset();
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }

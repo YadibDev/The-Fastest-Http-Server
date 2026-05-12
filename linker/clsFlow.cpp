@@ -2,7 +2,6 @@
 
 void clsFlow::_initializeStatics()
 {
-	HelperFunctions::StoreVarConst();
 	HelperFunctions::StoredDefaultType();
 	HelperFunctions::StoredBodys();
 	HelperFunctions::StoredMessage();

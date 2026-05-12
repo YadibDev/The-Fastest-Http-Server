@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 21:02:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/12 21:15:19 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,19 @@ class clsResponse
         stMod::eMod _Mod[10];
         short _Status;
         size_t _BodySize;
-        int _SizeHeaders;
         bool _IsConnection;
         bool _Erno;
         bool _ModTransferData;
-        std::string _InternalRedirectSrc;
-        std::string _Type;
+        const RequestHandler &_DataRequest;
+        std::string *_InternalRedirectSrc;
         clsErrorPage _ErrorPage;
-        std::string _Body;
-        std::string _HeaderFeild;
-        std::string _FileFromDisk;
+        std::string &_Body;
+        std::string &_HeaderFeild;
+        std::string &_FileFromDisk;
+        std::string &_Type;
         const std::string *_BodyPointer;
         const std::string *_HeaderFeildPointer;
         const std::string *_FileFromDiskPointer;
-        const RequestHandler &_DataRequest;
         clsAutoIndex AutoIndex;
 
         const std::string GetTypeData(const std::string &Type);
@@ -54,9 +53,10 @@ class clsResponse
         void _Server();
         void _InitialAutoIndex();
         void _DeleteResource();
+        void _UploadResource();
     public:
         void Reset();
-        clsResponse(RequestHandler &_DataRequest);
+        clsResponse(RequestHandler &_DataRequest,std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type);
         const std::string &GetBody() const;
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
@@ -74,8 +74,8 @@ class clsResponse
         void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
         void SetModTransferData(bool ModTransferData);
-        void SetInternalRedirectSrc(const std::string &InternalRedirectSrc);
-        std::string &GetInternalRedirectSrc();
+        void SetInternalRedirectSrc(std::string *InternalRedirectSrc);
+        std::string *GetInternalRedirectSrc();
         bool GetModTransferData() const;
         size_t GetSizeBody() const;
         void SetSizeBody(int size);

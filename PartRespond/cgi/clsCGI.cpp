@@ -3,20 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2026/05/11 23:08:55 by achamdao         ###   ########.fr       */
-=======
-/*   Updated: 2026/05/11 21:28:49 by yadib            ###   ########.fr       */
->>>>>>> Server
+/*   Updated: 2026/05/12 21:43:25 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsCGI.hpp"
 short clsCGI::_LimitProcess;
-clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
+clsCGI::clsCGI(RequestHandler &DataRequest, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc) 
+    : _DataRequest(DataRequest), _ParseOutCGI(DataRequest, HeadersFieldFinal, _FileNameFromDisk, InternalRedirectSrc)
 {
     _IsRunCGI = false;
     _Counter = 0;

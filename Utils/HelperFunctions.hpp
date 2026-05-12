@@ -16,8 +16,8 @@
 #include <ctime>
 #include <sys/stat.h>
 #include <cstring>
-#include "../Parser/ParseRequest//Request/HttpTypes.hpp"
-
+#include "../Parser/ParseRequest/Request/HttpTypes.hpp"
+#include "../PartRespond/response/clsErrorPage.hpp"
 
 struct stEventProcess
 {
@@ -28,7 +28,7 @@ struct stEventData
     enum eEventData {STILL_EXIST, END_PIPE};
 };
 
-// achraf headers 
+// achraf headers
 
 struct UriStatus {
 	bool is_relative   : 1;
@@ -157,9 +157,6 @@ public:
     static void NumToStr(int Number, std::string &Str);
     static stEventProcess::eEventProcess checkProcessStatus(int pid, int op = WNOHANG);
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
-    static void StoreVarConst();
-    static char *GetENV_VAR_CONST(short Index);
-    static char **GetPointer_ENV_VAR_CONST();
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
     static char	*ft_strcpy(char *dest, const char *src);
@@ -177,13 +174,12 @@ public:
     static int FindCharFromLast(char *Arr, int length, char c);
     static char	*ft_strjoin(const char *s1, const char *s2, char free_yes);
     static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_sr, bool Flag);
+
 private:
     static std::map<std::string, std::string> _TypeContent;
     static std::map<int, std::string> _Message;
     static std::map<int, std::string> _Body;
     static char _PoinerType[50];
-    static char **_ENV_VAR_CONST;
-    static bool _Flag;
     HelperFunctions() {}
 };
 
