@@ -14,58 +14,58 @@
 short clsCGI::_LimitProcess;
 clsCGI::clsCGI(RequestHandler &DataRequest) : _DataRequest(DataRequest), _ParseOutCGI(DataRequest)
 {
-    _IsRunCGI = false;
-    _Counter = 0;
-    _Offset = 0;
-    _Erno = false;
-    _pip[0] = -1;
-    _pip[1] = -1;
-    HelperFunctions::ft_memset(_ARG,0,3 * sizeof(char *));
-    HelperFunctions::ft_memset(_ENV,0,SIZE_VAR_ENV * sizeof(char *));
+	_IsRunCGI = false;
+	_Counter = 0;
+	_Offset = 0;
+	_Erno = false;
+	_pip[0] = -1;
+	_pip[1] = -1;
+	HelperFunctions::ft_memset(_ARG,0,3 * sizeof(char *));
+	HelperFunctions::ft_memset(_ENV,0,SIZE_VAR_ENV * sizeof(char *));
 }
 
 bool clsCGI::_MakeEnv()
 {
-    if (!_SERVER_SOFTWARE())
-        return false;
-    if (!_SERVER_NAME())
-        return false;
-    if (!_SERVER_PROTOCOL())
-        return false;
-    if (!_GATEWAY_INTERFACE())
-        return false;
-    if (!_REMOTE_IDENT())
-        return false;
-    if (!_REMOTE_HOST())
-        return false;
-    if (!_REMOTE_ADDR())
-        return false;
-    if (!_AUTH_TYPE())
-        return false;
-    if (!_REMOTE_USER())
-        return false;
-    if (!_SERVER_PORT())
-        return false;
-    if (!_REQUEST_METHOD())
-        return false;
-    if (!_PATH_INFO())
-        return false;
-    if (!_PATH_TRANSLATED())
-        return false;
-    if (!_SCRIPT_NAME())
-        return false;
-    if (!_QUERY_STRING())
-        return false;
-    if (!_QUERY_STRING())
-        return false;
-    if (!_CONTENT_TYPE())
-        return false;
-    if (!_CONTENT_LENGTH())
-        return false;
-    if (!_OtherHeaders())
-        return false;
-    _ENV[_Counter] = NULL;
-    return (true);
+	if (!_SERVER_SOFTWARE())
+		return false;
+	if (!_SERVER_NAME())
+		return false;
+	if (!_SERVER_PROTOCOL())
+		return false;
+	if (!_GATEWAY_INTERFACE())
+		return false;
+	if (!_REMOTE_IDENT())
+		return false;
+	if (!_REMOTE_HOST())
+		return false;
+	if (!_REMOTE_ADDR())
+		return false;
+	if (!_AUTH_TYPE())
+		return false;
+	if (!_REMOTE_USER())
+		return false;
+	if (!_SERVER_PORT())
+		return false;
+	if (!_REQUEST_METHOD())
+		return false;
+	if (!_PATH_INFO())
+		return false;
+	if (!_PATH_TRANSLATED())
+		return false;
+	if (!_SCRIPT_NAME())
+		return false;
+	if (!_QUERY_STRING())
+		return false;
+	if (!_QUERY_STRING())
+		return false;
+	if (!_CONTENT_TYPE())
+		return false;
+	if (!_CONTENT_LENGTH())
+		return false;
+	if (!_OtherHeaders())
+		return false;
+	_ENV[_Counter] = NULL;
+	return (true);
 }
 bool clsCGI::_SERVER_SOFTWARE()
 {
@@ -250,27 +250,27 @@ bool clsCGI::_PATH_INFO()
 
 bool clsCGI::_PATH_TRANSLATED()
 {
-    short Length = 0;
-    if (_Offset == SIZE_BUFFER)
-        return false;
-    _ENV[_Counter] = &_Buffer[_Offset];
-    if (!(_DataRequest.getPathTranslated()[0]))
-    {
-        Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=\"\"");
-        HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=\"\"", SIZE_BUFFER, _Offset, Length, 0);
-    }
-    else
-    {
-        Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=");
-        HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=", SIZE_BUFFER, _Offset, Length, 0);
-        Length = HelperFunctions::ft_strlen(&_DataRequest.getPathTranslated()[0]);
-        HelperFunctions::ft_str_copy(_Buffer,  &_DataRequest.getPathTranslated()[0], SIZE_BUFFER, _Offset, Length, 0);
-    }
-     if (_Offset == SIZE_BUFFER)
-        return false;
-    _Counter++;
-    _Offset++;
-    return (true);
+	short Length = 0;
+	if (_Offset == SIZE_BUFFER)
+		return false;
+	_ENV[_Counter] = &_Buffer[_Offset];
+	if (!(_DataRequest.getPathTranslated()[0]))
+	{
+		Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=\"\"");
+		HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=\"\"", SIZE_BUFFER, _Offset, Length, 0);
+	}
+	else
+	{
+		Length = HelperFunctions::ft_strlen("PATH_TRANSLATED=");
+		HelperFunctions::ft_str_copy(_Buffer,  "PATH_TRANSLATED=", SIZE_BUFFER, _Offset, Length, 0);
+		Length = HelperFunctions::ft_strlen(&_DataRequest.getPathTranslated()[0]);
+		HelperFunctions::ft_str_copy(_Buffer,  &_DataRequest.getPathTranslated()[0], SIZE_BUFFER, _Offset, Length, 0);
+	}
+	 if (_Offset == SIZE_BUFFER)
+		return false;
+	_Counter++;
+	_Offset++;
+	return (true);
 }
 
 bool clsCGI::_SCRIPT_NAME()
@@ -364,19 +364,19 @@ bool clsCGI::_CONTENT_LENGTH()
 
 bool clsCGI::_ConcatonateValueHeaders(int CountHeaders)
 {
-    while (_DataRequest.getHeader().getUnknownHeader(CountHeaders)  && CountHeaders != INVALID_INDEX)
-    {
-        _DataRequest.getHeader().getUnknownHeader(CountHeaders)->Hash = -1;
-        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data,
-         SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
-        CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
-        if (CountHeaders != INVALID_INDEX)
-            HelperFunctions::ft_str_copy(_Buffer,  ",", SIZE_BUFFER, _Offset, 1, 0);
-        if (_Offset == SIZE_BUFFER)
-            return false;
-        _Buffer[_Offset]= '\0';
-    }
-    return true;
+	while (_DataRequest.getHeader().getUnknownHeader(CountHeaders)  && CountHeaders != INVALID_INDEX)
+	{
+		_DataRequest.getHeader().getUnknownHeader(CountHeaders)->Hash = -1;
+		HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data,
+		 SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
+		CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
+		if (CountHeaders != INVALID_INDEX)
+			HelperFunctions::ft_str_copy(_Buffer,  ",", SIZE_BUFFER, _Offset, 1, 0);
+		if (_Offset == SIZE_BUFFER)
+			return false;
+		_Buffer[_Offset]= '\0';
+	}
+	return true;
 }
 
 bool clsCGI::_AddKeyHeader(int CountHeaders)
@@ -393,27 +393,29 @@ bool clsCGI::_AddKeyHeader(int CountHeaders)
 
 bool clsCGI::_OtherHeaders()
 {
-    int i = 0;
-    if (_Offset == SIZE_BUFFER)
-        return false;
-    while (_Counter < SIZE_VAR_ENV && _DataRequest.getHeader().getUnknownHeader(i))
-    {
-        
-        _ENV[_Counter] = &_Buffer[_Offset];
-        if (_DataRequest.getHeader().getUnknownHeader(i)->Hash != -1)
-        {
-            if (!_AddKeyHeader(i))
-                return false;
-            if (!_ConcatonateValueHeaders(i))
-                return false;
-            _Offset++;
-            _Counter++;
-        }
-        i++;
-        if (_Offset == SIZE_BUFFER)
-            return false;
-    }
-    return (true);
+	int i = 0;
+	if (_Offset == SIZE_BUFFER)
+		return false;
+	while (_Counter < SIZE_VAR_ENV && _DataRequest.getHeader().getUnknownHeader(i))
+	{
+		
+		_ENV[_Counter] = &_Buffer[_Offset];
+		if (_DataRequest.getHeader().getUnknownHeader(i)->Hash != -1)
+		{
+			if (!_AddKeyHeader(i))
+				return false;
+			if (!_ConcatonateValueHeaders(i))
+				return false;
+		}
+		else
+			break;
+		_Offset++;
+		_Counter++;
+		i++;
+		if (_Offset == SIZE_BUFFER)
+			return false;
+	}
+	return (true);
 }
 bool clsCGI::_StoredArgs()
 {

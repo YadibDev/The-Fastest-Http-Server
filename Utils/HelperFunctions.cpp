@@ -321,34 +321,7 @@ char HelperFunctions::_PoinerType[50];
 char  **HelperFunctions::_ENV_VAR_CONST;
 bool HelperFunctions::_Flag = false;
 
-void HelperFunctions::StoreVarConst()
-{
-	_ENV_VAR_CONST = new(std::nothrow) char*[10];
-	if (_ENV_VAR_CONST)
-		HelperFunctions::ft_memset(_ENV_VAR_CONST, 0,(sizeof(_ENV_VAR_CONST) * 10));
-	if (_ENV_VAR_CONST && !_Flag)
-	{
-		_Flag = true;
-		_ENV_VAR_CONST[0] = ft_strdup("SERVER_SOFTWARE=FastHTTP/1.1");
-		if (!_ENV_VAR_CONST[0])
-			return ;
-		_ENV_VAR_CONST[1] = ft_strdup("SERVER_NAME=FastServer");
-		if (!_ENV_VAR_CONST[1])
-			return ;
-		_ENV_VAR_CONST[2] = ft_strdup("SERVER_PROTOCOL=HTTP/1.1");
-		if (!_ENV_VAR_CONST[2])
-			return ;
-		_ENV_VAR_CONST[3] = ft_strdup("GATEWAY_INTERFACE=CGI/1.1");
-		if (!_ENV_VAR_CONST[3])
-			return ;
-		_ENV_VAR_CONST[4] = ft_strdup("REMOTE_IDENT=\"\"");
-		if (!_ENV_VAR_CONST[4])
-			return ;
-		_ENV_VAR_CONST[5] = ft_strdup("REMOTE_HOST=\"\"");
-		if (!_ENV_VAR_CONST[5])
-			return ;
-	}
-}
+
 
 char *HelperFunctions::GetENV_VAR_CONST(short Index)
 {
@@ -688,6 +661,9 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".png"]  = "image/png";
 		_TypeContent[".txt"]  = "text/plain";
 		_TypeContent[".mp4"]  = "application/mp4";
+		_TypeContent[".webm"]  = "video/webm";
+
+		
 	}
  }
 

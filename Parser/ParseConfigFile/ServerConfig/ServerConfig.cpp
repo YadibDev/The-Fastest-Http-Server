@@ -143,11 +143,19 @@ void    clsServerConfig::initUri()
 
 	for(size_t i = 0; i < _LocationExact.size(); i++)
 	{
+		if (!_LocationExact[i].getErrorPages().size())
+			_LocationExact[i].setErrorPages(this->_error_pages);
+		if (!_LocationExact[i].getIndex().size())
+			_LocationExact[i].setIndex(this->_index);
 		_LocationExact[i].initUri();
 	}
 
 	for(size_t i = 0; i < _LocationPrefix.size(); i++)
 	{
+		if (!_LocationPrefix[i].getErrorPages().size())
+			_LocationPrefix[i].setErrorPages(this->_error_pages);
+		if (!_LocationPrefix[i].getIndex().size())
+			_LocationPrefix[i].setIndex(this->_index);
 		_LocationPrefix[i].initUri();
 	}
 
