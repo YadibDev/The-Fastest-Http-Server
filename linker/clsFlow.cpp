@@ -142,25 +142,35 @@ clsFlow::clsFlow(const char *configFile, long maxClient) : maxClient(maxClient)
 
 bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 {
-	if ((client.events & (EPOLLERR | EPOLLHUP)))
+	if (client.events & (EPOLLERR | EPOLLRDHUP | EPOLLHUP))
 	{
 		int fd = client.data.fd;
 
 		if (TypeFd == PIPE)
 		{
 			int index = _IdByPipe[fd];
-			if (client.events == EPOLLHUP)
+			if (client.events & EPOLLERR)
+			{
+				std::cout << "pipe err\n" << std::endl;
+				_clientsArr[index].forceStopCgi();
+			}
+			else if (client.events & EPOLLHUP)
 			{
 				if (_clientsArr[index].monitorCgi())
 					_popPipe(fd);
 			}
-			else
-			{
-				_clientsArr[index].forceStopCgi();
-			}
 		}
 		else if (TypeFd == CLIENT_SOCK)
-			_freeClient(fd);
+		{
+			int index = _clientIdByFd[fd];
+			if (client.events & EPOLLERR)
+				_freeClient(fd);
+			else if (client.events & EPOLLRDHUP)
+			{
+				_clientsArr[index].peerClosed();
+				return false;
+			}
+		}
 		return true;
 	}
 	return false;
@@ -177,7 +187,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 	clsClient &client = _clientsArr[blockId];
 	_clientIdByFd[newClient] = blockId;
 
-	if (_epoll.addClient(newClient, EPOLLIN) == false)
+	if (_epoll.addClient(newClient, EPOLLIN | EPOLLRDHUP) == false)
 		return false;
 	client.initializeClient(addr, newClient, block, port);
 	return true;
@@ -198,6 +208,9 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 
 void clsFlow::_popPipe(short pipe)
 {
+	int index = _IdByPipe[pipe];
+	int fd = _clientsArr[index].getSocket();
+	_epoll.changeAbility(fd, EPOLLOUT);
 	_IdByPipe.erase(pipe);
 }
 
@@ -209,13 +222,15 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	if (status == BEGIN || status == CONNECTION_CLOSED)
-	{
-		client.logs();
-	}
+	// if (status == BEGIN || status == CONNECTION_CLOSED)
+	// {
+	// 	client.logs();
+	// }
 
 	if (status == CONNECTION_CLOSED)
+	{
 		_freeClient(fd);
+	}
 	else if (status == START_RESPOND)
 	{
 		_epoll.changeAbility(fd, EPOLLOUT);
@@ -228,6 +243,7 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	else if (status == CGI_START)
 	{
 		_pushPipe(client.getPipeCgi(), index);
+		_epoll.changeAbility(fd, 0);
 		client.initializeCGI();
 	}
 }
@@ -329,7 +345,7 @@ void clsFlow::EventLoop()
 	fdTypes TypeFd;
 	while (1)
 	{
-		while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 100 * 1024)) > 0)
+		while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024)) > 0)
 		{
 			for (int i = 0; i < nFds; i++)
 			{

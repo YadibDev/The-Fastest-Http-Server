@@ -3,7 +3,7 @@
 #ifndef monitor_cgi_0000
 #define monitor_cgi_0000
 
-#define CGI_TIMEOUT 5
+#define CGI_TIMEOUT 12
 
 class clsMonitorCGI
 {
@@ -38,12 +38,6 @@ public:
             freeCgiRessources();
             return true;
         }
-        else if (stateProcess == stEventProcess::RUNINNG)
-        {
-            stateProcess = HelperFunctions::checkProcessStatus(pid);
-            if (stateProcess != stEventProcess::RUNINNG)
-                pid = -1;
-        }
         return false;
     }
 
@@ -69,36 +63,24 @@ public:
 
     short getDataFromCgi(char *buffer, short bufferSize) // -1 end of pipe
     {
-        if (stateProcess == stEventProcess::RUNINNG)
+        short reads = 0;
+
+        if (stateData == stEventData::STILL_EXIST)
+        {
+            reads = read(pipe, buffer, bufferSize);
+            if (reads == 0)
+                stateData = stEventData::END_PIPE;
+        }
+        if (stateData == stEventData::END_PIPE && pid != -1)
         {
             stateProcess = HelperFunctions::checkProcessStatus(pid);
-        }
-
-        if (stateProcess > stEventProcess::THE_END)
-        {
-            if (stateData == stEventData::STILL_EXIST)
+            if (stateProcess >= stEventProcess::THE_END)
+            {
+                pid = -1;
                 close(pipe);
-            pipe = -1;
-            pid = -1;
-            stateData = stEventData::END_PIPE;
-            return -1;
+                pipe = -1;
+            }
         }
-
-        short reads = 0;
-        if (pipe != -1)
-            reads = read(pipe, buffer, bufferSize);
-        if (reads == 0 || (stateProcess == stEventProcess::THE_END && reads < bufferSize))
-        {
-            if (pipe != -1)
-                close(pipe);
-            stateData = stEventData::END_PIPE;
-        }
-        if (stateProcess == stEventProcess::THE_END)
-            pid = -1;
-        if (stateData == stEventData::END_PIPE)
-            pipe = -1;
-
-
         return reads;
     }
 

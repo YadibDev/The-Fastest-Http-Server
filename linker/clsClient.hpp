@@ -66,7 +66,7 @@ private:
     bodyPlaceEnum::place _BodyPlace;
     clsMonitorCGI _monitorCGI;
     short   _internalCounter;
-
+    bool _peerClosed;
     void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
     short _addSizeChunkToStr();
@@ -105,6 +105,9 @@ public:
     bool timeoutCgi();
     void forceStopCgi();
     void initializeCGI();
+    void peerClosed();
+    int getSocket();
+
 
 };
 

@@ -2,6 +2,7 @@
 
 clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
+    _peerClosed = false;
     this->_socket = -1;
     _dataForReq.io_chunk = _theData.io_chunk;
     _dataForReq.known_headers = _theData.known_headers;
@@ -16,6 +17,7 @@ clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester
 
 void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer)
 {
+    _peerClosed = false;
     _theData.Reset();
     _fdRespond = 0;
     _FirstConnection = HelperFunctions::getCurrentTimeInS();
@@ -33,6 +35,11 @@ void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfi
 
     clsCGI &cgi = _ResponderProecss.GetclsCGI();
     cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
+}
+
+int clsClient::getSocket()
+{
+    return this->_socket;
 }
 
 const clinetState &clsClient::GetState() const
@@ -130,7 +137,9 @@ void clsClient::ProcessRequest()
     int size = _ReadDataForReq();
 
     if (_state == CONNECTION_CLOSED || size == -1 || size == 0)
+    {
         return;
+    }
 
     if (_Requester._state == RequestParser::STATE_BODY)
         _Requester.Parse(_theData.read_body);
@@ -149,7 +158,6 @@ void clsClient::ProcessRequest()
     else if (_Requester.isComplete())
     {
         this->_state = START_RESPOND;
-        return;
     }
 }
 
@@ -219,6 +227,12 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 
     nBytes = send(_socket, respondBuffer, bytesToSend, 0);
 
+    // if (nBytes == 0 && bytesToSend > 0)
+    // {
+    //     if (_peerClosed)
+    //         _state = CONNECTION_CLOSED;
+    // }
+
     if (nBytes != -1)
     {
         if (nBytes < bytesToSend)
@@ -229,8 +243,10 @@ void clsClient::_SendRespond(clsResponse &_Responder)
     if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0 && bytesToSend == 0) || _state == AUTO_INDEX_DONE)
     {
         _state = BEGIN;
-        if (_Responder.GetIsConnection() == false)
+        if (_Responder.GetIsConnection() == false || _peerClosed)
+        {
             _state = CONNECTION_CLOSED;
+        }
         if (_fdRespond > 0)
         {
             close(_fdRespond);
@@ -275,7 +291,6 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
-    std::cout << _internalCounter << std::endl;
     if (_handleInternal())
     {
         _internalCounter++;
@@ -419,25 +434,15 @@ void clsClient::initializeCGI()
 
 bool clsClient::monitorCgi()
 {
-
+    
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
 
-    if (length == -1)
+    if (processState >= stEventProcess::THE_END && dataState == stEventData::END_PIPE)
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(processState);
-        _ResponderProecss.ParseCGI(NULL, 0);
-        return true;
-    }
-
-    else if (processState == stEventProcess::THE_END && dataState == stEventData::END_PIPE)
-    {
-        _state = CGI_END;
-        _ResponderProecss.setEventProcess(processState);
-        _ResponderProecss.ParseCGI(_theData.io_chunk, length);
-        return true;
     }
 
     _ResponderProecss.ParseCGI(_theData.io_chunk, length);
@@ -448,6 +453,8 @@ bool clsClient::monitorCgi()
         _monitorCGI.freeCgiRessources();
         return true;
     }
+    else if (processState >= stEventProcess::THE_END && dataState == stEventData::END_PIPE)
+        return true;
     return false;
 }
 
@@ -462,18 +469,15 @@ bool clsClient::timeoutCgi()
         _ResponderProecss.ParseCGI(NULL, 0);
         return true;
     }
-    else if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
-    {
-        this->_state = CGI_END;
-        _ResponderProecss.setEventProcess(_monitorCGI.getStateProcess());
-
-        _ResponderProecss.ParseCGI(NULL, 0);
-        return true;
-    }
     return false;
 }
 
 void clsClient::forceStopCgi()
 {
     _monitorCGI.freeCgiRessources();
+}
+
+void clsClient::peerClosed()
+{
+    this->_peerClosed = true;
 }
