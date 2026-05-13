@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:37:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 15:05:05 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class clsParseOutCGI
     std::string _NameHeader;
     std::string _ValueHeader;
     short _CountSizeHeaders;
+    short _OffsetBody;
     std::map<std::string, std::string> _HeadersField;
     std::string _HeadersFieldDuplicate;
     std::string _Line;

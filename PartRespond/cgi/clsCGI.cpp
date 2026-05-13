@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 16:44:25 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/13 22:42:06 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,6 +433,9 @@ bool clsCGI::_StoredArgs()
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
+
+    if (!_MakeEnv())
+        return (true);
     close(_pip[0]);
     if (!_DataRequest.getFilePathBody().empty())
     {
@@ -459,7 +462,6 @@ bool clsCGI::_childeProcesse()
         close(Fd);
     
     execve(_ARG[0], _ARG, _ENV);
-
     return true;
 }
 
@@ -472,41 +474,41 @@ void clsCGI::_ParentProcesse()
 
 bool clsCGI::_InintialVar()
 {
-	if (!_MakeEnv())
-		return (false);
-	if (!_StoredArgs())
-		return (false);
-	if (pipe(_pip) == -1)
-		return (false);
-	return (true);
+    
+    if (!_StoredArgs())
+        return (false);
+    if (pipe(_pip) == -1)
+        return (false);
+    return (true);
 }
 
 void clsCGI::RunCGI()
 {
-	if (!_InintialVar())
-	{
-		_Erno = true;
-		_FD = -1;
-		return;
-	}
-	_PIDCHILD = fork();
-	if (_PIDCHILD < 0)
-	{
-		close(_pip[0]);
-		close(_pip[1]);
-		_Erno = true;
-		_FD = -1;
-		return;
-	}
-	_StartTime = HelperFunctions::getCurrentTimeInS();
-	if (_PIDCHILD == 0)
-	{
-		if (_childeProcesse())
-			exit(1);
-	}
-	else
-		_ParentProcesse();
-	return;
+    if (!_InintialVar())
+    {
+        _Erno = true;
+        _FD = -1;
+        return;
+    }
+    _PIDCHILD = fork();
+    if (_PIDCHILD < 0)
+    {
+        close(_pip[0]);
+        close(_pip[1]);
+        _Erno = true;
+        _FD = -1;
+        return;
+    }
+    _StartTime = HelperFunctions::getCurrentTimeInS();
+    if (_PIDCHILD == 0)
+    {
+        if (_childeProcesse())
+            exit(1);
+        exit(1);
+    }
+    else
+        _ParentProcesse();
+    return;
 }
 
 void clsCGI::Reset()

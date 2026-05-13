@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:42:15 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 21:44:59 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,9 +250,6 @@ void clsResponse::Reset()
 
     _Status = 0;
     _BodySize = 0;
-    _FileFromDisk = "";
-    _HeaderFeild = "";
-    _Type = "";
     _ModTransferData = false;
     _Erno = false;
     _IsConnection = true;
@@ -363,4 +360,4 @@ bool clsResponse::IsError()
 {
     return (_Mod[stMod::ERROR] == stMod::ERROR);
 }
-clsResponse::~clsResponse() {}
+clsResponse::~clsResponse() { }
