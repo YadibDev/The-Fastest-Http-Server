@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:36:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:54:06 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,34 +432,37 @@ bool clsCGI::_StoredArgs()
 
 bool clsCGI::_childeProcesse()
 {
-	int Fd = -1;
-	close(_pip[0]);
-	if (!_DataRequest.getFilePathBody().empty())
-	{
-		Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
-		if (Fd < 0)
-		{
-			close(_pip[1]);
-			return (true);
-		}
-		if (dup2(Fd, 0) == -1)
-			return (close(Fd), close(_pip[1]), true);
-	}
-	int Start = HelperFunctions::FindChar(_DataRequest.getPhysicalPath(), HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), '.');
-	int Pos = HelperFunctions::FindCharFromLast(_DataRequest.getPhysicalPath(), Start, '/');
-	char C = _DataRequest.getPhysicalPath()[Pos];
-	_DataRequest.getPhysicalPath()[Pos] = '\0';
-	if (chdir(_DataRequest.getPhysicalPath())  == -1)
-		return (close(Fd), close(_pip[1]), true);
-	_DataRequest.getPhysicalPath()[Pos] = C;
-	if (dup2(_pip[1], 1) == -1)
-		return (close(Fd), close(_pip[1]), true);
-	close(_pip[1]);
-	if (!_DataRequest.getFilePathBody().empty())
-		close(Fd);
-	
-	execve(_ARG[0], _ARG, _ENV);
-	return true;
+    int Fd = -1;
+
+    if (!_MakeEnv())
+        return (true);
+    close(_pip[0]);
+    if (!_DataRequest.getFilePathBody().empty())
+    {
+        Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
+        if (Fd < 0)
+        {
+            close(_pip[1]);
+            return (true);
+        }
+        if (dup2(Fd, 0) == -1)
+            return (close(Fd), close(_pip[1]), true);
+    }
+    int Start = HelperFunctions::FindChar(_DataRequest.getPhysicalPath(), HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), '.');
+    int Pos = HelperFunctions::FindCharFromLast(_DataRequest.getPhysicalPath(), Start, '/');
+    char C = _DataRequest.getPhysicalPath()[Pos];
+    _DataRequest.getPhysicalPath()[Pos] = '\0';
+    if (chdir(_DataRequest.getPhysicalPath())  == -1)
+        return (close(Fd), close(_pip[1]), true);
+    _DataRequest.getPhysicalPath()[Pos] = C;
+    if (dup2(_pip[1], 1) == -1)
+        return (close(Fd), close(_pip[1]), true);
+    close(_pip[1]);
+    if (!_DataRequest.getFilePathBody().empty())
+        close(Fd);
+    
+    execve(_ARG[0], _ARG, _ENV);
+    return true;
 }
 
 void clsCGI::_ParentProcesse()
@@ -471,41 +474,41 @@ void clsCGI::_ParentProcesse()
 
 bool clsCGI::_InintialVar()
 {
-	if (!_MakeEnv())
-		return (false);
-	if (!_StoredArgs())
-		return (false);
-	if (pipe(_pip) == -1)
-		return (false);
-	return (true);
+    
+    if (!_StoredArgs())
+        return (false);
+    if (pipe(_pip) == -1)
+        return (false);
+    return (true);
 }
 
 void clsCGI::RunCGI()
 {
-	if (!_InintialVar())
-	{
-		_Erno = true;
-		_FD = -1;
-		return;
-	}
-	_PIDCHILD = fork();
-	if (_PIDCHILD < 0)
-	{
-		close(_pip[0]);
-		close(_pip[1]);
-		_Erno = true;
-		_FD = -1;
-		return;
-	}
-	_StartTime = HelperFunctions::getCurrentTimeInS();
-	if (_PIDCHILD == 0)
-	{
-		if (_childeProcesse())
-			exit(1);
-	}
-	else
-		_ParentProcesse();
-	return;
+    if (!_InintialVar())
+    {
+        _Erno = true;
+        _FD = -1;
+        return;
+    }
+    _PIDCHILD = fork();
+    if (_PIDCHILD < 0)
+    {
+        close(_pip[0]);
+        close(_pip[1]);
+        _Erno = true;
+        _FD = -1;
+        return;
+    }
+    _StartTime = HelperFunctions::getCurrentTimeInS();
+    if (_PIDCHILD == 0)
+    {
+        if (_childeProcesse())
+            exit(1);
+        exit(1);
+    }
+    else
+        _ParentProcesse();
+    return;
 }
 
 void clsCGI::Reset()

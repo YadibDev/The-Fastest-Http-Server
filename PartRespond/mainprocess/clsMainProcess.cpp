@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:35:17 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 21:41:48 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,10 @@ void clsMainProcess::Reset()
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
     _Response.Reset();
+    _InternalRedirectSrc = "";
+    _HeaderFeild = "";
+    _FileFromDisk= "";
+    _Type = "";
     _eventProcess = stEventProcess::RUNINNG; 
 }
 
