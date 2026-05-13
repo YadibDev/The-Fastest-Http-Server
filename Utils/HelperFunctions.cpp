@@ -813,18 +813,23 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int o
 	int status;
 	int exit_code = waitpid(pid, &status, op);
 
+
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
-	else if (WIFEXITED(status))
+	else if (pid == exit_code && WIFEXITED(status))
 	{
-		std::cout << pid << std::endl;
 		if (WEXITSTATUS(status) == 0)
 			return stEventProcess::THE_END;
 		else
 			return stEventProcess::END_UNKNOW;
 	}
 	else
+	{
+		std::clog << exit_code << std::endl;
+		std::clog << pid << std::endl;
+		perror("error process: ");
 		return stEventProcess::END_UNKNOW;
+	}
 
 }
 

@@ -72,8 +72,6 @@ void clsFlow::_createServers()
 	}
 	if (_totalServers == 0)
 		throw std::runtime_error("Error\nthere is no server or there is a problem in all the servers");
-	// debug
-	// std::cout << "total servers created [" << _totalServers << "]" << std::endl;
 }
 
 void clsFlow::_initializeDataBase()
@@ -163,14 +161,19 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 		}
 		else if (TypeFd == CLIENT_SOCK)
 		{
-			int index = _clientIdByFd[fd];
-			if (client.events & EPOLLERR)
-				_freeClient(fd);
-			else if (client.events & EPOLLHUP)
+			// int index = _clientIdByFd[fd];
+			if (client.events & (EPOLLERR | EPOLLHUP) )
 			{
-				_clientsArr[index].peerClosed();
-				return false;
+				_freeClient(fd);
 			}
+			// else if (client.events & EPOLLHUP)
+			// {
+			// 	_freeClient(fd);
+
+			// 	// std::cout << "epollHUP" << std::endl; // debug
+			// 	// _clientsArr[index].peerClosed();
+			// 	// return false;
+			// }
 		}
 		return true;
 	}
@@ -196,8 +199,6 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
-	static int debugPipe = 1;
-	std::cout << "pushed pipe ==> " << debugPipe++ << std::endl;
 	if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
 	{
 		std::cout << "========> fcntl fail add pipe <=========\n"
@@ -222,10 +223,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	// if (status == BEGIN || status == CONNECTION_CLOSED)
-	// {
-	// 	client.logs();
-	// }
+	if (status == BEGIN || status == CONNECTION_CLOSED)
+	{
+		client.logs();
+	}
 
 	if (status == CONNECTION_CLOSED)
 	{
@@ -242,6 +243,8 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	}
 	else if (status == CGI_START)
 	{
+		static int cgiRuns = 1;
+		std::cout << "cgi runs" << cgiRuns++ << std::endl;; // debug
 		_pushPipe(client.getPipeCgi(), index);
 		client.initializeCGI();
 	}

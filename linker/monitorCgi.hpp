@@ -66,13 +66,12 @@ public:
         if (stateData == stEventData::STILL_EXIST)
         {
             reads = read(pipe, buffer, bufferSize);
-            if (reads == 0)
+            if (reads == 0 && bufferSize > 0)
             {
                 stateData = stEventData::END_PIPE;
-                std::cout << "pipe end" << std::endl; // debug
             }
         }
-        if (stateProcess == stEventProcess::RUNINNG)
+        if (stateData == stEventData::END_PIPE && stateProcess == stEventProcess::RUNINNG)
         {
             stateProcess = HelperFunctions::checkProcessStatus(pid);
             if (stateProcess >= (short)stEventProcess::THE_END)
