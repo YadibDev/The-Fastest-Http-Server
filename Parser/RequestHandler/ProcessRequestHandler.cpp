@@ -128,6 +128,7 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
     {
         if (handler->getPathInfo().len)
             handler->computePathTranslated(bestLocation->getRoot(), serverConfig);
+        return true;
     }
 
     return validateAndFinalizePhysicalPath(bestLocation, handler, newUri, error);

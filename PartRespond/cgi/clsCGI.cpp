@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:36:34 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:54:06 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,6 +431,9 @@ bool clsCGI::_StoredArgs()
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
+
+    if (!_MakeEnv())
+        return (true);
     close(_pip[0]);
     if (!_DataRequest.getFilePathBody().empty())
     {
@@ -469,8 +472,7 @@ void clsCGI::_ParentProcesse()
 
 bool clsCGI::_InintialVar()
 {
-    if (!_MakeEnv())
-        return (false);
+    
     if (!_StoredArgs())
         return (false);
     if (pipe(_pip) == -1)
@@ -500,6 +502,7 @@ void clsCGI::RunCGI()
     {
         if (_childeProcesse())
             exit(1);
+        exit(1);
     }
     else
         _ParentProcesse();

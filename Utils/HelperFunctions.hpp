@@ -134,8 +134,6 @@ public:
     static void GTMHTTP(tm *GMT, std::string &Str);
     static void DateTime(std::string &Str);
     static std::string Convert_Hex(const std::string &Str, int Num);
-    static char	*ft_strdup(const char *src);
-    static void	free_matrex(char ***matrex, short IndexStart);
     static const char *GetTypeDataFile(const std::string &Str);
     static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
     static char	*ft_itoa(int n);
@@ -159,7 +157,6 @@ public:
     static int SkeepAtLast(const std::string& Str, const std::string &Sep);
     static bool isTimeout(const time_t &startInS, time_t Timeout);
     static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
-    static char	*ft_strcpy(char *dest, const char *src);
 
     template<typename T>
     static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
@@ -172,7 +169,6 @@ public:
     }
     static int FindChar(char *Arr, int length, char c);
     static int FindCharFromLast(char *Arr, int length, char c);
-    static char	*ft_strjoin(const char *s1, const char *s2, char free_yes);
     static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_sr, bool Flag);
 
 private:

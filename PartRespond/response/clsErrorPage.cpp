@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:41:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 21:42:27 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,25 +196,13 @@ const std::string &clsErrorPage::GetFileFromDisk()
     return (_FileFromDisk);
 }
 
-clsErrorPage::~clsErrorPage()
-{
-    _Type = "";
-    _HeaderFeild = "";
-    _BodySize = 0;
-    _Status = 0;
-    _Erno = false;
-    _FileFromDisk = "";
-}
+clsErrorPage::~clsErrorPage(){}
 
 void clsErrorPage::Reset()
 {
-    _Type = "";
-    _HeaderFeild = "";
     _BodySize = 0;
     _Status = 0;
     _Erno = false;
-    _FileFromDisk = "";
-    _Body = "";
     _IsAutoIndex = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
