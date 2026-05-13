@@ -81,11 +81,11 @@ void clsClient::UpdateTime() // update with the time of last reqquest
 
 void clsClient::ResetAll()
 {
+    _monitorCGI.freeCgiRessources();
     this->SetState(BEGIN);
     _theData.Reset();
     _Requester.init();
     _ResponderProecss.Reset();
-    _monitorCGI.freeCgiRessources();
 }
 
 clsClient::~clsClient()
@@ -439,7 +439,7 @@ bool clsClient::monitorCgi()
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
 
-    if (processState >= stEventProcess::THE_END && dataState == stEventData::END_PIPE)
+    if (processState >= (short)stEventProcess::THE_END && dataState == stEventData::END_PIPE)
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(processState);
@@ -453,7 +453,7 @@ bool clsClient::monitorCgi()
         _monitorCGI.freeCgiRessources();
         return true;
     }
-    else if (processState >= stEventProcess::THE_END && dataState == stEventData::END_PIPE)
+    else if ((short)processState >= (short)stEventProcess::THE_END && dataState == stEventData::END_PIPE)
         return true;
     return false;
 }
@@ -462,7 +462,7 @@ bool clsClient::timeoutCgi()
 {
     if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
         return true;
-    if (_monitorCGI.TimeoutCgi()) // update also the process
+    if (_monitorCGI.TimeoutCgi()) 
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
@@ -475,6 +475,7 @@ bool clsClient::timeoutCgi()
 void clsClient::forceStopCgi()
 {
     _monitorCGI.freeCgiRessources();
+    
 }
 
 void clsClient::peerClosed()

@@ -96,6 +96,7 @@ void clsFlow::_freeClient(short clientFd)
 {
 	short index = _clientIdByFd[clientFd];
 	_clientIdByFd.erase(clientFd);
+	_popPipe(_clientsArr[index].getPipeCgi());
 	_clientsArr[index].freeRessources();
 	_clientsAvailable.push(index);
 }
@@ -142,7 +143,7 @@ clsFlow::clsFlow(const char *configFile, long maxClient) : maxClient(maxClient)
 
 bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 {
-	if (client.events & (EPOLLERR | EPOLLRDHUP | EPOLLHUP))
+	if (client.events & (EPOLLERR | EPOLLHUP))
 	{
 		int fd = client.data.fd;
 
@@ -151,8 +152,8 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 			int index = _IdByPipe[fd];
 			if (client.events & EPOLLERR)
 			{
-				std::cout << "pipe err\n" << std::endl;
 				_clientsArr[index].forceStopCgi();
+				_popPipe(fd);
 			}
 			else if (client.events & EPOLLHUP)
 			{
@@ -165,7 +166,7 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 			int index = _clientIdByFd[fd];
 			if (client.events & EPOLLERR)
 				_freeClient(fd);
-			else if (client.events & EPOLLRDHUP)
+			else if (client.events & EPOLLHUP)
 			{
 				_clientsArr[index].peerClosed();
 				return false;
@@ -187,7 +188,7 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 	clsClient &client = _clientsArr[blockId];
 	_clientIdByFd[newClient] = blockId;
 
-	if (_epoll.addClient(newClient, EPOLLIN | EPOLLRDHUP) == false)
+	if (_epoll.addClient(newClient, EPOLLIN) == false)
 		return false;
 	client.initializeClient(addr, newClient, block, port);
 	return true;
@@ -195,6 +196,8 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
+	static int debugPipe = 1;
+	std::cout << "pushed pipe ==> " << debugPipe++ << std::endl;
 	if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
 	{
 		std::cout << "========> fcntl fail add pipe <=========\n"
@@ -208,9 +211,6 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 
 void clsFlow::_popPipe(short pipe)
 {
-	int index = _IdByPipe[pipe];
-	int fd = _clientsArr[index].getSocket();
-	_epoll.changeAbility(fd, EPOLLOUT);
 	_IdByPipe.erase(pipe);
 }
 
@@ -243,7 +243,6 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	else if (status == CGI_START)
 	{
 		_pushPipe(client.getPipeCgi(), index);
-		_epoll.changeAbility(fd, 0);
 		client.initializeCGI();
 	}
 }
@@ -284,7 +283,9 @@ void clsFlow::_pipeFlow(int fd)
 	clsClient &client = _clientsArr[index];
 
 	if (client.monitorCgi())
+	{
 		_popPipe(fd);
+	}
 }
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)

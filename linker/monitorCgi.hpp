@@ -43,18 +43,16 @@ public:
 
     void freeCgiRessources()
     {
-        if (pid == -1 && pipe == -1)
-            return;
-        if (pid != -1 && stateProcess == stEventProcess::RUNINNG)
+        if (stateProcess == stEventProcess::RUNINNG)
         {
-            if (HelperFunctions::checkProcessStatus(pid) == stEventProcess::RUNINNG)
+            if (pid != -1 && HelperFunctions::checkProcessStatus(pid) == stEventProcess::RUNINNG)
             {
                 kill(pid, SIGKILL);
                 HelperFunctions::checkProcessStatus(pid, 0);
             }
             stateProcess = stEventProcess::END_WITH_TIMOUT;
         }
-        if (pipe != -1 && stateData == stEventData::STILL_EXIST)
+        if (pipe != -1)
             close(pipe);
         stateData = stEventData::END_PIPE;
         pid = -1;
@@ -69,17 +67,24 @@ public:
         {
             reads = read(pipe, buffer, bufferSize);
             if (reads == 0)
+            {
                 stateData = stEventData::END_PIPE;
+                std::cout << "pipe end" << std::endl; // debug
+            }
         }
-        if (stateData == stEventData::END_PIPE && pid != -1)
+        if (stateProcess == stEventProcess::RUNINNG)
         {
             stateProcess = HelperFunctions::checkProcessStatus(pid);
-            if (stateProcess >= stEventProcess::THE_END)
-            {
+            if (stateProcess >= (short)stEventProcess::THE_END)
                 pid = -1;
-                close(pipe);
-                pipe = -1;
-            }
+            if (stateProcess > (short)stEventProcess::THE_END)
+                reads = 0;
+        }
+
+        if (stateData == stEventData::END_PIPE && stateProcess >= (short)stEventProcess::THE_END)
+        {
+            close(pipe);
+            pipe = -1;
         }
         return reads;
     }

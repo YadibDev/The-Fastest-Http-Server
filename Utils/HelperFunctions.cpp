@@ -817,6 +817,7 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int o
 		return stEventProcess::RUNINNG;
 	else if (WIFEXITED(status))
 	{
+		std::cout << pid << std::endl;
 		if (WEXITSTATUS(status) == 0)
 			return stEventProcess::THE_END;
 		else
