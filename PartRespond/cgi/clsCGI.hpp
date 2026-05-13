@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:43:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:35:54 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ class clsCGI
         bool _ConcatonateValueHeaders(int CountHeaders);
         bool _AddKeyHeader(int CountHeaders);
     public:
-        clsCGI(RequestHandler &DataRequest, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
+        clsCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
         bool GetIsRunCGI();
         bool GetErno();
         int GetFdPipe();

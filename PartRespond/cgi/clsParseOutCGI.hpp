@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:47:45 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:37:34 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class clsParseOutCGI
     bool _IsConnectoin;
     bool _ProcessIsFinish;
     const RequestHandler &_DataRequest;
-    std::string _Body;
+    std::string &_Body;
     std::string &_HeadersFieldFinal;
     std::string &_FileNameFromDisk;
     std::string &_InternalRedirectSrc;
@@ -79,7 +79,7 @@ class clsParseOutCGI
     void _InitialInternalRedirect();
 
 public:
-    clsParseOutCGI(RequestHandler &_DataRequest, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
+    clsParseOutCGI(RequestHandler &_DataRequest,std::string &Body,  std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
     const std::string &GetBody();
     const std::string &GetFileNameBody();
     const std::string &GetHeadersFieldFinal();

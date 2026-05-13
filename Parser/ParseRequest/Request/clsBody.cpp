@@ -46,19 +46,19 @@ void clsBody::Reset()
     fd = -1;
 }
 
-int clsBody::_createUploadStoreFile()
+int clsBody::_createUploadStoreFile(char *path)
 {
     int fd = -1;
     if (this->uploadStore)
     {
-        fd = open(uploadStore->c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+        fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
     }
 
     return fd;
 
 }
 // working on normal body without chunk
-bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path)
+bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
     (void)path;
     uint16_t &offset = *off;
@@ -96,7 +96,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         }
         else
         {
-            fd = _createUploadStoreFile();
+            fd = _createUploadStoreFile(path);
         }
 
         if (fd == -1)
@@ -120,7 +120,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    short &size = chunkHelp.size;
+    ssize_t &size = chunkHelp.size;
 
     if (arr[t] == '\r')
     {
@@ -162,7 +162,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    short &size = chunkHelp.size;
+    ssize_t &size = chunkHelp.size;
 
     int temp;
     if (ofset - t < size)
@@ -212,9 +212,6 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
     bool &readSize = chunkHelp.readsize;
     bool error = false;
     short totRemoves = 0;
-
-    std::cout << "stroe chunk chunk body\n"
-              << std::endl;
 
     while (cur < ofset && t < ofset)
     {

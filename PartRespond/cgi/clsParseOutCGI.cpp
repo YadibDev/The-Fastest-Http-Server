@@ -6,14 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:49:19 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:40:56 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest, std::string &HeadersFieldFinal, std::string &FileNameFromDisk, std::string &InternalRedirectSrc)
-	 :_DataRequest(DataRequest), _HeadersFieldFinal(HeadersFieldFinal), _FileNameFromDisk(FileNameFromDisk), _InternalRedirectSrc(InternalRedirectSrc)
+clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &FileNameFromDisk, std::string &InternalRedirectSrc)
+	 :_DataRequest(DataRequest),_Body(Body), _HeadersFieldFinal(HeadersFieldFinal), _FileNameFromDisk(FileNameFromDisk), _InternalRedirectSrc(InternalRedirectSrc)
 {
 	_BytesBody = 0;
 	_FoundBody = false;
@@ -27,9 +27,8 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest, std::string &Headers
 	_Line.resize(MAX_HEADERS);
 	_NameHeader.resize(MAX_HEADERS);
 	_ValueHeader.resize(MAX_HEADERS);
-	_Body.resize(MAX_BODY);
 
-	if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
+	if (_InternalRedirectSrc.empty() ||  _HeadersFieldDuplicate.empty() || _Line.empty()
 		|| _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
 	{
 		_Status = 500;
@@ -39,7 +38,6 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest, std::string &Headers
 	}
 
 	_NameHeader = "";
-	_Body = "";
 	_ValueHeader = "";
 	_HeadersFieldDuplicate = "";
 	_Line = "";
@@ -130,8 +128,8 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
 	}
 	else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
 		_HeadersField[_NameHeader] = _ValueHeader;
-	_NameHeader.clear();
-	_ValueHeader.clear();
+	_NameHeader = "";
+	_ValueHeader= "";
 	return true;
 }
 
@@ -164,8 +162,8 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
 		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
 	{
-		_NameHeader.clear();
-		_ValueHeader.clear();
+		_NameHeader = "";
+		_ValueHeader = "";
 		return true;
 	}
 	if (!_StoredHeadersField(Str))
@@ -316,7 +314,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 			_FoundBody = true;
 			return;
 		}
-		_Line.clear();
+		_Line = "";
 		HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
 	}
 }
@@ -346,6 +344,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 			_Mod[stMod::ERROR] = stMod::ERROR;
 			return ;
 		}
+		short PreviousBytes = _BytesBody;
 	   _BytesBody += ((Length - _Counter  < 0)? 0 : Length - _Counter);
 	   if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
 		{
@@ -359,7 +358,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 			_CreatFileTemp();
 			if (_Mod[stMod::ERROR] == stMod::ERROR)
 				return ;
-			if (write(_Fdout, &_Body[0], _Body.size()) == -1)
+			if (write(_Fdout, &_Body[0], PreviousBytes) == -1)
 			{
 				_Status = 500;
 				_Mod[stMod::ERROR] = stMod::ERROR;
@@ -372,10 +371,9 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 				_Mod[stMod::ERROR] = stMod::ERROR;
 				return ;
 			}
-			_Body.clear();
 	   }
 	   else
-			HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
+			HelperFunctions::ft_str_copy(&_Body[0], Arr, MAX_BODY, PreviousBytes, Length, 0);
 	}
 	else if (_BytesBody > MAX_BODY)
 	{
@@ -489,7 +487,6 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
 
 void clsParseOutCGI::Reset()
 {
-	_Body = "";
 	_FileNameFromDisk = "";
 	if (!_HeadersField.empty())
 		_HeadersField.clear();

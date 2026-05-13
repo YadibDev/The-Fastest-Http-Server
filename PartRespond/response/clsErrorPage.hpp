@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/06 20:53:57 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:02:09 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ class clsErrorPage
     private:
         int _Status;
         stMod::eMod _Mod[10];
-        std::string _Type;
-        std::string _Body;
-        std::string _HeaderFeild;
-        std::string _FileFromDisk;
+        std::string &_Body;
+        std::string &_HeaderFeild;
+        std::string &_FileFromDisk;
+        std::string &_Type;
         bool _IsConnection;
         bool _IsAutoIndex;
         size_t _BodySize;
@@ -44,7 +44,7 @@ class clsErrorPage
         void _StoredInFileOrStr(size_t sizeBody);
         void _CheckConnection();
     public:
-        clsErrorPage();
+        clsErrorPage(std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type);
         void SetBodySize(int BodySize);
         size_t GetBodySize() const;
         const std::string &GetHeaderField();
