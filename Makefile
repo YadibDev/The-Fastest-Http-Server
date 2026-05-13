@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -g -fsanitize=address --std=c++98 
+CPPFLAGS = -Wall -Wextra -Werror -g  --std=c++98   #-fsanitize=address 
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \

@@ -240,8 +240,6 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	}
 	else if (status == CGI_START)
 	{
-		static int cgiRuns = 1;
-		std::cout << "cgi runs" << cgiRuns++ << std::endl;; // debug
 		_pushPipe(client.getPipeCgi(), index);
 		client.initializeCGI();
 	}
