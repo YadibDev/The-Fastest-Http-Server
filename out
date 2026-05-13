@@ -28,3 +28,50 @@ Successful transactions:   412343
 Failed transactions:	        0
 Longest transaction:	       60.00 ms
 Shortest transaction:	        0.00 ms
+
+
+
+
+
+
+
+------------------------------------------
+
+mjaouchi@e1r5p13 ~ % siege -c 1000 -t 30S 127.0.0.1:8082/test.html
+
+
+Transactions:		   171819    hits
+Availability:		       99.88 %
+Elapsed time:		       30.46 secs
+Data transferred:	        0.66 MB
+Response time:		      138.94 ms
+Transaction rate:	     5640.81 trans/sec
+Throughput:		        0.02 MB/sec
+Concurrency:		      783.73
+Successful transactions:   171826
+Failed transactions:	      205
+Longest transaction:	    29860.00 ms
+Shortest transaction:	        0.00 ms
+
+
+
+Transactions:		   228385    hits
+Availability:		       99.78 %
+Elapsed time:		       30.49 secs
+Data transferred:	        0.87 MB
+Response time:		       94.24 ms
+Transaction rate:	     7490.49 trans/sec
+Throughput:		        0.03 MB/sec
+Concurrency:		      705.89
+Successful transactions:   228385
+Failed transactions:	      509
+Longest transaction:	    27880.00 ms
+Shortest transaction:	        0.00 ms
+
+
+----------------------------------------------
+
+
+
+  21064 mjaouchi  20   0  234.2m 171.6m   0.7   2.2   0:36.91 S              `- ./webserv /ho+ 
+  in 1500 Client

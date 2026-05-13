@@ -117,7 +117,6 @@ bool RequestParser::ParseBody(uint16_t size)
 
 bool RequestParser::Parse(uint16_t size)
 {
-	std::cout << "NewRequest" << std::endl;
 	if (size >= SIZE_BUFFER && _state != STATE_BODY)
 		return (_error.setStatus(413, "Content Too Large"), false);
 
