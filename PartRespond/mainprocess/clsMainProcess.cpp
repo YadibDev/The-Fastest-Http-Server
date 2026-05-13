@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:45:27 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:35:17 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 // yadib modifier this part of achraf
 clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) 
-    : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type), _CGI(RequestLinker, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
+    : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
+     _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
 {
     _Body.resize(MAX_BODY);
 	_InternalRedirectSrc.resize(1000);

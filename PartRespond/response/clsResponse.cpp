@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:50:51 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:42:15 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include "../../Utils/HelperFunctions.hpp"
 
 clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type) 
-    : _DataRequest(DataRequest), _Body(Body), _HeaderFeild(HeaderFeild), _FileFromDisk(FileFromDisk), _Type(Type)
+    : _DataRequest(DataRequest), _Body(Body), _HeaderFeild(HeaderFeild), _FileFromDisk(FileFromDisk), _Type(Type), 
+    _ErrorPage(Body, HeaderFeild, FileFromDisk, Type)
 {
     _Status = 0;
     _IsConnection = true;
@@ -230,7 +231,7 @@ void clsResponse::_StoredInFileOrStr()
         close(FD);
         return;
     }
-    _FileFromDisk.clear();
+    _FileFromDisk = "";
     close(FD);
 }
 

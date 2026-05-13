@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/12 21:15:19 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 10:59:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ class clsResponse
         bool _ModTransferData;
         const RequestHandler &_DataRequest;
         std::string *_InternalRedirectSrc;
-        clsErrorPage _ErrorPage;
         std::string &_Body;
         std::string &_HeaderFeild;
         std::string &_FileFromDisk;
         std::string &_Type;
+        clsErrorPage _ErrorPage;
         const std::string *_BodyPointer;
         const std::string *_HeaderFeildPointer;
         const std::string *_FileFromDiskPointer;
