@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include "clsClient.hpp"
 #include "monitorCgi.hpp"
-#define EVENTS_MAX 250
+#define EVENTS_MAX 150
 #define MAX_CLIENTS 500
 #define TIMEOUT_CLIENT 60
 // #include <vector>

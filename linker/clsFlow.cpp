@@ -95,6 +95,7 @@ void clsFlow::_freeClient(short clientFd)
 {
 	short index = _clientIdByFd[clientFd];
 	_clientIdByFd.erase(clientFd);
+	_popPipe(_clientsArr[index].getPipeCgi());
 	_clientsArr[index].freeRessources();
 	_clientsAvailable.push(index);
 }
@@ -141,25 +142,35 @@ clsFlow::clsFlow(const char *configFile, long maxClient) : maxClient(maxClient)
 
 bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 {
-	if ((client.events & (EPOLLERR | EPOLLHUP)))
+	if (client.events & (EPOLLERR | EPOLLHUP))
 	{
 		int fd = client.data.fd;
 
 		if (TypeFd == PIPE)
 		{
 			int index = _IdByPipe[fd];
-			if (client.events == EPOLLHUP)
+			if (client.events & EPOLLERR)
+			{
+				_clientsArr[index].forceStopCgi();
+				_popPipe(fd);
+			}
+			else if (client.events & EPOLLHUP)
 			{
 				if (_clientsArr[index].monitorCgi())
 					_popPipe(fd);
 			}
-			else
-			{
-				_clientsArr[index].forceStopCgi();
-			}
 		}
 		else if (TypeFd == CLIENT_SOCK)
-			_freeClient(fd);
+		{
+			int index = _clientIdByFd[fd];
+			if (client.events & EPOLLERR)
+				_freeClient(fd);
+			else if (client.events & EPOLLHUP)
+			{
+				_clientsArr[index].peerClosed();
+				return false;
+			}
+		}
 		return true;
 	}
 	return false;
@@ -208,13 +219,15 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	if (status == BEGIN || status == CONNECTION_CLOSED)
-	{
-		client.logs();
-	}
+	// if (status == BEGIN || status == CONNECTION_CLOSED)
+	// {
+	// 	client.logs();
+	// }
 
 	if (status == CONNECTION_CLOSED)
+	{
 		_freeClient(fd);
+	}
 	else if (status == START_RESPOND)
 	{
 		_epoll.changeAbility(fd, EPOLLOUT);
@@ -267,7 +280,9 @@ void clsFlow::_pipeFlow(int fd)
 	clsClient &client = _clientsArr[index];
 
 	if (client.monitorCgi())
+	{
 		_popPipe(fd);
+	}
 }
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
@@ -328,7 +343,7 @@ void clsFlow::EventLoop()
 	fdTypes TypeFd;
 	while (1)
 	{
-		while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 100 * 1024)) > 0)
+		while ((nFds = _epoll.tryPollNewClients(_clientsEvents, EVENTS_MAX, 1024)) > 0)
 		{
 			for (int i = 0; i < nFds; i++)
 			{
