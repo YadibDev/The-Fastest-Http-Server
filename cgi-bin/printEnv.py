@@ -1,28 +1,43 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import html
 
-# Required CGI Header
+# 1. CGI Header
 print("Content-Type: text/html\r\n\r\n")
-print()  # Blank line to separate headers from body
+print()
 
-# Format environment variables into table rows
-rows = ""
+# 2. Read Body from stdin
+# CGI servers pass the length of the body via the CONTENT_LENGTH environment variable
+try:
+    content_length = int(os.environ.get('CONTENT_LENGTH', 0))
+except ValueError:
+    content_length = 0
+
+if content_length > 0:
+    # Read exactly the number of bytes specified
+    raw_body = sys.stdin.read(content_length)
+    display_body = html.escape(raw_body)
+else:
+    display_body = "NO_BODY_DETECTED"
+
+# 3. Format Environment Variables
+env_rows = ""
 for key, value in sorted(os.environ.items()):
-    rows += f"""
+    env_rows += f"""
     <tr>
         <td class="key">{html.escape(key)}</td>
         <td class="value">{html.escape(value)}</td>
     </tr>"""
 
-# HTML Template with Stealth Aesthetics
+# 4. Output Rendered HTML
 print(f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CGI_ENV_INSPECTOR</title>
+    <title>CGI_SYSTEM_INSPECTOR</title>
     <style>
         body {{
             background-color: #222831;
@@ -30,100 +45,51 @@ print(f"""
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 40px;
-            line-height: 1.5;
         }}
-
-        .container {{
-            max-width: 1200px;
-            margin: 0 auto;
-        }}
-
-        header {{
-            border-bottom: 2px solid #8BC34A;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-        }}
-
-        h1 {{
-            color: #8BC34A;
-            margin: 0;
-            font-size: 1.4rem;
-            letter-spacing: 1px;
-        }}
-
-        .terminal-box {{
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
             background-color: #393E46;
             border-radius: 4px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-            overflow: hidden;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }}
-
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-        }}
-
-        th {{
-            background-color: #2D333B;
-            color: #FF9800;
-            text-align: left;
-            padding: 12px 20px;
-            font-size: 0.9rem;
-            border-bottom: 2px solid #222831;
-        }}
-
-        td {{
-            padding: 10px 20px;
-            border-bottom: 1px solid #4E545C;
-            font-size: 0.85rem;
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
             word-break: break-all;
         }}
-
-        .key {{
-            color: #8BC34A;
-            font-weight: bold;
-            white-space: nowrap;
-            width: 30%;
-        }}
-
-        .value {{
-            color: #EEEEEE;
-        }}
-
-        tr:hover {{
-            background-color: #434a54;
-        }}
-
-        .footer {{
-            margin-top: 20px;
-            color: #FF9800;
-            font-size: 0.75rem;
-            text-align: right;
-        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>[ SYSTEM_ENVIRONMENT_VARIABLES ]</h1>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
         </header>
 
-        <div class="terminal-box">
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
             <table>
-                <thead>
-                    <tr>
-                        <th>KEY</th>
-                        <th>VALUE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
+                {env_rows}
             </table>
         </div>
-
-        <div class="footer">
-            RUN_LEVEL: CGI_ACTIVE // STDOUT_SUCCESS
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
         </div>
     </div>
 </body>
