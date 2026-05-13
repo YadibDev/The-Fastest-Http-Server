@@ -363,4 +363,4 @@ bool clsResponse::IsError()
 {
     return (_Mod[stMod::ERROR] == stMod::ERROR);
 }
-clsResponse::~clsResponse() {}
+clsResponse::~clsResponse() { }

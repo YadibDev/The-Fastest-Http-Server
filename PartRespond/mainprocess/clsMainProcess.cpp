@@ -24,7 +24,7 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
     _Type.resize(500);
     _RunCGI = false;
 }
-clsMainProcess::~clsMainProcess() {}
+clsMainProcess::~clsMainProcess() { }
 
 void clsMainProcess::_PartRedirection()
 {

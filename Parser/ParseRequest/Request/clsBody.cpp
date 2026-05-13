@@ -2,7 +2,7 @@
 
 // geters
 
-#define DEFAULT_TEMP "/tmp/fileXXXXXX"
+#define DEFAULT_TEMP "/home/mjaouchi/goinfre/fileXXXXXX"
 
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
