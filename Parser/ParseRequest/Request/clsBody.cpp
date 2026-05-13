@@ -52,6 +52,8 @@ int clsBody::_createUploadStoreFile()
     if (this->uploadStore)
     {
         fd = open(uploadStore->c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+        if (errno == EISDIR)
+            std::cout << "directory" << std::endl;
     }
 
     return fd;

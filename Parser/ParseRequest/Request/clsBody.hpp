@@ -4,8 +4,11 @@
 #include <iostream>
 #include <string>
 #include "Header.hpp"
+#include <fcntl.h>
+#include <fcntl.h>
 #include <cstdio>
 #include <unistd.h>
+ #include <errno.h>
 #include "../../../Utils/HelperFunctions.hpp"
 class clsRequest;
 
