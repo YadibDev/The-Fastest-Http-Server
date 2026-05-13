@@ -6,39 +6,27 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/11 21:16:06 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/12 21:50:51 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 
-clsResponse::clsResponse(RequestHandler &DataRequest) : _DataRequest(DataRequest)
+clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type) 
+    : _DataRequest(DataRequest), _Body(Body), _HeaderFeild(HeaderFeild), _FileFromDisk(FileFromDisk), _Type(Type)
 {
     _Status = 0;
-    _BodySize = DataRequest.getSizeFile();
-
     _IsConnection = true;
-    _SizeHeaders = 0;
     _Erno = false;
+    _BodySize = 0;
     _ModTransferData = false;
-    _FileFromDisk.resize(1000);
-    _HeaderFeild.resize(MAX_HEADERS);
-    _InternalRedirectSrc.resize(1000);
-    _Body.resize(MAX_BODY);
-    _Type.resize(500);
-    if (_InternalRedirectSrc.empty() || _Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        _Erno = true;
-        return;
-    }
-    _FileFromDisk.clear();
-    _HeaderFeild.clear();
-    _InternalRedirectSrc.clear();
-    _Type.clear();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
+}
+
+void clsResponse::_UploadResource()
+{
+    
 }
 
 void clsResponse::_DeleteResource()
@@ -68,6 +56,8 @@ void clsResponse::MakeResponse()
     }
     else if (_Mod[stMod::DELETE] == stMod::DELETE)
         _DeleteResource();
+    else if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
+        _UploadResource();
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();
     if (_Mod[stMod::ERROR] == stMod::ERROR)
@@ -130,12 +120,13 @@ void clsResponse::_InitialHeaders()
 
 void clsResponse::_ErrorRespnseHandling()
 {
-    if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE)
+    if (_Mod[stMod::INTERNALRE] != stMod::INTERNALRE && _Status != 500)
         return;
     else
     {
         _Mod[stMod::ERROR] = stMod::EMPTY;
-        if (!_DataRequest.getDefaultErrorPage())
+        
+        if (!_DataRequest.getDefaultErrorPage() && _Status != 500)
         {
             if (_DataRequest.getAutoIndex())
             {
@@ -260,10 +251,9 @@ void clsResponse::Reset()
     _BodySize = 0;
     _FileFromDisk = "";
     _HeaderFeild = "";
+    _Type = "";
     _ModTransferData = false;
     _Erno = false;
-    _SizeHeaders = 0;
-    _Type = "";
     _IsConnection = true;
     _ErrorPage.Reset();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -319,11 +309,11 @@ void clsResponse::SetFileFromDiskPointer(const std::string *FileFromDiskPointer)
     _FileFromDiskPointer = FileFromDiskPointer;
 }
 
-void clsResponse::SetInternalRedirectSrc(const std::string &InternalRedirectSrc)
+void clsResponse::SetInternalRedirectSrc(std::string *InternalRedirectSrc)
 {
     _InternalRedirectSrc = InternalRedirectSrc;
 }
-std::string &clsResponse::GetInternalRedirectSrc()
+std::string *clsResponse::GetInternalRedirectSrc()
 {
     return _InternalRedirectSrc;
 }

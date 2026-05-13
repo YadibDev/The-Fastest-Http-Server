@@ -308,34 +308,13 @@ void	HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 
 
 
-
-
-
-
 // Achraf
 
 std::map<int, std::string> HelperFunctions::_Message; 
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 char HelperFunctions::_PoinerType[50];
-char  **HelperFunctions::_ENV_VAR_CONST;
-bool HelperFunctions::_Flag = false;
 
-
-
-char *HelperFunctions::GetENV_VAR_CONST(short Index)
-{
-	if (!_ENV_VAR_CONST || Index > 8)
-		return NULL;
-	return _ENV_VAR_CONST[Index];
-}
-
-char **HelperFunctions::GetPointer_ENV_VAR_CONST()
-{
-	if (!_ENV_VAR_CONST)
-		return NULL;
-	return _ENV_VAR_CONST;
-}
 
 bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
     short i = 0;

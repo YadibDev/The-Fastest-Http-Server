@@ -275,6 +275,7 @@ void clsClient::_initalizeRespondBuffer()
     bool fileExist = false;
     char *respondBuffer = this->_theData.io_chunk;
 
+    // std::cout << _internalCounter << std::endl;
     if (_handleInternal())
     {
         _internalCounter++;

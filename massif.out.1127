@@ -1,0 +1,1730 @@
+desc: (none)
+cmd: ./webserv
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=56233355
+mem_heap_B=69274348
+mem_heap_extra_B=200932
+mem_stacks_B=0
+heap_tree=peak
+n3: 69274348 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 106533 in 24 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=2
+#-----------
+time=370772219
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=509260957
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=727353519
+mem_heap_B=69270040
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=872119583
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=1091208875
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=1266411678
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=1512525240
+mem_heap_B=69270120
+mem_heap_extra_B=201080
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=1690708495
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=2007566342
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270000 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102185 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=11
+#-----------
+time=2245220313
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=2541745485
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=2771998759
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69269960 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102145 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=14
+#-----------
+time=2903548652
+mem_heap_B=69270040
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=3166702917
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=3462752191
+mem_heap_B=69270080
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=3660020020
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=3890301646
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=4040247923
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=4245412682
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=4501816618
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=4655582507
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270000 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102185 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=23
+#-----------
+time=4860560221
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=5014292350
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=5219356628
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=5424311148
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=5629408289
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=5936960264
+mem_heap_B=69270040
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=6141919705
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=6346939838
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=6552081732
+mem_heap_B=69270040
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=6710740861
+mem_heap_B=69270000
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=6869479437
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=7186750613
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=7345428016
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=7583393015
+mem_heap_B=69270120
+mem_heap_extra_B=201080
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270120 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102305 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=37
+#-----------
+time=7821485177
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=8138869873
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=8376888188
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270000 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102185 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=40
+#-----------
+time=8615027962
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=8853046831
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=9011706200
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=9249735554
+mem_heap_B=69270080
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=9408446743
+mem_heap_B=69269920
+mem_heap_extra_B=200984
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=9646475810
+mem_heap_B=69269960
+mem_heap_extra_B=201000
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=9963805406
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69269960 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102145 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=47
+#-----------
+time=10122508384
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=10360492786
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=10519173318
+mem_heap_B=69269960
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=10650771467
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=10782387244
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=10913962932
+mem_heap_B=69269960
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69269960 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102145 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=53
+#-----------
+time=11045550551
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=11177148030
+mem_heap_B=69269960
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=11308777345
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=11440389193
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=11571940728
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=11703562411
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=11835136059
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=11966717733
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=12098339888
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=12229890803
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270040 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102225 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=63
+#-----------
+time=12361451663
+mem_heap_B=69269960
+mem_heap_extra_B=201016
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=12493097816
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=12624668220
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=12756222828
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=67
+#-----------
+time=12887815360
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=68
+#-----------
+time=13019376273
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=69
+#-----------
+time=13150973368
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=70
+#-----------
+time=13282538411
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=71
+#-----------
+time=13414160962
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=72
+#-----------
+time=13545738138
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270000 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102185 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=73
+#-----------
+time=13677319533
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=74
+#-----------
+time=13808923507
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=75
+#-----------
+time=13940515914
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=76
+#-----------
+time=14072092396
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=77
+#-----------
+time=14203653311
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=78
+#-----------
+time=14335224534
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=79
+#-----------
+time=14466777219
+mem_heap_B=69269960
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=80
+#-----------
+time=14598343778
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=81
+#-----------
+time=14729993179
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=82
+#-----------
+time=14861631540
+mem_heap_B=69270000
+mem_heap_extra_B=201032
+mem_stacks_B=0
+heap_tree=detailed
+n3: 69270000 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 40579807 0x400F54E: std::__new_allocator<char>::allocate(unsigned long, void const*) (new_allocator.h:151)
+  n1: 40579807 0x400DD77: allocate (alloc_traits.h:142)
+   n1: 40579807 0x400DD77: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_allocate(std::allocator<char>&, unsigned long) (basic_string.h:142)
+    n2: 40579807 0x400CA45: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long) (basic_string.tcc:164)
+     n2: 40577987 0x400CC91: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (basic_string.tcc:363)
+      n1: 40575500 0x400E110: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char) (basic_string.tcc:499)
+       n1: 40575500 0x400D5A9: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(unsigned long, char) (basic_string.h:1599)
+        n1: 40575500 0x400C2B8: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char) (basic_string.tcc:436)
+         n12: 40575500 0x400AE09: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long) (basic_string.h:1216)
+          n2: 14385000 0x4036E75: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:24)
+           n1: 7192500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+           n1: 7192500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 7192500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x40350C9: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:19)
+           n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 7192500 0x403A0ED: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:30)
+           n1: 7192500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 7192500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 7192500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 7192500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 7192500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 7192500 0x40420AB: main (serverMain.cpp:52)
+          n1: 2048500 0x403212B: RequestHandler::RequestHandler(stPollRequest&) (RequestHandler.cpp:17)
+           n1: 2048500 0x4042241: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 2048500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 2048500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 2048500 0x40420AB: main (serverMain.cpp:52)
+          n2: 2001000 0x4036E60: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:23)
+           n1: 1000500 0x403500E: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+            n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+             n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+              n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+               n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+           n1: 1000500 0x4035AE4: clsResponse::clsResponse(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsResponse.cpp:17)
+            n1: 1000500 0x4034FFC: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n0: 1752500 in 5 places, all below massif's threshold (1.00%)
+          n1: 1001000 0x4036E4B: clsErrorPage::clsErrorPage() (clsErrorPage.cpp:22)
+           n0: 1001000 in 2 places, all below massif's threshold (1.00%)
+          n1: 1000500 0x40350F7: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:21)
+           n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+            n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+             n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+              n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A093: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:26)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0AA: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:27)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0C1: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:28)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+          n1: 1000500 0x403A0D8: clsParseOutCGI::clsParseOutCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsParseOutCGI.cpp:29)
+           n1: 1000500 0x4037C11: clsCGI::clsCGI(RequestHandler&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (clsCGI.cpp:16)
+            n1: 1000500 0x4035049: clsMainProcess::clsMainProcess(RequestHandler&) (clsMainProcess.cpp:17)
+             n1: 1000500 0x4042289: clsClient::clsClient() (clsClient.cpp:3)
+              n1: 1000500 0x404531B: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+               n1: 1000500 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+                n0: 1000500 0x40420AB: main (serverMain.cpp:52)
+      n0: 2487 in 2 places, all below massif's threshold (1.00%)
+     n0: 1820 in 4 places, all below massif's threshold (1.00%)
+ n1: 28588008 0x40452E1: clsFlow::_initializeDataBase() (clsFlow.cpp:80)
+  n1: 28588008 0x4045A76: clsFlow::clsFlow(char const*, long) (clsFlow.cpp:139)
+   n0: 28588008 0x40420AB: main (serverMain.cpp:52)
+ n0: 102185 in 26 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=83
+#-----------
+time=14993271031
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=84
+#-----------
+time=15124882034
+mem_heap_B=69270040
+mem_heap_extra_B=201064
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=85
+#-----------
+time=15256475914
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=86
+#-----------
+time=15388106469
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=87
+#-----------
+time=15519703086
+mem_heap_B=69270000
+mem_heap_extra_B=201048
+mem_stacks_B=0
+heap_tree=empty
