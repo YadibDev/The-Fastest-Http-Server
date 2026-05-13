@@ -6,31 +6,19 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 21:18:17 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:41:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsErrorPage.hpp"
 
-clsErrorPage::clsErrorPage()
+clsErrorPage::clsErrorPage(std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type)
+    :_Body(Body), _HeaderFeild(HeaderFeild), _FileFromDisk(FileFromDisk), _Type(Type)
 {
     _Status = 0;
     _IsConnection = false;
     _BodySize = 0;
-    _Type.resize(500);
     _IsAutoIndex = false;
-    _FileFromDisk.resize(1000);
-    _HeaderFeild.resize(MAX_HEADERS);
-    _Body.resize(MAX_BODY);
-    if (_Type.empty() || _HeaderFeild.empty() || _FileFromDisk.empty() || _Body.empty())
-    {
-        _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
-        return;
-    }
-    _FileFromDisk.clear();
-    _Type.clear();
-    _HeaderFeild.clear();
     _Erno = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
 }
@@ -56,10 +44,8 @@ void clsErrorPage::_HeadersErrorResponse()
 
 void clsErrorPage::_StoredInFileOrStr(size_t sizeBody)
 {
-    _Body.clear();
     if (_FileFromDisk.empty())
         return;
-    
     _BodySize = sizeBody;
     if (_BodySize > MAX_BODY)
     {
@@ -83,13 +69,14 @@ void clsErrorPage::_StoredInFileOrStr(size_t sizeBody)
         close(FD);
         return;
     }
-    _FileFromDisk.clear();
+    _FileFromDisk = "";
     close(FD);
 }
 
 void clsErrorPage::ResponseError(int Status, const std::string &FilePageError, size_t sizeBody)
 {
     _Status = Status;
+    short i = 0 ;
     if (_IsAutoIndex)
     {
         _FileFromDisk = "";
@@ -108,6 +95,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError, s
             _Type = HelperFunctions::GetType(".html");
             _FileFromDisk = "";
             _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(_Status));
+            HelperFunctions::ft_str_copy(&_Body[0], HelperFunctions::GetBody(_Status), MAX_BODY,i, _BodySize, 0);
             _Body = HelperFunctions::GetBody(_Status);
             _HeadersErrorResponse();
             return;
@@ -122,7 +110,7 @@ void clsErrorPage::ResponseError(int Status, const std::string &FilePageError, s
     _Type = HelperFunctions::GetType(".html");
     _FileFromDisk = "";
     _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(Status));
-    _Body = HelperFunctions::GetBody(Status);
+    HelperFunctions::ft_str_copy(&_Body[0], HelperFunctions::GetBody(_Status), MAX_BODY,i, _BodySize, 0);
     _HeadersErrorResponse();
 }
 

@@ -146,6 +146,20 @@ HttpError clsLocation::getError() const { return ctx.error; }
 const stlocation &clsLocation::getLocationData() const { return _locationData; }
 const stErrorPagedata *clsLocation::getDefaultErrorPage() const { return _defaultErrorPage; }
 
+
+void	clsLocation::setRoot(const std::string& root) { _root = root; }
+void	clsLocation::setAlias(const std::string& alias) { _alias = alias; }
+void	clsLocation::setIndex(const std::vector<s_uri_entry>& index) { _index = index; }
+void	clsLocation::setAutoindex(bool autoindex) { _autoindex = autoindex; }
+void	clsLocation::setAllowMethods(short methods) { _allow_methods = methods; }
+void	clsLocation::setClientMaxBodySize(unsigned long long size) { _client_max_body_size = size; }
+void	clsLocation::setReturn(const stReturnData& ret) { _return = ret; }
+void	clsLocation::setUploadStore(const s_uri_entry& store) { _upload_store = store; }
+void	clsLocation::setCgiPass(const std::map<std::string, std::string>& cgi) { _cgi_pass = cgi; }
+void	clsLocation::setErrorPages(const std::map<short, stErrorPagedata>& pages) { _error_pages = pages; }
+void	clsLocation::setDefaultErrorPage(const stErrorPagedata* page) { _defaultErrorPage = page; }
+
+
 void clsLocation::initUri()
 {
     ConfigDirectiveParser::DefineUri(_return.value);

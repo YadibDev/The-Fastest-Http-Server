@@ -16,7 +16,7 @@ class clsRequest;
 
 struct chunkVars
 {
-    short size;
+    long long size;
     uint16_t cur;
     uint16_t trav;
     bool readsize;
@@ -48,7 +48,7 @@ public: // time to debug
     void _handleChunk(uint16_t &ofset);
     bool readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves);
     bool _saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves);
-    int _createUploadStoreFile();
+    int _createUploadStoreFile(char *path);
 
     bool removeFile;
 public:
@@ -67,7 +67,7 @@ public:
     const std::string &getFileName() const;
     step getState() const;
     void shiftingData(char *src, int offset, int sizeShift);
-    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path = NULL);
+    bool bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path = NULL);
     void ParseBody(uint16_t &offset);
     ssize_t getBodySize();
     void StoreNormalBodyInDisk(uint16_t &offset);

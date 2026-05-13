@@ -6,18 +6,25 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 16:29:26 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:35:17 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
-clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _Response(RequestLinker), _CGI(RequestLinker) ,_DataRequest(RequestLinker) 
+clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) 
+    : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
+     _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
 {
+    _Body.resize(MAX_BODY);
+	_InternalRedirectSrc.resize(1000);
+    _HeaderFeild.resize(MAX_HEADERS);
+	_FileFromDisk.resize(1000);
+    _Type.resize(500);
     _RunCGI = false;
 }
-clsMainProcess::~clsMainProcess() {} // free right way
+clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
@@ -49,13 +56,14 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _eventProcess = stEventProcess::END_WITH_PARSE;
             _Response.SetMod(stMod::ERROR);
             _Response.SetStatus(parseCgi.GetStatus());
+            _Response.MakeResponse();
         }
         else
         {
             _Response.SetBodyPointer(&parseCgi.GetBody());
             _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
             _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
-            _Response.SetInternalRedirectSrc(parseCgi.GetInternalRedirectSrc());
+            _Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
         }
@@ -64,6 +72,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     {
         _Response.SetStatus(_eventProcess);
         _Response.SetMod(stMod::ERROR);
+        _Response.MakeResponse();
     }
 }
 
@@ -83,6 +92,7 @@ void clsMainProcess::_InitializeCGI()
         _eventProcess = stEventProcess::END_UNKNOW;
         _Response.SetStatus(500);
         _Response.SetMod(stMod::ERROR);
+        _Response.MakeResponse();
    }
    
 }
@@ -96,7 +106,7 @@ void clsMainProcess::_PartDeleteMethod()
 
 void clsMainProcess::_PartPOSMethod()
 {
-    _Response.SetStatus(200);
+    _Response.SetStatus(201);
     _Response.SetMod(stMod::UPLOAD);
     _Response.MakeResponse();
 }

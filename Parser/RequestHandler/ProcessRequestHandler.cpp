@@ -219,6 +219,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
     {
         if (!handler->ExtractCgiMetadata(uri, bestLocation->getCgiPass()))
         {
+            handler->setUploadStore(&bestLocation->getUploadStore().getPath());
             if (bestLocation->getUploadStore().sv_raw_path.len)
             {
                 HelperFunctions::join_views(handler->getPhysicalPath(), MAX_PATH_LEN, 

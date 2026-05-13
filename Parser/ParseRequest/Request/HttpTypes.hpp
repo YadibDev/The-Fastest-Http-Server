@@ -6,7 +6,9 @@
 #include <vector>
 
 #define INVALID_INDEX 255
-#define SIZE_BUFFER 16384
+#define SIZE_BUFFER 30000
+// #define SIZE_BUFFER 16384
+
 #define SIZE_UNKNOW_HEADER 25
 	
 struct s_view
@@ -57,6 +59,8 @@ struct s_header_slot
 
 	void reset()
 	{
+		key.reset();
+		val.reset();
 		next = INVALID_INDEX;
 		Hash = -1;
 	}

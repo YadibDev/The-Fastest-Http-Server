@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:40:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/19 21:23:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:02:53 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,13 @@ class clsMainProcess
 {
 private:
     clsResponse _Response;
-    clsErrorPage _ErrorPage;
     clsCGI _CGI;
     RequestHandler &_DataRequest;
+    std::string _FileFromDisk;
+    std::string _HeaderFeild;
+    std::string _InternalRedirectSrc;
+    std::string _Body;
+    std::string _Type;
     bool _RunCGI;
     void _PartRedirection();
     void _PartPermission();

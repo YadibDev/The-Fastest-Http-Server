@@ -2,12 +2,9 @@
 
 void clsFlow::_initializeStatics()
 {
-	HelperFunctions::StoreVarConst();
 	HelperFunctions::StoredDefaultType();
 	HelperFunctions::StoredBodys();
 	HelperFunctions::StoredMessage();
-	HelperFunctions::StoredMessage();
-	// signal(SIGINT, function);
 }
 
 void clsFlow::_createBlocksServers(const char *configFile)
@@ -379,6 +376,8 @@ void clsFlow::EventLoop()
 clsFlow::~clsFlow()
 {
 	// free data neseccaryly
+	
 	// HelperFunctions::free_matrex(HelperFunctions::GetENV_VAR_CONST());
+
 	delete[] _clientsArr;
 }

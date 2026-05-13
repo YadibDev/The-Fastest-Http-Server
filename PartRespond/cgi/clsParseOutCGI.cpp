@@ -6,13 +6,14 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/09 21:18:07 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:40:56 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "clsParseOutCGI.hpp"
 
-clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRequest)
+clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &FileNameFromDisk, std::string &InternalRedirectSrc)
+	 :_DataRequest(DataRequest),_Body(Body), _HeadersFieldFinal(HeadersFieldFinal), _FileNameFromDisk(FileNameFromDisk), _InternalRedirectSrc(InternalRedirectSrc)
 {
 	_BytesBody = 0;
 	_FoundBody = false;
@@ -22,14 +23,12 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRe
 	_Fdout = -1;
 	_ModTransferData = false;
 	_Erno = false;
-	_Body.resize(MAX_BODY);
 	_HeadersFieldDuplicate.resize(MAX_HEADERS);
 	_Line.resize(MAX_HEADERS);
 	_NameHeader.resize(MAX_HEADERS);
 	_ValueHeader.resize(MAX_HEADERS);
-	_InternalRedirectSrc.resize(1000);
-	_FileNameFromDisk.resize(1000);
-	if (_InternalRedirectSrc.empty() || _Body.empty() || _HeadersFieldDuplicate.empty() || _Line.empty()
+
+	if (_InternalRedirectSrc.empty() ||  _HeadersFieldDuplicate.empty() || _Line.empty()
 		|| _NameHeader.empty() || _ValueHeader.empty() || _FileNameFromDisk.empty())
 	{
 		_Status = 500;
@@ -38,12 +37,10 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest) :_DataRequest(DataRe
 		return ;
 	}
 
-	_NameHeader.clear();
-	_HeadersFieldDuplicate.clear();
-	_Line.clear();
-	_InternalRedirectSrc.clear();
-	_ValueHeader.clear();
-	_FileNameFromDisk.clear();
+	_NameHeader = "";
+	_ValueHeader = "";
+	_HeadersFieldDuplicate = "";
+	_Line = "";
 
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -131,8 +128,8 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
 	}
 	else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
 		_HeadersField[_NameHeader] = _ValueHeader;
-	_NameHeader.clear();
-	_ValueHeader.clear();
+	_NameHeader = "";
+	_ValueHeader= "";
 	return true;
 }
 
@@ -165,8 +162,8 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
 		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
 	{
-		_NameHeader.clear();
-		_ValueHeader.clear();
+		_NameHeader = "";
+		_ValueHeader = "";
 		return true;
 	}
 	if (!_StoredHeadersField(Str))
@@ -317,7 +314,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 			_FoundBody = true;
 			return;
 		}
-		_Line.clear();
+		_Line = "";
 		HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
 	}
 }
@@ -347,6 +344,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 			_Mod[stMod::ERROR] = stMod::ERROR;
 			return ;
 		}
+		short PreviousBytes = _BytesBody;
 	   _BytesBody += ((Length - _Counter  < 0)? 0 : Length - _Counter);
 	   if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
 		{
@@ -360,7 +358,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 			_CreatFileTemp();
 			if (_Mod[stMod::ERROR] == stMod::ERROR)
 				return ;
-			if (write(_Fdout, &_Body[0], _Body.size()) == -1)
+			if (write(_Fdout, &_Body[0], PreviousBytes) == -1)
 			{
 				_Status = 500;
 				_Mod[stMod::ERROR] = stMod::ERROR;
@@ -373,10 +371,9 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 				_Mod[stMod::ERROR] = stMod::ERROR;
 				return ;
 			}
-			_Body.clear();
 	   }
 	   else
-			HelperFunctions::CopyStr(Arr, _Body, _Counter,Length);
+			HelperFunctions::ft_str_copy(&_Body[0], Arr, MAX_BODY, PreviousBytes, Length, 0);
 	}
 	else if (_BytesBody > MAX_BODY)
 	{
@@ -391,17 +388,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 	}
 }
 
-void clsParseOutCGI::_ErrorRespnseHandling()
-{
-	//if was useless in future delete it
-	    _ErrorPage.ResponseError(_Status, "", 0);
-	    _ModTransferData = true;
-	    _BodyPointer = &_ErrorPage.GetBody();
-	    _HeaderFeildPointer = &_ErrorPage.GetHeaderField();
-	    _FileFromDiskPointer = &_ErrorPage.GetFileFromDisk();
-	    _BytesBody = _ErrorPage.GetBodySize();
-	    _IsConnectoin = _ErrorPage.GetIsConnection();
-}
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
@@ -478,18 +464,6 @@ const std::string &clsParseOutCGI::GetFileNameBody()
 {
 	return _FileNameFromDisk;
 }
-const std::string *clsParseOutCGI::GetBodyPointer()
-{
-   return _BodyPointer;
-}
-const std::string *clsParseOutCGI::GetHeaderFeildPointer()
-{
-	return _HeaderFeildPointer;
-}
-const std::string *clsParseOutCGI::GetFileFromDiskPointer()
-{
-	return _FileFromDiskPointer;
-}
 
 bool clsParseOutCGI::GetModTransferData() const
 {
@@ -513,22 +487,22 @@ std::string &clsParseOutCGI::GetInternalRedirectSrc()
 
 void clsParseOutCGI::Reset()
 {
-	_Body.clear();
+	_FileNameFromDisk = "";
 	if (!_HeadersField.empty())
 		_HeadersField.clear();
-	_HeadersFieldDuplicate.clear();
-	_HeadersFieldFinal.clear();
-	_Line.clear();
+	_HeadersFieldDuplicate = "";
+	_HeadersFieldFinal = "";
+	_Line = "";
 	_BytesBody = 0;
 	_IsConnectoin = true;
 	_FoundBody = false;
 	_ProcessIsFinish = false;
 	_Erno = false;
-	_NameHeader.clear();
-	_ValueHeader.clear();
+	_NameHeader = "";
+	_ValueHeader = "";
 	_CountSizeHeaders = 0;
 	_ModTransferData = 0;
-	_ErrorPage.Reset();
+	_Fdout = -1;
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }

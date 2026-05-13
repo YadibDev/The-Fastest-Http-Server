@@ -30,10 +30,10 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
-    if (this->removeFile)
+    if (fd != -1 && this->removeFile)
         remove(_fileName.c_str());
     this->removeFile = false;
-    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
+    this->_fileName = DEFAULT_TEMP;
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
@@ -46,28 +46,28 @@ void clsBody::Reset()
     fd = -1;
 }
 
-int clsBody::_createUploadStoreFile()
+int clsBody::_createUploadStoreFile(char *path)
 {
     int fd = -1;
+    _fileName = path;
     if (this->uploadStore)
     {
-        fd = open(uploadStore->c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
-        if (errno == EISDIR)
-            std::cout << "directory" << std::endl;
+        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
     }
 
     return fd;
 
 }
 // working on normal body without chunk
-bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, const char *path)
+bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
     (void)path;
     uint16_t &offset = *off;
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
-        this->Reset();
+        if (_state == clsBody::DONE_GOOD)
+            this->Reset();
 
         this->maxBodySize = maxBodySize;
         bodyHasLimit = maxBodySize != 0;
@@ -98,7 +98,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         }
         else
         {
-            fd = _createUploadStoreFile();
+            fd = _createUploadStoreFile(path);
         }
 
         if (fd == -1)
@@ -113,6 +113,12 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         _state = clsBody::READING_BODY;
     }
     ParseBody(offset); // i must change name of it
+
+    if (_state == clsBody::DONE_WIHTERROR)
+    {
+        removeFile = true;
+        this->Reset();
+    }
     return true;
 }
 
@@ -122,7 +128,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    short &size = chunkHelp.size;
+    long long &size = chunkHelp.size;
 
     if (arr[t] == '\r')
     {
@@ -164,7 +170,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    short &size = chunkHelp.size;
+    long long &size = chunkHelp.size;
 
     int temp;
     if (ofset - t < size)
@@ -214,9 +220,6 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
     bool &readSize = chunkHelp.readsize;
     bool error = false;
     short totRemoves = 0;
-
-    std::cout << "stroe chunk chunk body\n"
-              << std::endl;
 
     while (cur < ofset && t < ofset)
     {
@@ -296,12 +299,6 @@ void clsBody::ParseBody(uint16_t &offset)
     else
         _handleChunk(offset);
 
-    if (_state == clsBody::DONE_GOOD || _state == clsBody::DONE_WIHTERROR)
-    {
-        if (fd != -1)
-            close(fd);
-        fd = -1;
-    }
 }
 
 void clsBody::setUploadStore(const std::string *ptr)

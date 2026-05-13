@@ -56,6 +56,19 @@ private:
 	const stErrorPagedata						*getDefaultErrorPage() const;
 	const stlocation							&getLocationData() const;
 	HttpError									getError() const;
+
+	void	setRoot(const std::string& root);
+	void	setAlias(const std::string& alias);
+	void	setIndex(const std::vector<s_uri_entry>& index);
+	void	setAutoindex(bool autoindex);
+	void	setAllowMethods(short methods);
+	void	setClientMaxBodySize(unsigned long long size);
+	void	setReturn(const stReturnData& ret);
+	void	setUploadStore(const s_uri_entry& store);
+	void	setCgiPass(const std::map<std::string, std::string>& cgi);
+	void	setErrorPages(const std::map<short, stErrorPagedata>& pages);
+	void	setDefaultErrorPage(const stErrorPagedata* page);
+
 };
 
 #endif
