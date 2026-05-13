@@ -161,19 +161,15 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 		}
 		else if (TypeFd == CLIENT_SOCK)
 		{
-			// int index = _clientIdByFd[fd];
-			if (client.events & (EPOLLERR | EPOLLHUP) )
+			if (client.events & (EPOLLERR))
 			{
 				_freeClient(fd);
 			}
-			// else if (client.events & EPOLLHUP)
-			// {
-			// 	_freeClient(fd);
-
-			// 	// std::cout << "epollHUP" << std::endl; // debug
-			// 	// _clientsArr[index].peerClosed();
-			// 	// return false;
-			// }
+			else if (client.events & EPOLLHUP)
+			{
+				_clientsArr[index].peerClosed();
+				return false;
+			}
 		}
 		return true;
 	}

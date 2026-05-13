@@ -131,7 +131,7 @@ bool RequestParser::Parse(uint16_t size)
 			else
 				break;
 
-			if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
+			if (this->getRequestLine().getMethod() != HttpTables::M_POST && _state == STATE_BODY) // this line do a lot of work
 				_state = STATE_COMPLETE;
 
 			if (_state == STATE_COMPLETE)

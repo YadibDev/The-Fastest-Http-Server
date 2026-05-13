@@ -227,11 +227,12 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 
     nBytes = send(_socket, respondBuffer, bytesToSend, 0);
 
-    // if (nBytes == 0 && bytesToSend > 0)
-    // {
-    //     if (_peerClosed)
-    //         _state = CONNECTION_CLOSED;
-    // }
+    if (nBytes == -1 && bytesToSend > 0)
+    {
+        if (_peerClosed)
+            _state = CONNECTION_CLOSED;
+        return ;
+    }
 
     if (nBytes != -1)
     {
