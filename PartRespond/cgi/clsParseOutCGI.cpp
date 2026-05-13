@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 22:30:49 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 23:19:04 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,13 +266,7 @@ void clsParseOutCGI::_BuilResponsedredirection()
 	else if (!CountValidHeader && _LocationIsClientOrLocal(_HeadersField["location"]) && !_BytesBody)
 		_HeaderResponseCGI();
 	else if(_HeadersField.size() == 1 && !_BytesBody)
-	{
-		_Mod[stMod::ERROR] = stMod::ERROR;
-		_Status = 404;
-		return;
 		_InitialInternalRedirect();
-		
-	}
 	else
 	{
 		_Mod[stMod::ERROR] = stMod::ERROR;
