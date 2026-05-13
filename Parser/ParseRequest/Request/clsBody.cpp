@@ -120,7 +120,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    ssize_t &size = chunkHelp.size;
+    long long &size = chunkHelp.size;
 
     if (arr[t] == '\r')
     {
@@ -162,7 +162,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     uint16_t &cur = chunkHelp.cur;
     uint16_t &t = chunkHelp.trav;
     bool &readSize = chunkHelp.readsize;
-    ssize_t &size = chunkHelp.size;
+    long long &size = chunkHelp.size;
 
     int temp;
     if (ofset - t < size)

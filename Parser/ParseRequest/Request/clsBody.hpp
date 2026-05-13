@@ -13,7 +13,7 @@ class clsRequest;
 
 struct chunkVars
 {
-    ssize_t size;
+    long long size;
     uint16_t cur;
     uint16_t trav;
     bool readsize;
