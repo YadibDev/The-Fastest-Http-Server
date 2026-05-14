@@ -97,7 +97,7 @@ public:
 	const HttpError&		getError() const;
 
 	// add by adib
-	char					*getFilePostedAbs();
+	const char					*getFilePostedAbs();
 	void					setFilePostdAbs(char *ptr);
 	
 };

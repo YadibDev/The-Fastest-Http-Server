@@ -52,11 +52,12 @@ int clsBody::createRandomFile()
     int fd = -1;
     int result = std::strncmp(uploadStore->c_str(), _fileName.c_str(), uploadStore->size());
 
-    if (result == 0)
+    if (result == 0 && uploadStore->size() == _fileName.size() - 1)
     {
         _fileName += "RANDOM_XXXXXX";
         fd = mkstemp(&_fileName[0]);
     }
+
     return fd;
 }
 

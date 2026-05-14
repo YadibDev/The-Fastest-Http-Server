@@ -237,7 +237,7 @@ short RequestHandler::getStatusError() { return _statusError; }
 const HttpError &RequestHandler::getError() const { return _error; }
 
 // add by adib
-char *RequestHandler::getFilePostedAbs() 
+const char *RequestHandler::getFilePostedAbs() 
 {
 	return this->fileUploadedAbs;
 }
