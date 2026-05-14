@@ -3,7 +3,7 @@
 #ifndef monitor_cgi_0000
 #define monitor_cgi_0000
 
-#define CGI_TIMEOUT 12
+#define CGI_TIMEOUT 15
 
 class clsMonitorCGI
 {
@@ -103,6 +103,10 @@ public:
     void setStateData(stEventData::eEventData state)
     {
         this->stateData = state;
+    }
+    int getPipe()
+    {
+        return this->pipe;
     }
 };
 

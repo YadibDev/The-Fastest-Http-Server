@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 21:41:48 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/14 16:10:07 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,9 @@ void clsMainProcess::MainProcess()
     if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
+    {
         _PartErrorRequest();
+    }
     else if (_DataRequest.getPathCgi())
         _InitializeCGI();
     else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)

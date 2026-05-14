@@ -2,7 +2,7 @@
 
 // geters
 
-#define DEFAULT_TEMP "/home/mjaouchi/goinfre/fileXXXXXX"
+#define DEFAULT_TEMP "/home/yadib/goinfre/fileXXXXXX"
 
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
@@ -50,6 +50,7 @@ int clsBody::_createUploadStoreFile(char *path)
 {
     int fd = -1;
     _fileName = path;
+    // improve
     if (this->uploadStore)
     {
         fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
@@ -99,11 +100,11 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         else
         {
             fd = _createUploadStoreFile(path);
+
         }
 
         if (fd == -1)
         {
-            // did i must check errno or not
             _errorPage.setStatus(500, "Internal Server Error:");
             _state = clsBody::DONE_WIHTERROR;
             removeFile = false;
