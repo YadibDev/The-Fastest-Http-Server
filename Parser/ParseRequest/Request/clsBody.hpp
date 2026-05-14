@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <unistd.h>
  #include <errno.h>
+ #include <cstring>
 #include "../../../Utils/HelperFunctions.hpp"
 class clsRequest;
 
@@ -73,6 +74,7 @@ public:
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
     void setUploadStore(const std::string *ptr);
+    int createRandomFile();
     HttpError getError();
 
 };

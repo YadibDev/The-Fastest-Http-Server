@@ -197,6 +197,8 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 
 void clsFlow::_pushPipe(short pipe, short indexClient)
 {
+	static int push = 1;
+	std::cout << "push's " << push++ << std::endl;
 	if (HelperFunctions::changeFileToNonBlocking(pipe) == -1)
 	{
 		std::cout << "========> fcntl fail add pipe <=========\n"
@@ -210,6 +212,8 @@ void clsFlow::_pushPipe(short pipe, short indexClient)
 
 void clsFlow::_popPipe(short pipe)
 {
+	static int pops = 1;
+	std::cout << "pop's " << pops++ << std::endl;
 	_IdByPipe.erase(pipe);
 }
 
@@ -221,10 +225,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	if (status == BEGIN || status == CONNECTION_CLOSED)
-	{
-		client.logs();
-	}
+	// if (status == BEGIN || status == CONNECTION_CLOSED)
+	// {
+	// 	client.logs();
+	// }
 
 	if (status == CONNECTION_CLOSED)
 	{
