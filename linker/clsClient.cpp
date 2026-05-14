@@ -227,19 +227,17 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 
     nBytes = send(_socket, respondBuffer, bytesToSend, 0);
 
-    if (nBytes == -1 && bytesToSend > 0)
+    if (nBytes == -1 && _peerClosed)
     {
         if (_peerClosed)
             _state = CONNECTION_CLOSED;
         return ;
     }
 
-    if (nBytes != -1)
-    {
-        if (nBytes < bytesToSend)
-            memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
-        bytesToSend -= nBytes;
-    }
+
+    if (nBytes < bytesToSend && nBytes > 0)
+        memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
+    bytesToSend -= nBytes;
 
     if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0 && bytesToSend == 0) || _state == AUTO_INDEX_DONE)
     {

@@ -166,8 +166,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 			else if (client.events & EPOLLHUP)
 			{
 				_freeClient(fd);
-
-				std::cout << "epollHUP" << std::endl; // debug
 				_clientsArr[index].peerClosed();
 				return false;
 			}
