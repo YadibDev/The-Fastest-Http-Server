@@ -49,7 +49,7 @@ SPARKLINE_CHARS = "▁▂▃▄▅▆▇█"
 # ─── مساعدات ──────────────────────────────────────────────────────────────────
 
 def sparkline(values: collections.deque, width: int = 20) -> str:
-    """تحويل قائمة قيم إلى رسم نصي أفقي"""
+    """Convert a list of values to a horizontal text chart”"""
     if not values:
         return " " * width
     vmin, vmax = min(values), max(values)
@@ -95,13 +95,13 @@ def bar_str(val: float, width: int = 20, warn: float = 70, danger: float = 90) -
 # ─── جمع البيانات ─────────────────────────────────────────────────────────────
 
 class ServerStats:
-    """يجمع إحصاءات العملية ويحفظ تاريخًا للرسم"""
+    """Collects operation statistics and maintains a history of the drawing"""
 
     def __init__(self, pid: int):
         try:
             self.proc = psutil.Process(pid)
         except psutil.NoSuchProcess:
-            sys.exit(f"❌  لا توجد عملية بالـ PID: {pid}")
+            sys.exit(f"❌  There is no PID process: {pid}")
 
         # تهيئة cpu_percent مرة أولى (القراءة الأولى دائمًا 0.0)
         self.proc.cpu_percent(interval=None)
@@ -119,7 +119,7 @@ class ServerStats:
         self._snapshot   : dict      = {}
 
     def _get_net_conns(self) -> tuple[int, int, int]:
-        """يرجع (ESTABLISHED, TIME_WAIT, CLOSE_WAIT)"""
+        """is due to (ESTABLISHED, TIME_WAIT, CLOSE_WAIT)"""
         try:
             conns = self.proc.connections(kind="inet")
             est = sum(1 for c in conns if c.status == "ESTABLISHED")
@@ -130,7 +130,7 @@ class ServerStats:
             return 0, 0, 0
 
     def collect(self):
-        """يجمع كل البيانات في snapshot"""
+        """It collects all the data in a snapshot"""
         try:
             proc = self.proc
             with proc.oneshot():
@@ -183,11 +183,11 @@ class ServerStats:
             # التحقق من التحذيرات
             self.alerts = []
             if cpu >= ALERT_CPU:
-                self.alerts.append(f"🔴 CPU مرتفع: {cpu:.1f}%")
+                self.alerts.append(f"🔴 CPU High: {cpu:.1f}%")
             if mem.rss / 1024 / 1024 >= ALERT_MEM_MB:
-                self.alerts.append(f"🔴 RAM مرتفع: {mem.rss/1024/1024:.1f} MB")
+                self.alerts.append(f"🔴 RAM High: {mem.rss/1024/1024:.1f} MB")
             if fds != -1 and fds >= ALERT_FDS:
-                self.alerts.append(f"🔴 FDs مرتفع: {fds}")
+                self.alerts.append(f"🔴 FDs High: {fds}")
 
             with self._lock:
                 self._snapshot = {
@@ -216,7 +216,7 @@ class ServerStats:
                 }
 
         except psutil.NoSuchProcess:
-            sys.exit(f"\n⚠️  العملية {self.pid} توقفت أو لم تعد موجودة.")
+            sys.exit(f"\n⚠️  The {self.pid} process has stopped or no longer exists.")
 
     def snapshot(self) -> dict:
         with self._lock:
@@ -335,7 +335,7 @@ def build_alerts_panel(alerts: list[str]) -> Panel | None:
     t = Text()
     for a in alerts:
         t.append(f"  {a}\n", style="bold red")
-    return Panel(t, title="[bold red]⚠ تحذيرات[/bold red]", border_style="red", padding=(0,0))
+    return Panel(t, title="[bold red]⚠ Warnings[/bold red]", border_style="red", padding=(0,0))
 
 
 def render(stats: ServerStats, proc_name: str, console: Console):
@@ -366,7 +366,7 @@ def render(stats: ServerStats, proc_name: str, console: Console):
     if alert_panel:
         layout["alerts"].update(alert_panel)
     else:
-        ok = Text("  ✓ جميع المؤشرات ضمن الحدود الطبيعية", style="green dim")
+        ok = Text("  ✓ All indicators are within normal limits", style="green dim")
         layout["alerts"].update(Panel(ok, border_style="green dim", padding=(0,0)))
 
     return layout
@@ -376,38 +376,38 @@ def render(stats: ServerStats, proc_name: str, console: Console):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="مراقب Webserver المتقدم",
+        description="Advanced Web Server Monitor",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__
     )
     parser.add_argument(
         "pid", type=int, nargs="?", default=None,
-        help="PID للسيرفر (اختياري — يعرض قائمة إذا لم يُحدَّد)"
+        help="PID For the server (optional — displays a list if not specified))"
     )
     parser.add_argument(
         "--interval", "-i", type=float, default=REFRESH_HZ,
-        help=f"ثواني بين كل تحديث (افتراضي: {REFRESH_HZ})"
+        help=f"Seconds between each update (default): {REFRESH_HZ})"
     )
     parser.add_argument(
         "--alert-cpu", type=float, default=ALERT_CPU,
-        help=f"حد تحذير CPU %% (افتراضي: {ALERT_CPU})"
+        help=f"CPU warning threshold %% (default: {ALERT_CPU})"
     )
     parser.add_argument(
         "--alert-mem", type=float, default=ALERT_MEM_MB,
-        help=f"حد تحذير RAM بـ MB (افتراضي: {ALERT_MEM_MB})"
+        help=f"RAM warning threshold in MB (default: {ALERT_MEM_MB})"
     )
     return parser.parse_args()
 
 
 def pick_pid_interactively() -> int:
-    """يعرض قائمة العمليات ويطلب من المستخدم اختيار PID"""
+    """Displays a list of processes and prompts the user to select a PID"""
     console = Console()
-    table = Table(title="العمليات الجارية", box=box.SIMPLE_HEAVY, style="green dim")
+    table = Table(title="Ongoing Operations", box=box.SIMPLE_HEAVY, style="green dim")
     table.add_column("PID",  style="cyan",  justify="right")
-    table.add_column("الاسم", style="white")
+    table.add_column("Name", style="white")
     table.add_column("CPU%", style="yellow", justify="right")
     table.add_column("RAM",  style="magenta", justify="right")
-    table.add_column("الحالة", style="dim")
+    table.add_column("Status", style="dim")
 
     procs = []
     for p in psutil.process_iter(["pid", "name", "status", "memory_info"]):
@@ -424,7 +424,7 @@ def pick_pid_interactively() -> int:
         table.add_row(str(pid), name, f"{cpu:.1f}", f"{mem:.1f} MB", status)
 
     console.print(table)
-    return int(console.input("\n[bold green]أدخل PID السيرفر: [/bold green]"))
+    return int(console.input("\n[bold green]Enter the server's PID: [/bold green]"))
 
 
 def main():
@@ -439,7 +439,7 @@ def main():
     try:
         proc_name = psutil.Process(pid).name()
     except psutil.NoSuchProcess:
-        sys.exit(f"❌  لا توجد عملية بالـ PID: {pid}")
+        sys.exit(f"❌  There is no PID process: {pid}")
 
     stats   = ServerStats(pid)
     console = Console()
@@ -467,9 +467,9 @@ def main():
 
     except KeyboardInterrupt:
         console.clear()
-        console.print("\n[green]✓ تم إيقاف المراقبة.[/green]\n")
+        console.print("\n[green]✓ Monitoring has been suspended.[/green]\n")
     except psutil.NoSuchProcess:
-        console.print(f"\n[red]⚠ العملية {pid} توقفت.[/red]\n")
+        console.print(f"\n[red]⚠ The process {pid} has stopped.[/red]\n")
 
 
 if __name__ == "__main__":
