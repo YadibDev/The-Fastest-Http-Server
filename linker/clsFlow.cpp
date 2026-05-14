@@ -92,11 +92,11 @@ void clsFlow::_freeClient(short clientFd)
 {
 	short index = _clientIdByFd[clientFd];
 	clsClient &client = _clientsArr[index];
+
 	int pipeFd = _clientsArr[index].getPipeCgi();
-
+	if (pipeFd != -1)
+		_popPipe(pipeFd);
 	client.freeRessources();
-	_popPipe(pipeFd);
-
 	_clientIdByFd.erase(clientFd);
 	_clientsAvailable.push(index);
 }
@@ -222,10 +222,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	// if (status == BEGIN || status == CONNECTION_CLOSED)
-	// {
-	// 	client.logs();
-	// }
+	if (status == BEGIN || status == CONNECTION_CLOSED)
+	{
+		client.logs();
+	}
 
 	if (status == CONNECTION_CLOSED)
 	{
@@ -242,8 +242,8 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	}
 	else if (status == CGI_START)
 	{
-		_pushPipe(client.getPipeCgi(), index);
 		client.initializeCGI();
+		_pushPipe(client.getPipeCgi(), index);
 	}
 }
 

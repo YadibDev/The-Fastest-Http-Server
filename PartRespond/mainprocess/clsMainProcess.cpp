@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 10:48:01 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
@@ -147,7 +135,9 @@ void clsMainProcess::MainProcess()
     if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
+    {
         _PartErrorRequest();
+    }
     else if (_DataRequest.getPathCgi())
         _InitializeCGI();
     else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)

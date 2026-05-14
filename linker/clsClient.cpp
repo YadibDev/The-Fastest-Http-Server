@@ -81,6 +81,11 @@ void clsClient::UpdateTime() // update with the time of last reqquest
 
 void clsClient::ResetAll()
 {
+    if (_fdRespond > 0)
+    {
+        close(_fdRespond);
+        _fdRespond = 0;
+    }
     _monitorCGI.freeCgiRessources();
     this->SetState(BEGIN);
     _theData.Reset();
@@ -148,6 +153,7 @@ void clsClient::ProcessRequest()
 
     if (_Requester.isError())
     {
+        _RequestXconfig.reset();
         if (!ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
@@ -237,7 +243,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
     if (nBytes)
     {
         if (nBytes < bytesToSend)
-           memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
+            memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
         bytesToSend -= nBytes;
     }
 
@@ -342,7 +348,7 @@ void clsClient::_initalizeRespondBuffer()
 
 int clsClient::getPipeCgi()
 {
-    return _ResponderProecss.GetclsCGI().GetFdPipe();
+    return _monitorCGI.getPipe();
 }
 
 void clsClient::ProcessRespond()
