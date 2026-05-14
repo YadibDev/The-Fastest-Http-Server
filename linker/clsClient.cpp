@@ -225,7 +225,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
         _LoadAutoIndex(_Responder);
     }
 
-    nBytes = send(_socket, respondBuffer, bytesToSend, 0);
+    nBytes = send(_socket, respondBuffer, bytesToSend, MSG_NOSIGNAL);
 
     if (nBytes == -1 && _peerClosed)
     {
