@@ -13,12 +13,20 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 
     <h3>1. Write Data (Raw Body):</h3>
     <textarea id="payload"> </textarea>
     
     <button id="submitBtn">Send POST Request</button>
 
+=======
+    <h3>1. Write Data (Raw Body):</h3>
+    <textarea id="payload"> </textarea>
+    
+    <button id="submitBtn">Send POST Request</button>
+
+>>>>>>> Respond
     <div class="box">
         <h3>2. Server Response:</h3>
         <div id="statusLine">Status: -</div>
@@ -34,18 +42,19 @@
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const data = document.getElementById('payload').value;
             const url = "http://localhost:8082";
+
+            // تنظيف العرض قبل الإرسال
             document.getElementById('statusLine').innerHTML = "Status: Sending...";
             document.getElementById('headers').innerText = "-";
             document.getElementById('responseBody').innerText = "-";
 
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: data
                 });
+
                 document.getElementById('statusLine').innerHTML = 
                     `Status: <span class="status-ok">${response.status} ${response.statusText}</span>`;
+
+                // 2. استخراج وعرض الترويسات (خاصة الـ Location)
                 let headerText = "";
                 response.headers.forEach((value, name) => {
                     headerText += `${name}: <span class="header-val">${value}</span>\n`;

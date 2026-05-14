@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 16:10:07 by yadib            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
@@ -22,6 +10,17 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
     _HeaderFeild.resize(MAX_HEADERS);
 	_FileFromDisk.resize(1000);
     _Type.resize(500);
+    if (_Type.empty() || _FileFromDisk.empty() || _HeaderFeild.empty() 
+        || _InternalRedirectSrc.empty() || _Body.empty())
+    {
+        _Response.SetStatus(500);
+        _Response.SetMod(stMod::ERROR);
+        return ;
+    }
+    _InternalRedirectSrc = "";
+    _HeaderFeild = "";
+    _FileFromDisk = "";
+    _Type = "";
     _RunCGI = false;
 }
 clsMainProcess::~clsMainProcess() { }
@@ -106,9 +105,12 @@ void clsMainProcess::_PartDeleteMethod()
 
 void clsMainProcess::_PartPOSMethod()
 {
-    _Response.SetStatus(201);
+    std::cout << "achraf dral hna\n";
     _Response.SetMod(stMod::UPLOAD);
+    _Response.SetStatus(201);
     _Response.MakeResponse();
+    std::cout << _Response.GetHeaderFeild() << std::endl;
+    
 }
 
 void clsMainProcess::_PartGETMethod()
@@ -129,6 +131,7 @@ void clsMainProcess::_PartErrorRequest()
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
+    
     if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())

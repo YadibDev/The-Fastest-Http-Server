@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 23:19:04 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/14 09:50:21 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,13 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 		else
 		{
 			_FoundBody = true;
+			if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
+					_ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
+						_ExistHeaders[stHeadersCGI::STATUS] != stHeadersCGI::STATUS)
+			{
+				_Status = 502;
+				_Mod[stMod::ERROR] = stMod::ERROR;
+			}
 			return;
 		}
 		_Line = "";
@@ -332,14 +339,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 {
 	if (_FoundBody && _BytesBody < MAX_BODY)
 	{
-		if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE] != stHeadersCGI::CONTENT_TYPE &&
-			 _ExistHeaders[stHeadersCGI::LOCATION] != stHeadersCGI::LOCATION &&
-			  _ExistHeaders[stHeadersCGI::STATUS] != stHeadersCGI::STATUS)
-		{
-			_Status = 502;
-			_Mod[stMod::ERROR] = stMod::ERROR;
-			return ;
-		}
 	   _BytesBody += ((Length - _Counter  < 0)? 0 : Length - _Counter);
 	   if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
 		{
@@ -390,13 +389,17 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	_ReceivingHeaders(Arr, Length);
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
+	{
+		close(_Fdout);
 		return ;
+	}
 	if (!_ProcessIsFinish)
 		return ;
 	else if (!_FoundBody || (!_BytesBody &&
 			_ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE))
 	{
 		_Status = 502;
+		close(_Fdout);
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		return ;
 	}
@@ -499,6 +502,7 @@ void clsParseOutCGI::Reset()
 	_CountSizeHeaders = 0;
 	_ModTransferData = 0;
 	_Fdout = -1;
+	close(_Fdout);
 	HelperFunctions::ft_memset(_Mod, stMod::EMPTY, sizeof(_Mod));
 	HelperFunctions::ft_memset(_ExistHeaders, stHeadersCGI::EMPTY, sizeof(_ExistHeaders));
 }
