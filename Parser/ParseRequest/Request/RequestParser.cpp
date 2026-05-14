@@ -105,6 +105,8 @@ bool RequestParser::ParseBody(uint16_t size)
 	if (_body.getState() == clsBody::DONE_GOOD)
 	{
 		_state = STATE_COMPLETE;
+
+		this->_RequestHandler->setFilePathBody(_body.getFileName());
 	}
 	else if (_body.getState() == clsBody::DONE_WIHTERROR)
 	{
@@ -131,7 +133,7 @@ bool RequestParser::Parse(uint16_t size)
 			else
 				break;
 
-			if (this->getRequestLine().getMethod() == HttpTables::M_GET && _state == STATE_BODY) // this line do a lot of work
+			if (this->getRequestLine().getMethod() != HttpTables::M_POST && _state == STATE_BODY) // this line do a lot of work
 				_state = STATE_COMPLETE;
 
 			if (_state == STATE_COMPLETE)

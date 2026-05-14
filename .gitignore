@@ -11,3 +11,6 @@ test*
 debug
 logs/*
 .vscodewebserv
+webserv
+*.o
+*.d

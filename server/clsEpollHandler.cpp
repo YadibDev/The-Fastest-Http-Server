@@ -70,7 +70,10 @@ void clsEpollHandler::changeAbility(int fd, int newAbility)
     tempEvent.events = (newAbility);
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_MOD, fd, &tempEvent) == -1)
+    {
+        perror("epoll : ");
         clog << COLOR_BOLD << COLOR_RED << fd << " ==> fail to change mode EPOLL_CTL_MOD" << std::endl;
+    }
 }
 
 int clsEpollHandler::tryPollNewClients(struct epoll_event *ClientBuffer, size_t sizeBuffer, int timeout)

@@ -225,18 +225,19 @@ void clsClient::_SendRespond(clsResponse &_Responder)
         _LoadAutoIndex(_Responder);
     }
 
-    nBytes = send(_socket, respondBuffer, bytesToSend, 0);
+    nBytes = send(_socket, respondBuffer, bytesToSend, MSG_NOSIGNAL);
 
-    // if (nBytes == 0 && bytesToSend > 0)
-    // {
-    //     if (_peerClosed)
-    //         _state = CONNECTION_CLOSED;
-    // }
+    if (nBytes == -1)
+    {
+        if (_peerClosed)
+            _state = CONNECTION_CLOSED;
+        return;
+    }
 
-    if (nBytes != -1)
+    if (nBytes)
     {
         if (nBytes < bytesToSend)
-            memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
+           memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
         bytesToSend -= nBytes;
     }
 
@@ -434,7 +435,7 @@ void clsClient::initializeCGI()
 
 bool clsClient::monitorCgi()
 {
-    
+
     short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
     stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
     stEventData::eEventData dataState = _monitorCGI.getStateData();
@@ -462,7 +463,7 @@ bool clsClient::timeoutCgi()
 {
     if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
         return true;
-    if (_monitorCGI.TimeoutCgi()) 
+    if (_monitorCGI.TimeoutCgi())
     {
         _state = CGI_END;
         _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
@@ -475,7 +476,6 @@ bool clsClient::timeoutCgi()
 void clsClient::forceStopCgi()
 {
     _monitorCGI.freeCgiRessources();
-    
 }
 
 void clsClient::peerClosed()
