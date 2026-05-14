@@ -90,9 +90,13 @@ short clsFlow::_getClient()
 void clsFlow::_freeClient(short clientFd)
 {
 	short index = _clientIdByFd[clientFd];
+	clsClient &client = _clientsArr[index];
+	int pipeFd = _clientsArr[index].getPipeCgi();
+
+	client.freeRessources();
+	_popPipe(pipeFd);
+
 	_clientIdByFd.erase(clientFd);
-	_popPipe(_clientsArr[index].getPipeCgi());
-	_clientsArr[index].freeRessources();
 	_clientsAvailable.push(index);
 }
 
@@ -165,7 +169,6 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 			}
 			else if (client.events & EPOLLHUP)
 			{
-				_freeClient(fd);
 				_clientsArr[index].peerClosed();
 				return false;
 			}
@@ -218,10 +221,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	if (status == BEGIN || status == CONNECTION_CLOSED)
-	{
-		client.logs();
-	}
+	// if (status == BEGIN || status == CONNECTION_CLOSED)
+	// {
+	// 	client.logs();
+	// }
 
 	if (status == CONNECTION_CLOSED)
 	{
