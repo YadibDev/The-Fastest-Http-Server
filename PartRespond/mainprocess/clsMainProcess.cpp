@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 10:46:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/14 10:48:01 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,11 +117,11 @@ void clsMainProcess::_PartDeleteMethod()
 
 void clsMainProcess::_PartPOSMethod()
 {
-    // std::cout << "achraf dral hna\n";
+    std::cout << "achraf dral hna\n";
     _Response.SetMod(stMod::UPLOAD);
     _Response.SetStatus(201);
     _Response.MakeResponse();
-    // std::cout << _Response.GetHeaderFeild() << std::endl;
+    std::cout << _Response.GetHeaderFeild() << std::endl;
     
 }
 
