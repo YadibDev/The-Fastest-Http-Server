@@ -32,7 +32,7 @@
     <script>
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const data = document.getElementById('payload').value;
-            const url = "http://localhost:8082/cgi-bin/printEnv.py";
+            const url = "http://localhost:8082";
 
             // تنظيف العرض قبل الإرسال
             document.getElementById('statusLine').innerHTML = "Status: Sending...";

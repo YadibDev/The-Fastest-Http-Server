@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsCGI.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 18:34:32 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "clsCGI.hpp"
 short clsCGI::_LimitProcess;
 clsCGI::clsCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc) 
@@ -459,6 +447,7 @@ bool clsCGI::_childeProcesse()
         close(Fd);
     
     execve(_ARG[0], _ARG, _ENV);
+    perror("execve: ");
     return true;
 }
 

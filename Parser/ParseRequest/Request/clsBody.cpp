@@ -2,7 +2,7 @@
 
 // geters
 
-#define DEFAULT_TEMP "/tmp/fileXXXXXX"
+#define DEFAULT_TEMP "/tmp/file.XXXXXX"
 
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
@@ -30,7 +30,7 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
-    if (fd != -1 && this->removeFile)
+    if (fd != -1 && (this->_state != clsBody::DONE_GOOD || removeFile))
         remove(_fileName.c_str());
     this->removeFile = false;
     this->_fileName = DEFAULT_TEMP;
@@ -46,21 +46,39 @@ void clsBody::Reset()
     fd = -1;
 }
 
+int clsBody::createRandomFile()
+{
+    int fd = -1;
+    int result = std::strncmp(uploadStore->c_str(), _fileName.c_str(), uploadStore->size());
+    if (result == 0)
+    {
+        _fileName += "RANDOM.XXXXXX";
+        fd = mkstemp(&_fileName[0]);
+    }
+    return fd;
+}
+
 int clsBody::_createUploadStoreFile(char *path)
 {
     int fd = -1;
     _fileName = path;
+
     // improve
+
     if (this->uploadStore)
     {
 
         fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
+        if (errno == EISDIR) // if is dir
+        {
+            close(fd);
+            return createRandomFile();
+        }
     }
 
     return fd;
 
 }
-// working on normal body without chunk
 bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
     (void)path;
@@ -101,7 +119,6 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         else
         {
             fd = _createUploadStoreFile(path);
-
         }
 
         if (fd == -1)
