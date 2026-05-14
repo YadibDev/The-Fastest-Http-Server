@@ -51,6 +51,7 @@ int clsBody::createRandomFile()
 {
     int fd = -1;
     int result = std::strncmp(uploadStore->c_str(), _fileName.c_str(), uploadStore->size());
+
     if (result == 0)
     {
         _fileName += "RANDOM_XXXXXX";
@@ -72,10 +73,15 @@ int clsBody::_createUploadStoreFile(char *path)
         if (errno == EISDIR) // if is dir
         {
             close(fd);
-            return createRandomFile();
+            fd = createRandomFile();
         }
     }
-
+    if (fd != -1)
+    {
+        int size = uploadStore->size();
+        pathFileAbs = &_fileName[size];
+        std::cout << pathFileAbs << std::endl;
+    }
     return fd;
 
 }
@@ -343,4 +349,9 @@ clsBody::~clsBody()
     if (fd != -1)
         close(fd);
     fd = -1;
+}
+
+char *clsBody::getFileAbs()
+{
+    return pathFileAbs;
 }

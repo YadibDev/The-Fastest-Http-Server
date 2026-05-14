@@ -1,17 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Webserv Tester</title>
+    <style>
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        textarea { width: 100%; height: 100px; background: #252526; color: #ce9178; border: 1px solid #3c3c3c; margin-bottom: 10px; }
+        button { background: #0e639c; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+        .box { border: 1px solid #3c3c3c; padding: 10px; margin-top: 20px; background: #2d2d2d; }
+        .header-val { color: #b5cea8; }
+        .status-ok { color: #4ec9b0; font-weight: bold; }
+    </style>
 </head>
-
 <body>
-    <form action="cgi-bin/printEnv.py" method="post" >
-        <input type="text" name="key">
-        <button type="submit">submit</button>
-    </form>
-</body>
 
+    <h3>1. Write Data (Raw Body):</h3>
+    <textarea id="payload"> </textarea>
+    
+    <button id="submitBtn">Send POST Request</button>
+
+    <div class="box">
+        <h3>2. Server Response:</h3>
+        <div id="statusLine">Status: -</div>
+        <hr>
+        <h4>Headers:</h4>
+        <pre id="headers">-</pre>
+        <hr>
+        <h4>Body:</h4>
+        <pre id="responseBody">-</pre>
+    </div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const data = document.getElementById('payload').value;
+            const url = "http://localhost:8082";
+            document.getElementById('statusLine').innerHTML = "Status: Sending...";
+            document.getElementById('headers').innerText = "-";
+            document.getElementById('responseBody').innerText = "-";
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: data
+                });
+                document.getElementById('statusLine').innerHTML = 
+                    `Status: <span class="status-ok">${response.status} ${response.statusText}</span>`;
+                let headerText = "";
+                response.headers.forEach((value, name) => {
+                    headerText += `${name}: <span class="header-val">${value}</span>\n`;
+                });
+                document.getElementById('headers').innerHTML = headerText || "No Headers Returned";
+
+                // 3. عرض جسم الرد (Entity Body)
+                const body = await response.text();
+                document.getElementById('responseBody').innerText = body || "[Empty Body]";
+
+            } catch (error) {
+                document.getElementById('statusLine').innerHTML = "Status: <span style='color: #f48771'>Error (Check CORS or Server)</span>";
+                console.error('Fetch Error:', error);
+            }
+        });
+    </script>
+
+</body>
 </html>

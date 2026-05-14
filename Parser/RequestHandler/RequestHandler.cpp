@@ -1,10 +1,10 @@
 #include "RequestHandler.hpp"
-#include <cstring> 
+#include <cstring>
 
-RequestHandler::RequestHandler(stPollRequest& request)
-	:	_Header(request),
-		_pathCgi(NULL),
-		_upload_store(NULL)
+RequestHandler::RequestHandler(stPollRequest &request)
+	: _Header(request),
+	  _pathCgi(NULL),
+	  _upload_store(NULL)
 {
 	_allowMethods = 0;
 	_method = HttpTables::M_UNKNOWN;
@@ -34,7 +34,6 @@ void RequestHandler::reset()
 	_method = HttpTables::M_GET;
 	_allowMethods = 0;
 
-
 	_defaultErrorPage = false;
 	_pathCgi = NULL;
 	_upload_store = NULL;
@@ -44,21 +43,21 @@ void RequestHandler::reset()
 
 RequestHandler::~RequestHandler() {}
 
-bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std::string, std::string> &cgi_pass)
+bool RequestHandler::ExtractCgiMetadata(s_uri_entry &newUri, const std::map<std::string, std::string> &cgi_pass)
 {
 	if (!newUri.getView().Data || newUri.getView().len == 0)
 		return false;
 
-	char* start = newUri.getView().Data;
-	char* current = start;
-	char* end = start + newUri.getView().len - 1;
+	char *start = newUri.getView().Data;
+	char *current = start;
+	char *end = start + newUri.getView().len - 1;
 
 	while (current <= end)
 	{
 		if (*current == '.')
 		{
-			char* extStart = current;
-			char* extEnd = extStart;
+			char *extStart = current;
+			char *extEnd = extStart;
 
 			while (extEnd <= end && *extEnd != '/')
 				++extEnd;
@@ -91,16 +90,14 @@ bool	RequestHandler::ExtractCgiMetadata(s_uri_entry& newUri, const std::map<std:
 	return false;
 }
 
-
-void	RequestHandler::computePathTranslated(const std::string& rootPath, const clsServerConfig* serverConfig)
+void RequestHandler::computePathTranslated(const std::string &rootPath, const clsServerConfig *serverConfig)
 {
 
-	bool	isExist = false;
-	const clsLocation* newLocation = ProcessRequestHandler::findBestLocation(
+	bool isExist = false;
+	const clsLocation *newLocation = ProcessRequestHandler::findBestLocation(
 		serverConfig->getLocationExact(),
 		serverConfig->getLocationPrefix(),
-		_PathInfo
-	);
+		_PathInfo);
 	s_uri_entry newUri;
 
 	if (newLocation)
@@ -127,67 +124,65 @@ void	RequestHandler::computePathTranslated(const std::string& rootPath, const cl
 	}
 }
 
-void	RequestHandler::setRequestUri(const s_view &uri)
+void RequestHandler::setRequestUri(const s_view &uri)
 {
 	_requestUri = uri;
 }
 
-void	RequestHandler::setSizeFile(size_t sizeFile)
+void RequestHandler::setSizeFile(size_t sizeFile)
 {
 	_sizeFile = sizeFile;
 }
 
-void    RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
+void RequestHandler::setAutoIndex(bool autoindex) { _autoindex = autoindex; }
 
-void    RequestHandler::setQuery(const s_view query) { _query = query; }
+void RequestHandler::setQuery(const s_view query) { _query = query; }
 
-void    RequestHandler::setVersion(const s_view version) { _version = version; }
+void RequestHandler::setVersion(const s_view version) { _version = version; }
 
-void    RequestHandler::setMethod(HttpTables::eMethod method) { _method = method; }
+void RequestHandler::setMethod(HttpTables::eMethod method) { _method = method; }
 
-void    RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = allowed; }
+void RequestHandler::setAllowedMethods(uint8_t allowed) { _allowMethods = allowed; }
 
-
-void	RequestHandler::setDefaultErrorPage(bool defaultErrorPage)
+void RequestHandler::setDefaultErrorPage(bool defaultErrorPage)
 {
 	_defaultErrorPage = defaultErrorPage;
 }
 
-void RequestHandler::setPathTranslated(std::string pathTranslated) {
+void RequestHandler::setPathTranslated(std::string pathTranslated)
+{
 	_PathTranslated = pathTranslated;
 }
 
-
-void    RequestHandler::setHeader(HeaderTable	Header)
+void RequestHandler::setHeader(HeaderTable Header)
 {
 	_Header = Header;
 }
 
-void    RequestHandler::setPathCgi(const std::string* pathCgi) { _pathCgi = pathCgi; }
+void RequestHandler::setPathCgi(const std::string *pathCgi) { _pathCgi = pathCgi; }
 
-void    RequestHandler::setReturn(const stReturnData &returnData) { _return = returnData; }
+void RequestHandler::setReturn(const stReturnData &returnData) { _return = returnData; }
 
-void	RequestHandler::setReturnVal(stReturnData returnData) { _return = returnData; }
+void RequestHandler::setReturnVal(stReturnData returnData) { _return = returnData; }
 
-void    RequestHandler::setUploadStore(const std::string* uploadStore) { _upload_store = uploadStore; }
+void RequestHandler::setUploadStore(const std::string *uploadStore) { _upload_store = uploadStore; }
 
+void RequestHandler::setFilePathBody(const std::string &filePathBody) { _filePathBody = filePathBody; }
 
-void    RequestHandler::setFilePathBody(const std::string& filePathBody) { _filePathBody = filePathBody; }
+void RequestHandler::setStatusError(short statusError) { _statusError = statusError; }
 
-void	RequestHandler::setStatusError(short statusError) { _statusError = statusError; }
+void RequestHandler::setError(const HttpError &error) { _error = error; }
 
-void    RequestHandler::setError(const HttpError &error) { _error = error; }
-
-// edited by achraf i add const 
+// edited by achraf i add const
 // char* RequestHandler::getPhysicalPath() const { return _physicalPath; }
 
-size_t	RequestHandler::getSizeFile() const
+size_t RequestHandler::getSizeFile() const
 {
 	return _sizeFile;
 }
 
-const char* RequestHandler::getPhysicalPath() const{ return _physicalPath; }
-char* RequestHandler::getPhysicalPath() { return _physicalPath; }
+const char *RequestHandler::getPhysicalPath() const { return _physicalPath; }
+char *RequestHandler::getPhysicalPath() { return _physicalPath; }
 
 bool RequestHandler::getAutoIndex() const { return _autoindex; }
 
@@ -195,50 +190,59 @@ const s_view &RequestHandler::getQuery() const { return _query; }
 
 const s_view &RequestHandler::getVersion() const { return _version; }
 
-const s_view& RequestHandler::getPathInfo() const {
+const s_view &RequestHandler::getPathInfo() const
+{
 	return _PathInfo;
 }
 
-const std::string &RequestHandler::getPathTranslated() const {
+const std::string &RequestHandler::getPathTranslated() const
+{
 	return _PathTranslated;
 }
 
-
 HttpTables::eMethod RequestHandler::getMethod() const { return _method; }
 
-const s_view			&RequestHandler::getRequestUri() const
+const s_view &RequestHandler::getRequestUri() const
 {
 	return _requestUri;
 }
 
-const HeaderTable    &RequestHandler::getHeader() const
+const HeaderTable &RequestHandler::getHeader() const
 {
 	return _Header;
 }
-//add by achraf without const
-HeaderTable    &RequestHandler::getHeader()
+// add by achraf without const
+HeaderTable &RequestHandler::getHeader()
 {
 	return _Header;
 }
 
-
-const s_view	&RequestHandler::getScriptName() const
+const s_view &RequestHandler::getScriptName() const
 {
 	return _ScriptName;
 }
 
-bool	RequestHandler::getDefaultErrorPage() const { return _defaultErrorPage; }
+bool RequestHandler::getDefaultErrorPage() const { return _defaultErrorPage; }
 
+const std::string *RequestHandler::getPathCgi() const { return _pathCgi; }
 
-const std::string* RequestHandler::getPathCgi() const { return _pathCgi; }
+const stReturnData &RequestHandler::getReturn() const { return _return; }
 
-const stReturnData& RequestHandler::getReturn() const { return _return; }
+const std::string *RequestHandler::getUploadStore() const { return _upload_store; }
 
-const std::string* RequestHandler::getUploadStore() const { return _upload_store; }
+const std::string &RequestHandler::getFilePathBody() const { return _filePathBody; }
 
+short RequestHandler::getStatusError() { return _statusError; }
 
-const std::string& RequestHandler::getFilePathBody() const { return _filePathBody; }
+const HttpError &RequestHandler::getError() const { return _error; }
 
-short				RequestHandler::getStatusError() { return _statusError; }
+// add by adib
+char *RequestHandler::getFilePostedAbs() 
+{
+	return this->fileUploadedAbs;
+}
 
-const HttpError& RequestHandler::getError() const { return _error; }
+void RequestHandler::setFilePostdAbs(char *ptr)
+{
+	fileUploadedAbs = ptr;
+}
