@@ -1,22 +1,28 @@
 #include "HelperFunctions.hpp"
 
-void HelperFunctions::skipWhitespace(const std::string& str, size_t &pos) {
+void HelperFunctions::skipWhitespace(const std::string &str, size_t &pos)
+{
 	while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
 		pos++;
 }
 
-bool HelperFunctions::isCRLF(const std::string& str) {
+bool HelperFunctions::isCRLF(const std::string &str)
+{
 	return (str == "\r\n");
 }
 
-int hexCharToDec(char c) {
-	if (c >= '0' && c <= '9') return c - '0';
-	if (c >= 'A' && c <= 'F') return c - 'A' + 10;
-	if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+int hexCharToDec(char c)
+{
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
 	return -1;
 }
 
-long HelperFunctions::hexToDec(const std::string& hex)
+long HelperFunctions::hexToDec(const std::string &hex)
 {
 	long decimalValue = 0;
 	for (std::size_t i = 0; i < hex.length(); ++i)
@@ -32,38 +38,42 @@ long HelperFunctions::hexToDec(const std::string& hex)
 long HelperFunctions::hexToDecS_view(const char *buf, int len)
 {
 	long decimalValue = 0;
-	
+
 	for (int i = 0; i < len; ++i)
 	{
 		int digit = hexCharToDec(buf[i]);
-		
+
 		if (digit == -1)
 			return -1;
-		
+
 		decimalValue = (decimalValue << 4) | digit;
 	}
-	
+
 	return decimalValue;
 }
 
-bool HelperFunctions::is_numeric(const std::string& str) {
+bool HelperFunctions::is_numeric(const std::string &str)
+{
 	for (size_t i = 0; i < str.length(); i++)
-		if (!std::isdigit(str[i])) return false;
+		if (!std::isdigit(str[i]))
+			return false;
 	return true;
 }
 
-bool HelperFunctions::is_CTLsString(const std::string& str) {
+bool HelperFunctions::is_CTLsString(const std::string &str)
+{
 	for (size_t i = 0; i < str.length(); i++)
-		if (std::iscntrl(str[i])) return true;
+		if (std::iscntrl(str[i]))
+			return true;
 	return false;
 }
 
-bool    HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
+bool HelperFunctions::checkIfTheFirstWord(std::string str, std::string Start, size_t POS)
 {
 	for (size_t i = POS; i < str.size(); i++)
 	{
 		if (str[i] == ' ' || str[i] == '\t')
-			break ;
+			break;
 		if (str[i] != Start[i])
 			return (false);
 	}
@@ -75,7 +85,7 @@ bool HelperFunctions::isLWS(char c)
 	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-std::string HelperFunctions::normalizeLWS(const std::string& input)
+std::string HelperFunctions::normalizeLWS(const std::string &input)
 {
 	std::string result;
 	size_t i = 0;
@@ -114,7 +124,7 @@ bool HelperFunctions::isspaceTabOrSp(char c)
 	return (c == ' ' || c == '\t');
 }
 
-std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string& value)
+std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string &value)
 {
 	std::vector<std::string> result;
 	std::string current;
@@ -138,8 +148,10 @@ std::vector<std::string> HelperFunctions::splitCommaSeparated(const std::string&
 	return result;
 }
 
-bool HelperFunctions::strIsSpace(const std::string &str) {
-	for (size_t i = 0; i < str.size(); i++) {
+bool HelperFunctions::strIsSpace(const std::string &str)
+{
+	for (size_t i = 0; i < str.size(); i++)
+	{
 		if (!isspace(str[i]))
 			return false;
 	}
@@ -155,7 +167,8 @@ bool HelperFunctions::isBoundary(const std::string &str, const std::string &boun
 		return false;
 	}
 	size_t pos = combined.find(boundary);
-	if (pos != std::string::npos) {
+	if (pos != std::string::npos)
+	{
 		remander = combined.substr(pos + boundary.size());
 		return true;
 	}
@@ -166,7 +179,7 @@ bool HelperFunctions::isBoundary(const std::string &str, const std::string &boun
 	return false;
 }
 
-short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
+short HelperFunctions::isValidPath(const std::string &path, bool expectDir)
 {
 	struct stat info;
 	if (stat(path.c_str(), &info) != 0)
@@ -178,16 +191,20 @@ short HelperFunctions::isValidPath(const std::string& path, bool expectDir)
 	return (200);
 }
 
-s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
+s_view HelperFunctions::find_last_of_view(s_view view, const char *set)
+{
 	s_view result;
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
 		return result;
-	for (int i = (int)view.len - 1; i >= 0; --i) {
+	for (int i = (int)view.len - 1; i >= 0; --i)
+	{
 		char current = view.Data[i];
-		
-		for (const char* s = set; *s != '\0'; ++s) {
-			if (current == *s) {
+
+		for (const char *s = set; *s != '\0'; ++s)
+		{
+			if (current == *s)
+			{
 				result.Data = view.Data + i;
 				result.len = view.len - i;
 				return result;
@@ -196,17 +213,20 @@ s_view HelperFunctions::find_last_of_view(s_view view, const char* set) {
 	}
 	return result;
 }
-s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
+s_view HelperFunctions::find_first_of_view(s_view view, const char *set)
 {
 	s_view result;
 
 	if (!view.Data || view.len == 0 || !set || *set == '\0')
 		return result;
 
-	for (size_t i = 0; i < view.len; ++i) {
+	for (size_t i = 0; i < view.len; ++i)
+	{
 		char current = view.Data[i];
-		for (const char* s = set; *s != '\0'; ++s) {
-			if (current == *s) {
+		for (const char *s = set; *s != '\0'; ++s)
+		{
+			if (current == *s)
+			{
 				result.Data = view.Data + i;
 				result.len = view.len - i;
 				return result;
@@ -216,29 +236,29 @@ s_view  HelperFunctions::find_first_of_view(s_view view, const char* set)
 	return result;
 }
 
-s_view	HelperFunctions::extract_between(s_view view, const char* start_set, const char* end_set)
+s_view HelperFunctions::extract_between(s_view view, const char *start_set, const char *end_set)
 {
 	s_view result;
 
 	s_view s_found = HelperFunctions::find_first_of_view(view, start_set);
-	if (!s_found.Data) return result;
+	if (!s_found.Data)
+		return result;
 
 	s_view e_found;
 	e_found.Data = s_found.Data + 1;
 	e_found.len = view.len - (e_found.Data - view.Data);
-	
+
 	e_found = HelperFunctions::find_first_of_view(e_found, end_set);
 	if (!e_found.Data)
 		return result;
 
-	result.Data = s_found.Data + 1; 
+	result.Data = s_found.Data + 1;
 	result.len = e_found.Data - result.Data;
 
 	return result;
 }
 
-
-bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size)
+bool HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size)
 {
 	if ((AddStrSize + BufferSize) >= size)
 		return false;
@@ -248,84 +268,80 @@ bool	HelperFunctions::joinArr(char *buffer, const char *AddStr, size_t BufferSiz
 	return true;
 }
 
-size_t HelperFunctions::join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2)
+size_t HelperFunctions::join_views(char *dst, uint16_t dst_size, const s_view &v1, const s_view &v2)
 {
-    if (v1.len + v2.len + 1 > dst_size)
-        return 0;
+	if (v1.len + v2.len + 1 > dst_size)
+		return 0;
 
-    memcpy(dst, v1.Data, v1.len);
-    memcpy(dst + v1.len, v2.Data, v2.len);
+	memcpy(dst, v1.Data, v1.len);
+	memcpy(dst + v1.len, v2.Data, v2.len);
 
-    dst[v1.len + v2.len] = '\0';
+	dst[v1.len + v2.len] = '\0';
 
-    return (v1.len + v2.len);
+	return (v1.len + v2.len);
 }
 
-void	HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
+void HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 {
-    size_t r = 0;
-    size_t w = 0;
+	size_t r = 0;
+	size_t w = 0;
 
-    while (r < length)
-    {
+	while (r < length)
+	{
 
-		if (path[r] == '/' && path[r + 1] == '/') {
-    		r++;
-    		continue;
+		if (path[r] == '/' && path[r + 1] == '/')
+		{
+			r++;
+			continue;
 		}
 
-    	if (path[r] == '/' && path[r + 1] == '.' && path[r + 2] == '.' && 
-                (path[r + 3] == '/' || path[r + 3] == '\0'))
-        {
-            r += 3;
-            
-            if (w > 0)
-            {
-                w--;
-                while (w > 0 && path[w] != '/')
-                    w--;
-            }
-        }
-    	if (path[r] == '.' && path[r + 1] == '.'  && 
-                (path[r + 2] == '/' || path[r + 2] == '\0'))
-        {
-            r += 2;
+		if (path[r] == '/' && path[r + 1] == '.' && path[r + 2] == '.' &&
+			(path[r + 3] == '/' || path[r + 3] == '\0'))
+		{
+			r += 3;
+
+			if (w > 0)
+			{
+				w--;
+				while (w > 0 && path[w] != '/')
+					w--;
+			}
+		}
+		if (path[r] == '.' && path[r + 1] == '.' &&
+			(path[r + 2] == '/' || path[r + 2] == '\0'))
+		{
+			r += 2;
 			w = 0;
-        }
-        else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
-            r += 2;
+		}
+		else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
+			r += 2;
 		else if (path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
-            r += 1;
-        else
-            path[w++] = path[r++];
-    }
+			r += 1;
+		else
+			path[w++] = path[r++];
+	}
 
-    path[w] = '\0';
+	path[w] = '\0';
 }
-
-
-
-
-
 
 // Achraf
 
-std::map<int, std::string> HelperFunctions::_Message; 
+std::map<int, std::string> HelperFunctions::_Message;
 std::map<std::string, std::string> HelperFunctions::_TypeContent;
 std::map<int, std::string> HelperFunctions::_Body;
 char HelperFunctions::_PoinerType[50];
 
+bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr)
+{
+	short i = 0;
 
-bool HelperFunctions::CmpWord(const char *Str, const std::string &Word, short SizeStr) {
-    short i = 0;
-
-    while (i < SizeStr && i < (short)Word.length())
-    {
-        if (std::tolower(Str[i]) != Word[i])
-            return false;
-        i++;
-    }
-    return (true);
+	while (i < SizeStr && i < (short)Word.length())
+	{
+		if (std::tolower(Str[i]) != Word[i])
+			return false;
+		i++;
+	}
+	return (true);
 }
 
 bool HelperFunctions::IsStringDigit(const std::string &StringDigit, short Start, short End)
@@ -353,12 +369,12 @@ void HelperFunctions::ConvertStringToLower(std::string &Str, short Size)
 }
 std::string HelperFunctions::ConvertStringToUpper(std::string &Str)
 {
-    for (size_t i = 0; i < Str.size(); i++)
+	for (size_t i = 0; i < Str.size(); i++)
 	{
-        if (std::isalpha(Str[i]))
-            Str[i] = std::toupper(Str[i]);
-    }
-    return Str;
+		if (std::isalpha(Str[i]))
+			Str[i] = std::toupper(Str[i]);
+	}
+	return Str;
 }
 
 bool HelperFunctions::Ischar(const std::string &Sep, char C)
@@ -371,7 +387,7 @@ bool HelperFunctions::Ischar(const std::string &Sep, char C)
 	return false;
 }
 
-int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep) 
+int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep)
 {
 	int i = 0;
 	while (i < (int)Str.size() && Ischar(Sep, Str[i]))
@@ -379,11 +395,11 @@ int HelperFunctions::SkeeSep(const std::string &Str, const std::string &Sep)
 	return i;
 }
 
-int HelperFunctions::SkeepAtLast(const std::string& Str, const std::string &Sep)
+int HelperFunctions::SkeepAtLast(const std::string &Str, const std::string &Sep)
 {
 	int End = Str.length() - 1;
 	while (End >= 0 && Ischar(Sep, Str[End]))
-			End--;
+		End--;
 	return End;
 }
 
@@ -395,25 +411,26 @@ int HelperFunctions::SkeeSep(const std::string &Str, char Sep)
 	return i;
 }
 
-
 int HelperFunctions::ReadData(int FD, std::string &Data, ssize_t Size)
 {
 	Data.resize(Size);
 	ssize_t SizeByte = read(FD, &Data[0], Size);
-	if (SizeByte < 0) return -1;
-	if (SizeByte != Size) Data.resize(SizeByte);
+	if (SizeByte < 0)
+		return -1;
+	if (SizeByte != Size)
+		Data.resize(SizeByte);
 	return SizeByte;
 }
 
-void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
+void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &CleanLine, short &MaxSizeHeader, bool &Flag, short &i, short LengthData)
 {
 	if (!BigData)
-		return ;
-	while(i < LengthData && BigData[i] != '\n')
+		return;
+	while (i < LengthData && BigData[i] != '\n')
 	{
 		(MaxSizeHeader)++;
 		if ((MaxSizeHeader) > 4000)
-			return ;
+			return;
 		CleanLine += BigData[i];
 		i++;
 	}
@@ -424,10 +441,9 @@ void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &Clean
 		(Flag) = true;
 		i++;
 	}
-	
 }
 
-void HelperFunctions::GTMHTTP(tm* GMT, std::string &Str)
+void HelperFunctions::GTMHTTP(tm *GMT, std::string &Str)
 {
 	const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -451,15 +467,15 @@ void HelperFunctions::GTMHTTP(tm* GMT, std::string &Str)
 void HelperFunctions::DateTime(std::string &Str)
 {
 	time_t Time = time(0);
-	tm* GMT = gmtime(&Time);
+	tm *GMT = gmtime(&Time);
 	GTMHTTP(GMT, Str);
 }
 
 std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num)
 {
-	int		i = 0;
-	std::string	MaxHex;
-	std::string	Result;
+	int i = 0;
+	std::string MaxHex;
+	std::string Result;
 
 	if (Num == 0)
 		return ("0");
@@ -476,7 +492,7 @@ std::string HelperFunctions::Convert_Hex(const std::string &Str, int Num)
 
 unsigned long HelperFunctions::getCurrentTimeInMs()
 {
-    return getCurrentTimeInS() * 1000;
+	return getCurrentTimeInS() * 1000;
 }
 
 long int HelperFunctions::getCurrentTimeInS()
@@ -486,10 +502,10 @@ long int HelperFunctions::getCurrentTimeInS()
 	return (Time);
 }
 
-size_t	HelperFunctions::ft_strlen(const char *s)
+size_t HelperFunctions::ft_strlen(const char *s)
 {
-	size_t	i = 0;
- 
+	size_t i = 0;
+
 	if (!s)
 		return 0;
 	while (s[i])
@@ -497,10 +513,10 @@ size_t	HelperFunctions::ft_strlen(const char *s)
 	return i;
 }
 
-int	HelperFunctions::len_int(int nb)
+int HelperFunctions::len_int(int nb)
 {
-	long	num;
-	int		i;
+	long num;
+	int i;
 
 	i = 0;
 	num = nb;
@@ -520,63 +536,63 @@ int	HelperFunctions::len_int(int nb)
 
 void HelperFunctions::NumToStr(int Number, std::string &Str)
 {
-    char Remainder = 0;
-    int NewNumbr = 0;
-    int Counter = 0;
+	char Remainder = 0;
+	int NewNumbr = 0;
+	int Counter = 0;
 	if (Number == 0)
 	{
 		Str += '0';
-		return ;
+		return;
 	}
-    if (Number < 0)
-    {
-        Number *= -1;
-        Str += '-';
-    }
-    while (Number)
-    {
-        NewNumbr =( NewNumbr * 10) + Number % 10;
-        Number /= 10;
-        Counter++;
-    }
-    while (NewNumbr)
-    {
-        Remainder = (NewNumbr % 10) + '0';
-        Str += Remainder;
-        NewNumbr /= 10;
-        Counter--;
-    }
-    while (Counter > 0)
-    {
-        Str += '0';
-        Counter--;
-    }
+	if (Number < 0)
+	{
+		Number *= -1;
+		Str += '-';
+	}
+	while (Number)
+	{
+		NewNumbr = (NewNumbr * 10) + Number % 10;
+		Number /= 10;
+		Counter++;
+	}
+	while (NewNumbr)
+	{
+		Remainder = (NewNumbr % 10) + '0';
+		Str += Remainder;
+		NewNumbr /= 10;
+		Counter--;
+	}
+	while (Counter > 0)
+	{
+		Str += '0';
+		Counter--;
+	}
 }
 
-const char  *HelperFunctions::GetTypeDataFile(const std::string &Str)
+const char *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
-    size_t Pos;
-    short i = 0;
+	size_t Pos;
+	short i = 0;
 
-    if ((Pos = Str.find('.')) == std::string::npos)
-    {
-        _PoinerType[0] = '\0';
-        return _PoinerType;
-    }
-    while (i < 49 && Pos < Str.length())
-    {
-        _PoinerType[i] = Str[Pos];
-        Pos++;
-        i++;
-    }
-    _PoinerType[i] = '\0';
-    return (_PoinerType);
+	if ((Pos = Str.find('.')) == std::string::npos)
+	{
+		_PoinerType[0] = '\0';
+		return _PoinerType;
+	}
+	while (i < 49 && Pos < Str.length())
+	{
+		_PoinerType[i] = Str[Pos];
+		Pos++;
+		i++;
+	}
+	_PoinerType[i] = '\0';
+	return (_PoinerType);
 }
 
-void	*HelperFunctions::ft_memset(void *str, int c, size_t n)
+void *HelperFunctions::ft_memset(void *str, int c, size_t n)
 {
-	char	*k;
-	char	c1;
+	char *k;
+	char c1;
 
 	k = (char *)str;
 	c1 = (char)c;
@@ -592,31 +608,29 @@ void HelperFunctions::StoredDefaultType()
 {
 	if (_TypeContent.empty())
 	{
-		
-		_TypeContent[".html"] = "text/html";
-		_TypeContent[".htm"]  = "text/html";
-		_TypeContent[".css"]  = "text/css";
-		_TypeContent[".js"	]   = "text/javascript";
-		_TypeContent[".jpg"]  = "image/jpeg";
-		_TypeContent[".jpeg"] = "image/jpeg";
-		_TypeContent[".png"]  = "image/png";
-		_TypeContent[".txt"]  = "text/plain";
-		_TypeContent[".mp4"]  = "application/mp4";
-		_TypeContent[".webm"]  = "video/webm";
 
-		
+		_TypeContent[".html"] = "text/html";
+		_TypeContent[".htm"] = "text/html";
+		_TypeContent[".css"] = "text/css";
+		_TypeContent[".js"] = "text/javascript";
+		_TypeContent[".jpg"] = "image/jpeg";
+		_TypeContent[".jpeg"] = "image/jpeg";
+		_TypeContent[".png"] = "image/png";
+		_TypeContent[".txt"] = "text/plain";
+		_TypeContent[".mp4"] = "application/mp4";
+		_TypeContent[".webm"] = "video/webm";
 	}
- }
+}
 
 const char *HelperFunctions::GetType(const std::string &Type)
 {
 	if (_TypeContent.count(Type))
-		return  _TypeContent[Type].c_str();
+		return _TypeContent[Type].c_str();
 	return "application/octet-stream";
 }
 
 void HelperFunctions::StoredBodys()
- {
+{
 	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
 	_Body[201] = "html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
 	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
@@ -633,9 +647,9 @@ void HelperFunctions::StoredBodys()
 	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
 	_Body[414] = "<html><head><title>414 URI Too Long</title></head><body><center><h1>414 URI Too Long</h1></center><hr><center>faste server</center></body></html>";
 	_Body[411] = "<html><head><title>411 ULength Required</title></head><body><center><h1>411 ULength Required</h1></center><hr><center>faste server</center></body></html>";
- }
- void HelperFunctions::StoredMessage()
- {
+}
+void HelperFunctions::StoredMessage()
+{
 	_Message[200] = "OK";
 	_Message[201] = "Created";
 	_Message[204] = "No Content";
@@ -652,22 +666,21 @@ void HelperFunctions::StoredBodys()
 	_Message[508] = "Loop Detected";
 	_Message[414] = "414 URI Too Long";
 	_Message[411] = "411 ULength Required";
- }
+}
 
- const char *HelperFunctions::GetStatusMessage(int Status) 
+const char *HelperFunctions::GetStatusMessage(int Status)
 {
 	if (_Message.count(Status))
-		return  _Message[Status].c_str();
+		return _Message[Status].c_str();
 	return ("Unknown Status");
 }
 
 const char *HelperFunctions::GetBody(int Status)
 {
 	if (_Body.count(Status))
-		return  _Body[Status].c_str();
+		return _Body[Status].c_str();
 	return ("Unknown Body");
 }
-
 
 int HelperFunctions::Countword(const std::string &Str, const std::string &Sep)
 {
@@ -694,7 +707,7 @@ int HelperFunctions::Countword(const std::string &Str, const std::string &Sep)
 void HelperFunctions::CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos)
 {
 	short i = Start;
-	while(i < (short)Str_src.length() && i < Pos)
+	while (i < (short)Str_src.length() && i < Pos)
 	{
 		Str_new += Str_src[i];
 		i++;
@@ -704,7 +717,7 @@ void HelperFunctions::CopyStr(const std::string &Str_src, std::string &Str_new, 
 void HelperFunctions::CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length)
 {
 	short i = Start;
-	while(i < Length)
+	while (i < Length)
 	{
 		Str_new += Str_src[i];
 		i++;
@@ -713,26 +726,26 @@ void HelperFunctions::CopyStr(const char *Str_src, std::string &Str_new, short S
 
 short HelperFunctions::LengthWord(const std::string &Str, const std::string &Sep, short Start)
 {
-    short i = Start;
-    short count = 0;
-    while(i < (short)Str.length())
-    {
-        if (Ischar(Sep, Str[i]))
-            return (count);
-        count++;
-        i++;
-    }
-    return (count);
+	short i = Start;
+	short count = 0;
+	while (i < (short)Str.length())
+	{
+		if (Ischar(Sep, Str[i]))
+			return (count);
+		count++;
+		i++;
+	}
+	return (count);
 }
 
 stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int op)
 {
-	int status;
+	int status = 0;
 	int exit_code = waitpid(pid, &status, op);
 
 	if (exit_code == 0)
 		return stEventProcess::RUNINNG;
-	else if (WIFEXITED(status))
+	else if (pid == exit_code && WIFEXITED(status))
 	{
 		if (WEXITSTATUS(status) == 0)
 			return stEventProcess::THE_END;
@@ -740,26 +753,40 @@ stEventProcess::eEventProcess HelperFunctions::checkProcessStatus(int pid, int o
 			return stEventProcess::END_UNKNOW;
 	}
 	else
+	{
 		return stEventProcess::END_UNKNOW;
-
+	}
 }
-
 
 bool HelperFunctions::isTimeout(const time_t &startInS, time_t Timeout)
 {
-    time_t timeNow = time	(NULL);
-    if (timeNow - startInS >= Timeout)
-        return true;
-    return false;
+	time_t timeNow = time(NULL);
+	if (timeNow - startInS >= Timeout)
+		return true;
+	return false;
 }
 
 int HelperFunctions::changeFileToNonBlocking(int fd, bool closeOnExec)
 {
-    if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
-        return -1;
-    return 0;
+	int flags = fcntl(fd, F_GETFL, 0);
+
+	if (flags == -1)
+		return -1;
+
 	if (closeOnExec)
-		return closeOnExec;
+	{
+		int fdFlags = fcntl(fd, F_GETFD, 0);
+		if (fdFlags != -1)
+		{
+			fcntl(fd, F_SETFD, fdFlags | FD_CLOEXEC);
+		}
+	}
+
+	else
+		flags |= O_NONBLOCK;
+
+	fcntl(fd, F_SETFL, flags);
+	return 0;
 }
 
 int HelperFunctions::FindChar(char *Arr, int length, char c)
@@ -775,7 +802,6 @@ int HelperFunctions::FindChar(char *Arr, int length, char c)
 	}
 	return i;
 }
-
 
 int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
 {
@@ -814,5 +840,3 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 	else
 		Buffer[LengthBuffer - 1] = '\0';
 }
-
-

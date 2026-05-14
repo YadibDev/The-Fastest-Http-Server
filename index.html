@@ -1,55 +1,73 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Webserver Pro Player</title>
+    <title>Webserv Tester</title>
     <style>
-        body { background: #050505; color: #00f3ff; font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .player-card { border: 1px solid #00f3ff; padding: 15px; background: #000; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); border-radius: 5px; width: 80%; max-width: 900px; }
-        video { width: 100%; height: auto; border: 1px solid #333; }
-        .info-panel { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; border-top: 1px solid #222; padding-top: 10px; color: #ff0055; }
-        .label { color: #888; margin-right: 5px; }
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        textarea { width: 100%; height: 100px; background: #252526; color: #ce9178; border: 1px solid #3c3c3c; margin-bottom: 10px; }
+        button { background: #0e639c; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+        .box { border: 1px solid #3c3c3c; padding: 10px; margin-top: 20px; background: #2d2d2d; }
+        .header-val { color: #b5cea8; }
+        .status-ok { color: #4ec9b0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="player-card">
-    <video id="mainVideo" controls>
-        <source src="/goinfre/54G.webm" type="video/mp4">
-        متصفحك لا يدعم تشغيل الفيديو.
-    </video>
+    <h3>1. Write Data (Raw Body):</h3>
+    <textarea id="payload"> </textarea>
+    
+    <button id="submitBtn">Send POST Request</button>
 
-    <div class="info-panel">
-        <div><span class="label">FILE:</span> 218016.mp4</div>
-        <div><span class="label">DIMENSIONS:</span> <span id="resolution">Loading...</span></div>
-        <div><span class="label">FILE SIZE:</span> <span id="fileSize">Fetching...</span></div>
-        <div><span class="label">STATUS:</span> <span style="color: #27ae60;">ORIGINAL_QUALITY</span></div>
+    <div class="box">
+        <h3>2. Server Response:</h3>
+        <div id="statusLine">Status: -</div>
+        <hr>
+        <h4>Headers:</h4>
+        <pre id="headers">-</pre>
+        <hr>
+        <h4>Body:</h4>
+        <pre id="responseBody">-</pre>
     </div>
-</div>
 
-<script>
-    const video = document.getElementById('mainVideo');
-    const resDisplay = document.getElementById('resolution');
-    const sizeDisplay = document.getElementById('fileSize');
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const data = document.getElementById('payload').value;
+            const url = "http://localhost:8082";
 
-    // 1. جلب أبعاد الفيديو (Resolution)
-    video.onloadedmetadata = function() {
-        resDisplay.innerText = `${video.videoWidth}x${video.videoHeight} px`;
-    };
+            // تنظيف العرض قبل الإرسال
+            document.getElementById('statusLine').innerHTML = "Status: Sending...";
+            document.getElementById('headers').innerText = "-";
+            document.getElementById('responseBody').innerText = "-";
 
-    // 2. جلب حجم الملف من الـ Header (Content-Length)
-    fetch(video.querySelector('source').src, { method: 'HEAD' })
-    .then(response => {
-        const bytes = response.headers.get('content-length');
-        if (bytes) {
-            const mb = (bytes / (1024 * 1024)).toFixed(2);
-            sizeDisplay.innerText = `${mb} MB`;
-        } else {
-            sizeDisplay.innerText = "Unknown (Check Server Headers)";
-        }
-    })
-    .catch(() => sizeDisplay.innerText = "Error fetching size");
-</script>
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: data
+                });
+
+                // 1. عرض كود الحالة (مثلاً 201 Created)
+                document.getElementById('statusLine').innerHTML = 
+                    `Status: <span class="status-ok">${response.status} ${response.statusText}</span>`;
+
+                // 2. استخراج وعرض الترويسات (خاصة الـ Location)
+                let headerText = "";
+                response.headers.forEach((value, name) => {
+                    headerText += `${name}: <span class="header-val">${value}</span>\n`;
+                });
+                document.getElementById('headers').innerHTML = headerText || "No Headers Returned";
+
+                // 3. عرض جسم الرد (Entity Body)
+                const body = await response.text();
+                document.getElementById('responseBody').innerText = body || "[Empty Body]";
+
+            } catch (error) {
+                document.getElementById('statusLine').innerHTML = "Status: <span style='color: #f48771'>Error (Check CORS or Server)</span>";
+                console.error('Fetch Error:', error);
+            }
+        });
+    </script>
 
 </body>
 </html>

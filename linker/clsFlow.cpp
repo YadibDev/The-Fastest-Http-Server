@@ -5,8 +5,6 @@ void clsFlow::_initializeStatics()
 	HelperFunctions::StoredDefaultType();
 	HelperFunctions::StoredBodys();
 	HelperFunctions::StoredMessage();
-	HelperFunctions::StoredMessage();
-	// signal(SIGINT, function);
 }
 
 void clsFlow::_createBlocksServers(const char *configFile)
@@ -71,13 +69,12 @@ void clsFlow::_createServers()
 	}
 	if (_totalServers == 0)
 		throw std::runtime_error("Error\nthere is no server or there is a problem in all the servers");
-	// debug
-	// std::cout << "total servers created [" << _totalServers << "]" << std::endl;
 }
 
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
+	std::cout << sizeof(clsClient) * maxClient << std::endl;
 	for (int i = 0; i < maxClient; i++)
 		_clientsAvailable.push(i);
 }
@@ -94,9 +91,13 @@ short clsFlow::_getClient()
 void clsFlow::_freeClient(short clientFd)
 {
 	short index = _clientIdByFd[clientFd];
+	clsClient &client = _clientsArr[index];
+	int pipeFd = _clientsArr[index].getPipeCgi();
+
+	client.freeRessources();
+	_popPipe(pipeFd);
+
 	_clientIdByFd.erase(clientFd);
-	_popPipe(_clientsArr[index].getPipeCgi());
-	_clientsArr[index].freeRessources();
 	_clientsAvailable.push(index);
 }
 
@@ -164,7 +165,9 @@ bool clsFlow::_eventsEroorHandle(epoll_event &client, fdTypes &TypeFd)
 		{
 			int index = _clientIdByFd[fd];
 			if (client.events & EPOLLERR)
+			{
 				_freeClient(fd);
+			}
 			else if (client.events & EPOLLHUP)
 			{
 				_clientsArr[index].peerClosed();

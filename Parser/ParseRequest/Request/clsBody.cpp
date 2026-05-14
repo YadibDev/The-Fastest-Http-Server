@@ -30,10 +30,10 @@ clsBody::step clsBody::getState() const
 // mehtods
 void clsBody::Reset()
 {
-    if (this->removeFile)
+    if (fd != -1 && this->removeFile)
         remove(_fileName.c_str());
     this->removeFile = false;
-    this->_fileName = DEFAULT_TEMP; // should be /tmp insted of this path
+    this->_fileName = DEFAULT_TEMP;
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
@@ -49,9 +49,10 @@ void clsBody::Reset()
 int clsBody::_createUploadStoreFile(char *path)
 {
     int fd = -1;
+    _fileName = path;
     if (this->uploadStore)
     {
-        fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
     }
 
     return fd;
@@ -65,7 +66,8 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
-        this->Reset();
+        if (_state == clsBody::DONE_GOOD)
+            this->Reset();
 
         this->maxBodySize = maxBodySize;
         bodyHasLimit = maxBodySize != 0;
@@ -111,6 +113,12 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         _state = clsBody::READING_BODY;
     }
     ParseBody(offset); // i must change name of it
+
+    if (_state == clsBody::DONE_WIHTERROR)
+    {
+        removeFile = true;
+        this->Reset();
+    }
     return true;
 }
 
@@ -291,12 +299,6 @@ void clsBody::ParseBody(uint16_t &offset)
     else
         _handleChunk(offset);
 
-    if (_state == clsBody::DONE_GOOD || _state == clsBody::DONE_WIHTERROR)
-    {
-        if (fd != -1)
-            close(fd);
-        fd = -1;
-    }
 }
 
 void clsBody::setUploadStore(const std::string *ptr)
