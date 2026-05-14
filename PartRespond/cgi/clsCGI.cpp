@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clsCGI.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
+/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:40:02 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 16:06:45 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/14 18:34:32 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,7 +431,6 @@ bool clsCGI::_StoredArgs()
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
-
     if (!_MakeEnv())
         return (true);
     close(_pip[0]);

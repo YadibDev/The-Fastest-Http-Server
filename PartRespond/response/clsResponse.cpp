@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 21:44:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/14 18:02:57 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::s
 
 void clsResponse::_UploadResource()
 {
-    
+    _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(_Status));
+    short offset = 0;
+    HelperFunctions::ft_str_copy(&_Body[0],HelperFunctions::GetBody(_Status), MAX_BODY, offset, _BodySize,0);
 }
 
 void clsResponse::_DeleteResource()

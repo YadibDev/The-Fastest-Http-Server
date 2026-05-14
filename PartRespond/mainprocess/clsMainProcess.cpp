@@ -105,11 +105,9 @@ void clsMainProcess::_PartDeleteMethod()
 
 void clsMainProcess::_PartPOSMethod()
 {
-    std::cout << "achraf dral hna\n";
     _Response.SetMod(stMod::UPLOAD);
     _Response.SetStatus(201);
     _Response.MakeResponse();
-    std::cout << _Response.GetHeaderFeild() << std::endl;
     
 }
 

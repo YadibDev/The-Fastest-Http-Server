@@ -2,7 +2,7 @@
 
 // geters
 
-#define DEFAULT_TEMP "/home/yadib/goinfre/fileXXXXXX"
+#define DEFAULT_TEMP "/tmp/fileXXXXXX"
 
 clsBody::clsBody(stPollRequest &p) : data(p)
 {
@@ -53,6 +53,7 @@ int clsBody::_createUploadStoreFile(char *path)
     // improve
     if (this->uploadStore)
     {
+
         fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
     }
 

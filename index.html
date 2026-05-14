@@ -32,7 +32,7 @@
     <script>
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const data = document.getElementById('payload').value;
-            const url = "http://localhost:8082";
+            const url = "http://localhost:8082/cgi-bin/printEnv.py";
 
             // تنظيف العرض قبل الإرسال
             document.getElementById('statusLine').innerHTML = "Status: Sending...";
@@ -45,7 +45,7 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: data
                 });
-
+                console.log(response)
                 // 1. عرض كود الحالة (مثلاً 201 Created)
                 document.getElementById('statusLine').innerHTML = 
                     `Status: <span class="status-ok">${response.status} ${response.statusText}</span>`;

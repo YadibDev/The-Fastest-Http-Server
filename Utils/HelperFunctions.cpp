@@ -632,7 +632,7 @@ const char *HelperFunctions::GetType(const std::string &Type)
 void HelperFunctions::StoredBodys()
 {
 	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
-	_Body[201] = "html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
+	_Body[201] = "<html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
 	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
 	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
 	_Body[302] = "<html><head><title>302 found</title></head><body><center><h1>302 found</h1></center><hr><center>faste server</center></body></html";
