@@ -74,7 +74,6 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
-	std::cout << sizeof(clsClient) * maxClient << std::endl;
 	for (int i = 0; i < maxClient; i++)
 		_clientsAvailable.push(i);
 }
@@ -226,10 +225,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	// if (status == BEGIN || status == CONNECTION_CLOSED)
-	// {
-	// 	client.logs();
-	// }
+	if (status == BEGIN || status == CONNECTION_CLOSED)
+	{
+		client.logs();
+	}
 
 	if (status == CONNECTION_CLOSED)
 	{
