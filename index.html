@@ -1,55 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Webserver Pro Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test Page</title>
     <style>
-        body { background: #050505; color: #00f3ff; font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .player-card { border: 1px solid #00f3ff; padding: 15px; background: #000; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); border-radius: 5px; width: 80%; max-width: 900px; }
-        video { width: 100%; height: auto; border: 1px solid #333; }
-        .info-panel { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; border-top: 1px solid #222; padding-top: 10px; color: #ff0055; }
-        .label { color: #888; margin-right: 5px; }
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #333; }
     </style>
 </head>
 <body>
-
-<div class="player-card">
-    <video id="mainVideo" controls>
-        <source src="/goinfre/54G.webm" type="video/mp4">
-        متصفحك لا يدعم تشغيل الفيديو.
-    </video>
-
-    <div class="info-panel">
-        <div><span class="label">FILE:</span> 218016.mp4</div>
-        <div><span class="label">DIMENSIONS:</span> <span id="resolution">Loading...</span></div>
-        <div><span class="label">FILE SIZE:</span> <span id="fileSize">Fetching...</span></div>
-        <div><span class="label">STATUS:</span> <span style="color: #27ae60;">ORIGINAL_QUALITY</span></div>
-    </div>
-</div>
-
-<script>
-    const video = document.getElementById('mainVideo');
-    const resDisplay = document.getElementById('resolution');
-    const sizeDisplay = document.getElementById('fileSize');
-
-    // 1. جلب أبعاد الفيديو (Resolution)
-    video.onloadedmetadata = function() {
-        resDisplay.innerText = `${video.videoWidth}x${video.videoHeight} px`;
-    };
-
-    // 2. جلب حجم الملف من الـ Header (Content-Length)
-    fetch(video.querySelector('source').src, { method: 'HEAD' })
-    .then(response => {
-        const bytes = response.headers.get('content-length');
-        if (bytes) {
-            const mb = (bytes / (1024 * 1024)).toFixed(2);
-            sizeDisplay.innerText = `${mb} MB`;
-        } else {
-            sizeDisplay.innerText = "Unknown (Check Server Headers)";
-        }
-    })
-    .catch(() => sizeDisplay.innerText = "Error fetching size");
-</script>
-
+    <h1>Hello from your webserver!</h1>
+    <p>This is a simple static HTML page for testing.</p>
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+    <p><a href="/">Go back home</a></p>
 </body>
 </html>
