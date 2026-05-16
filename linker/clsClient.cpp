@@ -265,6 +265,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 bool clsClient::_handleInternal()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    std::string &redirctStr = *Respond.GetInternalRedirectSrc();
 
     // support internal location in future
     if (_internalCounter == MAX_INTERNAL_LOOP)
@@ -275,6 +276,13 @@ bool clsClient::_handleInternal()
         _RequestXconfig.setStatusError(508);
         _ResponderProecss.Reset();
         return true;
+    }
+    else if (redirctStr.empty() == false)
+    {
+        _RequestXconfig.reset();
+        RequestLine reqLineParser;
+        reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
+        ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
     }
     else if (Respond.IsError())
     {
