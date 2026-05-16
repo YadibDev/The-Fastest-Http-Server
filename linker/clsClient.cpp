@@ -278,11 +278,12 @@ bool clsClient::_handleInternal()
     }
     else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
     {
-        RequestLine reqLineParser;
-        std::string &redirctStr = *Respond.GetInternalRedirectSrc();
-        
         _RequestXconfig.reset();
-        reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
+        RequestLine reqLineParser;
+        UriParser &uriParser = reqLineParser.getRequestURI();
+        std::string &redirctStr = *Respond.GetInternalRedirectSrc();    
+
+        uriParser.parse(redirctStr.c_str(), redirctStr.size());
         int statusReturn = reqLineParser.getError().getCodeStatus();
 
         if (statusReturn != 0)

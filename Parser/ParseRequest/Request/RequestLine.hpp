@@ -37,6 +37,7 @@ public:
 	HttpTables::eMethod	getMethod() const;
 	s_view				getVersion() const;
 	const UriParser		&getRequestURI() const;
+	UriParser		&getRequestURI(); // add by yadib
 	uint16_t			getOffset() const;
 	HttpError			getError() const;
 };
