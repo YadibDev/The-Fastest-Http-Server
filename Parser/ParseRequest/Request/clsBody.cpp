@@ -71,7 +71,6 @@ int clsBody::_createUploadStoreFile(char *path)
     {
 
         fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
-        // perror(_fileName.c_str());
         if (errno == EISDIR) // if is dir
         {
             close(fd);
@@ -80,11 +79,10 @@ int clsBody::_createUploadStoreFile(char *path)
     }
     if (fd != -1)
     {
-        std::cout << "------> lol this <------"<<std::endl;
 
         int size = uploadStore->size();
         pathFileAbs = &_fileName[size];
-        std::cout << pathFileAbs << std::endl;
+        // std::cout << pathFileAbs << std::endl;
     }
     return fd;
 
