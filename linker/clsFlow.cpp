@@ -74,7 +74,6 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
-	// std::cout << sizeof(clsClient) * maxClient << std::endl;
 	for (int i = 0; i < maxClient; i++)
 		_clientsAvailable.push(i);
 }
