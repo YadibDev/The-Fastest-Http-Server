@@ -264,6 +264,7 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 
 bool clsClient::_handleInternal()
 {
+    HttpError error;
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
     // support internal location in future
@@ -273,27 +274,35 @@ bool clsClient::_handleInternal()
         _RequestXconfig.reset();
         _RequestXconfig.setDefaultErrorPage(true);
         _RequestXconfig.setStatusError(508);
-        _ResponderProecss.Reset();
         return true;
     }
-    else if (Respond.GetInternalRedirectSrc())
+    else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
     {
-        std::string &redirctStr = *Respond.GetInternalRedirectSrc();
-
-        _RequestXconfig.reset();
         RequestLine reqLineParser;
+        std::string &redirctStr = *Respond.GetInternalRedirectSrc();
+        
+        _RequestXconfig.reset();
+
         reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
-        ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
+        if (reqLineParser.getError().getCodeStatus() != 200)
+        {
+            if (!ProcessRequestHandler::generateErrorPath(reqLineParser.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+            {
+                _RequestXconfig.setDefaultErrorPage(true);
+            }
+        }
+        else
+            ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
+
+        return true;
     }
     else if (Respond.IsError())
     {
-        HttpError error;
         _RequestXconfig.reset();
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
         {
             _RequestXconfig.setDefaultErrorPage(true);
         }
-        _ResponderProecss.Reset();
         return true;
     }
     return false;
@@ -310,6 +319,7 @@ void clsClient::_initalizeRespondBuffer()
     if (_handleInternal())
     {
         _internalCounter++;
+        _ResponderProecss.Reset();
         _state = START_RESPOND;
         return;
     }

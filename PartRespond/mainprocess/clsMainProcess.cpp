@@ -6,7 +6,7 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
      _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
 {
     _Body.resize(MAX_BODY);
-	_InternalRedirectSrc.resize(1000);
+	_InternalRedirectSrc.resize(MAX_HEADERS);
     _HeaderFeild.resize(MAX_HEADERS);
 	_FileFromDisk.resize(1000);
     _Type.resize(500);
