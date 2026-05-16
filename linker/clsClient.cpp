@@ -282,11 +282,12 @@ bool clsClient::_handleInternal()
         std::string &redirctStr = *Respond.GetInternalRedirectSrc();
         
         _RequestXconfig.reset();
-
         reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
-        if (reqLineParser.getError().getCodeStatus() != 200)
+        int statusReturn = reqLineParser.getError().getCodeStatus();
+
+        if (statusReturn != 0)
         {
-            if (!ProcessRequestHandler::generateErrorPath(reqLineParser.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+            if (!ProcessRequestHandler::generateErrorPath(statusReturn, this->block, &_RequestXconfig, error))
             {
                 _RequestXconfig.setDefaultErrorPage(true);
             }
