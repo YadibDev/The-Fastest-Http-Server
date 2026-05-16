@@ -69,21 +69,44 @@ bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t 
     return ((1 << method) & allowedMethods);
 }
 
-bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath) {
-    HttpError error;
+bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation, 
+                                      RequestHandler* handler, 
+                                      s_uri_entry& newUri, 
+                                      char *PhysicalPath, 
+                                      HttpError &error) 
+{
     handler->ExtractCgiMetadata(newUri, bestLocation->getCgiPass());
     if (handler->getScriptName().len) {
         s_uri_entry scriptName;
         scriptName.setSview(handler->getScriptName());
+        
         if (!PathResolver::createPhysicalPath(bestLocation, PhysicalPath, scriptName.getView(), error))
-            return (handler->setError(error), false);
+            return false;
+
+        UriStatus flags;
+        size_t size = 0;
+        sPathType::e_path_type PathType = PathResolver::checkPath(PhysicalPath, flags, size);
+
+        if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER) {
+            error.setStatus(404, "Not Found");
+            return false;
+        }
+        if (PathType == sPathType::PATH_DIR) {
+            error.setStatus(403, "Forbidden");
+            return false;
+        }
     }
     return true;
 }
 
-bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, HttpError &error) {
+bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* bestLocation, 
+                                                            RequestHandler* handler, 
+                                                            s_uri_entry& newUri, 
+                                                            HttpError &error) 
+{
     if (!PathResolver::createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri.getView(), error))
         return false;
+        
     UriStatus flags;
     size_t size = 0;
     sPathType::e_path_type PathType = PathResolver::checkPath(handler->getPhysicalPath(), flags, size);
@@ -91,8 +114,8 @@ bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* b
 
     if (PathType == sPathType::PATH_NOT_FOUND || PathType == sPathType::PATH_OTHER)
         return (error.setStatus(404, "Not Found"), false);
+
     if (PathType == sPathType::PATH_DIR) {
-        if (handler->getMethod() == HttpTables::M_POST) return true;
         stReturnData returnData;
         returnData.code = 301;
         returnData.value.raw_path.insert(0, newUri.sv_raw_path.Data, newUri.sv_raw_path.len);
@@ -100,17 +123,18 @@ bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* b
         handler->setReturnVal(returnData);
         return true;
     }
+    
     if ((handler->getMethod() == HttpTables::M_GET) && !flags.can_read)
         return (error.setStatus(403, "Forbidden"), false);
+        
     return true;
 }
 
-
 bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
-                                        const clsServerConfig* serverConfig,
-                                        RequestHandler* handler,
-                                        s_uri_entry& newUri,
-                                        HttpError &error)
+                                       const clsServerConfig* serverConfig,
+                                       RequestHandler* handler,
+                                       s_uri_entry& newUri,
+                                       HttpError &error)
 {
     if (newUri.getView().len > 0 && newUri.getView().Data[newUri.getView().len - 1] == '/')
     {
@@ -121,7 +145,7 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
         return true;
     }
 
-    if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath()))
+    if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath(), error))
         return false;
 
     if (handler->getScriptName().len)
@@ -133,6 +157,7 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 
     return validateAndFinalizePhysicalPath(bestLocation, handler, newUri, error);
 }
+
 
 void ProcessRequestHandler::finalizeErrorState(RequestHandler* handler, 
                                                int originalCode, 
