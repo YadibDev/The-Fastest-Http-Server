@@ -490,7 +490,7 @@ void clsCGI::RunCGI()
     {
         if (_childeProcesse())
             exit(1);
-        exit(1);
+        std::cout << "exit(1)"<< std::endl;
     }
     else
         _ParentProcesse();

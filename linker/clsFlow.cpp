@@ -222,10 +222,10 @@ void clsFlow::_clientProcess(int fd, uint32_t event)
 	client.ProcessBoth(event);
 	const clinetState &status = client.GetState();
 
-	// if (status == BEGIN || status == CONNECTION_CLOSED)
-	// {
-	// 	client.logs();
-	// }
+	if (status == BEGIN || status == CONNECTION_CLOSED)
+	{
+		client.logs();
+	}
 
 	if (status == CONNECTION_CLOSED)
 	{

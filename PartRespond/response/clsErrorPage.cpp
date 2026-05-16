@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 21:42:27 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/16 10:43:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void clsErrorPage::_HeadersErrorResponse()
         _Allow();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)
         _Transfer_Encoding();
-    if (_Status == 429 || _Status == 503)
-        _RetryAfter();
     _CheckConnection();
     _Connection();
     _Server();
@@ -161,12 +159,7 @@ void clsErrorPage::_Server()
 {
     _HeaderFeild += "Server: the-fastest-server\r\n";
 }
-void clsErrorPage::_RetryAfter()
-{
-    _HeaderFeild += "Retey-After: ";
-    HelperFunctions::NumToStr(120, _HeaderFeild);
-    _HeaderFeild += "\r\n";
-}
+
 void clsErrorPage::_Allow()
 {
     _HeaderFeild += "Allow: GET, POST, DELETE\r\n";

@@ -39,6 +39,9 @@ private:
 	short								_statusError;
 	size_t								_sizeFile;
 
+	// add by adib
+	char								*fileUploadedAbs;
+
 public:
 	RequestHandler(stPollRequest& request);
 	~RequestHandler();
@@ -92,6 +95,11 @@ public:
 	const std::string&		getFilePathBody() const;
 	short					getStatusError();
 	const HttpError&		getError() const;
+
+	// add by adib
+	const char					*getFilePostedAbs() const;
+	void					setFilePostdAbs(char *ptr);
+	
 };
 
 #endif

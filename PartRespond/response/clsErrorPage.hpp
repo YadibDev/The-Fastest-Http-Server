@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 11:02:09 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/16 10:43:37 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ class clsErrorPage
         void _Date();
         void _Server();
         void _Allow();
-        void _RetryAfter();
         void _Transfer_Encoding();
         void _StoredInFileOrStr(size_t sizeBody);
         void _CheckConnection();
