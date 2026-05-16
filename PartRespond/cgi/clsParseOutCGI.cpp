@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/16 15:35:03 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/16 21:15:22 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,9 +253,7 @@ void clsParseOutCGI::_InitialInternalRedirect()
 		Pos = _ValueHeader.size();
 	else
 		Pos++;
-	_InternalRedirectSrc += "GET ";
 	HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
-	_InternalRedirectSrc += " HTTP/1.1\r\n";
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
