@@ -1,9 +1,13 @@
-1084637
-1084637
-error process: : Resource temporarily unavailable
-1084639
-1084639
-error process: : Bad file descriptor
-1084640
-1084640
-error process: : Bad file descriptor
+Lifting the server siege...
+Transactions:		    10009    hits
+Availability:		      100.00 %
+Elapsed time:		       30.84 secs
+Data transferred:	    21748.58 MB
+Response time:		      907.70 ms
+Transaction rate:	      324.55 trans/sec
+Throughput:		      705.21 MB/sec
+Concurrency:		      294.59
+Successful transactions:    10009
+Failed transactions:	        0
+Longest transaction:	     1160.00 ms
+Shortest transaction:	       40.00 ms

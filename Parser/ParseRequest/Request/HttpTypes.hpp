@@ -6,7 +6,8 @@
 #include <vector>
 
 #define INVALID_INDEX 255
-#define SIZE_BUFFER 30000
+#define SIZE_BUFFER 32000
+#define BUFFER_REQUEST 16000
 // #define SIZE_BUFFER 16384
 
 #define SIZE_UNKNOW_HEADER 25
@@ -68,11 +69,10 @@ struct s_header_slot
 
 struct PollOfClient
 {
-	char			request_metadata[SIZE_BUFFER];
+	char			request_metadata[BUFFER_REQUEST];
 	char			io_chunk[SIZE_BUFFER];
 	s_header_slot	known_headers[HttpTables::H_COUNT];
 	s_header_slot	unknown_headers[SIZE_UNKNOW_HEADER];
-	char			Response_metadata[SIZE_BUFFER];
 	uint16_t		read_offset;
 	uint16_t read_body;
 	void Reset()

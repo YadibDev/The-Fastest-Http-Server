@@ -69,17 +69,19 @@ bool ProcessRequestHandler::isMethodAllowed(HttpTables::eMethod method, uint8_t 
 	return ((1 << method) & allowedMethods);
 }
 
-bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, char *PhysicalPath) {
-	HttpError error;
+bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation, RequestHandler* handler, s_uri_entry& newUri, HttpError &error) {
+	UriStatus flags;
+	size_t size = 0;
+
 	handler->ExtractCgiMetadata(newUri, bestLocation->getCgiPass());
 	if (handler->getScriptName().len) {
 		s_uri_entry scriptName;
 		scriptName.setSview(handler->getScriptName());
-		if (!PathResolver::createPhysicalPath(bestLocation, PhysicalPath, scriptName.getView(), error))
-			return (handler->setError(error), false);
-		if (PathResolver::checkPath(PhysicalPath, flags, size) != sPathType::PATH_FILE)
-			error.setStatus(404, "Not Found");
-		
+		if (!PathResolver::createPhysicalPath(bestLocation, handler->getPhysicalPath(), scriptName.getView(), error))
+			return (false);
+		if (PathResolver::checkPath(handler->getPhysicalPath(), flags, size) != sPathType::PATH_FILE)
+			return (error.setStatus(404, "Not Found"), false);
+		handler->setSizeFile(size);
 	}
 	return true;
 }
@@ -124,7 +126,7 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 		return true;
 	}
 
-	if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath()))
+	if (!handleCgi(bestLocation, handler, newUri, error))
 		return false;
 
 	if (handler->getScriptName().len)
@@ -230,7 +232,9 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 										  bestLocation->getUploadStore().sv_raw_path, uri.sv_raw_path);
 				return true;
 			}
-		}       
+			else
+				return (error.setStatus(403, "Forbidden"), false);
+		}
 	}
 
 	handler->setRequestUri(startLine.getRequestURI().getPath());

@@ -47,7 +47,7 @@ class ProcessRequestHandler
     static bool                 handleCgi(const clsLocation* bestLocation, 
                                           RequestHandler* handler, 
                                           s_uri_entry& newUri, 
-                                          char *PhysicalPath);
+                                          HttpError &error);
     
     static stReturnData         buildReturnFromPathAndStatus(s_uri_entry& newUri, 
                                                              short codeStatus, 
