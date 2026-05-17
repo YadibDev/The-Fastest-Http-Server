@@ -230,7 +230,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{
-		error.setStatus(405, "Method Not Allowed");
+		error.setStatus(403, "Forbidden");
 		handler->setError(error);
 		return false;
 	}
