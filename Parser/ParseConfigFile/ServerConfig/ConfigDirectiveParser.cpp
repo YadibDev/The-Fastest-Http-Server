@@ -148,7 +148,10 @@ std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx)
 
 	while (ctx.parser.peek().type == TOKEN_WORD)
 	{
-		indixes.push_back(ctx.parser.peek().value);
+        std::string index = ctx.parser.peek().value;
+        if (index.empty())
+            return (ctx.error.setStatus(400, "Index Is Empty"), indixes);
+		indixes.push_back(index);
 		ctx.parser.advance();
 		
 	}
@@ -251,6 +254,23 @@ std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 	std::string path = ctx.parser.peek().value;
 	if (HelperFunctions::isValidPath(path, true) != 200)
 		return (ctx.error.setStatus(400, "Invalid upload path -> " + path), "");
+	
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		ctx.error.setStatus(400, "Missing ';' after upload_path");
+
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
+	return path;
+}
+
+std::string ConfigDirectiveParser::ParseUploadLocation(s_parse_context& ctx)
+{
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'upload_location'"), "");
+
+	std::string path = ctx.parser.peek().value;
 	
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
