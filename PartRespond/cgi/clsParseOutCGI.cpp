@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/17 19:39:16 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 19:48:50 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,7 +268,7 @@ void clsParseOutCGI::_InitialInternalRedirect()
 		Pos = _ValueHeader.size();
 	else
 		Pos++;
-	if (_InternalRedirectSrc.size() + 4 > MAX_HEADERS)
+	if (_ValueHeader.size() + _InternalRedirectSrc.size() + 4 > MAX_HEADERS)
 	{
 		_Status = 413;
 		_Mod[stMod::ERROR] = stMod::ERROR;
@@ -276,13 +276,13 @@ void clsParseOutCGI::_InitialInternalRedirect()
 	}
 	_InternalRedirectSrc += "GET ";
 	HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
-	if (_InternalRedirectSrc.size() + 9 > MAX_HEADERS)
+	if (_InternalRedirectSrc.size() + 11 > MAX_HEADERS)
 	{
 		_Status = 413;
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		return ;
 	}
-	_InternalRedirectSrc += " HTTP/1.1";
+	_InternalRedirectSrc += " HTTP/1.1\r\n";
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()

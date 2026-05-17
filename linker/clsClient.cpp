@@ -277,18 +277,21 @@ bool clsClient::_handleInternal()
         RequestLine reqLineParser;
         std::string &redirctStr = *Respond.GetInternalRedirectSrc();
 
-        reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
-        int statusReturn = reqLineParser.getError().getCodeStatus();
-
-        if (statusReturn != 0)
+        int statusCode = 0;
+        if (false == reqLineParser.parse(redirctStr.c_str(), redirctStr.size()))
         {
-            if (!ProcessRequestHandler::generateErrorPath(statusReturn, this->block, &_RequestXconfig, error))
-            {
-                _RequestXconfig.setDefaultErrorPage(true);
-            }
+            statusCode = reqLineParser.getError().getCodeStatus();
         }
-        else
-            ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
+        else if (!ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig))
+        {
+            statusCode = _RequestXconfig.getError().getCodeStatus();
+        }
+
+        if (statusCode)
+        {
+            if (!ProcessRequestHandler::generateErrorPath(statusCode, this->block, &_RequestXconfig, error))
+                _RequestXconfig.setDefaultErrorPage(true);
+        }
 
         return true;
     }
@@ -296,9 +299,7 @@ bool clsClient::_handleInternal()
     {
         _RequestXconfig.reset();
         if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
-        {
             _RequestXconfig.setDefaultErrorPage(true);
-        }
         return true;
     }
     return false;
