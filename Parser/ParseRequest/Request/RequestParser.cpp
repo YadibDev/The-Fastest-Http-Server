@@ -98,6 +98,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		if (_RequestHandler->getPathCgi())
 			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
 		_body.setUploadStore(this->_RequestHandler->getUploadStore());
+		// _RequestHandler->getUploadStore()
 	}
 
 	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());

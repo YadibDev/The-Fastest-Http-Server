@@ -41,7 +41,7 @@ public: // time to debug
     long maxBodySize;
     long writeSize;
     std::string _fileName;
-    char        *pathFileAbs;
+    std::string pathFileAbs;
     const std::string *uploadStore;
     HttpError _errorPage;
     int fd;
