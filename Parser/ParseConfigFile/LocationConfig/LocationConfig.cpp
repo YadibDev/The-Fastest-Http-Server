@@ -98,14 +98,9 @@ bool    clsLocation::ParseErrorPage() {
 	return !ctx.error.isError();
 }
 
-clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
-		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex)
+clsLocation::clsLocation(s_parse_context& ctxs, bool sAutoIndex)
 	: ctx(ctxs)
 {
-	_root = sRoot;
-	
-	_index = sIndex;
-	_client_max_body_size = sClient_max_body_size;
 	_allow_methods = -1;
 	_autoindex = sAutoIndex;
 	_flags = Directives::D_NONE;

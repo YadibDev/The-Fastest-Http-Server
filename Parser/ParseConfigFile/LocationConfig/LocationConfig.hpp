@@ -36,8 +36,7 @@ private:
 	
 	public:
 	clsLocation();
-	clsLocation(s_parse_context& ctxs, const std::string &sRoot
-		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
+	clsLocation(s_parse_context& ctxs, bool sAutoIndex);
 		clsLocation(const clsLocation &loc);
 		
 		bool                                        parseLocation();

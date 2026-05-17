@@ -29,8 +29,9 @@ void clsFlow::_createBlocksServers(const char *configFile)
 	lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
 	lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
 	lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
+	lexerConfig.addSeparatorToken('\n', TOKEN_NEW_LINE);
 	lexerConfig.addCommentRule("#", "\n");
-	lexerConfig.addWithSpace(" \t\n");
+	lexerConfig.addWithSpace(" \t");
 	static GenericLexer<TokenType> lexer(configeData, lexerConfig);
 	static std::vector<Token<TokenType> > Lexer = lexer.tokenize();
 	static clsParse<TokenType> Data(Lexer, TOKEN_EOF);
@@ -71,11 +72,8 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
-    std::cout <<  " clsClient : " <<sizeof(clsClient) * 500 << std::endl;
 
 	_Rooms = new clientRoom[maxClient];
-
-    std::cout << " clientRoom : " << sizeof(clientRoom) * 500 << std::endl;
 
 	for (int i = 0; i < maxClient; i++)
 	{
@@ -193,7 +191,8 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 		return false;
 	}
 	clsClient &client = _clientsArr[blockId];
-	_clientIdByFd[newClient] = blockId;
+
+    _clientIdByFd[newClient] = blockId;
 
 	if (_epoll.addClient(newClient, EPOLLIN) == false)
 		return false;

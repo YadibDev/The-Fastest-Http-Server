@@ -21,6 +21,7 @@ void clsParseConfigueFile::addServer(const clsServerConfig& serve)
 bool    clsParseConfigueFile::BlockServer(s_parse_context	&ctx)
 {
     clsServerConfig server(ctx);
+    
     if (!server.parseBlockServer())
     {
         _ERROR = ctx.error;
