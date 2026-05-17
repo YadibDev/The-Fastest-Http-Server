@@ -146,7 +146,9 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 	}
 
     if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath(), error))
+	{
         return false;
+	}
 
 	if (handler->getScriptName().len)
 	{

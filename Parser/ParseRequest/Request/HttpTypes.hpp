@@ -93,7 +93,7 @@ struct s_header_slot
 
 struct clientRoom
 {
-	char request_metadata[SIZE_BUFFER];
+	char request_metadata[BUFFER_REQUEST];
 	char io_chunk[SIZE_BUFFER];
 	s_header_slot known_headers[HttpTables::H_COUNT];
 	s_header_slot unknown_headers[SIZE_UNKNOW_HEADER];
