@@ -6,7 +6,7 @@
 #include <vector>
 
 #define INVALID_INDEX 255
-#define SIZE_BUFFER 32000
+#define SIZE_BUFFER 20000
 #define BUFFER_REQUEST 16000
 // #define SIZE_BUFFER 16384
 
