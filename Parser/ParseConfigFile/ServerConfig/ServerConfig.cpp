@@ -43,7 +43,7 @@ bool    clsServerConfig::ParseIndex()
 
 bool    clsServerConfig::ParseLocation()
 {
-	clsLocation loc(ctx, _root, _index, _max_body_size, _autoindex);
+	clsLocation loc(ctx, _autoindex);
 	loc.parseLocation();
 	
 	if (!loc.getError().isError())
@@ -131,7 +131,7 @@ bool    clsServerConfig::ParseServerDirective()
 		case L_DIR_RETURN:                  return ParseReturn();
 		case L_DIR_ERROR_PAGE:              return ParseErrorPage();
 		case L_DIR_LOCATION:                return ParseLocation();
-		default:                            return (false);
+		default: return (ctx.error.setStatus(400, "Error in " + directive), false);
 	}
 }
 
@@ -143,6 +143,8 @@ void    clsServerConfig::initUri()
 
 	for(size_t i = 0; i < _LocationExact.size(); i++)
 	{
+		if (_LocationExact[i].getRoot().empty() && _LocationExact[i].getAlias().empty())
+			_LocationExact[i].setRoot(_root);
 		if (!_LocationExact[i].getErrorPages().size())
 			_LocationExact[i].setErrorPages(this->_error_pages);
 		if (!_LocationExact[i].getIndex().size())
@@ -152,6 +154,8 @@ void    clsServerConfig::initUri()
 
 	for(size_t i = 0; i < _LocationPrefix.size(); i++)
 	{
+		if (_LocationPrefix[i].getRoot().empty() && _LocationPrefix[i].getAlias().empty())
+			_LocationPrefix[i].setRoot(_root);
 		if (!_LocationPrefix[i].getErrorPages().size())
 			_LocationPrefix[i].setErrorPages(this->_error_pages);
 		if (!_LocationPrefix[i].getIndex().size())
@@ -182,7 +186,9 @@ void    clsServerConfig::initUri()
 
 bool    clsServerConfig::parseBlockServer()
 {
-	if (ctx.parser.advance().type != TOKEN_LBRACE)
+	ctx.parser.advance();
+	ConfigDirectiveParser::skipWhitespace(ctx.parser);
+	if (ctx.parser.peek().type != TOKEN_LBRACE)
 		return (ctx.error.setStatus(400, "Syntax Error: Expected '{'"), false);
 
 	ctx.parser.advance();

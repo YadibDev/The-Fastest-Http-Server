@@ -41,8 +41,9 @@ public: // time to debug
     long maxBodySize;
     long writeSize;
     std::string _fileName;
-    char        *pathFileAbs;
+    std::string pathFileAbs;
     const std::string *uploadStore;
+    const std::string *uploadLocation;
     HttpError _errorPage;
     int fd;
     long    _contentLength;
@@ -75,6 +76,7 @@ public:
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
     void setUploadStore(const std::string *ptr);
+    void setUploadLocation(const std::string *ptr);
     int createRandomFile();
     HttpError getError();
     char *getFileAbs();

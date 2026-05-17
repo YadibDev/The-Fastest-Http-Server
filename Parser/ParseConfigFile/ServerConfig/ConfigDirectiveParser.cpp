@@ -27,36 +27,51 @@ bool ConfigDirectiveParser::validateDirectoryPath(const std::string& path,
 }
 
 bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& loc) {
+    
+    if (ctx.parser.peek().type != TOKEN_WORD) {
+        return (ctx.error.setStatus(400, "Location Error: Expected a modifier or a URI path"), false);
+    }
 
-	std::string token = ctx.parser.peek().value;
+    std::string token = ctx.parser.peek().value;
 
-	if (token == "=") {
-		loc.matchType = stlocation::EXACT;
-		ctx.parser.advance();
-	} else if (token == "^~") {
-		loc.matchType = stlocation::PREFIX;
-		ctx.parser.advance();
-	}
-	else
-		loc.matchType = stlocation::PREFIX;
+    if (token == "=")
+    {
+        loc.matchType = stlocation::EXACT;
+        ctx.parser.advance();
+        skipWhitespace(ctx.parser);
+    }
+    else if (token == "^~")
+    {
+        loc.matchType = stlocation::PREFIX;
+        ctx.parser.advance();
+        skipWhitespace(ctx.parser);
+    }
+    else if (token == "~" || token == "~*")
+        return (ctx.error.setStatus(400, "Location Error: Regex modifiers (~, ~*) are not supported"), false);
+    else
+        loc.matchType = stlocation::PREFIX;
 
-	if (ctx.parser.peek().type != TOKEN_WORD)
-		return (ctx.error.setStatus(400, "Location Error: Missing URI path"), false);
+    if (ctx.parser.peek().type != TOKEN_WORD)
+        return (ctx.error.setStatus(400, "Location Error: Missing URI path after modifier"), false);
 
-	loc.uri = ctx.parser.peek().value;
+    loc.uri = ctx.parser.peek().value;
 
-	if (loc.uri[0] == '~')
-		return (ctx.error.setStatus(400, "Location Error: Regex is not supported"), false);
+    if (loc.uri.empty())
+        return (ctx.error.setStatus(400, "Location Error: URI path cannot be empty"), false);
 
-	ctx.parser.advance();
-	skipWhitespace(ctx.parser);
-	if (ctx.parser.peek().type != TOKEN_LBRACE)
-		return (ctx.error.setStatus(400, "Location Error: Expected '{' after path"), false);
+    if (loc.uri[0] != '/')
+        return (ctx.error.setStatus(400, "Location Error: URI path must start with '/' (found: '" + loc.uri + "')"), false);
 
-	ctx.parser.advance();
-	skipWhitespace(ctx.parser);
+    ctx.parser.advance();
+    skipWhitespace(ctx.parser);
 
-	return true;
+    if (ctx.parser.peek().type != TOKEN_LBRACE)
+        return (ctx.error.setStatus(400, "Location Error: Expected '{' after URI path"), false);
+
+    ctx.parser.advance();
+    skipWhitespace(ctx.parser);
+
+    return true;
 }
 
 std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
@@ -127,22 +142,26 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 }
 
 std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx) {
-	std::vector<std::string> indices;
+	std::vector<std::string> indixes;
 
 	ctx.parser.advance();
 
 	while (ctx.parser.peek().type == TOKEN_WORD)
 	{
-		indices.push_back(ctx.parser.peek().value);
+        std::string index = ctx.parser.peek().value;
+        if (index.empty())
+            return (ctx.error.setStatus(400, "Index Is Empty"), indixes);
+		indixes.push_back(index);
 		ctx.parser.advance();
+		
 	}
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-		return (ctx.error.setStatus(400, "Missing ';' after index list"), indices);
+		return (ctx.error.setStatus(400, "Missing ';' after index list"), indixes);
 
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
-	return indices;
+	return indixes;
 }
 
 bool ConfigDirectiveParser::ParseAutoIndex(s_parse_context& ctx) {
@@ -235,6 +254,23 @@ std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 	std::string path = ctx.parser.peek().value;
 	if (HelperFunctions::isValidPath(path, true) != 200)
 		return (ctx.error.setStatus(400, "Invalid upload path -> " + path), "");
+	
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		ctx.error.setStatus(400, "Missing ';' after upload_path");
+
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
+	return path;
+}
+
+std::string ConfigDirectiveParser::ParseUploadLocation(s_parse_context& ctx)
+{
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'upload_location'"), "");
+
+	std::string path = ctx.parser.peek().value;
 	
 	ctx.parser.advance();
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)

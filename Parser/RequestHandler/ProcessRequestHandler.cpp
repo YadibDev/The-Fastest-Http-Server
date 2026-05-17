@@ -230,7 +230,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 
 	if (!isMethodAllowed(startLine.getMethod(), bestLocation->getAllowMethods()))
 	{
-		error.setStatus(405, "Method Not Allowed");
+		error.setStatus(403, "Forbidden");
 		handler->setError(error);
 		return false;
 	}
@@ -252,6 +252,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			{
 				HelperFunctions::join_views(handler->getPhysicalPath(), MAX_PATH_LEN, 
 										  bestLocation->getUploadStore().sv_raw_path, uri.sv_raw_path);
+				handler->setUploadLocation(&bestLocation->getUploadLocation());
 				return true;
 			}
 			else

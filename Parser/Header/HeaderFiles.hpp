@@ -30,7 +30,8 @@ struct Directives {
 		D_LISTEN      	= 1 << 5,
 		D_RETURN      	= 1 << 6,
 		D_METHODS		= 1 << 7,
-		D_UPLOAD_STORE	= 1 << 8
+		D_UPLOAD_STORE	= 1 << 8,
+		D_UPLOAD_LOCATION	= 1 << 9
 	};
 };
 

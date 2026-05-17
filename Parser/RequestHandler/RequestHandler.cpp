@@ -167,6 +167,8 @@ void RequestHandler::setReturnVal(stReturnData returnData) { _return = returnDat
 
 void RequestHandler::setUploadStore(const std::string *uploadStore) { _upload_store = uploadStore; }
 
+void RequestHandler::setUploadLocation(const std::string *uploaLocation) { _upload_location = uploaLocation; }
+
 void RequestHandler::setFilePathBody(const std::string &filePathBody) { _filePathBody = filePathBody; }
 
 void RequestHandler::setStatusError(short statusError) { _statusError = statusError; }
@@ -229,6 +231,8 @@ const std::string *RequestHandler::getPathCgi() const { return _pathCgi; }
 const stReturnData &RequestHandler::getReturn() const { return _return; }
 
 const std::string *RequestHandler::getUploadStore() const { return _upload_store; }
+
+const std::string *RequestHandler::getUploadLocation() const {	return _upload_location; }
 
 const std::string &RequestHandler::getFilePathBody() const { return _filePathBody; }
 
