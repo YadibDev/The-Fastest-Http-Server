@@ -23,7 +23,8 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
     _Type = "";
     _RunCGI = false;
 }
-clsMainProcess::~clsMainProcess() { }
+
+clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
@@ -36,6 +37,7 @@ stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
     return this->_eventProcess;
 }
+
 void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 {
     this->_eventProcess = ev;

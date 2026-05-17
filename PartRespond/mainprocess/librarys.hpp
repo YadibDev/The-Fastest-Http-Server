@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:01:35 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/05 12:10:41 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 13:32:01 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,4 @@ struct stMod
 };
 
 #include "../../Utils/HelperFunctions.hpp"
-
 #endif
-
