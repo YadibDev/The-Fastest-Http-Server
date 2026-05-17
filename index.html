@@ -59,7 +59,7 @@
     <div class="section">
         <h2>1. Test GET Method & Query Strings</h2>
         <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
-        <form action="/test-cgi" method="GET">
+        <form action="/cgi-bin/printEnv.py" method="GET">
             <label for="get-param">Query Parameter:</label>
             <input type="text" id="get-param" name="user" value="Musab">
             <button type="submit" class="btn">Send GET Request</button>
@@ -70,7 +70,7 @@
     <div class="section">
         <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
         <p>Tests your basic request body parsing logic.</p>
-        <form action="/video/file.txt" method="POST">
+        <form action="/file.txt" method="POST">
             <label for="post-data">Form Data:</label>
             <input type="text" id="post-data" name="test_input" value="Hello Server">
             <button type="submit" class="btn">Send Standard POST</button>

@@ -6,7 +6,6 @@ import html
 
 # 1. CGI Header
 print("Content-Type: text/html\r\n\r\n")
-print()
 
 # 2. Read Body from stdin
 # CGI servers pass the length of the body via the CONTENT_LENGTH environment variable

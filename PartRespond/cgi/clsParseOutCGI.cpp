@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsParseOutCGI.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/17 19:48:50 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "clsParseOutCGI.hpp"
 
 clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &FileNameFromDisk, std::string &InternalRedirectSrc)
@@ -97,9 +85,9 @@ short clsParseOutCGI::_AtoiStatusCode(const std::string &StringDigit, short Star
 	for (short i = Start; i < (short)StringDigit.size() && i < End; i++)
 	{
 		counter++;
+		Number = (10 * Number) + (StringDigit[i] - '0');
 		if (counter == 4)
 		    return Number;
-		Number = (10 * Number) + (StringDigit[i] - '0');
 	}
 	return Number;
 }
