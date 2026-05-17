@@ -47,31 +47,36 @@ struct bodyPlaceEnum
 class clsClient
 {
 private:
-    char ClientIp[INET_ADDRSTRLEN];
-    std::string _serverPort;
+    short bytesToSend;
     int _socket;
     int _fdRespond;
-    short bytesToSend;
-    ssize_t bodyLimit;
-    long _LastConnection; // update connection in ms
+    long _LastConnection;  // update connection in ms
     long _FirstConnection; // first established connection in ms mile seconds
-    stPollRequest _dataForReq;
-    PollOfClient _theData;
-    sockaddr_in _addr;       // ip and port of the client
+    ssize_t bodyLimit;
+    short _internalCounter;
+    bool _peerClosed;
+    bodyPlaceEnum::place _BodyPlace;
+    clinetState _state;
+
     clsServerConfig *block;
+    clientRoom *_theData;
+
+    char ClientIp[INET_ADDRSTRLEN];
+    sockaddr_in _addr; // ip and port of the client
+
+    stPollRequest _dataForReq;
+    std::string _serverPort;
+
     RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
-    clinetState _state;
-    bodyPlaceEnum::place _BodyPlace;
     clsMonitorCGI _monitorCGI;
-    short   _internalCounter;
-    bool _peerClosed;
+
     void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
     short _addSizeChunkToStr();
     void _initalizeRespondBuffer();
-    void _LoadAutoIndex( clsResponse &_Responder);
+    void _LoadAutoIndex(clsResponse &_Responder);
     bool _handleInternal();
 
 public:
@@ -88,7 +93,6 @@ public:
     long GetTimeConnection() const;
     long GetLastConnection() const;
     int getPipeCgi();
-
 
     // seter
     void SetState(clinetState state);
@@ -107,8 +111,7 @@ public:
     void initializeCGI();
     void peerClosed();
     int getSocket();
-
-
+    void setRoom(clientRoom &room);
 };
 
 #endif

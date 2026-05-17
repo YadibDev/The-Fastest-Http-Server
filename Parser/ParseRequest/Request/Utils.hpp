@@ -7,8 +7,8 @@
 
 bool isSpace(char c);
 void skipSpaceLastIndex(const char *buffer, uint16_t size, uint16_t &offset);
-int compare_view(const s_view& view, const std::string& other);
-stPollRequest makeRequest(PollOfClient &client);
+int compare_view(const s_view &view, const std::string &other);
+stPollRequest makeRequest(clientRoom &client);
 void print_view(const s_view &view);
 
 #endif

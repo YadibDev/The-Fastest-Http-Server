@@ -1,96 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Webserv Method Tester</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Test Bench</title>
     <style>
-        body { font-family: 'Courier New', monospace; background: #121212; color: #e0e0e0; padding: 30px; line-height: 1.6; }
-        .container { max-width: 800px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; border: 1px solid #333; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 12px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px; transition: 0.3s; }
-        .post-btn { background: #28a745; color: white; }
-        .delete-btn { background: #dc3545; color: white; }
-        button:hover { opacity: 0.8; }
-        .output-box { margin-top: 25px; padding: 15px; background: #000; border-left: 4px solid #0e639c; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 13px; }
-        .status-badge { padding: 4px 8px; border-radius: 3px; font-size: 14px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { color: #222; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        h2 { color: #444; margin-top: 25px; }
+        .section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        input[type="text"], input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
 <body>
 
 <div class="container">
-    <h2>HTTP Method Tester (POST / DELETE)</h2>
-    
-    <label>Resource URL (Target):</label>
-    <input type="text" id="targetUrl" value="http://localhost:8082/test_resource.txt">
-    
-    <label>Payload (for POST):</label>
-    <textarea id="payload" placeholder="Enter raw data to send..."></textarea>
+    <h1>Webserv Test Bench</h1>
+    <p>Use this page to verify your server's routing, method handling, and parsing mechanics.</p>
 
-    <div class="btn-group">
-        <button class="post-btn" onclick="executeRequest('POST')">SEND POST</button>
-        <button class="delete-btn" onclick="executeRequest('DELETE')">SEND DELETE</button>
+    <!-- 1. GET Method Test -->
+    <div class="section">
+        <h2>1. Test GET Method & Query Strings</h2>
+        <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
+        <form action="/test-cgi" method="GET">
+            <label for="get-param">Query Parameter:</label>
+            <input type="text" id="get-param" name="user" value="Musab">
+            <button type="submit" class="btn">Send GET Request</button>
+        </form>
     </div>
 
-    <div class="output-box">
-        <strong>Status: </strong> <span id="statusLine">-</span> <br><br>
-        <strong>Headers:</strong>
-        <pre id="headerOutput">-</pre>
-        <strong>Body:</strong>
-        <pre id="bodyOutput">-</pre>
+    <!-- 2. Standard POST Method Test -->
+    <div class="section">
+        <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
+        <p>Tests your basic request body parsing logic.</p>
+        <form action="/" method="POST">
+            <label for="post-data">Form Data:</label>
+            <input type="text" id="post-data" name="test_input" value="Hello Server">
+            <button type="submit" class="btn">Send Standard POST</button>
+        </form>
+    </div>
+
+    <!-- 3. Multipart File Upload Test -->
+    <div class="section">
+        <h2>3. Test File Upload (multipart/form-data)</h2>
+        <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the <code>filename</code> attribute.</p>
+        <!-- Adjust the action attribute to match your upload route/location block if necessary -->
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="file-upload">Choose a file to upload:</label>
+            <input type="file" id="file-upload" name="uploaded_file" required>
+            <button type="submit" class="btn" style="background-color: #28a745;">Upload File</button>
+        </form>
+    </div>
+
+    <!-- 4. Error Code Tests -->
+    <div class="section">
+        <h2>4. Test Error Triggering</h2>
+        <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
+        <ul>
+            <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
+            <li><a href="/protected-directory/" id="forbidden-link">Trigger 403 Forbidden (If index/autoindex is disabled)</a></li>
+        </ul>
     </div>
 </div>
-
-<script>
-    async function executeRequest(method) {
-        const url = document.getElementById('targetUrl').value;
-        const payload = document.getElementById('payload').value;
-        const statusLine = document.getElementById('statusLine');
-        const headerOutput = document.getElementById('headerOutput');
-        const bodyOutput = document.getElementById('bodyOutput');
-
-        // Reset display
-        statusLine.innerText = "Processing...";
-        headerOutput.innerText = "-";
-        bodyOutput.innerText = "-";
-
-        try {
-            const options = {
-                method: method,
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            };
-
-            // إضافة الـ Body فقط في حالة الـ POST
-            if (method === 'POST') {
-                options.body = payload;
-            }
-
-            const response = await fetch(url, options);
-
-            // عرض الحالة
-            statusLine.innerHTML = `<span class="status-badge" style="background: ${response.ok ? '#28a745' : '#dc3545'}">
-                ${response.status} ${response.statusText}</span>`;
-
-            // عرض الترويسات (Headers)
-            let headers = "";
-            response.headers.forEach((v, k) => { headers += `${k}: ${v}\n`; });
-            headerOutput.innerText = headers || "No Headers";
-
-            // عرض جسم الرد
-            const text = await response.text();
-            bodyOutput.innerText = text || "[Empty Response Body]";
-
-        } catch (err) {
-            statusLine.innerText = "Network Error (Check CORS or Server Status)";
-            bodyOutput.innerText = err.message;
-        }
-    }
-</script>
 
 </body>
 

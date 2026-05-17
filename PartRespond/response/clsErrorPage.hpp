@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/16 10:43:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 16:10:35 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class clsErrorPage
 {
     private:
         int _Status;
-        stMod::eMod _Mod[10];
+        stMod::eMod _Mod[11];
         std::string &_Body;
         std::string &_HeaderFeild;
         std::string &_FileFromDisk;

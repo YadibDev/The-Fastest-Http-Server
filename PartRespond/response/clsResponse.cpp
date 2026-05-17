@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/16 10:45:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 16:39:13 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::s
 {
     _Status = 0;
     _IsConnection = true;
-    _Erno = false;
     _BodySize = 0;
     _ModTransferData = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -44,8 +43,6 @@ void clsResponse::_DeleteResource()
 
 void clsResponse::MakeResponse()
 {
-    if (_Erno)
-        return;
     if (_Mod[stMod::GET] == stMod::GET)
     {
         if (!_DataRequest.getAutoIndex())
@@ -264,7 +261,6 @@ void clsResponse::Reset()
     _Status = 0;
     _BodySize = 0;
     _ModTransferData = false;
-    _Erno = false;
     _IsConnection = true;
     _ErrorPage.Reset();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -349,10 +345,7 @@ size_t clsResponse::GetSizeBody() const
 {
     return (_BodySize);
 }
-bool clsResponse::GetErnoVar()
-{
-    return _Erno;
-}
+
 bool clsResponse::IsAutoIndex()
 {
     return (_Mod[stMod::AUTOINDEX] == stMod::AUTOINDEX);

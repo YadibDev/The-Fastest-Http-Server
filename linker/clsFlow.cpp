@@ -36,13 +36,10 @@ void clsFlow::_createBlocksServers(const char *configFile)
 	static clsParse<TokenType> Data(Lexer, TOKEN_EOF);
 	static clsParseConfigueFile ConfigFile(Data);
 
-	ConfigFile.ParseConfigue();
-	if (ConfigFile.getServers().size() == 0)
+	if (!ConfigFile.ParseConfigue() || ConfigFile.getServers().size() == 0)
 	{
-		std::cout << "Error\n"
-				  << ConfigFile.getError().getMsgError() << std::endl;
-		std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
-		throw std::runtime_error("0 block server\n");
+
+		throw std::runtime_error(ConfigFile.getError().getMsgError());
 	}
 
 	_allBlocks = &(ConfigFile.getServers());
@@ -74,8 +71,12 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
+	_Rooms = new clientRoom[maxClient];
 	for (int i = 0; i < maxClient; i++)
+	{
+		_clientsArr[i].setRoom(_Rooms[i]);
 		_clientsAvailable.push(i);
+	}
 }
 
 short clsFlow::_getClient()
@@ -375,4 +376,5 @@ void clsFlow::EventLoop()
 clsFlow::~clsFlow()
 {
 	delete[] _clientsArr;
+	delete[] this->_Rooms;
 }

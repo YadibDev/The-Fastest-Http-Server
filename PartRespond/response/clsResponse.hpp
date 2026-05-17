@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 10:59:31 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 16:38:35 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@
 class clsResponse
 {
     private:
-        stMod::eMod _Mod[10];
+        stMod::eMod _Mod[11];
         short _Status;
         size_t _BodySize;
         bool _IsConnection;
-        bool _Erno;
         bool _ModTransferData;
         const RequestHandler &_DataRequest;
         std::string *_InternalRedirectSrc;
@@ -64,7 +63,6 @@ class clsResponse
         void SetMod(stMod::eMod Mod);
         bool GetIsConnection() const;
         void MakeResponse();
-        bool GetErnoVar();
         const std::string *GetBodyPointer();
         const std::string *GetHeaderFeildPointer();
         const std::string *GetFileFromDiskPointer() const;

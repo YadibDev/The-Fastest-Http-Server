@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:45 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/16 21:15:22 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/17 19:39:16 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest,std::string &Body, st
 	_CountSizeHeaders = 0;
 	_Fdout = -1;
 	_ModTransferData = false;
-	_Erno = false;
 	_OffsetBody = 0;
 	_HeadersFieldDuplicate.resize(MAX_HEADERS);
 	_Line.resize(MAX_HEADERS);
@@ -32,9 +31,7 @@ clsParseOutCGI::clsParseOutCGI(RequestHandler &DataRequest,std::string &Body, st
 	if (_HeadersFieldDuplicate.empty() || _Line.empty()
 		|| _NameHeader.empty() || _ValueHeader.empty())
 	{
-		_Status = 500;
-		_Mod[stMod::ERROR] = stMod::ERROR;
-		_Erno = true;
+		_Mod[stMod::MEMORY_FAILD] = stMod::MEMORY_FAILD;
 		return ;
 	}
 	_Status = 0;
@@ -93,8 +90,23 @@ bool clsParseOutCGI::_LocationIsClientOrLocal(std::string &Location)
 	return (false);
 }
 
+short clsParseOutCGI::_AtoiStatusCode(const std::string &StringDigit, short Start, short End)
+{
+	short Number = 0;
+	uint8_t counter = 0;
+	for (short i = Start; i < (short)StringDigit.size() && i < End; i++)
+	{
+		counter++;
+		if (counter == 4)
+		    return Number;
+		Number = (10 * Number) + (StringDigit[i] - '0');
+	}
+	return Number;
+}
+
 bool clsParseOutCGI::_ParseStatus(const std::string &LineValue)
 {
+	short NumberStatus = 0;
 	short Start = HelperFunctions::SkeeSep(LineValue, " \t");
 	short LengthWord = HelperFunctions::LengthWord(LineValue, " \t",Start);
 	short End = Start + LengthWord;
@@ -104,8 +116,11 @@ bool clsParseOutCGI::_ParseStatus(const std::string &LineValue)
 		return false;
 	if (!HelperFunctions::IsStringDigit(LineValue, Start, End))
 		return (false);
-	if (LengthWord != 3)
+	NumberStatus = _AtoiStatusCode(LineValue, Start, End);
+	if (NumberStatus < 100 || NumberStatus > 599)
 		return (false);
+	if (NumberStatus >= 400 && NumberStatus != 404)
+	    _IsConnectoin = false;
 	return (true);
 }
 
@@ -194,7 +209,7 @@ void clsParseOutCGI::_StatusNormal()
 
 void clsParseOutCGI::_StatusRedirection()
 {
-	if (_HeadersField.count("status"))
+	if (_ExistHeaders[stHeadersCGI::STATUS] != stHeadersCGI::STATUS)
 	{
 		_HeadersFieldFinal +=  "HTTP/1.1 ";
 		_HeadersFieldFinal +=_HeadersField["status"];
@@ -233,7 +248,7 @@ void clsParseOutCGI::_HeaderResponseCGI()
 		_ContentLength();
 	_Date();
 	_Server();
-	_Connection(true);
+	_Connection(_IsConnectoin);
 	_HeadersFieldFinal += "\r\n";
 }
 
@@ -253,7 +268,21 @@ void clsParseOutCGI::_InitialInternalRedirect()
 		Pos = _ValueHeader.size();
 	else
 		Pos++;
+	if (_InternalRedirectSrc.size() + 4 > MAX_HEADERS)
+	{
+		_Status = 413;
+		_Mod[stMod::ERROR] = stMod::ERROR;
+		return ;
+	}
+	_InternalRedirectSrc += "GET ";
 	HelperFunctions::CopyStr(_ValueHeader,_InternalRedirectSrc, Skeep, Pos);
+	if (_InternalRedirectSrc.size() + 9 > MAX_HEADERS)
+	{
+		_Status = 413;
+		_Mod[stMod::ERROR] = stMod::ERROR;
+		return ;
+	}
+	_InternalRedirectSrc += " HTTP/1.1";
 }
 
 void clsParseOutCGI::_BuilResponsedredirection()
@@ -283,7 +312,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 		return ;
 	bool Flag = false;
 	HelperFunctions::GetCleanLineHeader(Arr, _Line, _CountSizeHeaders, Flag, _Counter, Length);
-	if (_CountSizeHeaders > MAX_HEADERS)
+	if (_CountSizeHeaders > MAX_HEADERS / 2)
 	{
 		_Status = 413;
 		_Mod[stMod::ERROR] = stMod::ERROR;
@@ -292,7 +321,7 @@ void clsParseOutCGI::_ReceivingHeaders(const char *Arr, short Length)
 	while(Flag)
 	{
 		Flag = false;
-		if (_CountSizeHeaders > MAX_HEADERS)
+		if (_CountSizeHeaders > MAX_HEADERS / 2)
 		{
 			_Status = 413;
 			_Mod[stMod::ERROR] = stMod::ERROR;
@@ -359,13 +388,11 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 			{
 				_Status = 500;
 				_Mod[stMod::ERROR] = stMod::ERROR;
-				close(_Fdout);
 				return ;
 			}
 			if (write(_Fdout, &Arr[_Counter], ((Length - _Counter  < 0)? 0 : Length - _Counter)) == -1)
 			{
 				_Status = 500;
-				close(_Fdout);
 				_Mod[stMod::ERROR] = stMod::ERROR;
 				return ;
 			}
@@ -380,7 +407,6 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 		{
 			_Status = 500;
 			_Mod[stMod::ERROR] = stMod::ERROR;
-			close(_Fdout);
 			return ;
 		}
 	}
@@ -388,11 +414,17 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 
 void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 {
+	if (_Mod[stMod::MEMORY_FAILD] == stMod::MEMORY_FAILD)
+		return ;
 	_ReceivingHeaders(Arr, Length);
 	_ReceivingBody(Arr, Length);
 	if (_Mod[stMod::ERROR] == stMod::ERROR)
 	{
-		close(_Fdout);
+		if (_Fdout != -1)
+		{
+			close(_Fdout);
+			_Fdout = -1;
+		}
 		return ;
 	}
 	if (!_ProcessIsFinish)
@@ -401,12 +433,17 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 			_ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE))
 	{
 		_Status = 502;
-		close(_Fdout);
 		_Mod[stMod::ERROR] = stMod::ERROR;
 		return ;
 	}
 	else
-		close(_Fdout);
+	{
+		if (_Fdout != -1)
+		{
+			close(_Fdout);
+			_Fdout = -1;
+		}
+	}
 	if (_ExistHeaders[stHeadersCGI::LOCATION] == stHeadersCGI::LOCATION)
 	{
 		_Mod[stMod::REDIRECTION] = stMod::REDIRECTION;
@@ -426,11 +463,6 @@ void clsParseOutCGI::_Date()
 	_HeadersFieldFinal += "Date: ";
 	HelperFunctions::DateTime(_HeadersFieldFinal);
 	_HeadersFieldFinal += "\r\n";
-}
-
-void clsParseOutCGI::_CachControl()
-{
-	_HeadersFieldFinal +=  "Cache-Control: no-store\r\n";
 }
 
 void clsParseOutCGI::_Server()
@@ -497,7 +529,6 @@ void clsParseOutCGI::Reset()
 	_IsConnectoin = true;
 	_FoundBody = false;
 	_ProcessIsFinish = false;
-	_Erno = false;
 	_NameHeader = "";
 	_OffsetBody = 0;
 	_ValueHeader = "";
@@ -513,15 +544,9 @@ size_t clsParseOutCGI::GetSizeBody()
 {
 	return _BytesBody;
 }
-
- bool clsParseOutCGI::GetIsConnection()
- {
-	return _IsConnectoin;
- }
-
-bool clsParseOutCGI::GetErno()
+bool clsParseOutCGI::GetIsConnection()
 {
-   return _Erno;
+	return _IsConnectoin;
 }
 clsParseOutCGI::~clsParseOutCGI()
 {

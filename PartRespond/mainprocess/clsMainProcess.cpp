@@ -1,6 +1,5 @@
 #include "../mainprocess/Webserv.hpp"
 
-// yadib modifier this part of achraf
 clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) 
     : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
      _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
@@ -8,13 +7,13 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
     _Body.resize(MAX_BODY);
 	_InternalRedirectSrc.resize(MAX_HEADERS);
     _HeaderFeild.resize(MAX_HEADERS);
-	_FileFromDisk.resize(1000);
-    _Type.resize(500);
+	_FileFromDisk.resize(PATH_MAX);
+    _Type.resize(100);
     if (_Type.empty() || _FileFromDisk.empty() || _HeaderFeild.empty() 
         || _InternalRedirectSrc.empty() || _Body.empty())
     {
-        _Response.SetStatus(500);
-        _Response.SetMod(stMod::ERROR);
+        _Response.SetMod(stMod::MEMORY_FAILD);
+        _Response.SetIsConnection(false);
         return ;
     }
     _InternalRedirectSrc = "";
@@ -46,6 +45,12 @@ void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
     clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
+    if (parseCgi.GetMod()[stMod::MEMORY_FAILD] == stMod::MEMORY_FAILD)
+    {
+        _eventProcess = stEventProcess::END_WITH_PARSE;
+        _Response.SetIsConnection(false);
+		return ;
+    }
     if (_eventProcess == stEventProcess::THE_END)
         parseCgi.SetProcessIsFinish(true);
     if (Length > 0 || _eventProcess == stEventProcess::THE_END)
@@ -67,6 +72,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
             _Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
             _Response.SetSizeBody(parseCgi.GetSizeBody());
             _Response.SetModTransferData(true);
+            _Response.SetIsConnection(parseCgi.GetIsConnection());
         }
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
@@ -131,7 +137,8 @@ void clsMainProcess::_PartErrorRequest()
 void clsMainProcess::MainProcess()
 {
     _RunCGI = false;
-    
+    if (!_Response.GetIsConnection())
+		return ;
     if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
