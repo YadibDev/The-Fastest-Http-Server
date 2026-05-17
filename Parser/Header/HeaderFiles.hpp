@@ -5,6 +5,8 @@
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
 #include "../ParseRequest/URI/URI.hpp"
+#include "../ParseRequest/URI/NUriParser.hpp"
+#include "../ParseRequest/Request/HttpTypes.hpp"
 
 
 
@@ -18,17 +20,16 @@
 #include <string>
 #include <vector>
 
-
 struct Directives {
 	enum e_directive_flags {
-	    D_NONE        	= 0,
-	    D_ROOT        	= 1 << 1,
-	    D_ALIAS       	= 1 << 2,
-	    D_MAX_BODY    	= 1 << 3,
-	    D_AUTOINDEX   	= 1 << 4,
-	    D_LISTEN      	= 1 << 5,
-	    D_RETURN      	= 1 << 6,
-	    D_METHODS		= 1 << 7,
+		D_NONE        	= 0,
+		D_ROOT        	= 1 << 1,
+		D_ALIAS       	= 1 << 2,
+		D_MAX_BODY    	= 1 << 3,
+		D_AUTOINDEX   	= 1 << 4,
+		D_LISTEN      	= 1 << 5,
+		D_RETURN      	= 1 << 6,
+		D_METHODS		= 1 << 7,
 		D_UPLOAD_STORE	= 1 << 8
 	};
 };
@@ -43,13 +44,13 @@ struct Methods {
 };
 
 struct RequestStatus {
-    enum e_state {
-        READING_LINE    = 0,
-        READING_HEADERS = 1,
-        READING_BODY    = 2,
-        COMPLETED       = 3,
-        ERROR           = 4
-    };
+	enum e_state {
+		READING_LINE    = 0,
+		READING_HEADERS = 1,
+		READING_BODY    = 2,
+		COMPLETED       = 3,
+		ERROR           = 4
+	};
 };
 
 
@@ -63,18 +64,19 @@ struct stlocation {
 	std::string uri;
 };
 
+
 struct stReturnData {    
 	short       code;
-	std::string value;
+	s_uri_entry value;
 
-	stReturnData() : code(-1), value("") {}    
+	stReturnData() : code(-1) { }
 };
 
 struct stErrorPagedata {
-	short		response;
-	std::string	uri;
+	short       response;
+	s_uri_entry uri;
 
-	stErrorPagedata() : response(-1), uri("") {}
+	stErrorPagedata() : response(-1){ }
 };
 
 #endif

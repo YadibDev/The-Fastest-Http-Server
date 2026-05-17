@@ -22,6 +22,37 @@ void UriParser::init(uint16_t startOffset) {
 	_error = HttpError();
 }
 
+
+bool	UriParser::isAbsoluteURI(const std::string& uri)
+{
+    if (uri.empty())
+        return false;
+
+    size_t colonPos = uri.find(':');
+    
+    if (colonPos == std::string::npos || colonPos == 0)
+        return false;
+
+    if (!std::isalpha(uri[0]))
+        return false;
+
+    for (size_t i = 1; i < colonPos; ++i) {
+        char c = uri[i];
+        if (!std::isalnum(c) && c != '+' && c != '-' && c != '.')
+            return false;
+    }
+
+    if (uri.find('#') != std::string::npos)
+        return false;
+
+    if (colonPos + 1 == uri.length())
+        return false;
+
+    return true;
+}
+
+
+
 bool UriParser::isUnreserved(char c) {
 	unsigned char uc = static_cast<unsigned char>(c);
 	return std::isalnum(uc) || c == '-' || c == '.' || c == '_' || c == '~';
@@ -34,7 +65,7 @@ bool UriParser::isSubDelim(char c) {
 }
 
 bool UriParser::isPchar(char c) {
-	return isUnreserved(c) || isSubDelim(c) || c == ':' || c == '@';
+	return isUnreserved(c) || isSubDelim(c) || c == ':' || c == '@' || c == '/';
 }
 
 bool UriParser::isHex(char c) {
@@ -47,7 +78,8 @@ bool UriParser::isPathChar(char c)     { return isPchar(c) || c == '/'; }
 bool UriParser::isQueryChar(char c) { return isPchar(c) || c == '/' || c == '?' || c == '=' || c == '&'; }
 bool UriParser::isFragmentChar(char c) { return isPchar(c) || c == '/' || c == '?'; }
 
-bool UriParser::validateIPv4(const char* data, size_t len) {
+bool UriParser::validateIPv4(const char* data, size_t len)
+{
 	int octets = 0, val = 0, digits = 0;
 	for (size_t i = 0; i < len; ++i) {
 		char c = data[i];
@@ -77,22 +109,21 @@ bool UriParser::validateIPv4(const char* data, size_t len) {
 	return true;
 }
 
-bool UriParser::validateRegName(const char* data, size_t len) {
-	if (len == 0) { _error.setStatus(400, "Empty host name"); return false; }
+bool UriParser::validateRegName(const char* data, size_t len)
+{
+	if (len == 0)
+		return (_error.setStatus(400, "Empty host name"), false);
 	for (size_t i = 0; i < len; ++i) {
 		unsigned char c = data[i];
 		if (c == '%') {
-			if (i + 2 >= len || !isHex(data[i+1]) || !isHex(data[i+2])) {
-				_error.setStatus(400, "Invalid percent-encoding in host");
-				return false;
-			}
+			if (i + 2 >= len || !isHex(data[i+1]) || !isHex(data[i+2]))
+				return (_error.setStatus(400, "Invalid percent-encoding in host"), false);
+
 			i += 2;
 			continue;
 		}
-		if (!std::isalnum(c) && c != '-' && c != '.') {
-			_error.setStatus(400, "Invalid character in host name");
-			return false;
-		}
+		if (!std::isalnum(c) && c != '-' && c != '.')
+			return (_error.setStatus(400, "Invalid character in host name"), false);
 	}
 	return true;
 }
@@ -124,14 +155,16 @@ void UriParser::enterPctEncoded(State returnState) {
 	_state = STATE_PCT_ENCODED;
 }
 
-void UriParser::parseScheme(const char* buffer, uint16_t size) {
-	if (_offset < size && buffer[_offset] == '/') {
+void UriParser::parseScheme(const char* buffer, uint16_t size)
+{
+	if (_offset <= size && buffer[_offset] == '/')
+	{
 		_state = STATE_PATH;
 		return;
 	}
 
 	static const char http[] = "http://";
-	while (_shemaIndex < 7 && _offset < size) {
+	while (_shemaIndex < 7 && _offset <= size) {
 		if (buffer[_offset] != http[_shemaIndex]) {
 			_error.setStatus(400, "Invalid scheme");
 			_state = STATE_ERROR;
@@ -164,7 +197,7 @@ void UriParser::parseAuthority(const char* buffer, uint16_t size) {
 
 void UriParser::_parseHost(const char* buffer, uint16_t size) {
 	size_t start = _offset;
-	while (_offset < size) {
+	while (_offset <= size) {
 		char c = buffer[_offset];
 		if (c == ':' || c == '/' || c == '?' || c == '#') break;
 		++_offset;
@@ -183,7 +216,7 @@ void UriParser::_parseHost(const char* buffer, uint16_t size) {
 	_host.Data = const_cast<char*>(&buffer[start]);
 	_host.len  = static_cast<uint16_t>(len);
 
-	if (_offset < size && buffer[_offset] == ':') {
+	if (_offset <= size && buffer[_offset] == ':') {
 		_state = STATE_PORT;
 		++_offset;
 	} else {
@@ -195,7 +228,7 @@ void UriParser::_parseHost(const char* buffer, uint16_t size) {
 void UriParser::_parsePort(const char* buffer, uint16_t size) {
 	unsigned int portNum = 0;
 	bool hasDigit = false;
-	while (_offset < size && _state == STATE_PORT) {
+	while (_offset <= size && _state == STATE_PORT) {
 		char c = buffer[_offset];
 		if (c == '/' || c == '?' || c == '#') break;
 		if (!std::isdigit(static_cast<unsigned char>(c))) {
@@ -225,7 +258,7 @@ void UriParser::_parsePort(const char* buffer, uint16_t size) {
 void UriParser::parsePath(const char* buffer, uint16_t size) {
 	if (!_path.Data) _path.Data = const_cast<char*>(&buffer[_offset]);
 
-	while (_offset < size && _state == STATE_PATH) {
+	while (_offset <= size && _state == STATE_PATH) {
 		char c = buffer[_offset];
 
 		if (c == ' ' || c == '\t') {
@@ -256,13 +289,12 @@ void UriParser::parsePath(const char* buffer, uint16_t size) {
 		}
 		++_offset;
 	}
-	finishPath(buffer);
 }
 
 void UriParser::parseQuery(const char* buffer, uint16_t size) {
 	if (!_query.Data) _query.Data = const_cast<char*>(&buffer[_offset]);
 
-	while (_offset < size && _state == STATE_QUERY) {
+	while (_offset <= size && _state == STATE_QUERY) {
 		char c = buffer[_offset];
 
 		if (c == ' ' || c == '\t') {
@@ -287,13 +319,12 @@ void UriParser::parseQuery(const char* buffer, uint16_t size) {
 		}
 		++_offset;
 	}
-	finishQuery(buffer);
 }
 
 void UriParser::parseFragment(const char* buffer, uint16_t size) {
 	if (!_fragment.Data) _fragment.Data = const_cast<char*>(&buffer[_offset]);
 
-	while (_offset < size && _state == STATE_FRAGMENT) {
+	while (_offset <= size && _state == STATE_FRAGMENT) {
 		char c = buffer[_offset];
 
 		if (c == ' ' || c == '\t') {
@@ -312,11 +343,10 @@ void UriParser::parseFragment(const char* buffer, uint16_t size) {
 		}
 		++_offset;
 	}
-	finishFragment(buffer);
 }
 
 void UriParser::parsePctEncoded(const char* buffer, uint16_t size) {
-	while (_offset < size && _pctDigitsRead < 2) {
+	while (_offset <= size && _pctDigitsRead < 2) {
 		if (!isHex(buffer[_offset])) {
 			_error.setStatus(400, "Invalid hex digit");
 			_state = STATE_ERROR;
@@ -331,12 +361,14 @@ void UriParser::parsePctEncoded(const char* buffer, uint16_t size) {
 	}
 }
 
-void UriParser::parse(const char* buffer, uint16_t size) {
-	while (_offset < size && !_complete && _state != STATE_ERROR) {
-		uint16_t oldOffset = _offset;
-		State   oldState  = _state;
+void UriParser::parse(const char* buffer, uint16_t size)
+{
 
-		switch (_state) {
+	while (_offset <= size && !_complete && _state != STATE_ERROR)
+	{
+
+		switch (_state)
+		{
 			case STATE_SCHEMA:    parseScheme(buffer, size);   break;
 			case STATE_AUTHORITY: parseAuthority(buffer, size); break;
 			case STATE_HOST:      _parseHost(buffer, size);    break;
@@ -348,11 +380,12 @@ void UriParser::parse(const char* buffer, uint16_t size) {
 			default: break;
 		}
 
-		if (_offset == oldOffset && _state == oldState && !_complete) break;
 	}
 
-	if (_offset == size && !_complete && _state != STATE_ERROR) {
-		if (_state == STATE_HOST || _state == STATE_PORT) {
+	if (_offset == size && !_complete && _state != STATE_ERROR)
+	{
+		if (_state == STATE_HOST || _state == STATE_PORT)
+		{
 			finishAuthority(buffer);
 			_state = STATE_PATH;
 		}
@@ -370,7 +403,8 @@ unsigned short			UriParser::getPort()		const { return _port; }
 const s_view&			UriParser::getAuthority()	const { return _authority; }
 const s_view&			UriParser::getHost()		const { return _host; }
 const s_view&			UriParser::getPath()		const { return _path; }
+s_view&					UriParser::getPath()			{ return _path; }
 const s_view&			UriParser::getQuery()		const { return _query; }
 const s_view&			UriParser::getFragment()	const { return _fragment; }
 const HttpError&		UriParser::getError()		const { return _error; }
-bool				UriParser::AuthorityExist() const { return _AuthorityExist; }
+	bool				UriParser::AuthorityExist()			{ return _AuthorityExist; }

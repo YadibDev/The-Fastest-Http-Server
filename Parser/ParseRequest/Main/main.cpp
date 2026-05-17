@@ -173,8 +173,9 @@ void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* ra
 	req.request_metadata = client.request_metadata;
 	req.known_headers    = client.known_headers;
 	req.unknown_headers  = client.unknown_headers;
-	req.sizeUnknownHeaders = sizeof(client.unknown_headers) / sizeof(client.unknown_headers[0]);
 	req.io_chunk         = client.io_chunk;
+	req.read_body_ptr         = &client.read_body;
+
 }
 
 int main()
@@ -184,9 +185,26 @@ int main()
 	stPollRequest req;
 
 	const char* http_request = 
-		"POST /test HTTP/1.1\r\n"
-		"Host: localhost\r\n"
-		"\r\n\0";
+    	"GET /test.py/masin.cpp HTTP/1.1\r\n"
+    	"Host: 127.0.0.1:8082\r\n"
+		"Content-Length: 10\r\n"
+    	"Connection: keep-alive\r\n"
+    	"Cache-Control: max-age=0\r\n"
+    	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
+    	"sec-ch-ua-mobile: ?0\r\n"
+    	"sec-ch-ua-platform: \"macOS\"\r\n"
+    	"Upgrade-Insecure-Requests: 1\r\n"
+    	"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
+    	"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\n"
+    	"Sec-GPC: 1\r\n"
+    	"Accept-Language: en-US,en\r\n"
+    	"Sec-Fetch-Site: none\r\n"
+    	"Sec-Fetch-Mode: navigate\r\n"
+    	"Sec-Fetch-User: ?1\r\n"
+    	"Sec-Fetch-Dest: document\r\n"
+    	"Accept-Encoding: gzip, deflate, br\r\n"
+    	"\r\n"
+		"abs\0";
 
 	setPollRequestData(req, client, http_request);
 
@@ -195,7 +213,6 @@ int main()
 	configeData.resize(1025);
 
 	read(fd, &configeData[0], 1024);
-
 
 
 	// fd, configeData, 1024
@@ -224,15 +241,29 @@ int main()
 		std::cout << "Block Server ZERO\n" << std::endl;
 		return 1;
 	}
+	HttpError error;
 
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
 	RequestHandler	RequestHandler(req);
+	RequestParser Parser(req, &RequestHandler);
+	Parser.init(&ServerConfig);
 
-	RequestParser Parser(req, &ServerConfig, &RequestHandler);
 
+	int size = strlen(http_request);
+	Parser.Parse(1);
+	Parser.Parse(size - 2);
+	if (Parser.isComplete())
+		std::cout << "\nIsComplete\n\n";
 
-	Parser.Parse(strlen(http_request));
-	
+	if (Parser.isError())
+	{
+
+		if (!ProcessRequestHandler::generateErrorPath(Parser.getError().getCodeStatus(), &ServerConfig, &RequestHandler, error))
+		{
+			RequestHandler.setDefaultErrorPage(true);
+			std::cout << "Default Error Page\n";
+		}
+	}
 	RequestLine requestLine = Parser.getRequestLine();
 
 	std::string Method = (requestLine.getMethod() == 0) ? "GET" : "POST";
@@ -240,7 +271,22 @@ int main()
 	std::cout << "Method : " << Method << std::endl;
 	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
 	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
-	std::cout << "Return value : " << RequestHandler.getReturn().value << std::endl;
+	std::cout << "Return value : " << RequestHandler.getReturn().value.raw_path << std::endl;
+	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
+	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
+	std::cout << "Path Translated : " << &RequestHandler.getPathTranslated()[0] << std::endl;
+	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
+	std::cout << "Path Cgi : " << cgi << std::endl;
+	std::cout << "code Error : " << RequestHandler.getStatusError() << std::endl;
+	std::cout << "Default Error Page : " 
+          << (RequestHandler.getDefaultErrorPage() ? "(YES)" : "(NULL)") 
+          << std::endl;
+
+	HeaderTable headerTable = RequestHandler.getHeader();
+	const s_header_slot *Host = headerTable.getKnownHeader(HttpTables::H_HOST);
+	const s_header_slot *Content_length = headerTable.getKnownHeader(HttpTables::H_CONTENT_LENGTH);
+	std::cout << "Host : " ; print_view(Host->val); std::cout << std::endl;
+	std::cout << "Content_length : " ; print_view(Content_length->val); std::cout << std::endl;
 
 	return 0;
 }

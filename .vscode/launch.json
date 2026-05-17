@@ -4,34 +4,9 @@
       "type": "lldb",
       "request": "launch",
       "name": "Launch",
-      "program": "${workspaceFolder}/webserv",
+      "program": "/goinfre/yadib/The-Fastest-Http-Server/webserv",
       "args": [],
-      "cwd": "${workspaceFolder}",
-
-      "stopOnEntry": false,
-
-      "initCommands": [
-        "settings set target.process.stop-on-exec false",
-        "process handle SIGSEGV --stop true --pass false --notify true",
-        "process handle SIGABRT --stop true --pass false --notify true",
-        "process handle SIGBUS  --stop true --pass false --notify true",
-        "process handle SIGILL  --stop true --pass false --notify true",
-        "process handle SIGFPE  --stop true --pass false --notify true"
-      ],
-
-      "preRunCommands": [
-        "breakpoint set --name __cxa_throw",
-        "breakpoint set --name abort",
-        "breakpoint set --name __assert_fail"
-      ],
-
-      // Runs every time the process stops (crash, breakpoint, etc.)
-      "stopCommands": [
-        "frame recognizer add --shlib libc.so.6 --name abort",
-        "thread until-no-plan",
-        // Select first frame that has source code
-        "script lldb.thread.SetSelectedFrame([f for f in lldb.thread.frames if f.GetLineEntry().GetFileSpec().GetFilename() != ''][0].GetFrameID())"
-      ]
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

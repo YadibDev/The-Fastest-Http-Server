@@ -21,12 +21,13 @@ private:
 	eKeyBlock searchBlock(const std::string& WORD);
 	void addServer(const clsServerConfig& serve);
 	bool BlockServer(s_parse_context	&ctx);
+	void    initBlockServer();
 
 public:
 	clsParseConfigueFile(clsParse<TokenType> &Parse);
 
 	bool ParseConfigue();
-	std::vector<clsServerConfig> getServers() const;
+	std::vector<clsServerConfig> &getServers();
 	HttpError					getError();
 };
 

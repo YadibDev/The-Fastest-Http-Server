@@ -2,13 +2,20 @@
 #define ___CLIENT_HPP___
 
 #include <iostream>
+#include <fstream>
+#include <algorithm>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <sys/epoll.h>
 #include "../Utils/HelperFunctions.hpp"
 #include "../PartRespond/mainprocess/Webserv.hpp"
 #include "../Parser/RequestHandler/RequestHandler.hpp"
 #include "../Parser/RequestHandler/ProcessRequestHandler.hpp"
 #include "../Parser/ParseRequest/Request/RequestParser.hpp"
+#include "monitorCgi.hpp"
+
+#define CLIENT_TIMEOUT 60
+#define MAX_INTERNAL_LOOP 10
 
 using namespace std;
 
@@ -17,8 +24,12 @@ enum clinetState
     BEGIN,
     REQUEST_MODE,
     START_RESPOND,
+    CGI_START,
+    CGI_RUNING,
+    CGI_END,
     RESPOND_MODE,
     LAST_CHUNKED,
+    AUTO_INDEX_DONE,
     CONNECTION_CLOSED
 };
 
@@ -28,41 +39,45 @@ struct bodyPlaceEnum
     {
         NONE,
         RAM,
-        DISK
+        DISK,
+        AUTO_INDEX
     };
 };
 
 class clsClient
 {
 private:
-    // request object it will be here
-    clsServerConfig &block;
-    const int _socket;
-    const size_t _FirstConnection; // first established connection in ms mile seconds
-    const sockaddr_in _addr;       // ip and port of the client
-
+    char ClientIp[INET_ADDRSTRLEN];
+    std::string _serverPort;
+    int _socket;
+    int _fdRespond;
+    short bytesToSend;
+    ssize_t bodyLimit;
+    long _LastConnection; // update connection in ms
+    long _FirstConnection; // first established connection in ms mile seconds
     stPollRequest _dataForReq;
     PollOfClient _theData;
-    bool _resetReq;
-
-    string respondBuffer;
-
-    RequestHandler RequestXconfig;
+    sockaddr_in _addr;       // ip and port of the client
+    clsServerConfig *block;
+    RequestHandler _RequestXconfig;
     RequestParser _Requester;
     clsMainProcess _ResponderProecss;
-
     clinetState _state;
-    int _fdRespond;
     bodyPlaceEnum::place _BodyPlace;
-
-    size_t _LastConnection; // update connection in ms
-
-    void _SendRespond(const clsResponse &_Responder);
+    clsMonitorCGI _monitorCGI;
+    short   _internalCounter;
+    bool _peerClosed;
+    void _SendRespond(clsResponse &_Responder);
     int _ReadDataForReq();
+    short _addSizeChunkToStr();
+    void _initalizeRespondBuffer();
+    void _LoadAutoIndex( clsResponse &_Responder);
+    bool _handleInternal();
 
 public:
-    clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block); // initialize_state_by_begin
-    clsClient(const clsClient &other);
+    clsClient();
+    void initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer);
+    void freeRessources();
 
     ~clsClient();
 
@@ -70,8 +85,10 @@ public:
     const clinetState &GetState() const;
     unsigned short GetPort() const;
     unsigned int GetIp() const;
-    size_t GetTimeConnection() const;
-    size_t GetLastConnection() const;
+    long GetTimeConnection() const;
+    long GetLastConnection() const;
+    int getPipeCgi();
+
 
     // seter
     void SetState(clinetState state);
@@ -80,10 +97,18 @@ public:
     void UpdateTime(); // update last connection
     void ResetAll();   // will reset all things
 
-    // the flow of request and respnd
-    void ProcessRequest(); // will be
+    void ProcessRequest();
     void ProcessRespond();
-    // void ProcessBoth();
+    void ProcessBoth(uint32_t events);
+    bool monitorCgi();
+    void logs();
+    bool timeoutCgi();
+    void forceStopCgi();
+    void initializeCGI();
+    void peerClosed();
+    int getSocket();
+
+
 };
 
 #endif

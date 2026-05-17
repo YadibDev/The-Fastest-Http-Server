@@ -10,166 +10,50 @@
 #include <stdio.h>
 #include "server/clsEpollHandler.hpp"
 #include "server/clsServerSock.hpp"
-#include "linker/clsLinker.hpp"
 #include <vector>
 #include "PartRespond/mainprocess/Webserv.hpp"
 #include "Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.hpp"
 #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
+#include "linker/clsFlow.hpp"
 #include <csignal>
-// include "Parser/RequestHandler/RequestHandler.hpp"
 using namespace std;
 
-// struct block
-// {
-//     // config file source
-//     ServerSock Server;
-//     Linker Manager;
-// };
-
-void function(int signal)
+void HandlerSignal(int sig)
 {
-    (void)signal;
-    exit(1);
+    if (sig == SIGINT)
+    {
+        throw std::runtime_error("Exit\nProgram Exit with [ctr + c]");
+    }
 }
 
-int main()
+int main(int ac, const char *av[])
 {
-    signal(SIGINT, function);
-    int fd = open("configs/default.conf", O_RDONLY);
-    std::string configeData;
-    configeData.resize(1025);
-
-    read(fd, &configeData[0], 1024);
-
-    // fd, configeData, 1024
-
-    LexerConfig<TokenType> lexerConfig(TOKEN_WORD, TOKEN_EOF, TOKEN_NULL);
-
-    lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
-    lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
-    lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
-
-    lexerConfig.addCommentRule("#", "\n");
-    lexerConfig.addWithSpace(" \t\n");
-
-    GenericLexer<TokenType> lexer(configeData, lexerConfig);
-
-    std::vector<Token<TokenType> > Lexer = lexer.tokenize();
-
-    clsParse<TokenType> Data(Lexer, TOKEN_EOF);
-    clsParseConfigueFile ConfigueFile(Data);
-
-    ConfigueFile.ParseConfigue();
-    if (!ConfigueFile.getServers().size())
+    const char *configFile = "configs/default.conf";
+    long maxClients = 500;
+    if (ac > 3)
     {
-        std::cout << ConfigueFile.getError().getMsgError() << std::endl;
-        std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
-        std::cout << "Block Server ZERO\n"
-                  << std::endl;
+        std::cout << "./webserv [config file path] [optional max client default = 500]" << std::endl;
         return 1;
     }
-
-    clsServerConfig Block = ConfigueFile.getServers()[0];
-
-    clsEpollHandler epoll;
-    epoll_event ClientBuffer[100];
-
-    clsServerSock server;
-    clsLinker ClientsLinker;
-
-    server.buildSockets(Block.getListens());
-    epoll.addServerSockets(server);
-
-    string respond = "";
-
-    int n = 0;
-    while ((n = epoll.tryPollNewClients(ClientBuffer, 100, -1)))
+    if (ac >= 2)
+        configFile = av[1];
+    if (ac == 3)
     {
-        for (int i = 0; i < n; i++)
+        if (HelperFunctions::ConvertStrToNum(av[2], maxClients) == false || maxClients <= 0)
         {
-
-            int fd = ClientBuffer[i].data.fd;
-            sockaddr_in addr;
-            memset(&addr, 0, sizeof(addr));
-            int newClient;
-            if ((ClientBuffer[i].events & (EPOLLRDHUP | EPOLLERR | EPOLLHUP)))
-            {
-                if (ClientBuffer[i].events & EPOLLRDHUP)
-                    std::cout << "EPOLLRDHUP" << std::endl;
-                else if (ClientBuffer[i].events & EPOLLERR)
-                    std::cout << "EPOLLERR" << std::endl;
-                else
-                    std::cout << "EPOLLHUP" << std::endl;
-                std::cout << "Fd " << fd << std::endl;
-                try
-                {
-                    if (ClientsLinker.isClient(fd))
-                        ClientsLinker.removeClient(fd);
-                }
-                catch(std::exception &e)
-                {
-                    std::cout << "deb ----------------------\n" << std::endl;
-                    std::cout << e.what() << std::endl;
-                    std::cout << "--------------------------" << std::endl;
-                }
-                std::cout << "Removed removed\n";
-                continue;
-            }
-            else if ((ClientBuffer[i].events & EPOLLIN) == EPOLLIN)
-            {
-                newClient = server.tryAcceptNewClient(fd, &addr);
-                
-
-                if (newClient == -1)
-                {
-                    if (newClient == -1)
-                        std::cerr << "Accept Fail" << std::endl;
-                    continue ;
-                }
-                else if (newClient > 0)
-                {
-                    // flow of accept new client
-                    std::cout << "accepted\n";
-                    std::cout << newClient << std::endl;
-                    ClientsLinker.insertClient(newClient, addr, Block);
-                    epoll.addClient(newClient, EPOLLIN);
-                }
-                else
-                {
-                    newClient = fd;
-
-                    clsClient &client = ClientsLinker.GetClientAt(newClient);
-
-                    client.ProcessRequest();
-                    if (client.GetState() == CONNECTION_CLOSED)
-                    {
-                        std::cout << "Removed\n";
-                        ClientsLinker.removeClient(newClient);
-                        continue ;
-                    }
-                    if (client.GetState() == START_RESPOND)
-                    {
-                        epoll.changeAbility(newClient, EPOLLOUT);
-                    }
-                }
-            }
-            else if ((ClientBuffer[i].events & EPOLLOUT) == EPOLLOUT)
-            {
-                newClient = fd;
-
-                clsClient &client = ClientsLinker.GetClientAt(newClient);
-
-                client.ProcessRespond();
-                if (client.GetState() == BEGIN)
-                    epoll.changeAbility(newClient, EPOLLIN);
-                else if (client.GetState() == CONNECTION_CLOSED)
-                {
-                    std::cout << "Removed\n";
-                    ClientsLinker.removeClient(newClient);
-                    std::cout << newClient << std::endl;
-                    continue;
-                }
-            }
+            std::cout << "fail to convert max client to number or max client <= 0" << std::endl;
+            return 1;
         }
+    }
+
+    try
+    {
+        signal(SIGINT, HandlerSignal);
+        clsFlow flow(configFile, maxClients);
+        flow.EventLoop();
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
     }
 }

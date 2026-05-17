@@ -16,7 +16,7 @@ RequestLine::RequestLine()
 	_version.len = 0;
 }
 
-void    RequestLine::reset(uint16_t startOffset)
+void    RequestLine::init(uint16_t startOffset)
 {
 	_state = STATE_START;
 	_methodType = HttpTables::M_UNKNOWN;
@@ -26,12 +26,12 @@ void    RequestLine::reset(uint16_t startOffset)
 	_versionMinorRead = false;
 	_methodIndex = 0;
 	_versionIndex = 0;
-	
 	_method.Data = NULL;
 	_method.len = 0;
 	_version.Data = NULL;
 	_version.len = 0;
 	
+	_error.setStatus(0, "");
 	_uriParser.init(startOffset);
 }
 
@@ -51,6 +51,8 @@ bool    RequestLine::selectMethod(const char *buffer, uint16_t size)
 	if (_offset > size)
 		return true;
 
+	_state = STATE_METHOD;
+
 	if (buffer[_offset] == 'G')
 		_methodType = HttpTables::M_GET;
 	else if (buffer[_offset] == 'P')
@@ -62,7 +64,6 @@ bool    RequestLine::selectMethod(const char *buffer, uint16_t size)
 
 	_method.Data = (char *)&buffer[_offset];
 	_methodIndex = 0;
-	_state = STATE_METHOD;
 	return true;
 }
 
@@ -97,14 +98,17 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 {
 	if (!_uriReady)
 	{
-		skipSpaceLastIndex(buffer, size, _offset);
-		if (_offset > size)
-			return true;
-		_uriParser.init(_offset);
-		_uriReady = true;
+	    while (_offset < size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
+	        _offset++;
+	
+	    if (_offset >= size) return true;
+
+	    _uriParser.init(_offset);
+	    _uriReady = true;
 	}
 
 	_uriParser.parse(buffer, size);
+	_offset = _uriParser.getOffset();
 
 	if (_uriParser.isError())
 	{
@@ -114,7 +118,6 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 	if (!_uriParser.isComplete())
 		return true;
 
-	_offset = _uriParser.getOffset();
 	_state = STATE_VERSION;
 	return true;
 }
@@ -123,16 +126,19 @@ bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 {
 	const char *expectedPrefix = "HTTP/1.";
 
-	if (!_versionReady)
-	{
-		skipSpaceLastIndex(buffer, size, _offset);
-		if (_offset > size)
-			return true;
-		
-		_version.Data = (char *)&buffer[_offset];
-		_version.len = 0;
-		_versionReady = true;
-	}
+    if (!_versionReady)
+    {
+        while (_offset <= size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
+            _offset++;
+
+        if (_offset > size)
+            return true;
+
+        _version.Data = (char *)&buffer[_offset];
+        _version.len = 0;
+        _versionReady = true;
+    }
+
 
 	while (_versionIndex < 7 && _offset <= size)
 	{
@@ -188,14 +194,11 @@ bool    RequestLine::parseLF(const char *buffer, uint16_t size)
 
 bool    RequestLine::parse(const char *buffer, uint16_t size)
 {
-	if (_state == STATE_COMPLETE || _state == STATE_ERROR)
+	if (_state == STATE_COMPLETE)
 		return true;
 
 	while (_offset <= size)
 	{
-		uint16_t oldOffset = _offset;
-		State oldState = _state;
-
 		if (_state == STATE_START)
 			selectMethod(buffer, size);
 		else if (_state == STATE_METHOD)
@@ -211,18 +214,19 @@ bool    RequestLine::parse(const char *buffer, uint16_t size)
 		else
 			break;
 
-		if (_state == STATE_COMPLETE || _error.isError())
+		if (_state == STATE_COMPLETE)
 			break;
-		if (_offset == oldOffset && _state == oldState)
-			break;
+		else if (_error.isError())
+			return false;
 	}
 	return true;
 }
 
 bool				RequestLine::isComplete() const { return (_state == STATE_COMPLETE); }
-bool				RequestLine::isError() const { return (_state == STATE_ERROR); }
+bool				RequestLine::isError() const { return _error.isError(); }
 HttpTables::eMethod	RequestLine::getMethod() const { return _methodType; }
 s_view				RequestLine::getVersion() const { return _version; }
 const UriParser		&RequestLine::getRequestURI() const { return _uriParser; }
+UriParser		&RequestLine::getRequestURI() { return _uriParser; } // add by yadib
 uint16_t			RequestLine::getOffset() const { return _offset; }
 HttpError			RequestLine::getError() const { return _error; }

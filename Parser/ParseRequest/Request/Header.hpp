@@ -4,6 +4,7 @@
 #include "HttpTypes.hpp"
 #include "Utils.hpp"
 #include "../../../Utils/HttpError.hpp"
+#include "../../../Utils/HelperFunctions.hpp"
 
 class Header {
 private:
@@ -32,7 +33,7 @@ private:
 	bool	makeUnknownHeader();
 	bool	makeKnownHeader();
 	bool	selectHeaderSlot();
-	void	storeValue();
+	bool	storeValue();
 	bool	parseKey(uint16_t size);
 	bool	parseValue(uint16_t size);
 	bool	parseCR(uint16_t size);

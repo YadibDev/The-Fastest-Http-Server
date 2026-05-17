@@ -1,0 +1,1 @@
+print("location:/index.hml\r\n\r\n", end="")

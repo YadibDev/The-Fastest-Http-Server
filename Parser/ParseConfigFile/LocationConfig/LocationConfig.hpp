@@ -1,74 +1,73 @@
 #ifndef LOCATIONCONFIG_HPP
 #define LOCATIONCONFIG_HPP
 
-
 #include "../ServerConfig/ConfigDirectiveParser.hpp"
 
 class clsLocation
 {
 private:
-
-	short								_flags;
-	s_parse_context						&ctx;
-	stlocation							_locationData;
-	std::string							_root;
-	std::string							_alias;
-	std::vector<std::string>			_index;
-	bool								_autoindex;
-	short								_allow_methods;
-	unsigned long long					_client_max_body_size;
-	stReturnData						_return;
-	std::string							_upload_store;
-	std::map<std::string, std::string>	_cgi_pass;
-	std::map<short, stErrorPagedata>	_error_pages;
+	short                               _flags;
+	s_parse_context                     &ctx;
+	stlocation                          _locationData;
+	std::string                         _root; 
+	std::string                         _alias;
+	std::vector<s_uri_entry>            _index;
+	bool                                _autoindex;
+	short                               _allow_methods;
+	unsigned long long                  _client_max_body_size;
+	stReturnData                        _return;
+	s_uri_entry                         _upload_store;
+	std::map<std::string, std::string>  _cgi_pass;
+	std::map<short, stErrorPagedata>    _error_pages;
 	const stErrorPagedata*				_defaultErrorPage;
 
-
-	bool	ParseRoot();
-
-	bool	ParseAlias();
-
-	bool	ParseIndex();
-
-	bool	ParseAutoIndex();
-
-	bool	ParseMethods();
-
-	bool	ParseClientMaxBodySize();
-
-	bool	ParseReturn();
-
-	bool	ParseUploadStore();
-
-	bool	ParseCgiPass();
-
-	bool	ParseErrorPage();
+	bool    ParseRoot();
+	bool    ParseAlias();
+	bool    ParseIndex();
+	bool    ParseAutoIndex();
+	bool    ParseMethods();
+	bool    ParseClientMaxBodySize();
+	bool    ParseReturn();
+	bool    ParseUploadStore();
+	bool    ParseCgiPass();
+	bool    ParseErrorPage();
+	bool    ParseLocationDirective(s_parse_context &ctx);
+	enBlocksDirective   getLocationDirectiveType(const std::string& key);
 	
-	bool	ParseLocationDirective();
-	
-	enBlocksDirective	getLocationDirectiveType(const std::string& key);
-
-public:
-
+	public:
 	clsLocation();
 	clsLocation(s_parse_context& ctxs, const std::string &sRoot
-				, const std::vector<std::string>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
-
-	bool										parseLocation();
-	
+		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
+		clsLocation(const clsLocation &loc);
+		
+		bool                                        parseLocation();
+		
+	void	initUri();
 	const std::string							&getRoot() const;
 	const std::string							&getAlias() const;
-	const std::vector<std::string>				&getIndex() const;
+	const std::vector<s_uri_entry>              &getIndex() const;
 	bool										getAutoIndex() const;
 	short										getAllowMethods() const;
 	unsigned long long							getClientMaxBodySize() const;
 	const stReturnData							&getReturn() const;
-	const std::string							&getUploadStore() const;
+	const s_uri_entry							&getUploadStore() const;
 	const std::map<std::string, std::string>	&getCgiPass() const;
 	const std::map<short, stErrorPagedata>		&getErrorPages() const;
 	const stErrorPagedata						*getDefaultErrorPage() const;
 	const stlocation							&getLocationData() const;
 	HttpError									getError() const;
+
+	void	setRoot(const std::string& root);
+	void	setAlias(const std::string& alias);
+	void	setIndex(const std::vector<s_uri_entry>& index);
+	void	setAutoindex(bool autoindex);
+	void	setAllowMethods(short methods);
+	void	setClientMaxBodySize(unsigned long long size);
+	void	setReturn(const stReturnData& ret);
+	void	setUploadStore(const s_uri_entry& store);
+	void	setCgiPass(const std::map<std::string, std::string>& cgi);
+	void	setErrorPages(const std::map<short, stErrorPagedata>& pages);
+	void	setDefaultErrorPage(const stErrorPagedata* page);
 
 };
 

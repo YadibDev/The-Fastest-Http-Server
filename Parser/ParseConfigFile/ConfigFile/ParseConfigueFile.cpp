@@ -30,6 +30,14 @@ bool    clsParseConfigueFile::BlockServer(s_parse_context	&ctx)
     return true;
 }
 
+void    clsParseConfigueFile::initBlockServer()
+{
+    for (size_t i = 0; i < _servers.size(); i++)
+    {
+        _servers[i].initUri();
+    }
+}
+
 bool clsParseConfigueFile::ParseConfigue()
 {
     s_parse_context	ctx(_Parse, _ERROR);
@@ -47,7 +55,8 @@ bool clsParseConfigueFile::ParseConfigue()
 
         blockType = searchBlock(blockName);
         
-        if (blockType == SERVER_BLOCK) {
+        if (blockType == SERVER_BLOCK)
+        {
             
             if (!BlockServer(ctx))
                 return false;
@@ -56,17 +65,10 @@ bool clsParseConfigueFile::ParseConfigue()
         else
             return (_ERROR.setStatus(400, "Unknown block: " + blockName), false);
     }
+    initBlockServer();
     return true;
 }
 
+std::vector<clsServerConfig> &clsParseConfigueFile::getServers() { return (_servers); }
 
-std::vector<clsServerConfig> clsParseConfigueFile::getServers() const
-{
-    return (_servers);
-}
-
-
-HttpError					clsParseConfigueFile::getError()
-{
-    return _ERROR;
-}
+HttpError					clsParseConfigueFile::getError() { return _ERROR; }

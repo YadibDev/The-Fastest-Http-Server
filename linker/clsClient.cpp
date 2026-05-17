@@ -1,46 +1,45 @@
 #include "clsClient.hpp"
 
-#define CHUNK_LIMIT 2 * 1024 * 1024
-
-clsClient::clsClient(const sockaddr_in &addr, int fd, clsServerConfig &block) : block(block),
-                                                                                _socket(fd),                                             // must be not const
-                                                                                _FirstConnection(HelperFunctions::getCurrentTimeInMs()), // must be not const
-                                                                                _addr(addr),
-                                                                                _dataForReq(),
-                                                                                RequestXconfig(_dataForReq),
-                                                                                _Requester(_dataForReq, &block, &RequestXconfig),
-                                                                                _ResponderProecss(RequestXconfig)
+clsClient::clsClient() : _dataForReq(), _RequestXconfig(_dataForReq), _Requester(_dataForReq, &_RequestXconfig), _ResponderProecss(_RequestXconfig)
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
+    _peerClosed = false;
+    this->_socket = -1;
+    _dataForReq.io_chunk = _theData.io_chunk;
+    _dataForReq.known_headers = _theData.known_headers;
+    _dataForReq.unknown_headers = _theData.unknown_headers;
     _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.sizeUnknownHeaders = 25; // unknown_headers[25];
-    this->_dataForReq.read_body_ptr = &_theData.read_body;
+    _dataForReq.read_body_ptr = &_theData.read_body;
     _fdRespond = 0;
+    _state = BEGIN;
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetBuffer(this->_theData.io_chunk); // give achraf io chunk to use it temprory
+}
+
+void clsClient::initializeClient(const sockaddr_in &addr, int fd, clsServerConfig *block, uint16_t portServer)
+{
+    _peerClosed = false;
+    _theData.Reset();
+    _fdRespond = 0;
+    _FirstConnection = HelperFunctions::getCurrentTimeInS();
+    _socket = fd;
+    _addr = addr,
+    this->block = block;
     _LastConnection = _FirstConnection;
     _state = BEGIN;
-};
+    _Requester.init(block);
+    _RequestXconfig.reset();
+    _serverPort.clear();
 
-clsClient::clsClient(const clsClient &other) : block(other.block),
-                                               _socket(other._socket),
-                                               _FirstConnection(other._FirstConnection),
-                                               _addr(other._addr),
-                                               _dataForReq(),
-                                               RequestXconfig(_dataForReq),
-                                               _Requester(_dataForReq, &block, &RequestXconfig),
-                                               _ResponderProecss(RequestXconfig)
+    inet_ntop(AF_INET, &(addr.sin_addr), ClientIp, sizeof(ClientIp));
+    HelperFunctions::NumToStr(portServer, this->_serverPort);
 
+    clsCGI &cgi = _ResponderProecss.GetclsCGI();
+    cgi.SetPortS_and_IPC(ClientIp, _serverPort.c_str());
+}
+
+int clsClient::getSocket()
 {
-    this->_dataForReq.io_chunk = this->_theData.io_chunk;
-    this->_dataForReq.known_headers = this->_theData.known_headers;
-    this->_dataForReq.unknown_headers = this->_theData.unknown_headers;
-    _dataForReq.request_metadata = _theData.request_metadata;
-    this->_dataForReq.sizeUnknownHeaders = 25;
-    this->_dataForReq.read_body_ptr = &_theData.read_body;
-    _fdRespond = 0;
-    _LastConnection = _FirstConnection;
-    _state = BEGIN;
+    return this->_socket;
 }
 
 const clinetState &clsClient::GetState() const
@@ -58,12 +57,12 @@ unsigned int clsClient::GetIp() const
     return ntohl(_addr.sin_addr.s_addr);
 }
 
-size_t clsClient::GetTimeConnection() const
+long clsClient::GetTimeConnection() const
 {
     return _FirstConnection;
 }
 
-size_t clsClient::GetLastConnection() const
+long clsClient::GetLastConnection() const
 {
     return _LastConnection;
 }
@@ -77,19 +76,29 @@ void clsClient::SetState(clinetState state) // set client serve state is in requ
 // methods
 void clsClient::UpdateTime() // update with the time of last reqquest
 {
-    _LastConnection = HelperFunctions::getCurrentTimeInMs();
+    _LastConnection = HelperFunctions::getCurrentTimeInS();
 }
 
 void clsClient::ResetAll()
 {
+    if (_fdRespond > 0)
+    {
+        close(_fdRespond);
+        _fdRespond = 0;
+    }
+    _monitorCGI.freeCgiRessources();
     this->SetState(BEGIN);
-    // i will add reset of request and respond
+    _theData.Reset();
+    _Requester.init();
+    _ResponderProecss.Reset();
 }
 
 clsClient::~clsClient()
 {
-    // if (_fdRespond > 0)
-    //     close(_fdRespond);
+    if (_fdRespond > 0)
+        close(_fdRespond);
+    if (this->_socket > 0)
+        close(this->_socket);
 }
 
 int clsClient::_ReadDataForReq()
@@ -99,126 +108,152 @@ int clsClient::_ReadDataForReq()
     if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
     {
         uint16_t &idx = _theData.read_offset;
-        size = recv(_socket, &_theData.request_metadata[idx], (16384 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.request_metadata[idx], (SIZE_BUFFER - idx), 0);
         if (size > 0)
             idx += size;
+
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
+            _state = CONNECTION_CLOSED;
     }
     else if (_Requester._state == RequestParser::STATE_BODY)
     {
-        // add edge case if data still in request meta data
         uint16_t &idx = _theData.read_body;
-        size = recv(_socket, &_theData.io_chunk[idx], (8192 - idx), MSG_DONTWAIT);
+        size = recv(_socket, &_theData.io_chunk[idx], (SIZE_BUFFER - idx), 0);
         if (size > 0)
             idx += size;
-    }
 
-    if (size == 0)
-        _state = CONNECTION_CLOSED;
+        if (size == 0 && (SIZE_BUFFER - idx) > 0)
+            _state = CONNECTION_CLOSED;
+    }
 
     return size;
 }
 
 void clsClient::ProcessRequest()
 {
-    // reset request in every new request from client
+
+    HttpError error;
     if (_state == BEGIN)
     {
+        ResetAll();
         _state = REQUEST_MODE;
-        // reset state of request
-        _theData.Reset();
     }
 
-    int size = _ReadDataForReq(); // reading data for request
+    int size = _ReadDataForReq();
 
-    if (_state == CONNECTION_CLOSED || size == -1)
-        return ;
+    if (_state == CONNECTION_CLOSED || size == -1 || size == 0)
+    {
+        return;
+    }
 
-    // if (_Requester._state == READING_BODY)
-    //     _Requester.parse(_theData.read_body);  // then pase it to parse
-    // else
-    //     _Requester.parse(_theData.read_offset - 1);  // then pase it to parse
-    
-    if (_Requester.isComplete()) // add get error here
+    if (_Requester._state == RequestParser::STATE_BODY)
+        _Requester.Parse(_theData.read_body);
+    else
+        _Requester.Parse(_theData.read_offset - 1);
+
+    if (_Requester.isError())
+    {
+        _RequestXconfig.reset();
+        if (!ProcessRequestHandler::generateErrorPath(_Requester.getError().getCodeStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
+        this->_state = START_RESPOND;
+        return;
+    }
+    else if (_Requester.isComplete())
     {
         this->_state = START_RESPOND;
-
-        std::cout << "\n================= REQUEST DEBUG =================\n";
-
-        std::cout << "[STATUS] Request completed successfully\n";
-
-        std::cout << "\n[METADATA]\n";
-        std::cout << this->_theData.request_metadata << "\n";
-
-        std::cout << "\n[BODY STORAGE]\n";
-        if (_Requester._body._bodyLocation == clsBody::DISK)
-            std::cout << "Location : DISK\n";
-        else if (_Requester._body._bodyLocation == clsBody::RAM)
-            std::cout << "Location : RAM\n";
-        else
-            std::cout << "Location : UNKNOWN (" << _Requester._body._bodyLocation << ")\n";
-
-        std::cout << "\n[BODY INFO]\n";
-        if (this->_theData.read_body > 0)
-        {
-            std::cout << "Size : " << this->_theData.read_body << " bytes\n";
-            std::cout << "Content:\n";
-            std::cout << "----------------------------------------\n";
-
-            for (int i = 0; i < _theData.read_body; i++)
-                std::cout << this->_theData.io_chunk[i];
-
-            std::cout << "\n----------------------------------------\n";
-        }
-        else
-        {
-            std::cout << "No body received\n";
-        }
-
-        std::cout << "========================================\n\n";
-        return;
     }
 }
 
-void clsClient::_SendRespond(const clsResponse &_Responder)
+short clsClient::_addSizeChunkToStr()
 {
-    ssize_t s;
+    short byteCanSend = SIZE_BUFFER - bytesToSend - 8 - 2;
+    char *respondBuffer = this->_theData.io_chunk;
+
+    if (byteCanSend <= 0)
+        return 0;
+    if (bodyLimit == 0)
+    {
+        memcpy(&respondBuffer[bytesToSend], "0\r\n\r\n", 5);
+        _state = LAST_CHUNKED;
+        bytesToSend += 5;
+        return 0;
+    }
+    byteCanSend = min<ssize_t>(byteCanSend, bodyLimit);
+
+    std::string lengthHex = HelperFunctions::Convert_Hex("0123456789abcdef", byteCanSend);
+    lengthHex += "\r\n";
+
+    memcpy(&respondBuffer[bytesToSend], lengthHex.c_str(), lengthHex.size());
+    bytesToSend += lengthHex.size();
+    bodyLimit -= byteCanSend;
+    return byteCanSend;
+}
+
+void clsClient::_LoadAutoIndex(clsResponse &_Responder)
+{
+    char *respondBuffer = this->_theData.io_chunk;
+
+    bool isFinished = _Responder.fetchAutoIndex(respondBuffer, bytesToSend, SIZE_BUFFER - bytesToSend);
+    if (isFinished)
+        _state = AUTO_INDEX_DONE;
+}
+
+void clsClient::_SendRespond(clsResponse &_Responder)
+{
+    ssize_t s = 0;
     ssize_t nBytes;
+
+    char *respondBuffer = this->_theData.io_chunk;
 
     if (_BodyPlace == bodyPlaceEnum::DISK)
     {
-        string chunkData;
-
-        // resize single time
-        chunkData.resize(CHUNK_LIMIT);
         if (_fdRespond == 0)
-            _fdRespond = open(_Responder.GetFileName().c_str(), O_RDONLY);
-        s = read(_fdRespond, &chunkData[0], CHUNK_LIMIT);
-        // i woill work here for
-        if (s < CHUNK_LIMIT)
         {
-            _state = LAST_CHUNKED;
-            chunkData.resize(s);
-            // if last respond we will add the end
-            _Responder.ChunkData(respondBuffer, chunkData, true);
+            if (_Responder.GetModTransferData() == false)
+                _fdRespond = open(_Responder.GetFileName().c_str(), (O_RDONLY | O_CLOEXEC)); // error if fd == -1
+            else
+                _fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY | O_CLOEXEC); // error if fd == -1
         }
-        else
+        int sizeToRead = _addSizeChunkToStr();
+        if (sizeToRead)
         {
-            chunkData.resize(s);
-            _Responder.ChunkData(respondBuffer, chunkData, false);
+            s = read(_fdRespond, &respondBuffer[bytesToSend], sizeToRead);
+            bytesToSend += s;
+            memcpy(&respondBuffer[bytesToSend], "\r\n", 2);
+            bytesToSend += 2;
         }
     }
+    else if (_BodyPlace == bodyPlaceEnum::AUTO_INDEX)
+    {
+        _LoadAutoIndex(_Responder);
+    }
 
-    // start sending data
-    nBytes = send(_socket, respondBuffer.c_str(), respondBuffer.size(), MSG_DONTWAIT);
-    if (nBytes != -1)
-        respondBuffer = &respondBuffer[nBytes];
+    nBytes = send(_socket, respondBuffer, bytesToSend, MSG_NOSIGNAL);
 
-    if (respondBuffer.empty() && (_BodyPlace == bodyPlaceEnum::RAM || _state == LAST_CHUNKED))
+    if (nBytes == -1)
+    {
+        if (_peerClosed)
+            _state = CONNECTION_CLOSED;
+        return;
+    }
+
+    if (nBytes)
+    {
+        if (nBytes < bytesToSend)
+            memcpy(&respondBuffer[0], &respondBuffer[nBytes], bytesToSend - nBytes); // move data to begin        bytesToSend - nBytes == total bytes left or not send
+        bytesToSend -= nBytes;
+    }
+
+    if ((bytesToSend == 0 && _BodyPlace == bodyPlaceEnum::RAM) || (_state == LAST_CHUNKED && bodyLimit <= 0 && bytesToSend == 0) || _state == AUTO_INDEX_DONE)
     {
         _state = BEGIN;
-        respondBuffer = "";
-        if (_Responder.GetIsConnection() == false)
+        if (_Responder.GetIsConnection() == false || _peerClosed)
+        {
             _state = CONNECTION_CLOSED;
+        }
         if (_fdRespond > 0)
         {
             close(_fdRespond);
@@ -227,26 +262,250 @@ void clsClient::_SendRespond(const clsResponse &_Responder)
     }
 }
 
+bool clsClient::_handleInternal()
+{
+    HttpError error;
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
+
+    // support internal location in future
+    if (_internalCounter == MAX_INTERNAL_LOOP)
+    {
+        _internalCounter = 0;
+        _RequestXconfig.reset();
+        _RequestXconfig.setDefaultErrorPage(true);
+        _RequestXconfig.setStatusError(508);
+        return true;
+    }
+    else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
+    {
+        _RequestXconfig.reset();
+        RequestLine reqLineParser;
+        UriParser &uriParser = reqLineParser.getRequestURI();
+        std::string &redirctStr = *Respond.GetInternalRedirectSrc();    
+
+        uriParser.parse(redirctStr.c_str(), redirctStr.size());
+        int statusReturn = reqLineParser.getError().getCodeStatus();
+
+        if (statusReturn != 0)
+        {
+            if (!ProcessRequestHandler::generateErrorPath(statusReturn, this->block, &_RequestXconfig, error))
+            {
+                _RequestXconfig.setDefaultErrorPage(true);
+            }
+        }
+        else
+            ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
+
+        return true;
+    }
+    else if (Respond.IsError())
+    {
+        _RequestXconfig.reset();
+        if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
+        {
+            _RequestXconfig.setDefaultErrorPage(true);
+        }
+        return true;
+    }
+    return false;
+}
+
+void clsClient::_initalizeRespondBuffer()
+{
+    clsResponse &Respond = _ResponderProecss.GetclsResponse();
+    const char *Header;
+    const char *Body;
+    bool fileExist = false;
+    char *respondBuffer = this->_theData.io_chunk;
+
+    if (_handleInternal())
+    {
+        _internalCounter++;
+        _ResponderProecss.Reset();
+        _state = START_RESPOND;
+        return;
+    }
+
+    _state = RESPOND_MODE;
+
+    if (Respond.GetModTransferData())
+    {
+        bytesToSend += Respond.GetHeaderFeildPointer()->size();
+        Header = Respond.GetHeaderFeildPointer()->c_str();
+        Body = Respond.GetBodyPointer()->c_str();
+        fileExist = Respond.GetFileFromDiskPointer()->size() > 0; // check is greater than 0
+    }
+    else if (Respond.IsAutoIndex())
+    {
+        bytesToSend += Respond.GetHeaderFeild().size();
+        Header = Respond.GetHeaderFeild().c_str();
+    }
+    else
+    {
+        bytesToSend += Respond.GetHeaderFeild().size();
+        Header = Respond.GetHeaderFeild().c_str();
+        Body = Respond.GetBody().c_str();
+        fileExist = Respond.GetFileName().size() > 0; // check is greater than 0
+    }
+
+    memcpy(&respondBuffer[0], Header, bytesToSend);
+
+    if (Respond.IsAutoIndex())
+    {
+        _BodyPlace = bodyPlaceEnum::AUTO_INDEX;
+    }
+    else if (fileExist == false)
+    {
+        _BodyPlace = bodyPlaceEnum::RAM;
+        memcpy(&respondBuffer[bytesToSend], Body, Respond.GetSizeBody());
+        bytesToSend += Respond.GetSizeBody();
+    }
+    else
+    {
+        bodyLimit = Respond.GetSizeBody();
+        _BodyPlace = bodyPlaceEnum::DISK;
+    }
+}
+
+int clsClient::getPipeCgi()
+{
+    return _monitorCGI.getPipe();
+}
+
 void clsClient::ProcessRespond()
 {
     clsResponse &Respond = _ResponderProecss.GetclsResponse();
+
     if (_state == START_RESPOND)
     {
+        bytesToSend = 0;
         _state = RESPOND_MODE;
-
-        // linke request with config
 
         this->_ResponderProecss.MainProcess(); // create respond
 
-        respondBuffer += Respond.GetHeaderFeild();
-
-        if (Respond.GetFileName().empty())
+        if (this->_ResponderProecss.isRunCgi())
         {
-            respondBuffer += Respond.GetBody();
-            _BodyPlace = bodyPlaceEnum::RAM;
+            _state = CGI_START;
+            return;
         }
-        else
-            _BodyPlace = bodyPlaceEnum::DISK;
+        _initalizeRespondBuffer();
     }
-    _SendRespond(Respond);
+    else if (_state == CGI_END)
+    {
+        _initalizeRespondBuffer();
+    }
+
+    if (_state == RESPOND_MODE)
+    {
+        _SendRespond(Respond);
+    }
+}
+
+void clsClient::ProcessBoth(uint32_t events)
+{
+    if ((events & EPOLLIN) == EPOLLIN)
+    {
+        _internalCounter = 0;
+        ProcessRequest();
+    }
+    else if ((events & EPOLLOUT) == EPOLLOUT)
+    {
+        ProcessRespond();
+        if (_state == START_RESPOND)
+            ProcessRespond();
+    }
+}
+
+void clsClient::freeRessources()
+{
+    ResetAll();
+    if (this->_socket > 0)
+    {
+        close(this->_socket);
+    }
+    _socket = -1;
+}
+
+void clsClient::logs()
+{
+    static std::ofstream logFile("./logs/logfile.txt");
+
+    if (logFile.is_open())
+    {
+        string arr[3] = {"GET", "POST", "DELETE"};
+        logFile << "\n================= log start client =================" << endl;
+
+        _theData.request_metadata[_theData.read_offset] = '\0';
+        logFile << this->_theData.request_metadata << std::endl;
+
+        const RequestLine &reqLine = _Requester.getRequestLine();
+        logFile << arr[(int)reqLine.getMethod()] << " ";
+        for (int i = 0; i < reqLine.getRequestURI().getPath().len; i++)
+            logFile << reqLine.getRequestURI().getPath().Data[i];
+        logFile << " ";
+        for (int i = 0; i < reqLine.getVersion().len; i++)
+            logFile << reqLine.getVersion().Data[i];
+
+        logFile << "\nPhysical path: " << _RequestXconfig.getPhysicalPath() << endl;
+        logFile << "Status code from request : " << _Requester.getError().getCodeStatus() << endl;
+        logFile << "\n================= log end =================\n"
+                << endl;
+    }
+}
+
+void clsClient::initializeCGI()
+{
+    clsCGI &cgi = this->_ResponderProecss.GetclsCGI();
+    _state = CGI_RUNING;
+    _monitorCGI.initialzie(cgi.GetPid(), cgi.GetFdPipe(), cgi.getStartTime());
+}
+
+bool clsClient::monitorCgi()
+{
+
+    short length = _monitorCGI.getDataFromCgi(_theData.io_chunk, sizeof(_theData.io_chunk));
+    stEventProcess::eEventProcess processState = _monitorCGI.getStateProcess();
+    stEventData::eEventData dataState = _monitorCGI.getStateData();
+
+    if (processState >= (short)stEventProcess::THE_END && dataState == stEventData::END_PIPE)
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(processState);
+    }
+
+    _ResponderProecss.ParseCGI(_theData.io_chunk, length);
+
+    if (_ResponderProecss.getEventProcess() == stEventProcess::END_WITH_PARSE)
+    {
+        _state = CGI_END;
+        _monitorCGI.freeCgiRessources();
+        return true;
+    }
+    else if ((short)processState >= (short)stEventProcess::THE_END && dataState == stEventData::END_PIPE)
+        return true;
+    return false;
+}
+
+bool clsClient::timeoutCgi()
+{
+    if (_monitorCGI.getStateData() == stEventData::END_PIPE && _monitorCGI.getStateProcess() != stEventProcess::RUNINNG)
+        return true;
+    if (_monitorCGI.TimeoutCgi())
+    {
+        _state = CGI_END;
+        _ResponderProecss.setEventProcess(stEventProcess::END_WITH_TIMOUT);
+        _ResponderProecss.ParseCGI(NULL, 0);
+        return true;
+    }
+    return false;
+}
+
+void clsClient::forceStopCgi()
+{
+    _monitorCGI.freeCgiRessources();
+}
+
+void clsClient::peerClosed()
+{
+    this->_peerClosed = true;
 }

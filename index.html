@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Webserv Method Tester</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background: #121212; color: #e0e0e0; padding: 30px; line-height: 1.6; }
+        .container { max-width: 800px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; border: 1px solid #333; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button { flex: 1; padding: 12px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px; transition: 0.3s; }
+        .post-btn { background: #28a745; color: white; }
+        .delete-btn { background: #dc3545; color: white; }
+        button:hover { opacity: 0.8; }
+        .output-box { margin-top: 25px; padding: 15px; background: #000; border-left: 4px solid #0e639c; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 13px; }
+        .status-badge { padding: 4px 8px; border-radius: 3px; font-size: 14px; }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>HTTP Method Tester (POST / DELETE)</h2>
+    
+    <label>Resource URL (Target):</label>
+    <input type="text" id="targetUrl" value="http://localhost:8082/test_resource.txt">
+    
+    <label>Payload (for POST):</label>
+    <textarea id="payload" placeholder="Enter raw data to send..."></textarea>
+
+    <div class="btn-group">
+        <button class="post-btn" onclick="executeRequest('POST')">SEND POST</button>
+        <button class="delete-btn" onclick="executeRequest('DELETE')">SEND DELETE</button>
+    </div>
+
+    <div class="output-box">
+        <strong>Status: </strong> <span id="statusLine">-</span> <br><br>
+        <strong>Headers:</strong>
+        <pre id="headerOutput">-</pre>
+        <strong>Body:</strong>
+        <pre id="bodyOutput">-</pre>
+    </div>
+</div>
+
+<script>
+    async function executeRequest(method) {
+        const url = document.getElementById('targetUrl').value;
+        const payload = document.getElementById('payload').value;
+        const statusLine = document.getElementById('statusLine');
+        const headerOutput = document.getElementById('headerOutput');
+        const bodyOutput = document.getElementById('bodyOutput');
+
+        // Reset display
+        statusLine.innerText = "Processing...";
+        headerOutput.innerText = "-";
+        bodyOutput.innerText = "-";
+
+        try {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'text/plain'
+                }
+            };
+
+            // إضافة الـ Body فقط في حالة الـ POST
+            if (method === 'POST') {
+                options.body = payload;
+            }
+
+            const response = await fetch(url, options);
+
+            // عرض الحالة
+            statusLine.innerHTML = `<span class="status-badge" style="background: ${response.ok ? '#28a745' : '#dc3545'}">
+                ${response.status} ${response.statusText}</span>`;
+
+            // عرض الترويسات (Headers)
+            let headers = "";
+            response.headers.forEach((v, k) => { headers += `${k}: ${v}\n`; });
+            headerOutput.innerText = headers || "No Headers";
+
+            // عرض جسم الرد
+            const text = await response.text();
+            bodyOutput.innerText = text || "[Empty Response Body]";
+
+        } catch (err) {
+            statusLine.innerText = "Network Error (Check CORS or Server Status)";
+            bodyOutput.innerText = err.message;
+        }
+    }
+</script>
+
+</body>
+
+</html>

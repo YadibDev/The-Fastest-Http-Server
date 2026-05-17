@@ -28,6 +28,7 @@ void    Header::init(uint16_t offset)
 	_currentUnknownIndex = INVALID_INDEX;
 	_indexUnknownHeaders = 0;
 	_state = HttpTables::STATE_KEY;
+	_error.setStatus(0, "");
 }
 
 void	Header::hashStep(char c)
@@ -46,10 +47,7 @@ HttpTables::eKnownHeader Header::fromHash(uint32_t h)
 		case 0x41141d0c: return HttpTables::H_TRANSFER_ENCODING;
 		case 0xc947e5d0: return HttpTables::H_CONTENT_TYPE;
 		case 0x8fd8a976: return HttpTables::H_CONNECTION;
-		case 0x8210d858: return HttpTables::H_EXPECT;
-		case 0x60f97fde: return HttpTables::H_AUTHORIZATION;
 		case 0x4def559a: return HttpTables::H_COOKIE;
-		case 0xa13e549b: return HttpTables::H_ACCEPT_ENCODING;
 		default: return HttpTables::H_UNKNOWN;
 	}
 }
@@ -121,9 +119,6 @@ bool	Header::CheckHostAbsUri(s_view &VHost)
 
 bool    Header::makeUnknownHeader()
 {
-	if (_indexUnknownHeaders >= _request.sizeUnknownHeaders)
-		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
-
 	_currentUnknownIndex = _indexUnknownHeaders;
 	_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
 	
@@ -138,16 +133,13 @@ bool    Header::makeKnownHeader()
 {
 	if (_request.known_headers[_currentHeader].key.Data == NULL)
 	{
-		if (_currentHeader == HttpTables::H_HOST || _currentHeader == HttpTables::H_CONTENT_LENGTH)
-			if (_request.known_headers[HttpTables::H_HOST].Hash != -1 || _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
+		if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1)
+			|| (_currentHeader == HttpTables::H_CONTENT_LENGTH && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1))
 				return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
 
 		_request.known_headers[_currentHeader].Hash = _hash;
 		_request.known_headers[_currentHeader].key.Data = (char *)&_request.request_metadata[_keyStart];
 		_request.known_headers[_currentHeader].key.len = (_offset - 1) - _keyStart;
-		if (_request.known_headers[HttpTables::H_HOST].Hash != -1) // is exist
-			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
-				return false;
 	}
 	else
 	{
@@ -186,13 +178,21 @@ bool    Header::selectHeaderSlot()
 	return true;
 }
 
-void    Header::storeValue()
+bool    Header::storeValue()
 {
-	uint16_t valueLen = _offset - _valueStart;
+	uint16_t tmpOffset = _offset;
+
+	while (HelperFunctions::isspaceTabOrSp(_request.request_metadata[tmpOffset - 1]))
+		--tmpOffset;
+
+	uint16_t valueLen = tmpOffset - _valueStart;
 	if (_currentHeader != HttpTables::H_UNKNOWN && _currentUnknownIndex == INVALID_INDEX)
 	{
 		_request.known_headers[_currentHeader].val.Data = (char *)&_request.request_metadata[_valueStart];
 		_request.known_headers[_currentHeader].val.len = valueLen;
+		if (_currentHeader == HttpTables::H_HOST)
+			if (!CheckHostAbsUri(_request.known_headers[HttpTables::H_HOST].val))
+				return false;
 	}
 	else
 	{
@@ -200,10 +200,13 @@ void    Header::storeValue()
 		_request.unknown_headers[_currentUnknownIndex].val.len = valueLen;
 		_indexUnknownHeaders++;
 	}
+	return true;
 }
 
 bool    Header::parseKey(uint16_t size)
 {
+	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
+		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
 	while (canRead(size) && _state == HttpTables::STATE_KEY)
 	{
 		char c = _request.request_metadata[_offset];
@@ -239,7 +242,7 @@ bool    Header::parseValue(uint16_t size)
 		if (c == '\r')
 		{
 			_state = HttpTables::STATE_CR;
-			return (storeValue(), true);
+			return storeValue();
 		}
 		if (!isHeaderValueChar(c))
 			return (_error.setStatus(400, "Bad Request"), false);
@@ -253,6 +256,7 @@ bool    Header::parseCR(uint16_t size)
 	if (!canRead(size)) return true;
 	if (_request.request_metadata[_offset] != '\r')
 		return (_error.setStatus(400, "Bad Request"), false);
+	_request.request_metadata[_offset] = '\0';
 	_offset++;
 	_state = HttpTables::STATE_LF;
 	return true;
@@ -290,25 +294,23 @@ void    Header::Parse(uint16_t size)
 {
 	while (canRead(size))
 	{
-		uint16_t oldOffset = _offset;
-		uint8_t oldState = _state;
 		if (_state == HttpTables::STATE_KEY) parseKey(size);
 		else if (_state == HttpTables::STATE_VALUE) parseValue(size);
-		else if (_state == HttpTables::STATE_CR) parseCR(size);
+		else if (_state == HttpTables::STATE_CR) parseCR(size); // \r
 		else if (_state == HttpTables::STATE_LF)
 		{
-			parseLF(size);
+			parseLF(size); // \n
 			if (_state == HttpTables::STATE_DECISION && _emptyLinePending)
 				_state = HttpTables::STATE_COMPLETE;
 		}
 		else if (_state == HttpTables::STATE_DECISION) parseDecision(size);
 		else break;
-		if (_error.isError() || _state == HttpTables::STATE_COMPLETE) break;
-		if (_offset == oldOffset && _state == oldState) break;
+		if (_error.isError() || _state == HttpTables::STATE_COMPLETE)
+			break;
 	}
 }
 
 uint16_t    Header::getOffset() const { return _offset; }
-bool        Header::isError() const { return (_state == HttpTables::STATE_ERROR); }
+bool        Header::isError() const { return _error.isError(); }
 bool        Header::isComplete() const { return (_state == HttpTables::STATE_COMPLETE); }
 HttpError	Header::getError() const { return _error; }

@@ -4,6 +4,7 @@
 #include "../Request/HttpTypes.hpp"
 #include "../Request/Utils.hpp"
 #include "../../../Utils/HttpError.hpp"
+#include "../../../Utils/HelperFunctions.hpp"
 #include <cctype>
 
 class UriParser {
@@ -25,6 +26,12 @@ public:
 	void init(uint16_t startOffset);
 	void parse(const char* buffer, uint16_t size);
 
+	// add static to this function by adib
+	static bool		isUnreserved(char c);
+	static bool		isSubDelim(char c);
+	static bool		isPchar(char c);
+
+	static bool			isAbsoluteURI(const std::string& uri);
 	bool                isComplete() const;
 	bool                isError() const;
 	uint16_t            getOffset() const;
@@ -32,10 +39,11 @@ public:
 	const s_view&       getAuthority() const;
 	const s_view&       getHost() const;
 	const s_view&       getPath() const;
+	s_view&       getPath();
 	const s_view&       getQuery() const;
 	const s_view&       getFragment() const;
 	const HttpError&    getError() const;
-	bool			AuthorityExist() const;
+	bool				AuthorityExist();
 
 private:
 	State			_state;
@@ -55,31 +63,28 @@ private:
 
 	HttpError		_error;
 
-	bool isUnreserved(char c);
-	bool isSubDelim(char c);
-	bool isPchar(char c);
-	bool isHex(char c);
-	bool isPathChar(char c);
-	bool isQueryChar(char c);
-	bool isFragmentChar(char c);
+	bool		isHex(char c);
+	bool		isPathChar(char c);
+	bool		isQueryChar(char c);
+	bool		isFragmentChar(char c);
 
-	bool validateIPv4(const char* data, size_t len);
-	bool validateRegName(const char* data, size_t len);
+	bool		validateIPv4(const char* data, size_t len);
+	bool		validateRegName(const char* data, size_t len);
 
-	void finishAuthority(const char* buffer);
-	void finishPath(const char* buffer);
-	void finishQuery(const char* buffer);
-	void finishFragment(const char* buffer);
-	void enterPctEncoded(State returnState);
+	void		finishAuthority(const char* buffer);
+	void		finishPath(const char* buffer);
+	void		finishQuery(const char* buffer);
+	void		finishFragment(const char* buffer);
+	void		enterPctEncoded(State returnState);
 
-	void parseScheme(const char* buffer, uint16_t size);
-	void parseAuthority(const char* buffer, uint16_t size);
-	void _parseHost(const char* buffer, uint16_t size);
-	void _parsePort(const char* buffer, uint16_t size);
-	void parsePath(const char* buffer, uint16_t size);
-	void parseQuery(const char* buffer, uint16_t size);
-	void parseFragment(const char* buffer, uint16_t size);
-	void parsePctEncoded(const char* buffer, uint16_t size);
+	void		parseScheme(const char* buffer, uint16_t size);
+	void		parseAuthority(const char* buffer, uint16_t size);
+	void		_parseHost(const char* buffer, uint16_t size);
+	void		_parsePort(const char* buffer, uint16_t size);
+	void		parsePath(const char* buffer, uint16_t size);
+	void		parseQuery(const char* buffer, uint16_t size);
+	void		parseFragment(const char* buffer, uint16_t size);
+	void		parsePctEncoded(const char* buffer, uint16_t size);
 };
 
 #endif

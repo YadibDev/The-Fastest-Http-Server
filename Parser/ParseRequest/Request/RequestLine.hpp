@@ -20,23 +20,24 @@ private:
 	UriParser			_uriParser;
 	HttpError			_error;
 
-	const char	*methodName() const;
-	bool		selectMethod(const char *buffer, uint16_t size);
-	bool		parseMethod(const char *buffer, uint16_t size);
-	bool		parseUri(const char *buffer, uint16_t size);
-	bool		parseVersion(const char *buffer, uint16_t size);
-	bool		parseCR(const char *buffer, uint16_t size);
-	bool		parseLF(const char *buffer, uint16_t size);
+	const char			*methodName() const;
+	bool				selectMethod(const char *buffer, uint16_t size);
+	bool				parseMethod(const char *buffer, uint16_t size);
+	bool				parseUri(const char *buffer, uint16_t size);
+	bool				parseVersion(const char *buffer, uint16_t size);
+	bool				parseCR(const char *buffer, uint16_t size);
+	bool				parseLF(const char *buffer, uint16_t size);
 
 public:
 	RequestLine();
-	void				reset(uint16_t startOffset = 0);
+	void				init(uint16_t startOffset);
 	bool				parse(const char *buffer, uint16_t size);
 	bool				isComplete() const;
 	bool				isError() const;
 	HttpTables::eMethod	getMethod() const;
 	s_view				getVersion() const;
 	const UriParser		&getRequestURI() const;
+	UriParser		&getRequestURI(); // add by yadib
 	uint16_t			getOffset() const;
 	HttpError			getError() const;
 };

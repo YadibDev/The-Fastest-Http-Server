@@ -51,12 +51,12 @@ bool clsEpollHandler::addClient(int fd, long long ability)
 {
     memset(&tempEvent, 0, sizeof(tempEvent));
     tempEvent.data.fd = fd;
-    tempEvent.events = (ability | EPOLLRDHUP);
+    tempEvent.events = (ability);
 
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_ADD, fd, &tempEvent) == -1)
     {
-        std::cout << "epoll fd " << _EpollFd << " Fail to add new client in epoll " << fd << std::endl;
+        // std::cout << "epoll fd " << _EpollFd << " Fail to add new client in epoll " << fd << std::endl;
         perror("error: epoll:");
         return false; // we can add here sterror and errno for debugin in future
     }
@@ -67,10 +67,13 @@ void clsEpollHandler::changeAbility(int fd, int newAbility)
 {
     memset(&tempEvent, 0, sizeof(tempEvent));
     tempEvent.data.fd = fd;
-    tempEvent.events = (newAbility | EPOLLRDHUP);
+    tempEvent.events = (newAbility);
 
     if (epoll_ctl(_EpollFd, EPOLL_CTL_MOD, fd, &tempEvent) == -1)
+    {
+        perror("epoll : ");
         clog << COLOR_BOLD << COLOR_RED << fd << " ==> fail to change mode EPOLL_CTL_MOD" << std::endl;
+    }
 }
 
 int clsEpollHandler::tryPollNewClients(struct epoll_event *ClientBuffer, size_t sizeBuffer, int timeout)

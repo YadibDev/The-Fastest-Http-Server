@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:25 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/15 19:26:43 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/13 10:59:31 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,28 @@
 #include "../mainprocess/librarys.hpp"
 #include "../response/clsErrorPage.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
+#include "clsAutoIndex.hpp"
 
 class clsResponse
 {
     private:
         stMod::eMod _Mod[10];
         short _Status;
-        short _MaxSizeHeader;
-        int _MaxSizeBody;
-        int _BodySize;
-        int _SizeHeaders;
+        size_t _BodySize;
         bool _IsConnection;
         bool _Erno;
-        std::string _Body;
-        std::string _Type;
-        clsErrorPage _ErrorPage;
-        std::string _HeaderFeild;
-        std::string _FileName;
-        std::string _FileFromDisk;
+        bool _ModTransferData;
         const RequestHandler &_DataRequest;
+        std::string *_InternalRedirectSrc;
+        std::string &_Body;
+        std::string &_HeaderFeild;
+        std::string &_FileFromDisk;
+        std::string &_Type;
+        clsErrorPage _ErrorPage;
+        const std::string *_BodyPointer;
+        const std::string *_HeaderFeildPointer;
+        const std::string *_FileFromDiskPointer;
+        clsAutoIndex AutoIndex;
 
         const std::string GetTypeData(const std::string &Type);
         void _ErrorRespnseHandling();
@@ -47,21 +50,40 @@ class clsResponse
         void _Transfer_Encoding();
         void _StoredInFileOrStr();
         void _Date();
-        void _CachControl();
         void _Server();
+        void _InitialAutoIndex();
+        void _DeleteResource();
+        void _UploadResource();
     public:
         void Reset();
-        clsResponse(RequestHandler &_DataRequest);
+        clsResponse(RequestHandler &_DataRequest,std::string &Body , std::string &HeaderFeild, std::string &FileFromDisk, std::string &Type);
         const std::string &GetBody() const;
         const std::string &GetFileName() const;
         const std::string &GetHeaderFeild() const;
         void SetStatus(short Status);
-        void SetFileFromDisk(const std::string &FileFromDisk);
         void SetMod(stMod::eMod Mod);
-        void SetType(const std::string &Type);
         bool GetIsConnection() const;
         void MakeResponse();
+        bool GetErnoVar();
+        const std::string *GetBodyPointer();
+        const std::string *GetHeaderFeildPointer();
+        const std::string *GetFileFromDiskPointer() const;
+        void SetBodyPointer(const std::string *BodyPointer);
+        void SetHeaderFeildPointer(const std::string *HeaderFeildPointer);
+        void SetFileFromDiskPointer(const char *FileFromDiskPointer);
+        void SetFileFromDiskPointer(const std::string *FileFromDiskPointer);
         void ChunkData(std::string &NewStr, const std::string &Str, bool lastChunked) const;
+        void SetModTransferData(bool ModTransferData);
+        void SetInternalRedirectSrc(std::string *InternalRedirectSrc);
+        std::string *GetInternalRedirectSrc();
+        bool GetModTransferData() const;
+        size_t GetSizeBody() const;
+        void SetSizeBody(int size);
+        bool IsAutoIndex();
+        void SetIsConnection(bool IsConnection);
+        bool fetchAutoIndex(char * Buffer, short &Ofset, short LimitSize);
+        short GetStatus();
+        bool IsError();
 
         ~clsResponse();
 };

@@ -1,20 +1,29 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/04/18 13:31:32 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
-clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) : _DataRequest(RequestLinker), _Response(RequestLinker) {}
-clsMainProcess::~clsMainProcess() {}
+clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) 
+    : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
+     _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
+{
+    _Body.resize(MAX_BODY);
+	_InternalRedirectSrc.resize(MAX_HEADERS);
+    _HeaderFeild.resize(MAX_HEADERS);
+	_FileFromDisk.resize(1000);
+    _Type.resize(500);
+    if (_Type.empty() || _FileFromDisk.empty() || _HeaderFeild.empty() 
+        || _InternalRedirectSrc.empty() || _Body.empty())
+    {
+        _Response.SetStatus(500);
+        _Response.SetMod(stMod::ERROR);
+        return ;
+    }
+    _InternalRedirectSrc = "";
+    _HeaderFeild = "";
+    _FileFromDisk = "";
+    _Type = "";
+    _RunCGI = false;
+}
+clsMainProcess::~clsMainProcess() { }
 
 void clsMainProcess::_PartRedirection()
 {
@@ -23,40 +32,87 @@ void clsMainProcess::_PartRedirection()
     _Response.MakeResponse();
 }
 
-void clsMainProcess::_PartCGI()
+stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
-    _Response.SetStatus(200);
-    // Cgi hear
+    return this->_eventProcess;
+}
+void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
+{
+    this->_eventProcess = ev;
+}
+
+void clsMainProcess::ParseCGI(const char *Buffer, short Length)
+{
+    clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
+    if (_eventProcess == stEventProcess::THE_END)
+        parseCgi.SetProcessIsFinish(true);
+    if (Length > 0 || _eventProcess == stEventProcess::THE_END)
+        parseCgi.ReceivingData(Buffer, Length);
+    if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
+    {
+        if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
+        {
+            _eventProcess = stEventProcess::END_WITH_PARSE;
+            _Response.SetMod(stMod::ERROR);
+            _Response.SetStatus(parseCgi.GetStatus());
+            _Response.MakeResponse();
+        }
+        else
+        {
+            _Response.SetBodyPointer(&parseCgi.GetBody());
+            _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
+            _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
+            _Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
+            _Response.SetSizeBody(parseCgi.GetSizeBody());
+            _Response.SetModTransferData(true);
+        }
+    }
+    else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
+    {
+        _Response.SetStatus(_eventProcess);
+        _Response.SetMod(stMod::ERROR);
+        _Response.MakeResponse();
+    }
+}
+
+void clsMainProcess::_InitializeCGI()
+{
+    if (!_RunCGI)
+    {
+        _CGI.RunCGI();
+        if (!_CGI.GetErno())
+        {
+            _RunCGI = _CGI.GetIsRunCGI();
+            _eventProcess = stEventProcess::RUNINNG;
+        }
+    }
+   if (_CGI.GetErno())
+   {
+        _eventProcess = stEventProcess::END_UNKNOW;
+        _Response.SetStatus(500);
+        _Response.SetMod(stMod::ERROR);
+        _Response.MakeResponse();
+   }
+   
 }
 
 void clsMainProcess::_PartDeleteMethod()
 {
     _Response.SetMod(stMod::DELETE);
-    _Response.SetStatus(200);
-    if (access(_DataRequest.getPhysicalPath(), R_OK))
-    {
-        _Response.SetMod(stMod::ERROR);
-        _Response.SetStatus(404);
-        _Response.MakeResponse();
-    }
-    // // delete file or folder any things
-    // modfier by yadib
-    // _Response.SetRequestHandler(_DataRequest);
+    _Response.SetStatus(204);
     _Response.MakeResponse();
 }
 
 void clsMainProcess::_PartPOSMethod()
 {
-    // remove set request handler function by adib
-    _Response.SetStatus(200);
     _Response.SetMod(stMod::UPLOAD);
+    _Response.SetStatus(201);
     _Response.MakeResponse();
+    
 }
 
 void clsMainProcess::_PartGETMethod()
 {
-    // remove set request handler function by adib
-
     _Response.SetMod(stMod::GET);
     _Response.SetStatus(200);
     _Response.MakeResponse();
@@ -64,32 +120,63 @@ void clsMainProcess::_PartGETMethod()
 
 void clsMainProcess::_PartErrorRequest()
 {
-    // remove set request handler function by adib
-
     _Response.SetMod(stMod::ERROR);
-    _Response.SetStatus(_DataRequest.getError().getCodeStatus());
+    _Response.SetMod(stMod::INTERNALRE);
+    _Response.SetStatus(_DataRequest.getStatusError());
     _Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess()
 {
-    // bool check = false;
-    // _DataRequest = DataRequest;
-    if (_DataRequest.getError().isError())
+    _RunCGI = false;
+    
+    if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
+        _InitializeCGI();
+    else if(_DataRequest.getStatusError())
+    {
         _PartErrorRequest();
-    else if (_DataRequest.getReturn().value.compare("") != 0)
+    }
+    else if (_DataRequest.getPathCgi())
+        _InitializeCGI();
+    else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
-    // else if (_DataRequest.getPathCgi() != NULL && *(_DataRequest.getPathCgi()) != "") // PROBLEM HERE
-    //     _PartCGI();
     else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
         _PartDeleteMethod();
     else if ((_DataRequest.getMethod() == HttpTables::M_POST))
         _PartPOSMethod();
 }
 
+void clsMainProcess::Reset()
+{
+    this->_RunCGI = false;
+    _CGI.Reset();
+    _CGI.GetclsParseOutCGI().Reset();
+    _Response.Reset();
+    _InternalRedirectSrc = "";
+    _HeaderFeild = "";
+    _FileFromDisk= "";
+    _Type = "";
+    _eventProcess = stEventProcess::RUNINNG; 
+}
+
+clsCGI &clsMainProcess::GetclsCGI()
+{
+    return _CGI;
+}
+
+bool clsMainProcess::GetIsRunCGI()
+{
+    return _RunCGI;
+}
+
 clsResponse &clsMainProcess::GetclsResponse()
 {
     return _Response;
+}
+
+bool clsMainProcess::isRunCgi()
+{
+    return _RunCGI;
 }
