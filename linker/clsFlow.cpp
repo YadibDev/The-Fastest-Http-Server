@@ -71,7 +71,12 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
+    std::cout <<  " clsClient : " <<sizeof(clsClient) * 500 << std::endl;
+
 	_Rooms = new clientRoom[maxClient];
+
+    std::cout << " clientRoom : " << sizeof(clientRoom) * 500 << std::endl;
+
 	for (int i = 0; i < maxClient; i++)
 	{
 		_clientsArr[i].setRoom(_Rooms[i]);
