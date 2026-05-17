@@ -275,10 +275,9 @@ bool clsClient::_handleInternal()
     {
         _RequestXconfig.reset();
         RequestLine reqLineParser;
-        UriParser &uriParser = reqLineParser.getRequestURI();
         std::string &redirctStr = *Respond.GetInternalRedirectSrc();
 
-        uriParser.parse(redirctStr.c_str(), redirctStr.size());
+        reqLineParser.parse(redirctStr.c_str(), redirctStr.size());
         int statusReturn = reqLineParser.getError().getCodeStatus();
 
         if (statusReturn != 0)
