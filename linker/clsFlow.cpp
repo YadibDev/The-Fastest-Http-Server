@@ -74,8 +74,12 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
+	_Rooms = new clientRoom[maxClient];
 	for (int i = 0; i < maxClient; i++)
+	{
+		_clientsArr[i].setRoom(_Rooms[i]);
 		_clientsAvailable.push(i);
+	}
 }
 
 short clsFlow::_getClient()
@@ -375,4 +379,5 @@ void clsFlow::EventLoop()
 clsFlow::~clsFlow()
 {
 	delete[] _clientsArr;
+	delete[] this->_Rooms;
 }
