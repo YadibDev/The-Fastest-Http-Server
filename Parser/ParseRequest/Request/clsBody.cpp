@@ -76,9 +76,10 @@ int clsBody::_createUploadStoreFile(char *path)
     if (fd != -1)
     {
         int size = uploadStore->size();
-        // pathFileAbs.reserve((_fileName.size() - size) + upload-location-size);
+        pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
 
-        // pathFileAbs =  &_fileName[size];
+        pathFileAbs +=  uploadLocation->c_str();
+        pathFileAbs +=  &_fileName[size];
     }
     return fd;
 
@@ -329,6 +330,10 @@ void clsBody::setUploadStore(const std::string *ptr)
     this->uploadStore = ptr;
 }
 
+void clsBody::setUploadLocation(const std::string *ptr)
+{
+    this->uploadLocation = ptr;
+}
 ssize_t clsBody::getBodySize()
 {
     return _contentLength;
@@ -350,5 +355,5 @@ clsBody::~clsBody()
 
 char *clsBody::getFileAbs()
 {
-    return pathFileAbs;
+    return &pathFileAbs[0];
 }
