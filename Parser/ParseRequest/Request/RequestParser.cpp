@@ -105,8 +105,9 @@ bool RequestParser::ParseBody(uint16_t size)
 	if (_body.getState() == clsBody::DONE_GOOD)
 	{
 		_state = STATE_COMPLETE;
-
 		this->_RequestHandler->setFilePathBody(_body.getFileName());
+		this->_RequestHandler->setFilePostdAbs(_body.getFileAbs());
+
 	}
 	else if (_body.getState() == clsBody::DONE_WIHTERROR)
 	{

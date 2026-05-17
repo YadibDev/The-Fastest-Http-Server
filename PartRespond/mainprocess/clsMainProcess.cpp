@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsMainProcess.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 15:43:09 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/14 10:46:41 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../mainprocess/Webserv.hpp"
 
 // yadib modifier this part of achraf
@@ -18,7 +6,7 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
      _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
 {
     _Body.resize(MAX_BODY);
-	_InternalRedirectSrc.resize(1000);
+	_InternalRedirectSrc.resize(MAX_HEADERS);
     _HeaderFeild.resize(MAX_HEADERS);
 	_FileFromDisk.resize(1000);
     _Type.resize(500);
@@ -117,11 +105,9 @@ void clsMainProcess::_PartDeleteMethod()
 
 void clsMainProcess::_PartPOSMethod()
 {
-    // std::cout << "achraf dral hna\n";
     _Response.SetMod(stMod::UPLOAD);
     _Response.SetStatus(201);
     _Response.MakeResponse();
-    // std::cout << _Response.GetHeaderFeild() << std::endl;
     
 }
 
@@ -147,7 +133,9 @@ void clsMainProcess::MainProcess()
     if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
+    {
         _PartErrorRequest();
+    }
     else if (_DataRequest.getPathCgi())
         _InitializeCGI();
     else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)

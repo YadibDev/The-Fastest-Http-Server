@@ -70,7 +70,7 @@
 //     }
 //     std::vector<clsServerConfig> servers = configFile.getServers();
 
-//     PollOfClient client;
+//     clientRoom client;
 //     const char *rawRequest =
 //         "GET http://mosab:pass123@127.0.0.1:8080/api/v1/users?id=1337#profile HTTP/1.1\r\n"
 //         "Host: 127.0.0.1\r\n"
@@ -84,7 +84,7 @@
 //     std::memcpy(client.request_metadata, rawRequest, std::strlen(rawRequest));
 
 // 	stPollRequest req = makeRequest(client);
-//     RequestHandler handler(req); 
+//     RequestHandler handler(req);
 //     RequestParser parser(req, &servers[0], &handler);
 //     parser.init(0);
 
@@ -127,12 +127,6 @@
 //     return 0;
 // }
 
-
-
-
-
-
-
 #include <iostream>
 #include <cstring>
 #include <fstream>
@@ -165,45 +159,45 @@
 
 #include <cstring>
 
-void setPollRequestData(stPollRequest& req, PollOfClient& client, const char* raw_request) {
+void setPollRequestData(stPollRequest &req, clientRoom &client, const char *raw_request)
+{
 
 	std::strncpy(client.request_metadata, raw_request, sizeof(client.request_metadata) - 1);
 	client.request_metadata[sizeof(client.request_metadata) - 1] = '\0';
-	
-	req.request_metadata = client.request_metadata;
-	req.known_headers    = client.known_headers;
-	req.unknown_headers  = client.unknown_headers;
-	req.io_chunk         = client.io_chunk;
-	req.read_body_ptr         = &client.read_body;
 
+	req.request_metadata = client.request_metadata;
+	req.known_headers = client.known_headers;
+	req.unknown_headers = client.unknown_headers;
+	req.io_chunk = client.io_chunk;
+	req.read_body_ptr = &client.read_body;
 }
 
 int main()
 {
 
-	PollOfClient client;
+	clientRoom client;
 	stPollRequest req;
 
-	const char* http_request = 
-    	"GET /test.py/masin.cpp HTTP/1.1\r\n"
-    	"Host: 127.0.0.1:8082\r\n"
+	const char *http_request =
+		"GET /test.py/masin.cpp HTTP/1.1\r\n"
+		"Host: 127.0.0.1:8082\r\n"
 		"Content-Length: 10\r\n"
-    	"Connection: keep-alive\r\n"
-    	"Cache-Control: max-age=0\r\n"
-    	"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
-    	"sec-ch-ua-mobile: ?0\r\n"
-    	"sec-ch-ua-platform: \"macOS\"\r\n"
-    	"Upgrade-Insecure-Requests: 1\r\n"
-    	"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
-    	"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\n"
-    	"Sec-GPC: 1\r\n"
-    	"Accept-Language: en-US,en\r\n"
-    	"Sec-Fetch-Site: none\r\n"
-    	"Sec-Fetch-Mode: navigate\r\n"
-    	"Sec-Fetch-User: ?1\r\n"
-    	"Sec-Fetch-Dest: document\r\n"
-    	"Accept-Encoding: gzip, deflate, br\r\n"
-    	"\r\n"
+		"Connection: keep-alive\r\n"
+		"Cache-Control: max-age=0\r\n"
+		"sec-ch-ua: \"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Brave\";v=\"120\"\r\n"
+		"sec-ch-ua-mobile: ?0\r\n"
+		"sec-ch-ua-platform: \"macOS\"\r\n"
+		"Upgrade-Insecure-Requests: 1\r\n"
+		"User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
+		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\n"
+		"Sec-GPC: 1\r\n"
+		"Accept-Language: en-US,en\r\n"
+		"Sec-Fetch-Site: none\r\n"
+		"Sec-Fetch-Mode: navigate\r\n"
+		"Sec-Fetch-User: ?1\r\n"
+		"Sec-Fetch-Dest: document\r\n"
+		"Accept-Encoding: gzip, deflate, br\r\n"
+		"\r\n"
 		"abs\0";
 
 	setPollRequestData(req, client, http_request);
@@ -213,7 +207,6 @@ int main()
 	configeData.resize(1025);
 
 	read(fd, &configeData[0], 1024);
-
 
 	// fd, configeData, 1024
 
@@ -228,7 +221,7 @@ int main()
 
 	GenericLexer<TokenType> lexer(configeData, lexerConfig);
 
-	std::vector< Token<TokenType> > Lexer = lexer.tokenize();
+	std::vector<Token<TokenType>> Lexer = lexer.tokenize();
 
 	clsParse<TokenType> Data(Lexer, TOKEN_EOF);
 	clsParseConfigueFile ConfigueFile(Data);
@@ -238,16 +231,16 @@ int main()
 	{
 		std::cout << ConfigueFile.getError().getMsgError() << std::endl;
 		std::cout << ConfigueFile.getError().getCodeStatus() << std::endl;
-		std::cout << "Block Server ZERO\n" << std::endl;
+		std::cout << "Block Server ZERO\n"
+				  << std::endl;
 		return 1;
 	}
 	HttpError error;
 
 	clsServerConfig ServerConfig = ConfigueFile.getServers()[0];
-	RequestHandler	RequestHandler(req);
+	RequestHandler RequestHandler(req);
 	RequestParser Parser(req, &RequestHandler);
 	Parser.init(&ServerConfig);
-
 
 	int size = strlen(http_request);
 	Parser.Parse(1);
@@ -272,21 +265,29 @@ int main()
 	std::cout << "PhysicalPath : " << RequestHandler.getPhysicalPath() << std::endl;
 	std::cout << "Return code : " << RequestHandler.getReturn().code << std::endl;
 	std::cout << "Return value : " << RequestHandler.getReturn().value.raw_path << std::endl;
-	std::cout << "Name Script : " ; print_view(RequestHandler.getScriptName()); std::cout << std::endl;
-	std::cout << "Path Info : " ; print_view(RequestHandler.getPathInfo()); std::cout << std::endl;
+	std::cout << "Name Script : ";
+	print_view(RequestHandler.getScriptName());
+	std::cout << std::endl;
+	std::cout << "Path Info : ";
+	print_view(RequestHandler.getPathInfo());
+	std::cout << std::endl;
 	std::cout << "Path Translated : " << &RequestHandler.getPathTranslated()[0] << std::endl;
 	std::string cgi = (!RequestHandler.getPathCgi()) ? "NULL" : *RequestHandler.getPathCgi();
 	std::cout << "Path Cgi : " << cgi << std::endl;
 	std::cout << "code Error : " << RequestHandler.getStatusError() << std::endl;
-	std::cout << "Default Error Page : " 
-          << (RequestHandler.getDefaultErrorPage() ? "(YES)" : "(NULL)") 
-          << std::endl;
+	std::cout << "Default Error Page : "
+			  << (RequestHandler.getDefaultErrorPage() ? "(YES)" : "(NULL)")
+			  << std::endl;
 
 	HeaderTable headerTable = RequestHandler.getHeader();
 	const s_header_slot *Host = headerTable.getKnownHeader(HttpTables::H_HOST);
 	const s_header_slot *Content_length = headerTable.getKnownHeader(HttpTables::H_CONTENT_LENGTH);
-	std::cout << "Host : " ; print_view(Host->val); std::cout << std::endl;
-	std::cout << "Content_length : " ; print_view(Content_length->val); std::cout << std::endl;
+	std::cout << "Host : ";
+	print_view(Host->val);
+	std::cout << std::endl;
+	std::cout << "Content_length : ";
+	print_view(Content_length->val);
+	std::cout << std::endl;
 
 	return 0;
 }

@@ -1,0 +1,1 @@
+print("location:/index.ml\r\n\r\n", end="")

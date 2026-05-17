@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 21:44:59 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/16 10:45:33 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::s
 
 void clsResponse::_UploadResource()
 {
-    
+    _BodySize = HelperFunctions::ft_strlen(HelperFunctions::GetBody(_Status));
+    short offset = 0;
+    HelperFunctions::ft_str_copy(&_Body[0],HelperFunctions::GetBody(_Status), MAX_BODY, offset, _BodySize,0);
 }
 
 void clsResponse::_DeleteResource()
@@ -87,6 +89,8 @@ void clsResponse::_InitialHeaders()
     _StatusLine();
     if (_Mod[stMod::CHUNK] != stMod::CHUNK && _Mod[stMod::DELETE] != stMod::DELETE)
         _ContentLength();
+    if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
+        _Redirction();
     if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
     {
         if (_Status == 301 || _Status == 302 || _Status == 303 || _Status == 307 || _Status == 308)
@@ -190,9 +194,18 @@ void clsResponse::_Transfer_Encoding()
 
 void clsResponse::_Redirction()
 {
-    _HeaderFeild += "Location: ";
-    _HeaderFeild += _DataRequest.getReturn().value.raw_path;
-    _HeaderFeild += "\r\n";
+    if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
+    {
+        _HeaderFeild += "location:";
+        _HeaderFeild += _DataRequest.getFilePostedAbs();
+        _HeaderFeild += "\r\n";
+    }
+    else
+    {
+        _HeaderFeild += "Location: ";
+        _HeaderFeild += _DataRequest.getReturn().value.raw_path;
+        _HeaderFeild += "\r\n";
+    }
 }
 void clsResponse::_Date()
 {

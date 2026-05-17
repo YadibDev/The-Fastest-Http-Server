@@ -608,7 +608,6 @@ void HelperFunctions::StoredDefaultType()
 {
 	if (_TypeContent.empty())
 	{
-
 		_TypeContent[".html"] = "text/html";
 		_TypeContent[".htm"] = "text/html";
 		_TypeContent[".css"] = "text/css";
@@ -631,8 +630,10 @@ const char *HelperFunctions::GetType(const std::string &Type)
 
 void HelperFunctions::StoredBodys()
 {
+	if (!_Body.empty())
+		return ;
 	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
-	_Body[201] = "html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
+	_Body[201] = "<html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
 	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
 	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
 	_Body[302] = "<html><head><title>302 found</title></head><body><center><h1>302 found</h1></center><hr><center>faste server</center></body></html";
@@ -647,9 +648,12 @@ void HelperFunctions::StoredBodys()
 	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
 	_Body[414] = "<html><head><title>414 URI Too Long</title></head><body><center><h1>414 URI Too Long</h1></center><hr><center>faste server</center></body></html>";
 	_Body[411] = "<html><head><title>411 ULength Required</title></head><body><center><h1>411 ULength Required</h1></center><hr><center>faste server</center></body></html>";
+	_Body[413] = "<html><head><title>413 Content Too Large</title></head><body><center><h1>413 Content Too Large</h1></center><hr><center>faste server</center></body></html>";
 }
 void HelperFunctions::StoredMessage()
 {
+	if (!_Message.empty())
+		return;
 	_Message[200] = "OK";
 	_Message[201] = "Created";
 	_Message[204] = "No Content";
@@ -658,14 +662,15 @@ void HelperFunctions::StoredMessage()
 	_Message[400] = "Bad Request";
 	_Message[403] = "Forbidden";
 	_Message[404] = "Not Found";
-	_Message[405] = "405 Method Not Allowed";
+	_Message[405] = "Method Not Allowed";
 	_Message[500] = "Internal Server Error";
 	_Message[501] = "Not Implemented";
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
 	_Message[508] = "Loop Detected";
-	_Message[414] = "414 URI Too Long";
-	_Message[411] = "411 ULength Required";
+	_Message[414] = "URI Too Long";
+	_Message[411] = "ULength Required";
+	_Message[413] = "Content Too Large";
 }
 
 const char *HelperFunctions::GetStatusMessage(int Status)

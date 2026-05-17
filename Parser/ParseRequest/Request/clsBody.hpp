@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <unistd.h>
  #include <errno.h>
+ #include <cstring>
 #include "../../../Utils/HelperFunctions.hpp"
 class clsRequest;
 
@@ -40,6 +41,7 @@ public: // time to debug
     long maxBodySize;
     long writeSize;
     std::string _fileName;
+    char        *pathFileAbs;
     const std::string *uploadStore;
     HttpError _errorPage;
     int fd;
@@ -73,7 +75,10 @@ public:
     void StoreNormalBodyInDisk(uint16_t &offset);
     void Reset(); 
     void setUploadStore(const std::string *ptr);
+    int createRandomFile();
     HttpError getError();
+    char *getFileAbs();
+
 
 };
 
