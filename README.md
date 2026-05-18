@@ -5,8 +5,8 @@
 ### 🌐 What is WebServ
 > WebServ is an HTTP web server designed to deliver web content (such as Text, stylesheet, images ...) directly to the client (such as a web-browser), it primary goal is to ensure the client receives the exact content and pages he requested, by following the HTTP rules .
 ### How It Works
-<img src="https://drive.google.com/file/d/1DPpD1vnuMwp9DWmPDwhe-UGylrO0FJCk/view?usp=drive_link">
-
+![WebServ Architecture](images/image1Http.png)
+![WebServ Architecture](images/image2HTTP.png)
 ### 🎯 Project Goals
 
 > Master the HTTP/1.1 Protocol: understanding of how web communication works.
