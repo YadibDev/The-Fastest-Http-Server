@@ -18,3 +18,33 @@
 > Build Teamwork Experience: Learn how to collaborate with others, use version control (like Git), and design software together.
 
 > New Concepts You Will Learn: Network Sockets, The HTTP Protocol, CGI (Common Gateway Interface), and Nginx Basics .
+
+## 🚀 Getting Started
+> Follow these steps to clone, build, and run the WebServ project on your local machine.
+### Prerequisites
+> Before running the program, ensure you have a C++ compiler (clang++) and make installed on your system, and you must use linux OS.
+### 1. Clone the Repository
+First, clone the repository and navigate into the project directory:
+```bash
+git clone git@github.com:YadibDev/The-Fastest-Http-Server.git webserv
+cd webserv
+```
+### 2. Compile the Server
+Build the executable using the provided Makefile:
+```bash
+make
+```
+This will compile the source files and generate the webserv binary.
+### 3. Run the Program
+To start the server, execute the binary and provide a configuration file as an argument: \you can provided two optional arguments to the program, the first one is the configfile and the second
+is the Max-Clients that the server can reach .
+```bash
+./webserv [config file path optional] [max clients number optional]
+```
+> If no configuration file is provided, the server will fall back to a default configuration.
+### 4. Test It in Your Browser
+Once the server is running, open your web browser and navigate to the right ip and port number like :
+```sh
+http://localhost:8080
+```
+> Note: Replace the ip address and port number  with the actual interface:port specified in your configuration file .
