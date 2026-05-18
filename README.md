@@ -2,11 +2,13 @@
 # Webserv 1337 Project
 > This is when you finally understand why URLs start with HTTP
 ## Description
+
 ### 🌐 What is WebServ
 > WebServ is an HTTP web server designed to deliver web content (such as Text, stylesheet, images ...) directly to the client (such as a web-browser), it primary goal is to ensure the client receives the exact content and pages he requested, by following the HTTP rules .
+
 ### How It Works
-![WebServ Architecture](images/image1Http.png)
-![WebServ Architecture](images/image2HTTP.png)
+<img src="images/image1Http.png" width=49%> <img src="images/image2HTTP.png" width=49%>
+
 ### 🎯 Project Goals
 
 > Master the HTTP/1.1 Protocol: understanding of how web communication works.
