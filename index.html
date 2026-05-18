@@ -46,6 +46,10 @@
             width: 100%;
             box-sizing: border-box;
         }
+        #delete-result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -81,7 +85,6 @@
     <div class="section">
         <h2>3. Test File Upload (multipart/form-data)</h2>
         <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the <code>filename</code> attribute.</p>
-        <!-- Adjust the action attribute to match your upload route/location block if necessary -->
         <form action="/upload" method="POST" enctype="multipart/form-data">
             <label for="file-upload">Choose a file to upload:</label>
             <input type="file" id="file-upload" name="uploaded_file" required>
@@ -89,9 +92,19 @@
         </form>
     </div>
 
-    <!-- 4. Error Code Tests -->
+    <!-- 4. DELETE Method Test -->
     <div class="section">
-        <h2>4. Test Error Triggering</h2>
+        <h2>4. Test DELETE Method</h2>
+        <p>Tests your server's capability to safely delete a file from the root or target upload directory.</p>
+        <label for="delete-path">File Path to Delete:</label>
+        <input type="text" id="delete-path" placeholder="/upload/delete-me.txt" value="/upload/delete-me.txt">
+        <button type="button" class="btn" style="background-color: #dc3545;" onclick="sendDeleteRequest()">Send DELETE Request</button>
+        <div id="delete-result"></div>
+    </div>
+
+    <!-- 5. Error Code Tests -->
+    <div class="section">
+        <h2>5. Test Error Triggering</h2>
         <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
         <ul>
             <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
@@ -100,6 +113,35 @@
     </div>
 </div>
 
-</body>
+<script>
+    async function sendDeleteRequest() {
+        const filePath = document.getElementById('delete-path').value;
+        const resultDiv = document.getElementById('delete-result');
+        
+        if (!filePath) {
+            resultDiv.style.color = '#dc3545';
+            resultDiv.innerText = "Please specify a file path.";
+            return;
+        }
 
+        try {
+            const response = await fetch(filePath, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                resultDiv.style.color = '#28a745';
+                resultDiv.innerText = `Success: Server responded with status ${response.status}`;
+            } else {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = `Failed: Server responded with status ${response.status}`;
+            }
+        } catch (error) {
+            resultDiv.style.color = '#dc3545';
+            resultDiv.innerText = `Error sending request: ${error.message}`;
+        }
+    }
+</script>
+
+</body>
 </html>

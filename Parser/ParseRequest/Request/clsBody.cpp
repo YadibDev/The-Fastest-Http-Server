@@ -75,9 +75,10 @@ int clsBody::_createUploadStoreFile(char *path)
     if (fd != -1)
     {
         int size = uploadStore->size();
+        pathFileAbs = "";
         pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
-
         pathFileAbs +=  uploadLocation->c_str();
+        std::cout << uploadLocation->c_str() << std::endl;
         pathFileAbs +=  &_fileName[size];
     }
     return fd;

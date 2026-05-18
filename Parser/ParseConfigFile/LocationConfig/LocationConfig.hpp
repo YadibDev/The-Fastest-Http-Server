@@ -68,7 +68,7 @@ private:
 	void	setClientMaxBodySize(unsigned long long size);
 	void	setReturn(const stReturnData& ret);
 	void	setUploadStore(const s_uri_entry& store);
-	void	setUploadLocation(const std::string& store);
+	void	setUploadLocation(std::string store);
 	void	setCgiPass(const std::map<std::string, std::string>& cgi);
 	void	setErrorPages(const std::map<short, stErrorPagedata>& pages);
 	void	setDefaultErrorPage(const stErrorPagedata* page);
