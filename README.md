@@ -36,7 +36,8 @@ make
 ```
 This will compile the source files and generate the webserv binary.
 ### 3. Run the Program
-To start the server, execute the binary and provide a configuration file as an argument: \you can provided two optional arguments to the program, the first one is the configfile and the second
+To start the server, execute the binary and provide a configuration file as an argument: \
+you can provided two optional arguments to the program, the first one is the configfile and the second
 is the Max-Clients that the server can reach .
 ```bash
 ./webserv [config file path optional] [max clients number optional]
