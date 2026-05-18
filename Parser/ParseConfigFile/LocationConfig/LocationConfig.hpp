@@ -17,6 +17,7 @@ private:
 	unsigned long long                  _client_max_body_size;
 	stReturnData                        _return;
 	s_uri_entry                         _upload_store;
+	std::string								_upload_location;
 	std::map<std::string, std::string>  _cgi_pass;
 	std::map<short, stErrorPagedata>    _error_pages;
 	const stErrorPagedata*				_defaultErrorPage;
@@ -29,15 +30,16 @@ private:
 	bool    ParseClientMaxBodySize();
 	bool    ParseReturn();
 	bool    ParseUploadStore();
+	bool    ParseUploadLocation();
 	bool    ParseCgiPass();
 	bool    ParseErrorPage();
 	bool    ParseLocationDirective(s_parse_context &ctx);
 	enBlocksDirective   getLocationDirectiveType(const std::string& key);
-	
+	bool	checkUploadStoreAndUploadLocation(HttpError &error);
+
 	public:
 	clsLocation();
-	clsLocation(s_parse_context& ctxs, const std::string &sRoot
-		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex);
+	clsLocation(s_parse_context& ctxs, bool sAutoIndex);
 		clsLocation(const clsLocation &loc);
 		
 		bool                                        parseLocation();
@@ -51,6 +53,7 @@ private:
 	unsigned long long							getClientMaxBodySize() const;
 	const stReturnData							&getReturn() const;
 	const s_uri_entry							&getUploadStore() const;
+	const std::string							&getUploadLocation() const;
 	const std::map<std::string, std::string>	&getCgiPass() const;
 	const std::map<short, stErrorPagedata>		&getErrorPages() const;
 	const stErrorPagedata						*getDefaultErrorPage() const;
@@ -65,6 +68,7 @@ private:
 	void	setClientMaxBodySize(unsigned long long size);
 	void	setReturn(const stReturnData& ret);
 	void	setUploadStore(const s_uri_entry& store);
+	void	setUploadLocation(std::string store);
 	void	setCgiPass(const std::map<std::string, std::string>& cgi);
 	void	setErrorPages(const std::map<short, stErrorPagedata>& pages);
 	void	setDefaultErrorPage(const stErrorPagedata* page);

@@ -27,12 +27,15 @@
 // #include "Parser/RequestHandler/ProcessRequestHandler.hpp"
 // #include <csignal>
 
-
-
 class clsFlow
 {
 private:
-    enum fdTypes {SERVER_SOCK, CLIENT_SOCK, PIPE};
+    enum fdTypes
+    {
+        SERVER_SOCK,
+        CLIENT_SOCK,
+        PIPE
+    };
     size_t _totalServers;
     clsClient *_clientsArr;
     std::vector<clsServerConfig> *_allBlocks;
@@ -42,7 +45,7 @@ private:
     std::map<short, short> _clientIdByFd;
     std::map<short, short> _IdByPipe;
     std::stack<short> _clientsAvailable;
-
+    clientRoom *_Rooms;
     void _initializeStatics();
     void _createBlocksServers(const char *configFile);
     void _createServers();
@@ -66,7 +69,6 @@ public:
     clsFlow(const char *configFile, long maxClient);
     ~clsFlow();
     void EventLoop();
-
 };
 
 #endif

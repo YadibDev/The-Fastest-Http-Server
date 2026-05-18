@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/16 10:45:33 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/18 15:34:37 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ clsResponse::clsResponse(RequestHandler &DataRequest, std::string &Body , std::s
 {
     _Status = 0;
     _IsConnection = true;
-    _Erno = false;
     _BodySize = 0;
     _ModTransferData = false;
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -44,8 +43,6 @@ void clsResponse::_DeleteResource()
 
 void clsResponse::MakeResponse()
 {
-    if (_Erno)
-        return;
     if (_Mod[stMod::GET] == stMod::GET)
     {
         if (!_DataRequest.getAutoIndex())
@@ -216,7 +213,7 @@ void clsResponse::_Date()
 
 void clsResponse::_Server()
 {
-    _HeaderFeild += "Server: HTTP/1.1\r\n";
+    _HeaderFeild += "Server: the-fastest-server\r\n";
 }
 
 void clsResponse::_StoredInFileOrStr()
@@ -231,10 +228,9 @@ void clsResponse::_StoredInFileOrStr()
         return;
     }
     int FD = open(_FileFromDisk.c_str(), O_RDONLY | O_CLOEXEC, 0644);
-    if (FD < 0)
+    if (FD < 0) // test and edit
     {
         _Mod[stMod::ERROR] = stMod::ERROR;
-        _Status = 500;
         return;
     }
     if (read(FD, &_Body[0], MAX_BODY) == -1)
@@ -264,7 +260,6 @@ void clsResponse::Reset()
     _Status = 0;
     _BodySize = 0;
     _ModTransferData = false;
-    _Erno = false;
     _IsConnection = true;
     _ErrorPage.Reset();
     HelperFunctions::ft_memset(&_Mod, stMod::EMPTY, sizeof(_Mod));
@@ -349,10 +344,7 @@ size_t clsResponse::GetSizeBody() const
 {
     return (_BodySize);
 }
-bool clsResponse::GetErnoVar()
-{
-    return _Erno;
-}
+
 bool clsResponse::IsAutoIndex()
 {
     return (_Mod[stMod::AUTOINDEX] == stMod::AUTOINDEX);

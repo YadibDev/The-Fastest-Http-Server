@@ -35,6 +35,7 @@ private:
 	bool								_defaultErrorPage;
 	const std::string*					_pathCgi;
 	const std::string*					_upload_store;
+	const std::string*					_upload_location;
 	HttpError							_error;
 	short								_statusError;
 	size_t								_sizeFile;
@@ -64,6 +65,7 @@ public:
 	void					setReturn(const stReturnData& returnData);
 	void					setReturnVal(stReturnData returnData);
 	void					setUploadStore(const std::string* uploadStore);
+	void					setUploadLocation(const std::string* uploadStore);
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setStatusError(short statusError);
 	void					setError(const HttpError &error);
@@ -92,6 +94,7 @@ public:
 	bool					getDefaultErrorPage()const ;
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
+	const std::string*		getUploadLocation() const;
 	const std::string&		getFilePathBody() const;
 	short					getStatusError();
 	const HttpError&		getError() const;

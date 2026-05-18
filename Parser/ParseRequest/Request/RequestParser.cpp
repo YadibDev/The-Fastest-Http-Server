@@ -98,6 +98,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		if (_RequestHandler->getPathCgi())
 			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
 		_body.setUploadStore(this->_RequestHandler->getUploadStore());
+		_body.setUploadLocation(_RequestHandler->getUploadLocation());
 	}
 
 	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());
@@ -107,7 +108,6 @@ bool RequestParser::ParseBody(uint16_t size)
 		_state = STATE_COMPLETE;
 		this->_RequestHandler->setFilePathBody(_body.getFileName());
 		this->_RequestHandler->setFilePostdAbs(_body.getFileAbs());
-
 	}
 	else if (_body.getState() == clsBody::DONE_WIHTERROR)
 	{
@@ -120,7 +120,7 @@ bool RequestParser::ParseBody(uint16_t size)
 
 bool RequestParser::Parse(uint16_t size)
 {
-	if (size >= SIZE_BUFFER && _state != STATE_BODY)
+	if (size >= BUFFER_REQUEST && _state != STATE_BODY)
 		return (_error.setStatus(413, "Content Too Large"), false);
 
 	if (_state != STATE_BODY)

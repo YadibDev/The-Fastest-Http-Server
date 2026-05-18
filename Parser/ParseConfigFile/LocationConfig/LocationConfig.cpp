@@ -51,6 +51,16 @@ bool    clsLocation::ParseUploadStore()
 	return !ctx.error.isError();
 }
 
+bool    clsLocation::ParseUploadLocation()
+{
+	if (_flags & Directives::D_UPLOAD_LOCATION)
+		return (ctx.error.setStatus(1, "Directives: upload_location already set"), false);
+
+	_flags |= Directives::D_UPLOAD_LOCATION;
+	_upload_location = ConfigDirectiveParser::ParseUploadLocation(ctx);
+	return !ctx.error.isError();
+}
+
 bool    clsLocation::ParseCgiPass()
 {
 	std::map<std::string, std::string> tmpCgi;
@@ -98,15 +108,10 @@ bool    clsLocation::ParseErrorPage() {
 	return !ctx.error.isError();
 }
 
-clsLocation::clsLocation(s_parse_context& ctxs, const std::string &sRoot
-		, const std::vector<s_uri_entry>& sIndex,  unsigned long long sClient_max_body_size, bool sAutoIndex)
+clsLocation::clsLocation(s_parse_context& ctxs, bool sAutoIndex)
 	: ctx(ctxs)
 {
-	_root = sRoot;
-	
-	_index = sIndex;
-	_client_max_body_size = sClient_max_body_size;
-	_allow_methods = -1;
+	_allow_methods = 8;
 	_autoindex = sAutoIndex;
 	_flags = Directives::D_NONE;
 	_defaultErrorPage = &_error_pages[1];
@@ -135,6 +140,7 @@ const std::string &clsLocation::getRoot() const { return _root; }
 const std::string &clsLocation::getAlias() const { return _alias; }
 const std::vector<s_uri_entry> &clsLocation::getIndex() const { return _index; }
 const s_uri_entry &clsLocation::getUploadStore() const { return _upload_store; }
+const std::string	&clsLocation::getUploadLocation() const {return _upload_location;}
 const std::map<std::string, std::string> &clsLocation::getCgiPass() const { return _cgi_pass; }
 
 const stReturnData &clsLocation::getReturn() const { return _return; }
@@ -155,6 +161,7 @@ void	clsLocation::setAllowMethods(short methods) { _allow_methods = methods; }
 void	clsLocation::setClientMaxBodySize(unsigned long long size) { _client_max_body_size = size; }
 void	clsLocation::setReturn(const stReturnData& ret) { _return = ret; }
 void	clsLocation::setUploadStore(const s_uri_entry& store) { _upload_store = store; }
+void	clsLocation::setUploadLocation(std::string store) { _upload_location = store; }
 void	clsLocation::setCgiPass(const std::map<std::string, std::string>& cgi) { _cgi_pass = cgi; }
 void	clsLocation::setErrorPages(const std::map<short, stErrorPagedata>& pages) { _error_pages = pages; }
 void	clsLocation::setDefaultErrorPage(const stErrorPagedata* page) { _defaultErrorPage = page; }
@@ -195,6 +202,7 @@ enBlocksDirective clsLocation::getLocationDirectiveType(const std::string& key) 
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
 		directives["return"] = L_DIR_RETURN;
 		directives["upload_store"] = L_DIR_UPLOAD_STORE;
+		directives["upload_location"] = L_DIR_UPLOAD_LOCATION;
 		directives["cgi_pass"] = L_DIR_CGI_PASS;
 		directives["error_page"] = L_DIR_ERROR_PAGE;
 	}
@@ -216,10 +224,22 @@ bool clsLocation::ParseLocationDirective(s_parse_context &ctx) {
 		case L_DIR_CLIENT_MAX_BODY_SIZE: return ParseClientMaxBodySize();
 		case L_DIR_RETURN: return ParseReturn();
 		case L_DIR_UPLOAD_STORE: return ParseUploadStore();
+		case L_DIR_UPLOAD_LOCATION: return ParseUploadLocation();
 		case L_DIR_CGI_PASS: return ParseCgiPass();
 		case L_DIR_ERROR_PAGE: return ParseErrorPage();
 		default: return (ctx.error.setStatus(400, "Error in " + directive), false);
 	}
+}
+
+bool	clsLocation::checkUploadStoreAndUploadLocation(HttpError &error)
+{
+	if (_flags & Directives::D_UPLOAD_STORE)
+	{
+		if (_flags & Directives::D_UPLOAD_LOCATION)
+			return (true);
+		return (error.setStatus(400, "Upload_Location Is Not Found"), false);
+	}
+	return true;
 }
 
 bool clsLocation::parseLocation() {
@@ -235,5 +255,5 @@ bool clsLocation::parseLocation() {
 	while (ctx.parser.peek().type == TOKEN_NEW_LINE)
 		ctx.parser.advance();
 	initUri();
-	return (true);
+	return (checkUploadStoreAndUploadLocation(ctx.error));
 }

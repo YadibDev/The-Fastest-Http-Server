@@ -6,7 +6,7 @@
 /*   By: yadib <yadib@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:33:05 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/17 19:46:52 by yadib            ###   ########.fr       */
+/*   Updated: 2026/05/18 16:34:17 by yadib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class clsErrorPage
 {
     private:
         int _Status;
-        stMod::eMod _Mod[10];
+        stMod::eMod _Mod[11];
         std::string &_Body;
         std::string &_HeaderFeild;
         std::string &_FileFromDisk;

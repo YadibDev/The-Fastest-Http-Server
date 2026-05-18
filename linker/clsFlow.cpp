@@ -29,20 +29,18 @@ void clsFlow::_createBlocksServers(const char *configFile)
 	lexerConfig.addSeparatorToken('{', TOKEN_LBRACE);
 	lexerConfig.addSeparatorToken('}', TOKEN_RBRACE);
 	lexerConfig.addSeparatorToken(';', TOKEN_SEMICOLON);
+	lexerConfig.addSeparatorToken('\n', TOKEN_NEW_LINE);
 	lexerConfig.addCommentRule("#", "\n");
-	lexerConfig.addWithSpace(" \t\n");
+	lexerConfig.addWithSpace(" \t");
 	static GenericLexer<TokenType> lexer(configeData, lexerConfig);
 	static std::vector<Token<TokenType> > Lexer = lexer.tokenize();
 	static clsParse<TokenType> Data(Lexer, TOKEN_EOF);
 	static clsParseConfigueFile ConfigFile(Data);
 
-	ConfigFile.ParseConfigue();
-	if (ConfigFile.getServers().size() == 0)
+	if (!ConfigFile.ParseConfigue() || ConfigFile.getServers().size() == 0)
 	{
-		std::cout << "Error\n"
-				  << ConfigFile.getError().getMsgError() << std::endl;
-		std::cout << ConfigFile.getError().getCodeStatus() << std::endl;
-		throw std::runtime_error("0 block server\n");
+
+		throw std::runtime_error(ConfigFile.getError().getMsgError());
 	}
 
 	_allBlocks = &(ConfigFile.getServers());
@@ -74,8 +72,14 @@ void clsFlow::_createServers()
 void clsFlow::_initializeDataBase()
 {
 	_clientsArr = new clsClient[maxClient];
+
+	_Rooms = new clientRoom[maxClient];
+
 	for (int i = 0; i < maxClient; i++)
+	{
+		_clientsArr[i].setRoom(_Rooms[i]);
 		_clientsAvailable.push(i);
+	}
 }
 
 short clsFlow::_getClient()
@@ -187,7 +191,8 @@ bool clsFlow::_insertClient(int newClient, sockaddr_in &addr, clsServerConfig *b
 		return false;
 	}
 	clsClient &client = _clientsArr[blockId];
-	_clientIdByFd[newClient] = blockId;
+
+    _clientIdByFd[newClient] = blockId;
 
 	if (_epoll.addClient(newClient, EPOLLIN) == false)
 		return false;
@@ -375,4 +380,5 @@ void clsFlow::EventLoop()
 clsFlow::~clsFlow()
 {
 	delete[] _clientsArr;
+	delete[] this->_Rooms;
 }
