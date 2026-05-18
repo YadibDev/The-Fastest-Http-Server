@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/17 16:39:13 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/18 13:25:19 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ void clsResponse::_Date()
 
 void clsResponse::_Server()
 {
-    _HeaderFeild += "Server: HTTP/1.1\r\n";
+    _HeaderFeild += "Server: the-fastest-server\r\n";
 }
 
 void clsResponse::_StoredInFileOrStr()

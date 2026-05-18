@@ -455,7 +455,7 @@ void clsParseOutCGI::_Date()
 
 void clsParseOutCGI::_Server()
 {
-	_HeadersFieldFinal += "Server: faste-server\r\n";
+	_HeadersFieldFinal += "Server: the-fastest-server\r\n";
 }
 
 void clsParseOutCGI::_ContentLength()
