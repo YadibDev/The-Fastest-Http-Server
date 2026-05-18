@@ -49,3 +49,9 @@ Once the server is running, open your web browser and navigate to the right ip a
 http://localhost:8080
 ```
 > Note: Replace the ip address and port number  with the actual interface:port specified in your configuration file .
+```bash
+server {
+  listen 127.0.0.1:8080;
+  ...
+}
+```
