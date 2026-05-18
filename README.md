@@ -11,7 +11,7 @@
 
 > Master the HTTP/1.1 Protocol: understanding of how web communication works.
 
-> Improve Technical Skills: designing algorithms, and debugging.
+> Improve Technical Skills: designing algorithms, and debugging, and Code Optimization.
 
 > Build Teamwork Experience: Learn how to collaborate with others, use version control (like Git), and design software together.
 
