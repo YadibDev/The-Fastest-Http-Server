@@ -79,3 +79,34 @@ server {
   ...
 }
 ```
+
+## 🚀 Ressources and how AI used
+
+HTTP RESSOURCES : \
+https://youtu.be/wW2A5SZ3GkI?si=M8wnSkrGNyc8SBNA \
+https://www.youtube.com/watch?v=pi4gaFDBtMc \
+https://www.rfc-editor.org/rfc/rfc2616 \
+https://developer.mozilla.org/en-US/docs/Web/HTTP \
+https://http.dev/ \
+stack overflow for finding some problems \
+
+CGI RESSOURCES \
+https://www.rfc-editor.org/rfc/rfc3875 \
+https://www6.uniovi.es/~antonio/ncsa_httpd/cgi/env.html
+
+Configue File RESSOURCES nginx docs: \
+https://nginx.org/en/docs/http/ngx_http_core_module.html#http
+https://nginx.org/en/docs/http/ngx_http_core_module.html#location
+https://nginx.org/en/docs/http/ngx_http_core_module.html#listen
+https://nginx.org/en/docs/http/ngx_http_rewrite_module.html
+https://nginx.org/en/docs/http/ngx_http_core_module.html#error_page
+https://nginx.org/en/docs/http/ngx_http_index_module.html
+https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+https://nginx.org/en/docs/http/ngx_http_core_module.html#alias
+https://nginx.org/en/docs/http/ngx_http_core_module.html#root
+
+sockets:
+https://www.geeksforgeeks.org/computer-networks/socket-in-computer-network/
+
+epoll:
+https://medium.com/@m-ibrahim.research/mastering-epoll-the-engine-behind-high-performance-linux-networking-85a15e6bde90

@@ -3,6 +3,7 @@ i used many ressource to understand what is http and how the web server should b
     http
     https://youtu.be/wW2A5SZ3GkI?si=M8wnSkrGNyc8SBNA
     https://youtu.be/pi4gaFDBtMc?si=Qyxv1WCeoCibg40b
+    
     nginx
     https://youtu.be/I6dpN0geIb4?si=-gGnzCrGz5hLEsxN
     how to write config file nginx
