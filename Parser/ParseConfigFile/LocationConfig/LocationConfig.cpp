@@ -130,6 +130,7 @@ clsLocation::clsLocation(const clsLocation &loc) : ctx(loc.ctx)
 	_client_max_body_size = loc._client_max_body_size;
 	_return = loc._return;
 	_upload_store = loc._upload_store;
+	_upload_location = loc._upload_location;
 	_cgi_pass = loc._cgi_pass;
 	_error_pages = loc._error_pages;
 	_defaultErrorPage = &_error_pages[1];
