@@ -317,8 +317,8 @@ void decode_segment(const std::string& uri, size_t start, size_t end, std::strin
 	}
 }
 
-void resolve_segment(const std::string& segment, std::string& outUri) {
-	if (segment == ".") return;
+void resolve_segment(const std::string& segment, std::string& outUri, bool addSlash) {
+	if (addSlash && segment == ".") return;
 	
 	if (segment == "..")
 	{
@@ -332,14 +332,14 @@ void resolve_segment(const std::string& segment, std::string& outUri) {
 		}
 		return;
 	}
-	outUri += '/';
+	if (addSlash)
+		outUri += '/';
 	outUri += segment;
 }
 
 HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) {
 	if (uri.empty()) {
-		outUri = "/";
-		return HttpError();
+		return HttpError(400, "is empty");
 	}
 	
 	outUri.clear();
@@ -350,6 +350,7 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
 
 	size_t len = uri.length();
 	size_t i = 0;
+	bool isStart = true;
 
 	while (i < len) {
 		if (uri[i] == '/') {
@@ -361,13 +362,17 @@ HttpError URIParser::normalizePath(const std::string& uri, std::string& outUri) 
 		while (i < len && uri[i] != '/')
 			i++;
 		decode_segment(uri, start, i, decodedBuffer);
-		resolve_segment(decodedBuffer, outUri);
+		if (isStart && uri[0] != '/')
+			resolve_segment(decodedBuffer, outUri, false);
+		else
+			resolve_segment(decodedBuffer, outUri, true);
+		isStart = false;
 	}
 
-	if (outUri.empty())
-		outUri = "/";
+	if (uri.empty()) 
+		return HttpError(400, "is empty");
 
-	if (len > 1 && uri[len - 1] == '/' && outUri[outUri.size() - 1] != '/')
+	if (outUri[outUri.size() - 1] != '/')
 		outUri += '/';
 
 	return HttpError();
