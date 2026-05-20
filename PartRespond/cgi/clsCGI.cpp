@@ -435,17 +435,18 @@ bool clsCGI::_childeProcesse()
     }
     int Start = HelperFunctions::FindChar(_DataRequest.getPhysicalPath(), HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath()), '.');
     int Pos = HelperFunctions::FindCharFromLast(_DataRequest.getPhysicalPath(), Start, '/');
-    char C = _DataRequest.getPhysicalPath()[Pos];
-    _DataRequest.getPhysicalPath()[Pos] = '\0';
+    if (!Pos)
+      _DataRequest.getPhysicalPath()[++Pos] = '\0';
+    else
+        _DataRequest.getPhysicalPath()[Pos] = '\0';
     if (chdir(_DataRequest.getPhysicalPath())  == -1)
         return (close(Fd), close(_pip[1]), true);
-    _DataRequest.getPhysicalPath()[Pos] = C;
+    _ARG[1] = &_DataRequest.getPhysicalPath()[++Pos];
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
     if (!_DataRequest.getFilePathBody().empty())
         close(Fd);
-    
     execve(_ARG[0], _ARG, _ENV);
     perror("execve: ");
     return true;

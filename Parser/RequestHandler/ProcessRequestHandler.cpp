@@ -221,7 +221,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 
 	if (!bestLocation)
 	{
-		error.setStatus(500, "Internal Server Error");
+		error.setStatus(404, "Not Found");
 		return (handler->setError(error), false);
 	}
 

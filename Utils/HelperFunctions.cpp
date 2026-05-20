@@ -438,7 +438,7 @@ void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &Clean
 	while (i < LengthData && BigData[i] != '\n')
 	{
 		(MaxSizeHeader)++;
-		if ((MaxSizeHeader) > 4000)
+		if ((MaxSizeHeader) > (MAX_HEADERS / 2))
 			return;
 		CleanLine += BigData[i];
 		i++;
@@ -456,7 +456,6 @@ void HelperFunctions::GTMHTTP(tm *GMT, std::string &Str)
 {
 	const std::string Days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	const std::string Months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	std::stringstream ss;
 	Str += Days[GMT->tm_wday];
 	Str += ", ";
 	NumToStr(GMT->tm_mday, Str);
@@ -849,8 +848,8 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 		Offset++;
 		i++;
 	}
-	if (!Offset || Offset != LengthBuffer)
+	if (Offset > 0 && Offset != LengthBuffer)
 		Buffer[Offset] = '\0';
-	else
+	else if (LengthBuffer == Offset)
 		Buffer[LengthBuffer - 1] = '\0';
 }

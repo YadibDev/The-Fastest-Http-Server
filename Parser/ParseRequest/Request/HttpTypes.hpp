@@ -63,7 +63,6 @@ public:
 		static const char *arr[M_METHOD_COUNT] = {"GET", "POST", "DELETE"};
 		return arr;
 	}
-
 	static const char **headers()
 	{
 		static const char *arr[H_COUNT] = {

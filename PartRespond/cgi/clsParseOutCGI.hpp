@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   clsParseOutCGI.hpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 14:39:48 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/13 15:05:05 by achamdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef CLS_PARSE_OUT_CGI_HPP
 #define CLS_PARSE_OUT_CGI_HPP
 
@@ -30,10 +18,9 @@ struct stHeadersCGI
 
 class clsParseOutCGI
 {
-    stMod::eMod _Mod[10];
+    stMod::eMod _Mod[11];
     stHeadersCGI::eHeaders _ExistHeaders[4];
     bool _FoundBody;
-    bool _Erno;
     short _Status;
     short _Counter;
     size_t _BytesBody;
@@ -67,7 +54,6 @@ class clsParseOutCGI
     void _HeaderResponseCGI();
     void _Transfer_Encoding();
     void _Date();
-    void _CachControl();
     void _Server();
     void _StatusNormal();
     void _StatusRedirection();
@@ -78,6 +64,7 @@ class clsParseOutCGI
     void _CreatFileTemp();
     bool _IsValidHeaderValueChar(unsigned char C);
     void _InitialInternalRedirect();
+    short _AtoiStatusCode(const std::string &StringDigit, short Start, short End);
 
 public:
     clsParseOutCGI(RequestHandler &_DataRequest,std::string &Body,  std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
@@ -88,11 +75,10 @@ public:
     void ReceivingData(const char *Arr, short Length);
     void SetProcessIsFinish(bool ProcessIsFinish);
     bool GetModTransferData() const;
-    bool GetErno();
     std::string &GetInternalRedirectSrc();
     short GetStatus();
-    size_t GetSizeBody();
     bool GetIsConnection();
+    size_t GetSizeBody();
     void Reset();
 
     ~clsParseOutCGI();
