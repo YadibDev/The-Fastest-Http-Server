@@ -442,7 +442,6 @@ bool clsCGI::_childeProcesse()
     if (chdir(_DataRequest.getPhysicalPath())  == -1)
         return (close(Fd), close(_pip[1]), true);
     _ARG[1] = &_DataRequest.getPhysicalPath()[++Pos];
-    std::cout << _ARG[1] << std::endl;
     if (dup2(_pip[1], 1) == -1)
         return (close(Fd), close(_pip[1]), true);
     close(_pip[1]);
