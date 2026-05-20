@@ -4,10 +4,8 @@ clsServerConfig::clsServerConfig(s_parse_context &ctxs) : ctx(ctxs)
 {
 	_max_body_size = 1048576;
 
-	// Root default initialization
 	_root = "default";
 
-	// Index default initialization
 	s_uri_entry defaultIndex;
 	defaultIndex.raw_path = "index.html";
 	defaultIndex.initView();

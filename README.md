@@ -1,78 +1,52 @@
-Transactions:		   249963    hits
-Availability:		      100.00 %
-Elapsed time:		       15.89 secs
-Data transferred:	      375.73 MB
-Response time:		        3.34 ms
-Transaction rate:	    15730.84 trans/sec
-Throughput:		       23.65 MB/sec
-Concurrency:		       52.47
-Successful transactions:   250145
-Failed transactions:	        0
-Longest transaction:	      180.00 ms
-Shortest transaction:	        0.00 ms
- 
-
+Webserv
 
 Lifting the server siege...
-Transactions:		   211445    hits
+Transactions:		   264992    hits
 Availability:		      100.00 %
-Elapsed time:		       15.86 secs
-Data transferred:	      317.60 MB
-Response time:		       14.88 ms
-Transaction rate:	    13331.97 trans/sec
-Throughput:		       20.03 MB/sec
-Concurrency:		      198.39
-Successful transactions:   211445
+Elapsed time:		       15.28 secs
+Data transferred:	     1366.44 MB
+Response time:		       11.45 ms
+Transaction rate:	    17342.41 trans/sec
+Throughput:		       89.43 MB/sec
+Concurrency:		      198.58
+Successful transactions:   264992
 Failed transactions:	        0
-Longest transaction:	       90.00 ms
+Longest transaction:	      580.00 ms
 Shortest transaction:	        0.00 ms
 
 
 
 
+nginx
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Lifting the server siege...
-Transactions:		   247151    hits
-Availability:		      100.00 %
-Elapsed time:		       15.81 secs
-Data transferred:	      371.23 MB
-Response time:		        3.01 ms
-Transaction rate:	    15632.57 trans/sec
-Throughput:		       23.48 MB/sec
-Concurrency:		       47.04
-Successful transactions:   247151
-Failed transactions:	        0
-Longest transaction:	       60.00 ms
+Transactions:		   234792    hits
+Availability:		       99.91 %
+Elapsed time:		       15.76 secs
+Data transferred:	     1210.71 MB
+Response time:		       13.14 ms
+Transaction rate:	    14897.97 trans/sec
+Throughput:		       76.82 MB/sec
+Concurrency:		      195.79
+Successful transactions:   234793
+Failed transactions:	      200
+Longest transaction:	     1040.00 ms
 Shortest transaction:	        0.00 ms
- 
 
 
 
+webserv
 
-Transactions:		   192180    hits
+
+Transactions:		   257857    hits
 Availability:		      100.00 %
-Elapsed time:		       15.35 secs
-Data transferred:	      288.66 MB
-Response time:		        3.96 ms
-Transaction rate:	    12519.87 trans/sec
-Throughput:		       18.81 MB/sec
-Concurrency:		       49.61
-Successful transactions:   192180
+Elapsed time:		       15.37 secs
+Data transferred:	     1329.64 MB
+Response time:		       11.83 ms
+Transaction rate:	    16776.64 trans/sec
+Throughput:		       86.51 MB/sec
+Concurrency:		      198.47
+Successful transactions:   257857
 Failed transactions:	        0
-Longest transaction:	       20.00 ms
+Longest transaction:	      590.00 ms
 Shortest transaction:	        0.00 ms

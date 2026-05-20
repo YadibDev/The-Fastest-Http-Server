@@ -82,7 +82,6 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 	std::string root;
 	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
 
-	std::cout << root << std::endl;
 	if (ctx.error.isError()) return "";
 
 	if (!validateDirectoryPath(root, ctx, "root"))
@@ -476,16 +475,27 @@ unsigned long long ConfigDirectiveParser::convertToBytes(long long value, char u
 }
 
 long long ConfigDirectiveParser::extractNumericPart(const std::string& str, short &length) {
-	long long result = 0;
-	size_t i = 0;
-	while (i < str.length() && std::isdigit(str[i])) {
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	length = i;
-	return result;
-}
+    long long result = 0;
+    size_t i = 0;
+    
+    long long maxLimit = 922337203685477580LL; 
 
+    while (i < str.length() && std::isdigit(str[i])) {
+        int digit = str[i] - '0';
+
+        if (result > maxLimit || (result == maxLimit && digit > 7)) {
+            result = 9223372036854775807LL; 
+            while (i < str.length() && std::isdigit(str[i])) i++; // تجاوز بقية الأرقام التالفة
+            length = i;
+            return result;
+        }
+
+        result = result * 10 + digit;
+        i++;
+    }
+    length = i;
+    return result;
+}
 
 sockaddr_in ConfigDirectiveParser::setSockaddr_in(const std::string& input, HttpError& error) {
 
