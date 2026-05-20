@@ -20,7 +20,6 @@ private:
 	std::string								_upload_location;
 	std::map<std::string, std::string>  _cgi_pass;
 	std::map<short, stErrorPagedata>    _error_pages;
-	const stErrorPagedata*				_defaultErrorPage;
 
 	bool    ParseRoot();
 	bool    ParseAlias();

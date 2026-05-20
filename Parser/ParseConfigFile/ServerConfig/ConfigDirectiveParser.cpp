@@ -2,121 +2,123 @@
 
 
 bool ConfigDirectiveParser::validateDirectoryPath(const std::string& path,
-                                                  s_parse_context& ctx,
-                                                  const std::string& directiveName)
+												  s_parse_context& ctx,
+												  const std::string& directiveName)
 {
-    struct stat st;
+	struct stat st;
 
-    if (stat(path.c_str(), &st) != 0) {
-        ctx.error.setStatus(400, directiveName + " path does not exist: " + path);
-        return false;
-    }
+	if (stat(path.c_str(), &st) != 0) {
+		ctx.error.setStatus(400, directiveName + " path does not exist: " + path);
+		return false;
+	}
 
-    if (!S_ISDIR(st.st_mode)) {
-        ctx.error.setStatus(400, directiveName + " path is not a directory: " + path);
-        return false;
-    }
+	if (!S_ISDIR(st.st_mode)) {
+		ctx.error.setStatus(400, directiveName + " path is not a directory: " + path);
+		return false;
+	}
 
-    if (access(path.c_str(), R_OK | X_OK) != 0) {
-        ctx.error.setStatus(400,
-            "Insufficient permissions on " + directiveName + " directory: " + path);
-        return false;
-    }
+	if (access(path.c_str(), R_OK | X_OK) != 0) {
+		ctx.error.setStatus(400,
+			"Insufficient permissions on " + directiveName + " directory: " + path);
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& loc) {
-    
-    if (ctx.parser.peek().type != TOKEN_WORD) {
-        return (ctx.error.setStatus(400, "Location Error: Expected a modifier or a URI path"), false);
-    }
+	
+	if (ctx.parser.peek().type != TOKEN_WORD) {
+		return (ctx.error.setStatus(400, "Location Error: Expected a modifier or a URI path"), false);
+	}
 
-    std::string token = ctx.parser.peek().value;
+	std::string token = ctx.parser.peek().value;
 
-    if (token == "=")
-    {
-        loc.matchType = stlocation::EXACT;
-        ctx.parser.advance();
-        skipWhitespace(ctx.parser);
-    }
-    else if (token == "^~")
-    {
-        loc.matchType = stlocation::PREFIX;
-        ctx.parser.advance();
-        skipWhitespace(ctx.parser);
-    }
-    else if (token == "~" || token == "~*")
-        return (ctx.error.setStatus(400, "Location Error: Regex modifiers (~, ~*) are not supported"), false);
-    else
-        loc.matchType = stlocation::PREFIX;
+	if (token == "=")
+	{
+		loc.matchType = stlocation::EXACT;
+		ctx.parser.advance();
+		skipWhitespace(ctx.parser);
+	}
+	else if (token == "^~")
+	{
+		loc.matchType = stlocation::PREFIX;
+		ctx.parser.advance();
+		skipWhitespace(ctx.parser);
+	}
+	else if (token == "~" || token == "~*")
+		return (ctx.error.setStatus(400, "Location Error: Regex modifiers (~, ~*) are not supported"), false);
+	else
+		loc.matchType = stlocation::PREFIX;
 
-    if (ctx.parser.peek().type != TOKEN_WORD)
-        return (ctx.error.setStatus(400, "Location Error: Missing URI path after modifier"), false);
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Location Error: Missing URI path after modifier"), false);
 
-    loc.uri = ctx.parser.peek().value;
+	loc.uri = ctx.parser.peek().value;
 
-    if (loc.uri.empty())
-        return (ctx.error.setStatus(400, "Location Error: URI path cannot be empty"), false);
+	if (loc.uri.empty())
+		return (ctx.error.setStatus(400, "Location Error: URI path cannot be empty"), false);
 
-    if (loc.uri[0] != '/')
-        return (ctx.error.setStatus(400, "Location Error: URI path must start with '/' (found: '" + loc.uri + "')"), false);
+	if (loc.uri[0] != '/')
+		return (ctx.error.setStatus(400, "Location Error: URI path must start with '/' (found: '" + loc.uri + "')"), false);
 
-    ctx.parser.advance();
-    skipWhitespace(ctx.parser);
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
 
-    if (ctx.parser.peek().type != TOKEN_LBRACE)
-        return (ctx.error.setStatus(400, "Location Error: Expected '{' after URI path"), false);
+	if (ctx.parser.peek().type != TOKEN_LBRACE)
+		return (ctx.error.setStatus(400, "Location Error: Expected '{' after URI path"), false);
 
-    ctx.parser.advance();
-    skipWhitespace(ctx.parser);
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
 
-    return true;
+	return true;
 }
 
 std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
-    ctx.parser.advance(); 
-    if (ctx.parser.peek().type != TOKEN_WORD)
-        return (ctx.error.setStatus(400, "Expected path after 'root'"), "");
+	ctx.parser.advance(); 
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'root'"), "");
 
-    std::string root;
-    ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
-    if (ctx.error.isError()) return "";
+	std::string root;
+	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
 
-    if (!validateDirectoryPath(root, ctx, "root"))
-        return "";
+	std::cout << root << std::endl;
+	if (ctx.error.isError()) return "";
 
-    ctx.parser.advance();
-    if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-        return (ctx.error.setStatus(400, "Missing ';' after root"), "");
+	if (!validateDirectoryPath(root, ctx, "root"))
+		return "";
 
-    ctx.parser.advance();
-    skipWhitespace(ctx.parser);
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		return (ctx.error.setStatus(400, "Missing ';' after root"), "");
 
-    return root;
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
+
+	return root;
 }
 
 std::string ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
 {
-    ctx.parser.advance();
-    if (ctx.parser.peek().type != TOKEN_WORD)
-        return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
 
-    std::string alias;
-    ctx.error = URIParser::normalizePath(ctx.parser.peek().value, alias);
-    if (ctx.error.isError()) return "";
+	std::string alias;
+	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, alias);
+	if (ctx.error.isError()) return "";
 
-    if (!validateDirectoryPath(alias, ctx, "alias"))
-        return ""; 
+	if (!validateDirectoryPath(alias, ctx, "alias"))
+		return ""; 
 
-    ctx.parser.advance();
-    if (ctx.parser.peek().type != TOKEN_SEMICOLON)
-        return (ctx.error.setStatus(400, "Missing ';' after alias"), "");
+	ctx.parser.advance();
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+		return (ctx.error.setStatus(400, "Missing ';' after alias"), "");
 
-    ctx.parser.advance();
-    skipWhitespace(ctx.parser);
+	ctx.parser.advance();
+	skipWhitespace(ctx.parser);
 
-    return alias;
+	return alias;
 }
 
 unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context& ctx) {
@@ -148,12 +150,11 @@ std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx)
 
 	while (ctx.parser.peek().type == TOKEN_WORD)
 	{
-        std::string index = ctx.parser.peek().value;
-        if (index.empty())
-            return (ctx.error.setStatus(400, "Index Is Empty"), indixes);
+		std::string index = ctx.parser.peek().value;
+		if (index.empty())
+			return (ctx.error.setStatus(400, "Index Is Empty"), indixes);
 		indixes.push_back(index);
 		ctx.parser.advance();
-		
 	}
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
@@ -213,33 +214,60 @@ stReturnData ConfigDirectiveParser::ParseReturn(s_parse_context& ctx) {
 
 	ctx.parser.advance();
 
-	const Token<TokenType>& first = ctx.parser.peek();
-	long code = std::strtol(first.value.c_str(), &end, 10);
-	bool isNumeric = (*end == '\0');
+	if (ctx.parser.peek().type == TOKEN_SEMICOLON)
+	{
+		ctx.error.setStatus(400, "Return Error: Missing return value or status code");
+		return returnData;
+	}
 
-	if (!isNumeric) {
-		if (first.value.compare(0, 7, "http://") != 0) {
-			ctx.error.setStatus(400, "invalid return value \"" + first.value + "\"");
+	std::string first = ctx.parser.peek().value;
+	long code = std::strtol(first.c_str(), &end, 10);
+	bool isNumeric = (*end == '\0' && !first.empty());
+
+	if (!isNumeric)
+	{
+		bool isHttp = (first.compare(0, 7, "http://") == 0);
+		
+		if (!isHttp)
+		{
+			ctx.error.setStatus(400, "invalid return URL \"" + first + "\", must start with http://");
 			return returnData;
 		}
+		
 		returnData.code = 302;
-		returnData.value.raw_path = first.value;
+		returnData.value.raw_path = first;
 		ctx.parser.advance();
 	}
-	else {
+	else
+	{
+		if (code < 100 || code > 599)
+		{
+			ctx.error.setStatus(400, "invalid return status code \"" + first + "\"");
+			return returnData;
+		}
+
 		returnData.code = (int)code;
 		ctx.parser.advance();
 
-		if (ctx.parser.peek().type == TOKEN_WORD) {
+		if (ctx.parser.peek().type == TOKEN_WORD)
+		{
 			returnData.value.raw_path = ctx.parser.peek().value;
 			ctx.parser.advance();
 		}
+
+		if (returnData.code >= 300 && returnData.code <= 399 && returnData.value.raw_path.empty())
+		{
+			ctx.error.setStatus(400, "return status code " + first + " requires a redirection URL or path");
+			return returnData;
+		}
 	}
 
-	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
-		ctx.error.setStatus(400, "Syntax Error: Missing ';' after return");
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+	{
+		ctx.error.setStatus(400, "Syntax Error: Expected ';' after return directive");
 		return returnData;
 	}
+	
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
 
@@ -252,12 +280,23 @@ std::string ConfigDirectiveParser::ParseUploadStore(s_parse_context& ctx) {
 		return (ctx.error.setStatus(400, "Expected path after 'upload_path'"), "");
 
 	std::string path = ctx.parser.peek().value;
-	if (HelperFunctions::isValidPath(path, true) != 200)
-		return (ctx.error.setStatus(400, "Invalid upload path -> " + path), "");
+	
+	short pathStatus = HelperFunctions::isValidPath(path, true, W_OK);
+	
+	if (pathStatus == 404)
+		return (ctx.error.setStatus(400, "Upload Error: Path does not exist -> " + path), "");
+	else if (pathStatus == 409)
+		return (ctx.error.setStatus(400, "Upload Error: Path must be a directory -> " + path), "");
+	else if (pathStatus == 403)
+		return (ctx.error.setStatus(400, "Upload Error: Server lacks write permission (W_OK) for -> " + path), "");
+	else if (pathStatus != 200)
+		return (ctx.error.setStatus(400, "Upload Error: Invalid path -> " + path), "");
 	
 	ctx.parser.advance();
-	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
+	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
 		ctx.error.setStatus(400, "Missing ';' after upload_path");
+		return "";
+	}
 
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
@@ -281,34 +320,47 @@ std::string ConfigDirectiveParser::ParseUploadLocation(s_parse_context& ctx)
 	return path;
 }
 
+
 void ConfigDirectiveParser::ParseCGI(s_parse_context& ctx, std::map<std::string, std::string>& cgiMap) {
-	ctx.parser.advance();
-	if (ctx.parser.peek().type != TOKEN_WORD) {
-		ctx.error.setStatus(400, "CGI Error: Expected extension");
-		return;
-	}
-	const std::string extension = ctx.parser.peek().value;
 	ctx.parser.advance();
 
 	if (ctx.parser.peek().type != TOKEN_WORD) {
-		ctx.error.setStatus(400, "CGI Error: Expected binary path");
+		ctx.error.setStatus(400, "CGI Error: Expected extension after directive");
+		return;
+	}
+	const std::string extension = ctx.parser.peek().value;
+
+	if (extension.empty() || extension[0] != '.') {
+		ctx.error.setStatus(400, "CGI Error: Invalid extension \"" + extension + "\". Must start with '.' followed by characters");
+		return;
+	}
+	ctx.parser.advance();
+
+	if (ctx.parser.peek().type != TOKEN_WORD) {
+		ctx.error.setStatus(400, "CGI Error: Expected binary path for extension \"" + extension + "\"");
 		return;
 	}
 	const std::string binPath = ctx.parser.peek().value;
 
-	if (HelperFunctions::isValidPath(binPath, false) != 200)
-	{
-		ctx.error.setStatus(400, "No such file 'Executable Path'");
+	if (HelperFunctions::isValidPath(binPath, false, X_OK) != 200) {
+		ctx.error.setStatus(400, "CGI Error: Executable path \"" + binPath + "\" does not exist");
+		return;
+	}
+
+	if (cgiMap.find(extension) != cgiMap.end()) {
+		ctx.error.setStatus(400, "CGI Error: Duplicate handler definition for extension \"" + extension + "\"");
 		return;
 	}
 
 	ctx.parser.advance();
+
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON) {
-		ctx.error.setStatus(400, "CGI Error: Expected ';'");
+		ctx.error.setStatus(400, "CGI Error: Expected ';' after binary path");
 		return;
 	}
 	ctx.parser.advance();
 	skipWhitespace(ctx.parser);
+
 	cgiMap[extension] = binPath;
 }
 
@@ -318,9 +370,9 @@ short ConfigDirectiveParser::parseMethods(s_parse_context& ctx) {
 
 	while (ctx.parser.peek().type == TOKEN_WORD) {
 		std::string method = ctx.parser.peek().value;
-		if (method == "GET") combinedMethods |= 1;
-		else if (method == "POST") combinedMethods |= 2;
-		else if (method == "DELETE") combinedMethods |= 4;
+		if (method == "GET") combinedMethods |= BIT_GET_METHOD;
+		else if (method == "POST") combinedMethods |= BIT_POST_METHOD;
+		else if (method == "DELETE") combinedMethods |= BIT_DELETE_METHOD;
 		else return (ctx.error.setStatus(400, "Unknown method: " + method), 0);
 		ctx.parser.advance();
 	}
@@ -401,9 +453,6 @@ bool ConfigDirectiveParser::ParseErrorPage(s_parse_context& ctx, std::map<short,
 
 
 
-// Private Helpers
-
-
 void	ConfigDirectiveParser::DefineUri(s_uri_entry &uri)
 {
 	if (uri.getPath()[0] == '/')
@@ -456,9 +505,6 @@ sockaddr_in ConfigDirectiveParser::setSockaddr_in(const std::string& input, Http
 	std::string ip_part = input.substr(0, colon_pos);
 	std::string port_part = input.substr(colon_pos + 1);
 
-	// if (ip_part == "*" || ip_part == "localhost")
-		// ip_part = "0.0.0.0";
-
 	struct in_addr ipv4_addr;
 	if (inet_pton(AF_INET, ip_part.c_str(), &ipv4_addr) != 1) {
 		error.setStatus(400, "setSockaddr_in: invalid IPv4 address: '" + ip_part + "'");
@@ -472,7 +518,6 @@ sockaddr_in ConfigDirectiveParser::setSockaddr_in(const std::string& input, Http
 		return serv_addr;
 	}
 
-	
 	std::memset(&serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(static_cast<uint16_t>(port));

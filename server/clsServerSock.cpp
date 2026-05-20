@@ -56,8 +56,8 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
     const sockaddr *addr = reinterpret_cast<const sockaddr *>(&temp);
 
     int enable = 1;
-    // read about it 
-    setsockopt(fdSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)); // i must read about SOL_SOCKET
+    
+    setsockopt(fdSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)); // handle timeout problem
 
     if (bind(fdSock, addr, sizeof(sockaddr_in)) == -1)
     {
@@ -71,6 +71,7 @@ int clsServerSock::_buildSingleSocket(sockaddr_in &temp)
         throw std::runtime_error("listen system call fail");
     }
 
+    // each ip and port have same index
     this->_allIps.push_back(ipV4);
     this->_allPorts.push_back(port);
     _totalInterfaces++;

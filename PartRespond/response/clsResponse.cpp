@@ -127,7 +127,6 @@ void clsResponse::_ErrorRespnseHandling()
     else
     {
         _Mod[stMod::ERROR] = stMod::EMPTY;
-        
         if (!_DataRequest.getDefaultErrorPage() && _Status != 500)
         {
             if (_DataRequest.getAutoIndex())
@@ -136,7 +135,7 @@ void clsResponse::_ErrorRespnseHandling()
                 if (_Mod[stMod::ERROR] == stMod::ERROR)
                     _Mod[stMod::AUTOINDEX] = stMod::EMPTY;
                 else
-                    _ErrorPage.SetAutoIndex(_DataRequest.getAutoIndex());
+                    _ErrorPage.SetAutoIndex(true);
             }
             if (_Mod[stMod::ERROR] != stMod::ERROR)
                 _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath(), _DataRequest.getSizeFile());
@@ -220,7 +219,6 @@ void clsResponse::_StoredInFileOrStr()
 {
     if (_FileFromDisk.empty())
         return;
-
     _BodySize = _DataRequest.getSizeFile();
     if (_BodySize > MAX_BODY)
     {
@@ -243,7 +241,6 @@ void clsResponse::_StoredInFileOrStr()
     _FileFromDisk = "";
     close(FD);
 }
-
 void clsResponse::SetStatus(short Status)
 {
     _Status = Status;

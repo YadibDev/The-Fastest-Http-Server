@@ -82,6 +82,21 @@ server {
 
 ## 🚀 Ressources and how AI used
 
+### 🤖 Use of AI & Research Method
+
+For this project, we used AI as a learning assistant to help us break down complex topics and resources. However, we balanced this with manual research to ensure we built strong, independent problem-solving skills.
+
+How We Used AI:
+Explaining Complex Concepts: We used AI to break down low-level systems logic, such as how epoll works behind the scenes.
+
+Simplifying Technical Terms: It helped us understand difficult technical words and complex English vocabulary.
+
+Decoding Documentation: We used it as a helper to navigate and understand  documents like the RFC (Request for Comments) standards.
+
+Writing the README: We used it as an editor to help organize our thoughts, correct our grammar, and polish this README file to make it clear and professional.
+
+### Ressources :
+
 HTTP RESSOURCES : \
 https://youtu.be/wW2A5SZ3GkI?si=M8wnSkrGNyc8SBNA \
 https://www.youtube.com/watch?v=pi4gaFDBtMc \

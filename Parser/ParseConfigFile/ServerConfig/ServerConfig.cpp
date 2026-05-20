@@ -2,8 +2,8 @@
 
 clsServerConfig::clsServerConfig(s_parse_context &ctxs) : ctx(ctxs)
 {
-	_max_body_size = 1048576; 
-	
+	_max_body_size = 1048576;
+
 	// Root default initialization
 	_root = "default";
 
@@ -18,7 +18,7 @@ clsServerConfig::clsServerConfig(s_parse_context &ctxs) : ctx(ctxs)
 
 clsServerConfig::~clsServerConfig() {}
 
-bool    clsServerConfig::ParseRoot()
+bool clsServerConfig::ParseRoot()
 {
 	_root = ConfigDirectiveParser::ParseRoot(ctx);
 	if (ctx.error.isError())
@@ -26,11 +26,12 @@ bool    clsServerConfig::ParseRoot()
 	return (true);
 }
 
-bool    clsServerConfig::ParseIndex()
+bool clsServerConfig::ParseIndex()
 {
 	std::vector<std::string> tmpIndices = ConfigDirectiveParser::ParseIndex(ctx);
 	_index.clear();
-	for (size_t i = 0; i < tmpIndices.size(); ++i) {
+	for (size_t i = 0; i < tmpIndices.size(); ++i)
+	{
 		s_uri_entry entry;
 		entry.raw_path = tmpIndices[i];
 		entry.initView();
@@ -41,11 +42,11 @@ bool    clsServerConfig::ParseIndex()
 	return (true);
 }
 
-bool    clsServerConfig::ParseLocation()
+bool clsServerConfig::ParseLocation()
 {
 	clsLocation loc(ctx, _autoindex);
 	loc.parseLocation();
-	
+
 	if (!loc.getError().isError())
 	{
 		if (loc.getLocationData().matchType == stlocation::EXACT)
@@ -62,25 +63,25 @@ bool    clsServerConfig::ParseLocation()
 }
 
 // Logic remains identical for the rest
-bool    clsServerConfig::ParseListen()
+bool clsServerConfig::ParseListen()
 {
 	_listens.push_back(ConfigDirectiveParser::ParseListen(ctx));
 	return !ctx.error.isError();
 }
 
-bool    clsServerConfig::ParseErrorPage()
+bool clsServerConfig::ParseErrorPage()
 {
 	ConfigDirectiveParser::ParseErrorPage(ctx, _error_pages);
 	return !ctx.error.isError();
 }
 
-bool    clsServerConfig::ParseClientMaxBodySize()
+bool clsServerConfig::ParseClientMaxBodySize()
 {
 	_max_body_size = ConfigDirectiveParser::ParseClientMaxBodySize(ctx);
 	return !ctx.error.isError();
 }
 
-bool    clsServerConfig::ParseReturn()
+bool clsServerConfig::ParseReturn()
 {
 	if (_flags & Directives::D_RETURN)
 		return (ctx.error.setStatus(1, "Directives: return already set"), false);
@@ -90,58 +91,68 @@ bool    clsServerConfig::ParseReturn()
 	return !ctx.error.isError();
 }
 
-bool    clsServerConfig::ParseAutoIndex()
+bool clsServerConfig::ParseAutoIndex()
 {
 	_autoindex = ConfigDirectiveParser::ParseAutoIndex(ctx);
 	return !ctx.error.isError();
 }
 
-enBlocksDirective   clsServerConfig::getServerDirectiveType(const std::string& key)
+enBlocksDirective clsServerConfig::getServerDirectiveType(const std::string &key)
 {
 	static std::map<std::string, enBlocksDirective> directives;
 	if (directives.empty())
 	{
-		directives["listen"]               = L_DIR_LISTEN;
-		directives["root"]                  = L_DIR_ROOT;
-		directives["index"]                 = L_DIR_INDEX;
+		directives["listen"] = L_DIR_LISTEN;
+		directives["root"] = L_DIR_ROOT;
+		directives["index"] = L_DIR_INDEX;
 		directives["client_max_body_size"] = L_DIR_CLIENT_MAX_BODY_SIZE;
-		directives["autoindex"]            = L_DIR_AUTOINDEX;
-		directives["return"]                = L_DIR_RETURN;
-		directives["error_page"]           = L_DIR_ERROR_PAGE;
-		directives["location"]             = L_DIR_LOCATION;
+		directives["autoindex"] = L_DIR_AUTOINDEX;
+		directives["return"] = L_DIR_RETURN;
+		directives["error_page"] = L_DIR_ERROR_PAGE;
+		directives["location"] = L_DIR_LOCATION;
 	}
 	std::map<std::string, enBlocksDirective>::iterator it = directives.find(key);
-	if (it != directives.end()) return it->second;
+	if (it != directives.end())
+		return it->second;
 	return L_DIR_UNKNOWN;
 }
 
-bool    clsServerConfig::ParseServerDirective()
+bool clsServerConfig::ParseServerDirective()
 {
-	if (ctx.parser.peek().type != TOKEN_WORD) return (false);
+	if (ctx.parser.peek().type != TOKEN_WORD)
+		return (false);
 	std::string directive = ctx.parser.peek().value;
 	enBlocksDirective dirType = getServerDirectiveType(directive);
 
 	switch (dirType)
 	{
-		case L_DIR_LISTEN:                  return ParseListen();
-		case L_DIR_ROOT:                    return ParseRoot();
-		case L_DIR_INDEX:                   return ParseIndex();
-		case L_DIR_CLIENT_MAX_BODY_SIZE:    return ParseClientMaxBodySize();
-		case L_DIR_AUTOINDEX:               return ParseAutoIndex();
-		case L_DIR_RETURN:                  return ParseReturn();
-		case L_DIR_ERROR_PAGE:              return ParseErrorPage();
-		case L_DIR_LOCATION:                return ParseLocation();
-		default: return (ctx.error.setStatus(400, "Error in " + directive), false);
+	case L_DIR_LISTEN:
+		return ParseListen();
+	case L_DIR_ROOT:
+		return ParseRoot();
+	case L_DIR_INDEX:
+		return ParseIndex();
+	case L_DIR_CLIENT_MAX_BODY_SIZE:
+		return ParseClientMaxBodySize();
+	case L_DIR_AUTOINDEX:
+		return ParseAutoIndex();
+	case L_DIR_RETURN:
+		return ParseReturn();
+	case L_DIR_ERROR_PAGE:
+		return ParseErrorPage();
+	case L_DIR_LOCATION:
+		return ParseLocation();
+	default:
+		return (ctx.error.setStatus(400, "Error in " + directive), false);
 	}
 }
 
-void    clsServerConfig::initUri()
+void clsServerConfig::initUri()
 {
 	ConfigDirectiveParser::DefineUri(_return.value);
 	_return.value.initView();
 
-
-	for(size_t i = 0; i < _LocationExact.size(); i++)
+	for (size_t i = 0; i < _LocationExact.size(); i++)
 	{
 		if (_LocationExact[i].getRoot().empty() && _LocationExact[i].getAlias().empty())
 			_LocationExact[i].setRoot(_root);
@@ -152,7 +163,7 @@ void    clsServerConfig::initUri()
 		_LocationExact[i].initUri();
 	}
 
-	for(size_t i = 0; i < _LocationPrefix.size(); i++)
+	for (size_t i = 0; i < _LocationPrefix.size(); i++)
 	{
 		if (_LocationPrefix[i].getRoot().empty() && _LocationPrefix[i].getAlias().empty())
 			_LocationPrefix[i].setRoot(_root);
@@ -184,7 +195,7 @@ void    clsServerConfig::initUri()
 	_return.value.initView();
 }
 
-bool    clsServerConfig::parseBlockServer()
+bool clsServerConfig::parseBlockServer()
 {
 	ctx.parser.advance();
 	ConfigDirectiveParser::skipWhitespace(ctx.parser);
@@ -196,7 +207,8 @@ bool    clsServerConfig::parseBlockServer()
 
 	while (ctx.parser.peek().type != TOKEN_RBRACE && ctx.parser.peek().type != TOKEN_EOF)
 	{
-		if (!ParseServerDirective()) return (false);
+		if (!ParseServerDirective())
+			return (false);
 	}
 
 	if (ctx.parser.peek().type != TOKEN_RBRACE)

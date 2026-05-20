@@ -33,15 +33,18 @@ sPathType::e_path_type PathResolver::checkPath(char *path, UriStatus &flags, siz
 size_t PathResolver::percentEncoded(char *buffer, size_t bufferSize, const s_view &uri) {
     size_t svIdx = 0;
     size_t bufIdx = 0;
-    while (svIdx < uri.len && bufIdx < bufferSize - 1) {
-        if (uri.Data[svIdx] == '%' && svIdx + 2 < uri.len) {
+    while (svIdx < uri.len && bufIdx < bufferSize)
+    {
+        if (uri.Data[svIdx] == '%' && svIdx + 2 < uri.len)
+        {
             buffer[bufIdx++] = HelperFunctions::hexToDecS_view(&uri.Data[svIdx + 1], 2);
             svIdx += 3;
-        } else {
-            buffer[bufIdx++] = uri.Data[svIdx++];
         }
+        else
+            buffer[bufIdx++] = uri.Data[svIdx++];
     }
-    buffer[bufIdx] = '\0';
+    if (bufIdx < bufferSize)
+        buffer[bufIdx] = '\0';
     return bufIdx;
 }
 
@@ -55,6 +58,8 @@ bool PathResolver::createPhysicalPath(const clsLocation* bestLocation, char *des
 
     memcpy(destBuffer, base.c_str(), currentPos);
     size_t uriPartLen = percentEncoded(CleanUri, MAX_PATH_LEN, newUri);
+    HelperFunctions::RemoveDotSegmentsDirect(CleanUri, 
+											uriPartLen);
     const char* uriPart = CleanUri;
 
     if (!bestLocation->getAlias().empty()) {

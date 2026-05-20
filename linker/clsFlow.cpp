@@ -42,6 +42,7 @@ void clsFlow::_createBlocksServers(const char *configFile)
 
 		throw std::runtime_error(ConfigFile.getError().getMsgError());
 	}
+	
 
 	_allBlocks = &(ConfigFile.getServers());
 }

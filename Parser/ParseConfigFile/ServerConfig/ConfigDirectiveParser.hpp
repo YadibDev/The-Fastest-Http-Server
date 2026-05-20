@@ -4,10 +4,14 @@
 
 #include "../../Header/HeaderFiles.hpp"
 
+#define BIT_GET_METHOD 1
+#define BIT_POST_METHOD 2
+#define BIT_DELETE_METHOD 4
+
 
 enum enBlocksDirective
 {
-	L_DIR_LISTEN,
+	L_DIR_LISTEN = 5,
 	L_DIR_SERVER_NAME,
 	L_DIR_LOCATION,
 	L_DIR_ROOT,
