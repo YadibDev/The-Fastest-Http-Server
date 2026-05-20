@@ -21,11 +21,11 @@
 
 struct stEventProcess
 {
-    enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
+	enum eEventProcess {RUNINNG, THE_END, END_WITH_PARSE, END_WITH_TIMOUT = 504, END_UNKNOW = 500};
 };
 struct stEventData
 {
-    enum eEventData {STILL_EXIST, END_PIPE};
+	enum eEventData {STILL_EXIST, END_PIPE};
 };
 
 // achraf headers
@@ -48,10 +48,10 @@ struct UriStatus {
 
 struct sPathType {
 	enum e_path_type {
-	    PATH_NOT_FOUND = 0,
-	    PATH_FILE      = 1,
-	    PATH_DIR       = 2,
-	    PATH_OTHER     = 3
+		PATH_NOT_FOUND = 0,
+		PATH_FILE      = 1,
+		PATH_DIR       = 2,
+		PATH_OTHER     = 3
 	};
 };
 
@@ -59,7 +59,7 @@ struct s_uri_entry {
 	std::string     raw_path;
 	UriStatus       flags;
 	s_view          sv_raw_path;
-	uint8_t         redirect_count;
+	uint8_t			redirect_count;
 
 	s_uri_entry() : raw_path("")
 	{
@@ -103,80 +103,80 @@ public:
 	static bool checkIfTheFirstWord(std::string str, std::string Start, size_t POS);
 	static std::string normalizeLWS(const std::string &input);
 	static bool isLWS(char c);
-    static bool isspaceTabOrSp(char c);
+	static bool isspaceTabOrSp(char c);
 	static bool myIsspace(std::string str, size_t pos);
 	static std::vector<std::string> splitCommaSeparated(const std::string &value);
 	static bool strIsSpace(const std::string &str);
 	static bool isBoundary(const std::string &str, const std::string &boundary, std::string &remander);
-	static short    isValidPath(const std::string& path, bool expectDir);
+	static short	isValidPath(const std::string &path, bool expectDir, int accessMode = -1);
 	static s_view find_last_of_view(s_view view, const char* set);
-    static bool	joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size);
-    static size_t join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2);
-    static void	RemoveDotSegmentsDirect(char *path, size_t length);
+	static bool	joinArr(char *buffer, const char *AddStr, size_t BufferSize, size_t AddStrSize, size_t size);
+	static size_t join_views(char* dst, uint16_t dst_size, const s_view& v1, const s_view& v2);
+	static void	RemoveDotSegmentsDirect(char *path, size_t length);
 
 
 
 
-    // achraf part
-    static unsigned long getCurrentTimeInMs();
-    static long int getCurrentTimeInS();
+	// achraf part
+	static unsigned long getCurrentTimeInMs();
+	static long int getCurrentTimeInS();
 	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
-    static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
-    static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
-    static bool Iswhaitspace(char C);
-    static std::string TrimStr(std::string Str, const std::string &Sep);
-    static void ConvertStringToLower(std::string &Str, short Size);
-    static std::string ConvertStringToUpper(std::string &Str);
-    static bool Ischar(const std::string &Sep, char C);
-    static int SkeeSep(const std::string &Str, const std::string &Sep);
-    static int SkeeSep(const std::string &Str, char Sep);
-    static int ReadData(int FD, std::string &Data, ssize_t Size);
-    static void GTMHTTP(tm *GMT, std::string &Str);
-    static void DateTime(std::string &Str);
-    static std::string Convert_Hex(const std::string &Str, int Num);
-    static const char *GetTypeDataFile(const std::string &Str);
-    static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
-    static char	*ft_itoa(int n);
-    static char	*ft_itoa_negative(int n, char *int_char);
-    static int	len_int(int nb);
-    static void	*ft_memset(void *str, int c, size_t n);
-    static const char *GetType(const std::string &Type);
-    static void StoredDefaultType();
-    static void StoredBodys();
-    static void StoredMessage();
-    static const char *GetStatusMessage(int Status);
-    static const char * GetBody(int Status);
-    static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
-    static void CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos);
-    static void CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length);
-    static size_t	ft_strlen(const char *s);
-    static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
-    static int Countword(const std::string &Str, const std::string &Sep);
-    static void NumToStr(int Number, std::string &Str);
-    static stEventProcess::eEventProcess checkProcessStatus(int pid, int op = WNOHANG);
-    static int SkeepAtLast(const std::string& Str, const std::string &Sep);
-    static bool isTimeout(const time_t &startInS, time_t Timeout);
-    static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
+	static size_t FindCRLF(const std::string &Str, const std::string &CRLF);
+	static bool IsStringDigit(const std::string &StringDigit, short Start, short End);
+	static bool Iswhaitspace(char C);
+	static std::string TrimStr(std::string Str, const std::string &Sep);
+	static void ConvertStringToLower(std::string &Str, short Size);
+	static std::string ConvertStringToUpper(std::string &Str);
+	static bool Ischar(const std::string &Sep, char C);
+	static int SkeeSep(const std::string &Str, const std::string &Sep);
+	static int SkeeSep(const std::string &Str, char Sep);
+	static int ReadData(int FD, std::string &Data, ssize_t Size);
+	static void GTMHTTP(tm *GMT, std::string &Str);
+	static void DateTime(std::string &Str);
+	static std::string Convert_Hex(const std::string &Str, int Num);
+	static const char *GetTypeDataFile(const std::string &Str);
+	static void GetCleanLineHeader(const char *BigData, std::string &CleanLine ,short &MaxSizeHeader, bool &Flag, short &i, short LengthData);
+	static char	*ft_itoa(int n);
+	static char	*ft_itoa_negative(int n, char *int_char);
+	static int	len_int(int nb);
+	static void	*ft_memset(void *str, int c, size_t n);
+	static const char *GetType(const std::string &Type);
+	static void StoredDefaultType();
+	static void StoredBodys();
+	static void StoredMessage();
+	static const char *GetStatusMessage(int Status);
+	static const char * GetBody(int Status);
+	static bool ComparHead(const std::string &Str1, const std::string &Str2, short Start, short End);
+	static void CopyStr(const std::string &Str_src, std::string &Str_new, short Start, short Pos);
+	static void CopyStr(const char *Str_src, std::string &Str_new, short Start, short Length);
+	static size_t	ft_strlen(const char *s);
+	static short    LengthWord(const std::string &Str, const std::string &Sep, short Start);
+	static int Countword(const std::string &Str, const std::string &Sep);
+	static void NumToStr(int Number, std::string &Str);
+	static stEventProcess::eEventProcess checkProcessStatus(int pid, int op = WNOHANG);
+	static int SkeepAtLast(const std::string& Str, const std::string &Sep);
+	static bool isTimeout(const time_t &startInS, time_t Timeout);
+	static int changeFileToNonBlocking(int fd, bool closeOnExec = true);
 
-    template<typename T>
-    static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
-    {
-        char *end;
-        num = strtol(arr, &end, base);
-        if (end[0] != '\0' && !Iswhaitspace(end[0]) && end[0] != '\r' && end[0] != '\n')
-            return false;
-        return true;
-    }
-    static int FindChar(char *Arr, int length, char c);
-    static int FindCharFromLast(char *Arr, int length, char c);
-    static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_sr, bool Flag);
+	template<typename T>
+	static bool ConvertStrToNum(const char *arr, T &num, short base = 10)
+	{
+		char *end;
+		num = strtol(arr, &end, base);
+		if (end[0] != '\0' && !Iswhaitspace(end[0]) && end[0] != '\r' && end[0] != '\n')
+			return false;
+		return true;
+	}
+	static int FindChar(char *Arr, int length, char c);
+	static int FindCharFromLast(char *Arr, int length, char c);
+	static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_sr, bool Flag);
 
 private:
-    static std::map<std::string, std::string> _TypeContent;
-    static std::map<int, std::string> _Message;
-    static std::map<int, std::string> _Body;
-    static char _PoinerType[50];
-    HelperFunctions() {}
+	static std::map<std::string, std::string> _TypeContent;
+	static std::map<int, std::string> _Message;
+	static std::map<int, std::string> _Body;
+	static char _PoinerType[50];
+	HelperFunctions() {}
 };
 
 

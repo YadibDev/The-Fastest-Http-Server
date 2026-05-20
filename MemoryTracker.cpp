@@ -26,7 +26,7 @@ void operator delete(void* ptr) throw() {
     if (!ptr) return;
     
     // في C++98 القياسية، دالة delete العالمية لا تستقبل الحجم، 
-    // لذا نقوم فقط بتقليص عدد العمليات النشطة أو تتبع المؤشر إن لزم الأمر.
+    /`/ لذا نقوم فقط بتقليص عدد العمليات النشطة أو تتبع المؤشر إن لزم الأمر.
     if (global_allocation_count > 0) {
         global_allocation_count--;
     }

@@ -179,16 +179,25 @@ bool HelperFunctions::isBoundary(const std::string &str, const std::string &boun
 	return false;
 }
 
-short HelperFunctions::isValidPath(const std::string &path, bool expectDir)
+
+short	HelperFunctions::isValidPath(const std::string &path, bool expectDir, int accessMode)
 {
-	struct stat info;
-	if (stat(path.c_str(), &info) != 0)
-		return (403);
-	if (expectDir && !S_ISDIR(info.st_mode))
-		return (403);
-	if (!expectDir && S_ISDIR(info.st_mode))
-		return (403);
-	return (200);
+    struct stat info;
+    
+    if (stat(path.c_str(), &info) != 0)
+        return (404); // Not Found
+        
+    if (expectDir && !S_ISDIR(info.st_mode))
+        return (409);
+    if (!expectDir && S_ISDIR(info.st_mode))
+        return (409);
+        
+    if (accessMode != -1) {
+        if (access(path.c_str(), accessMode) != 0)
+            return (403);
+    }
+    
+    return (200);
 }
 
 s_view HelperFunctions::find_last_of_view(s_view view, const char *set)

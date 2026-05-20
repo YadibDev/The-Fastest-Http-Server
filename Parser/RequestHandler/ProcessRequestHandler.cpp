@@ -106,7 +106,7 @@ bool ProcessRequestHandler::validateAndFinalizePhysicalPath(const clsLocation* b
 {
     if (!PathResolver::createPhysicalPath(bestLocation, handler->getPhysicalPath(), newUri.getView(), error))
         return false;
-        
+    
     UriStatus flags;
     size_t size = 0;
     sPathType::e_path_type PathType = PathResolver::checkPath(handler->getPhysicalPath(), flags, size);
@@ -212,9 +212,6 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 {
 	HttpError error;
 	s_uri_entry uri;
-
-	HelperFunctions::RemoveDotSegmentsDirect(startLine.getRequestURI().getPath().Data, 
-											startLine.getRequestURI().getPath().len);
 
 	const clsLocation* bestLocation = findBestLocation(
 		serverConfig->getLocationExact(),

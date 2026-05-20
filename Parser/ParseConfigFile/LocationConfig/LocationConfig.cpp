@@ -114,7 +114,6 @@ clsLocation::clsLocation(s_parse_context& ctxs, bool sAutoIndex)
 	_allow_methods = 8;
 	_autoindex = sAutoIndex;
 	_flags = Directives::D_NONE;
-	_defaultErrorPage = &_error_pages[1];
 }
 
 clsLocation::clsLocation(const clsLocation &loc) : ctx(loc.ctx)
@@ -130,9 +129,9 @@ clsLocation::clsLocation(const clsLocation &loc) : ctx(loc.ctx)
 	_client_max_body_size = loc._client_max_body_size;
 	_return = loc._return;
 	_upload_store = loc._upload_store;
+	_upload_location = loc._upload_location;
 	_cgi_pass = loc._cgi_pass;
 	_error_pages = loc._error_pages;
-	_defaultErrorPage = &_error_pages[1];
 	initUri();
 }
 
@@ -150,7 +149,6 @@ unsigned long long clsLocation::getClientMaxBodySize() const { return _client_ma
 const std::map<short, stErrorPagedata> &clsLocation::getErrorPages() const { return _error_pages; }
 HttpError clsLocation::getError() const { return ctx.error; }
 const stlocation &clsLocation::getLocationData() const { return _locationData; }
-const stErrorPagedata *clsLocation::getDefaultErrorPage() const { return _defaultErrorPage; }
 
 
 void	clsLocation::setRoot(const std::string& root) { _root = root; }
@@ -164,7 +162,6 @@ void	clsLocation::setUploadStore(const s_uri_entry& store) { _upload_store = sto
 void	clsLocation::setUploadLocation(const std::string& store) { _upload_location = store; }
 void	clsLocation::setCgiPass(const std::map<std::string, std::string>& cgi) { _cgi_pass = cgi; }
 void	clsLocation::setErrorPages(const std::map<short, stErrorPagedata>& pages) { _error_pages = pages; }
-void	clsLocation::setDefaultErrorPage(const stErrorPagedata* page) { _defaultErrorPage = page; }
 
 
 void clsLocation::initUri()
