@@ -839,8 +839,8 @@ void HelperFunctions::ft_str_copy(char *Buffer, const char *Str_src, short Lengt
 		Offset++;
 		i++;
 	}
-	if (!Offset || Offset != LengthBuffer)
+	if (Offset > 0 && Offset != LengthBuffer)
 		Buffer[Offset] = '\0';
-	else
+	else if (LengthBuffer == Offset)
 		Buffer[LengthBuffer - 1] = '\0';
 }

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/18 16:31:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/20 14:28:20 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,12 @@ void clsResponse::_InitialHeaders()
             _Redirction();
         else
         {
+            _Type = HelperFunctions::GetType(".txt");
             _Body = _DataRequest.getReturn().value.raw_path;
-            _BodySize = _Body.size();
+            short offset = 0;
+            HelperFunctions::ft_str_copy(&_Body[0], _DataRequest.getReturn().value.raw_path.c_str(), MAX_BODY, offset
+                , _DataRequest.getReturn().value.raw_path.size(),0);
+            _BodySize = offset;
         }
     }
     if (!_Type.empty())
@@ -136,7 +140,7 @@ void clsResponse::_ErrorRespnseHandling()
                 if (_Mod[stMod::ERROR] == stMod::ERROR)
                     _Mod[stMod::AUTOINDEX] = stMod::EMPTY;
                 else
-                    _ErrorPage.SetAutoIndex(_DataRequest.getAutoIndex());
+                    _ErrorPage.SetAutoIndex(true);
             }
             if (_Mod[stMod::ERROR] != stMod::ERROR)
                 _ErrorPage.ResponseError(_Status, _DataRequest.getPhysicalPath(), _DataRequest.getSizeFile());

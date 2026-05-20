@@ -445,7 +445,6 @@ bool clsCGI::_childeProcesse()
     close(_pip[1]);
     if (!_DataRequest.getFilePathBody().empty())
         close(Fd);
-    
     execve(_ARG[0], _ARG, _ENV);
     perror("execve: ");
     return true;
