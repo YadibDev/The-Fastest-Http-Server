@@ -139,14 +139,10 @@ void clsMainProcess::MainProcess()
     _RunCGI = false;
     if (!_Response.GetIsConnection())
 		return ;
-    if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
+    if(_DataRequest.getPathCgi())
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
-    {
         _PartErrorRequest();
-    }
-    else if (_DataRequest.getPathCgi())
-        _InitializeCGI();
     else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
