@@ -413,8 +413,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	}
 	if (!_ProcessIsFinish)
 		return ;
-	else if (!_FoundBody || (!_BytesBody &&
-			_ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE))
+	else if (!_FoundBody)
 	{
 		_Status = 502;
 		_Mod[stMod::ERROR] = stMod::ERROR;
