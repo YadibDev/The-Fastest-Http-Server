@@ -75,7 +75,7 @@ short clsAutoIndex::addDataToChar(char *buffer, const char *src, short &start, s
             else
             {
                 buffer[start++] = '%';
-                int temp = (int)src[i];
+                unsigned char temp = src[i];
                 if (temp < 16)
                     buffer[start++] = '0';
                 string hexa = HelperFunctions::Convert_Hex("0123456789abcdef", temp);
