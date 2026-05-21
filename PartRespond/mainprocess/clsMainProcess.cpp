@@ -1,10 +1,10 @@
 #include "../mainprocess/Webserv.hpp"
 
 clsMainProcess::clsMainProcess(RequestHandler &RequestLinker) 
-    : _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
-     _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
+	: _Response(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _Type),
+	 _CGI(RequestLinker, _Body, _HeaderFeild, _FileFromDisk, _InternalRedirectSrc) ,_DataRequest(RequestLinker) 
 {
-    _Body.resize(MAX_BODY);
+	_Body.resize(MAX_BODY);
 	_InternalRedirectSrc.resize(MAX_HEADERS);
     _HeaderFeild.resize(MAX_HEADERS);
 	_FileFromDisk.resize(PATH_MAX);
@@ -27,19 +27,19 @@ clsMainProcess::~clsMainProcess() {}
 
 void clsMainProcess::_PartRedirection()
 {
-    _Response.SetStatus(_DataRequest.getReturn().code);
-    _Response.SetMod(stMod::REDIRECTION);
-    _Response.MakeResponse();
+	_Response.SetStatus(_DataRequest.getReturn().code);
+	_Response.SetMod(stMod::REDIRECTION);
+	_Response.MakeResponse();
 }
 
 stEventProcess::eEventProcess &clsMainProcess::getEventProcess()
 {
-    return this->_eventProcess;
+	return this->_eventProcess;
 }
 
 void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 {
-    this->_eventProcess = ev;
+	this->_eventProcess = ev;
 }
 
 void clsMainProcess::ParseCGI(const char *Buffer, short Length)
@@ -85,53 +85,53 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 
 void clsMainProcess::_InitializeCGI()
 {
-    if (!_RunCGI)
-    {
-        _CGI.RunCGI();
-        if (!_CGI.GetErno())
-        {
-            _RunCGI = _CGI.GetIsRunCGI();
-            _eventProcess = stEventProcess::RUNINNG;
-        }
-    }
+	if (!_RunCGI)
+	{
+		_CGI.RunCGI();
+		if (!_CGI.GetErno())
+		{
+			_RunCGI = _CGI.GetIsRunCGI();
+			_eventProcess = stEventProcess::RUNINNG;
+		}
+	}
    if (_CGI.GetErno())
    {
-        _eventProcess = stEventProcess::END_UNKNOW;
-        _Response.SetStatus(500);
-        _Response.SetMod(stMod::ERROR);
-        _Response.MakeResponse();
+		_eventProcess = stEventProcess::END_UNKNOW;
+		_Response.SetStatus(500);
+		_Response.SetMod(stMod::ERROR);
+		_Response.MakeResponse();
    }
    
 }
 
 void clsMainProcess::_PartDeleteMethod()
 {
-    _Response.SetMod(stMod::DELETE);
-    _Response.SetStatus(204);
-    _Response.MakeResponse();
+	_Response.SetMod(stMod::DELETE);
+	_Response.SetStatus(204);
+	_Response.MakeResponse();
 }
 
 void clsMainProcess::_PartPOSMethod()
 {
-    _Response.SetMod(stMod::UPLOAD);
-    _Response.SetStatus(201);
-    _Response.MakeResponse();
-    
+	_Response.SetMod(stMod::UPLOAD);
+	_Response.SetStatus(201);
+	_Response.MakeResponse();
+	
 }
 
 void clsMainProcess::_PartGETMethod()
 {
-    _Response.SetMod(stMod::GET);
-    _Response.SetStatus(200);
-    _Response.MakeResponse();
+	_Response.SetMod(stMod::GET);
+	_Response.SetStatus(200);
+	_Response.MakeResponse();
 }
 
 void clsMainProcess::_PartErrorRequest()
 {
-    _Response.SetMod(stMod::ERROR);
-    _Response.SetMod(stMod::INTERNALRE);
-    _Response.SetStatus(_DataRequest.getStatusError());
-    _Response.MakeResponse();
+	_Response.SetMod(stMod::ERROR);
+	_Response.SetMod(stMod::INTERNALRE);
+	_Response.SetStatus(_DataRequest.getStatusError());
+	_Response.MakeResponse();
 }
 
 void clsMainProcess::MainProcess()
@@ -155,33 +155,33 @@ void clsMainProcess::MainProcess()
 
 void clsMainProcess::Reset()
 {
-    this->_RunCGI = false;
-    _CGI.Reset();
-    _CGI.GetclsParseOutCGI().Reset();
-    _Response.Reset();
-    _InternalRedirectSrc = "";
-    _HeaderFeild = "";
-    _FileFromDisk= "";
-    _Type = "";
-    _eventProcess = stEventProcess::RUNINNG; 
+	this->_RunCGI = false;
+	_CGI.Reset();
+	_CGI.GetclsParseOutCGI().Reset();
+	_Response.Reset();
+	_InternalRedirectSrc = "";
+	_HeaderFeild = "";
+	_FileFromDisk= "";
+	_Type = "";
+	_eventProcess = stEventProcess::RUNINNG; 
 }
 
 clsCGI &clsMainProcess::GetclsCGI()
 {
-    return _CGI;
+	return _CGI;
 }
 
 bool clsMainProcess::GetIsRunCGI()
 {
-    return _RunCGI;
+	return _RunCGI;
 }
 
 clsResponse &clsMainProcess::GetclsResponse()
 {
-    return _Response;
+	return _Response;
 }
 
 bool clsMainProcess::isRunCgi()
 {
-    return _RunCGI;
+	return _RunCGI;
 }

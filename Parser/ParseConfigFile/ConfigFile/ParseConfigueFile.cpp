@@ -48,7 +48,6 @@ bool clsParseConfigueFile::ParseConfigue()
 {
     s_parse_context	ctx(_Parse, _ERROR);
 
-
     ConfigDirectiveParser::skipWhitespace(_Parse);
 
     while (_Parse.peek().type != TOKEN_EOF) {
