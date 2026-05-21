@@ -8,6 +8,7 @@
   <img src="images/croped2.png" alt="NGINX vs Webserv Benchmark" width="860"/>
 </div>
 
+> This is not a comparison with Nginx
 
 # Webserv 1337 Project
 
