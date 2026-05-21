@@ -39,9 +39,12 @@ int main(int ac, const char *av[])
         configFile = av[1];
     if (ac == 3)
     {
-        if (HelperFunctions::ConvertStrToNum(av[2], maxClients) == false || maxClients <= 0)
+        if (HelperFunctions::ConvertStrToNum(av[2], maxClients) == false || maxClients <= 0 || maxClients > 5000)
         {
-            std::cout << "fail to convert max client to number or max client <= 0" << std::endl;
+            if (maxClients > 5000)
+                std::cout << "you can't create more than 5000 clients"
+            else
+                std::cout << "fail to convert max client to number or max client <= 0" << std::endl;
             return 1;
         }
     }
