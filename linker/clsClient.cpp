@@ -262,7 +262,6 @@ bool clsClient::_handleInternal()
 	HttpError error;
 	clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
-<<<<<<< HEAD
     // support internal location in future
     if (_internalCounter == MAX_INTERNAL_LOOP)
     {
@@ -304,49 +303,6 @@ bool clsClient::_handleInternal()
         return true;
     }
     return false;
-=======
-	// support internal location in future
-	if (_internalCounter == MAX_INTERNAL_LOOP)
-	{
-		_internalCounter = 0;
-		_RequestXconfig.reset();
-		_RequestXconfig.setDefaultErrorPage(true);
-		_RequestXconfig.setStatusError(508);
-		return true;
-	}
-	else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
-	{
-		_RequestXconfig.reset();
-		RequestLine reqLineParser;
-		UriParser &uriParser = reqLineParser.getRequestURI();
-		std::string &redirctStr = *Respond.GetInternalRedirectSrc();
-
-		uriParser.parse(redirctStr.c_str(), redirctStr.size());
-		int statusReturn = reqLineParser.getError().getCodeStatus();
-
-		if (statusReturn != 0)
-		{
-			if (!ProcessRequestHandler::generateErrorPath(statusReturn, this->block, &_RequestXconfig, error))
-			{
-				_RequestXconfig.setDefaultErrorPage(true);
-			}
-		}
-		else
-			ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig);
-
-		return true;
-	}
-	else if (Respond.IsError())
-	{
-		_RequestXconfig.reset();
-		if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
-		{
-			_RequestXconfig.setDefaultErrorPage(true);
-		}
-		return true;
-	}
-	return false;
->>>>>>> Request
 }
 
 void clsClient::_initalizeRespondBuffer()

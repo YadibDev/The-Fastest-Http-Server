@@ -44,45 +44,6 @@ void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 
 void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
-<<<<<<< HEAD
-    clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
-    if (parseCgi.GetMod()[stMod::MEMORY_FAILD] == stMod::MEMORY_FAILD)
-    {
-        _eventProcess = stEventProcess::END_WITH_PARSE;
-        _Response.SetIsConnection(false);
-		return ;
-    }
-    if (_eventProcess == stEventProcess::THE_END)
-        parseCgi.SetProcessIsFinish(true);
-    if (Length > 0 || _eventProcess == stEventProcess::THE_END)
-        parseCgi.ReceivingData(Buffer, Length);
-    if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
-    {
-        if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
-        {
-            _eventProcess = stEventProcess::END_WITH_PARSE;
-            _Response.SetMod(stMod::ERROR);
-            _Response.SetStatus(parseCgi.GetStatus());
-            _Response.MakeResponse();
-        }
-        else
-        {
-            _Response.SetBodyPointer(&parseCgi.GetBody());
-            _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
-            _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
-            _Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
-            _Response.SetSizeBody(parseCgi.GetSizeBody());
-            _Response.SetModTransferData(true);
-            _Response.SetIsConnection(parseCgi.GetIsConnection());
-        }
-    }
-    else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
-    {
-        _Response.SetStatus(_eventProcess);
-        _Response.SetMod(stMod::ERROR);
-        _Response.MakeResponse();
-    }
-=======
 	clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
 	if (_eventProcess == stEventProcess::THE_END)
 		parseCgi.SetProcessIsFinish(true);
@@ -113,7 +74,6 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 		_Response.SetMod(stMod::ERROR);
 		_Response.MakeResponse();
 	}
->>>>>>> Request
 }
 
 void clsMainProcess::_InitializeCGI()
@@ -169,27 +129,6 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess()
 {
-<<<<<<< HEAD
-    _RunCGI = false;
-    if (!_Response.GetIsConnection())
-		return ;
-    if(_DataRequest.getStatusError() && _DataRequest.getPathCgi())
-        _InitializeCGI();
-    else if(_DataRequest.getStatusError())
-    {
-        _PartErrorRequest();
-    }
-    else if (_DataRequest.getPathCgi())
-        _InitializeCGI();
-    else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
-        _PartRedirection();
-    else if ((_DataRequest.getMethod() == HttpTables::M_GET))
-        _PartGETMethod();
-    else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
-        _PartDeleteMethod();
-    else if ((_DataRequest.getMethod() == HttpTables::M_POST))
-        _PartPOSMethod();
-=======
 	if (_DataRequest.getPathCgi())
 		_InitializeCGI();
 	else if(_DataRequest.getStatusError())
@@ -202,7 +141,6 @@ void clsMainProcess::MainProcess()
 		_PartDeleteMethod();
 	else if ((_DataRequest.getMethod() == HttpTables::M_POST))
 		_PartPOSMethod();
->>>>>>> Request
 }
 
 void clsMainProcess::Reset()

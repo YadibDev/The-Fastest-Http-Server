@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <vector>
 #include <unistd.h>
+#include <errno.h>
 #include <iostream>
 #include <sstream>
 #include <map>

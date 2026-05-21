@@ -122,6 +122,14 @@ https://nginx.org/en/docs/http/ngx_http_core_module.html#root
 
 sockets:
 https://www.geeksforgeeks.org/computer-networks/socket-in-computer-network/
+https://www.man7.org/linux/man-pages/man2/socket.2.html
+https://www.man7.org/linux/man-pages/man2/setsockopt.2.html
+https://www.man7.org/linux/man-pages/man2/bind.2.html
+https://www.man7.org/linux/man-pages/man2/accept.2.html
+https://www.man7.org/linux/man-pages/man2/listen.2.html
 
 epoll:
 https://medium.com/@m-ibrahim.research/mastering-epoll-the-engine-behind-high-performance-linux-networking-85a15e6bde90
+https://www.man7.org/linux/man-pages/man7/epoll.7.html
+https://www.man7.org/linux/man-pages/man2/epoll_wait.2.html
+https://www.man7.org/linux/man-pages/man2/epoll_create.2.html

@@ -42,7 +42,7 @@ int main(int ac, const char *av[])
         if (HelperFunctions::ConvertStrToNum(av[2], maxClients) == false || maxClients <= 0 || maxClients > 5000)
         {
             if (maxClients > 5000)
-                std::cout << "you can't create more than 5000 clients"
+                std::cout << "you can't create more than 5000 clients\n";
             else
                 std::cout << "fail to convert max client to number or max client <= 0" << std::endl;
             return 1;
