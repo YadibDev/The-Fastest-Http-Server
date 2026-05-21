@@ -1,5 +1,14 @@
 > _This project has been created as part of the 42 curriculum by achamdao, yadib, mjaouchi ._
 
+## ⚡ Performance Benchmark
+
+> `siege -c200 -t 15S` — 200 concurrent users over 15 seconds
+
+<div align="center">
+  <img src="images/croped.png" alt="NGINX vs Webserv Benchmark" width="860"/>
+</div>
+
+
 # Webserv 1337 Project
 
 > This is when you finally understand why URLs start with HTTP
