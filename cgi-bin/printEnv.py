@@ -94,3 +94,2373 @@ print(f"""
 </body>
 </html>
 """)
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")
+print(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGI_SYSTEM_INSPECTOR</title>
+    <style>
+        body {{
+            background-color: #222831;
+            color: #EEEEEE;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        header {{ border-bottom: 2px solid #8BC34A; margin-bottom: 30px; }}
+        h1 {{ color: #8BC34A; font-size: 1.4rem; }}
+        h2 {{ color: #FF9800; font-size: 1.1rem; margin-top: 30px; border-left: 3px solid #FF9800; padding-left: 10px; }}
+        
+        .box {{
+            background-color: #393E46;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }}
+        
+        pre {{
+            margin: 0;
+            color: #8BC34A;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px 15px; border-bottom: 1px solid #4E545C; font-size: 0.85rem; }}
+        .key {{ color: #8BC34A; font-weight: bold; width: 30%; }}
+        .value {{ color: #EEEEEE; word-break: break-all; }}
+        tr:hover {{ background-color: #434a54; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYSTEM_INSPECTOR_v1.0</h1>
+        </header>
+
+        
+
+        <h2>OS_ENVIRONMENT_VARIABLES</h2>
+        <div class="box">
+            <table>
+                {env_rows}
+            </table>
+        </div>
+        <h2>STDIN_REQUEST_BODY</h2>
+        <div class="box">
+            <pre>{display_body}</pre>
+        </div>
+    </div>
+</body>
+</html>
+""")

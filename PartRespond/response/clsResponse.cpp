@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/18 15:34:37 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/20 19:04:56 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,33 @@ void clsResponse::_InitialAutoIndex()
 
 void clsResponse::_InitialHeaders()
 {
+    if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
+    {
+        if (_Status == 444 && _DataRequest.getReturn().value.raw_path.empty())
+        {
+            _IsConnection = false;
+            return ;
+        }
+    }
     _StatusLine();
-    if (_Mod[stMod::CHUNK] != stMod::CHUNK && _Mod[stMod::DELETE] != stMod::DELETE)
-        _ContentLength();
-    if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
-        _Redirction();
     if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
     {
         if (_Status == 301 || _Status == 302 || _Status == 303 || _Status == 307 || _Status == 308)
             _Redirction();
         else
         {
+            _Type = HelperFunctions::GetType(".txt");
             _Body = _DataRequest.getReturn().value.raw_path;
-            _BodySize = _Body.size();
+            short offset = 0;
+            HelperFunctions::ft_str_copy(&_Body[0], _DataRequest.getReturn().value.raw_path.c_str(), MAX_BODY, offset
+                , _DataRequest.getReturn().value.raw_path.size(),0);
+            _BodySize = offset;
         }
     }
+    if (_Mod[stMod::CHUNK] != stMod::CHUNK && _Mod[stMod::DELETE] != stMod::DELETE)
+        _ContentLength();
+    if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
+        _Redirction();
     if (!_Type.empty())
         _ContentType();
     if (_Mod[stMod::CHUNK] == stMod::CHUNK)

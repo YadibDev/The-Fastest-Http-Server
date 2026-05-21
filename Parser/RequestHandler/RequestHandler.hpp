@@ -36,6 +36,7 @@ private:
 	const std::string*					_pathCgi;
 	const std::string*					_upload_store;
 	const std::string*					_upload_location;
+	unsigned long long                  _client_max_body_size;
 	HttpError							_error;
 	short								_statusError;
 	size_t								_sizeFile;
@@ -66,6 +67,7 @@ public:
 	void					setReturnVal(stReturnData returnData);
 	void					setUploadStore(const std::string* uploadStore);
 	void					setUploadLocation(const std::string* uploadStore);
+	void					setClientMaxBodySize(unsigned long long size);
 	void					setFilePathBody(const std::string& filePathBody);
 	void					setStatusError(short statusError);
 	void					setError(const HttpError &error);
@@ -95,6 +97,7 @@ public:
 	const stReturnData&		getReturn() const;
 	const std::string*		getUploadStore() const;
 	const std::string*		getUploadLocation() const;
+	unsigned long long		getClientMaxBodySize() const;
 	const std::string&		getFilePathBody() const;
 	short					getStatusError();
 	const HttpError&		getError() const;

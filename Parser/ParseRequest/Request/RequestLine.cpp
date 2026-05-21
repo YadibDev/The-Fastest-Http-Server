@@ -89,7 +89,7 @@ bool    RequestLine::parseMethod(const char *buffer, uint16_t size)
 	if (!isSpace(buffer[_offset]))
 		return (_error.setStatus(405, "Method Not Allowed"), false);
 
-	_method.len = (uint16_t)((char *)&buffer[_offset] - _method.Data);
+	_method.len = _methodIndex - 1;
 	_state = STATE_URI;
 	return true;
 }
@@ -98,10 +98,10 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 {
 	if (!_uriReady)
 	{
-	    while (_offset < size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
+	    while (_offset <= size && HelperFunctions::isspaceTabOrSp(buffer[_offset]))
 	        _offset++;
 	
-	    if (_offset >= size) return true;
+	    if (_offset > size) return true;
 
 	    _uriParser.init(_offset);
 	    _uriReady = true;

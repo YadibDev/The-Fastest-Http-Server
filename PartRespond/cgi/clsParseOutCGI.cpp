@@ -81,14 +81,8 @@ bool clsParseOutCGI::_LocationIsClientOrLocal(std::string &Location)
 short clsParseOutCGI::_AtoiStatusCode(const std::string &StringDigit, short Start, short End)
 {
 	short Number = 0;
-	uint8_t counter = 0;
 	for (short i = Start; i < (short)StringDigit.size() && i < End; i++)
-	{
-		counter++;
 		Number = (10 * Number) + (StringDigit[i] - '0');
-		if (counter == 4)
-		    return Number;
-	}
 	return Number;
 }
 
@@ -99,12 +93,11 @@ bool clsParseOutCGI::_ParseStatus(const std::string &LineValue)
 	short LengthWord = HelperFunctions::LengthWord(LineValue, " \t",Start);
 	short End = Start + LengthWord;
 
-	int Counter = HelperFunctions::Countword(LineValue, " \t");
-	if (!Counter)
+	if (LengthWord != 3)
 		return false;
 	if (!HelperFunctions::IsStringDigit(LineValue, Start, End))
 		return (false);
-	NumberStatus = _AtoiStatusCode(LineValue, Start, End);
+	NumberStatus = _AtoiStatusCode(LineValue, Start, End); 
 	if (NumberStatus < 100 || NumberStatus > 599)
 		return (false);
 	if (NumberStatus >= 400 && NumberStatus != 404)
@@ -126,14 +119,14 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
 		}
 		else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
 		{
-			_HeadersField[_NameHeader] += ",";                
+			_HeadersField[_NameHeader] += ",";
 			_HeadersField[_NameHeader] += _ValueHeader;
 		}
 	}
 	else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
 		_HeadersField[_NameHeader] = _ValueHeader;
 	_NameHeader = "";
-	_ValueHeader= "";
+	_ValueHeader = "";
 	return true;
 }
 
@@ -356,9 +349,10 @@ void clsParseOutCGI::_CreatFileTemp()
 
 void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 {
+	bool  ConvertFlag = false;
 	if (_FoundBody && _BytesBody < MAX_BODY)
 	{
-	   _BytesBody += ((Length - _Counter  < 0)? 0 : Length - _Counter);
+	   _BytesBody += (Length - _Counter);
 	   if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
 		{
 			_Status = 502;
@@ -367,7 +361,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 		}
 	   if (_BytesBody > MAX_BODY)
 	   {
-			
+			ConvertFlag = true;
 			_Mod[stMod::CHUNK] = stMod::CHUNK;
 			_CreatFileTemp();
 			if (_Mod[stMod::ERROR] == stMod::ERROR)
@@ -378,20 +372,15 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 				_Mod[stMod::ERROR] = stMod::ERROR;
 				return ;
 			}
-			if (write(_Fdout, &Arr[_Counter], ((Length - _Counter  < 0)? 0 : Length - _Counter)) == -1)
-			{
-				_Status = 500;
-				_Mod[stMod::ERROR] = stMod::ERROR;
-				return ;
-			}
 	   }
 	   else
-			HelperFunctions::ft_str_copy(&_Body[0], &Arr[_Counter], MAX_BODY, _OffsetBody, ((Length - _Counter  < 0)? 0 : Length - _Counter), 0);
+			HelperFunctions::ft_str_copy(&_Body[0], &Arr[_Counter], MAX_BODY, _OffsetBody, (Length - _Counter), 0);
 	}
-	else if (_BytesBody > MAX_BODY)
+	if (_BytesBody > MAX_BODY)
 	{
-		_BytesBody += Length;
-		if (write(_Fdout, Arr, Length) == -1)
+		if (!ConvertFlag)
+			_BytesBody += Length;
+		if (write(_Fdout, &Arr[_Counter], ( Length - _Counter)) == -1)
 		{
 			_Status = 500;
 			_Mod[stMod::ERROR] = stMod::ERROR;
@@ -417,8 +406,7 @@ void clsParseOutCGI::ReceivingData(const char *Arr, short Length)
 	}
 	if (!_ProcessIsFinish)
 		return ;
-	else if (!_FoundBody || (!_BytesBody &&
-			_ExistHeaders[stHeadersCGI::CONTENT_TYPE] == stHeadersCGI::CONTENT_TYPE))
+	else if (!_FoundBody)
 	{
 		_Status = 502;
 		_Mod[stMod::ERROR] = stMod::ERROR;

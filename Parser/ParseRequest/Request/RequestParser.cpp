@@ -101,7 +101,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		_body.setUploadLocation(_RequestHandler->getUploadLocation());
 	}
 
-	_body.bodyHandler(_request.read_body_ptr, _ServerConfig->getMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());
+	_body.bodyHandler(_request.read_body_ptr, _RequestHandler->getClientMaxBodySize(), isCgi, _RequestHandler->getPhysicalPath());
 
 	if (_body.getState() == clsBody::DONE_GOOD)
 	{

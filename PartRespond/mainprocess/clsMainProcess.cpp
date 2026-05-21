@@ -6,21 +6,21 @@ clsMainProcess::clsMainProcess(RequestHandler &RequestLinker)
 {
 	_Body.resize(MAX_BODY);
 	_InternalRedirectSrc.resize(MAX_HEADERS);
-	_HeaderFeild.resize(MAX_HEADERS);
-	_FileFromDisk.resize(1000);
-	_Type.resize(500);
-	if (_Type.empty() || _FileFromDisk.empty() || _HeaderFeild.empty() 
-		|| _InternalRedirectSrc.empty() || _Body.empty())
-	{
-		_Response.SetStatus(500);
-		_Response.SetMod(stMod::ERROR);
-		return ;
-	}
-	_InternalRedirectSrc = "";
-	_HeaderFeild = "";
-	_FileFromDisk = "";
-	_Type = "";
-	_RunCGI = false;
+    _HeaderFeild.resize(MAX_HEADERS);
+	_FileFromDisk.resize(PATH_MAX);
+    _Type.resize(100);
+    if (_Type.empty() || _FileFromDisk.empty() || _HeaderFeild.empty() 
+        || _InternalRedirectSrc.empty() || _Body.empty())
+    {
+        _Response.SetMod(stMod::MEMORY_FAILD);
+        _Response.SetIsConnection(false);
+        return ;
+    }
+    _InternalRedirectSrc = "";
+    _HeaderFeild = "";
+    _FileFromDisk = "";
+    _Type = "";
+    _RunCGI = false;
 }
 
 clsMainProcess::~clsMainProcess() {}
@@ -44,36 +44,43 @@ void clsMainProcess::setEventProcess(stEventProcess::eEventProcess ev)
 
 void clsMainProcess::ParseCGI(const char *Buffer, short Length)
 {
-	clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
-	if (_eventProcess == stEventProcess::THE_END)
-		parseCgi.SetProcessIsFinish(true);
-	if (Length > 0 || _eventProcess == stEventProcess::THE_END)
-		parseCgi.ReceivingData(Buffer, Length);
-	if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
-	{
-		if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
-		{
-			_eventProcess = stEventProcess::END_WITH_PARSE;
-			_Response.SetMod(stMod::ERROR);
-			_Response.SetStatus(parseCgi.GetStatus());
-			_Response.MakeResponse();
-		}
-		else
-		{
-			_Response.SetBodyPointer(&parseCgi.GetBody());
-			_Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
-			_Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
-			_Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
-			_Response.SetSizeBody(parseCgi.GetSizeBody());
-			_Response.SetModTransferData(true);
-		}
-	}
-	else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
-	{
-		_Response.SetStatus(_eventProcess);
-		_Response.SetMod(stMod::ERROR);
-		_Response.MakeResponse();
-	}
+    clsParseOutCGI &parseCgi = _CGI.GetclsParseOutCGI();
+    if (parseCgi.GetMod()[stMod::MEMORY_FAILD] == stMod::MEMORY_FAILD)
+    {
+        _eventProcess = stEventProcess::END_WITH_PARSE;
+        _Response.SetIsConnection(false);
+		return ;
+    }
+    if (_eventProcess == stEventProcess::THE_END)
+        parseCgi.SetProcessIsFinish(true);
+    if (Length > 0 || _eventProcess == stEventProcess::THE_END)
+        parseCgi.ReceivingData(Buffer, Length);
+    if (parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR || _eventProcess == stEventProcess::THE_END)
+    {
+        if(parseCgi.GetMod()[stMod::ERROR] == stMod::ERROR)
+        {
+            _eventProcess = stEventProcess::END_WITH_PARSE;
+            _Response.SetMod(stMod::ERROR);
+            _Response.SetStatus(parseCgi.GetStatus());
+            _Response.MakeResponse();
+        }
+        else
+        {
+            _Response.SetBodyPointer(&parseCgi.GetBody());
+            _Response.SetHeaderFeildPointer(&parseCgi.GetHeadersFieldFinal());
+            _Response.SetFileFromDiskPointer(&parseCgi.GetFileNameBody());
+            _Response.SetInternalRedirectSrc(&parseCgi.GetInternalRedirectSrc());
+            _Response.SetSizeBody(parseCgi.GetSizeBody());
+            _Response.SetModTransferData(true);
+            _Response.SetIsConnection(parseCgi.GetIsConnection());
+        }
+    }
+    else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
+    {
+        _Response.SetStatus(_eventProcess);
+        _Response.SetMod(stMod::ERROR);
+        _Response.MakeResponse();
+    }
 }
 
 void clsMainProcess::_InitializeCGI()
@@ -129,18 +136,21 @@ void clsMainProcess::_PartErrorRequest()
 
 void clsMainProcess::MainProcess()
 {
-	if (_DataRequest.getPathCgi())
-		_InitializeCGI();
-	else if(_DataRequest.getStatusError())
-		_PartErrorRequest();
-	else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
-		_PartRedirection();
-	else if ((_DataRequest.getMethod() == HttpTables::M_GET))
-		_PartGETMethod();
-	else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
-		_PartDeleteMethod();
-	else if ((_DataRequest.getMethod() == HttpTables::M_POST))
-		_PartPOSMethod();
+    _RunCGI = false;
+    if (!_Response.GetIsConnection())
+		return ;
+    if(_DataRequest.getPathCgi())
+        _InitializeCGI();
+    else if(_DataRequest.getStatusError())
+        _PartErrorRequest();
+    else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
+        _PartRedirection();
+    else if ((_DataRequest.getMethod() == HttpTables::M_GET))
+        _PartGETMethod();
+    else if ((_DataRequest.getMethod() == HttpTables::M_DELETE))
+        _PartDeleteMethod();
+    else if ((_DataRequest.getMethod() == HttpTables::M_POST))
+        _PartPOSMethod();
 }
 
 void clsMainProcess::Reset()
