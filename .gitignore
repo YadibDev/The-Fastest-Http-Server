@@ -14,3 +14,7 @@ logs/*
 webserv
 *.o
 *.d
+*.py
+cgi-bin
+temp
+video

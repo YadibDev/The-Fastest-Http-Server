@@ -226,8 +226,8 @@ s_view HelperFunctions::find_first_of_view(s_view view, const char *set)
 {
 	s_view result;
 
-	if (!view.Data || view.len == 0 || !set || *set == '\0')
-		return result;
+// 	if (!view.Data || view.len == 0 || !set || *set == '\0')
+// 		return result;
 
 	for (size_t i = 0; i < view.len; ++i)
 	{
@@ -332,6 +332,26 @@ void HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 
 	path[w] = '\0';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Achraf
 

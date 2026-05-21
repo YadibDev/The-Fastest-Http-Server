@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <vector>
 #include <unistd.h>
+#include <errno.h>
 #include <iostream>
 #include <sstream>
 #include <map>
@@ -163,6 +164,8 @@ public:
 	{
 		char *end;
 		num = strtol(arr, &end, base);
+		if (errno == ERANGE)
+			return false;
 		if (end[0] != '\0' && !Iswhaitspace(end[0]) && end[0] != '\r' && end[0] != '\n')
 			return false;
 		return true;

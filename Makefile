@@ -2,7 +2,7 @@ CPP = c++
 CPPFLAGS = -Wall -Wextra -Werror -g --std=c++98 #-fsanitize=address
 NAME = webserv
 
-SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  server/testing.cpp serverMain.cpp \
+SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  serverMain.cpp \
 				 linker/clsClient.cpp linker/clsFlow.cpp
 
 UTILS_FILES = Utils/HelperFunctions.cpp  Utils/HelperFunctions.cpp  Utils/HttpError.cpp \
