@@ -5,7 +5,7 @@
 > `siege -c200 -t 15S` — 200 concurrent users over 15 seconds
 
 <div align="center">
-  <img src="images/croped.png" alt="NGINX vs Webserv Benchmark" width="860"/>
+  <img src="images/croped2.png" alt="NGINX vs Webserv Benchmark" width="860"/>
 </div>
 
 
