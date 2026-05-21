@@ -176,7 +176,6 @@ void UriParser::parseScheme(const char* buffer, uint16_t size)
 	{
 		_AuthorityExist = true;
 		_state = STATE_AUTHORITY;
-		_shemaIndex = 0;
 	}
 }
 
@@ -185,8 +184,13 @@ void UriParser::parseAuthority(const char* buffer, uint16_t size) {
 		_authority.Data = const_cast<char*>(&buffer[_offset]);
 
 	const char* atPos = NULL;
-	for (uint16_t i = _offset; i < size; ++i) {
-		if (buffer[i] == '@') { atPos = &buffer[i]; break; }
+	for (uint16_t i = _offset; i < size; ++i)
+	{
+		if (buffer[i] == '@')
+		{
+			atPos = &buffer[i];
+			break;
+		}
 	}
 	if (atPos != NULL)
 		_offset = static_cast<uint16_t>(atPos - buffer + 1);
@@ -194,9 +198,11 @@ void UriParser::parseAuthority(const char* buffer, uint16_t size) {
 	_state = STATE_HOST;
 }
 
-void UriParser::_parseHost(const char* buffer, uint16_t size) {
+void UriParser::_parseHost(const char* buffer, uint16_t size)
+{
 	size_t start = _offset;
-	while (_offset <= size) {
+	while (_offset <= size)
+	{
 		char c = buffer[_offset];
 		if (c == ':' || c == '/' || c == '?' || c == '#') break;
 		++_offset;
@@ -261,9 +267,11 @@ void UriParser::_parsePort(const char* buffer, uint16_t size) {
 }
 
 void UriParser::parsePath(const char* buffer, uint16_t size) {
-	if (!_path.Data) _path.Data = const_cast<char*>(&buffer[_offset]);
+	if (!_path.Data)
+		_path.Data = const_cast<char*>(&buffer[_offset]);
 
-	while (_offset <= size && _state == STATE_PATH) {
+	while (_offset <= size && _state == STATE_PATH)
+	{
 		char c = buffer[_offset];
 
 		if (c == ' ' || c == '\t') {
