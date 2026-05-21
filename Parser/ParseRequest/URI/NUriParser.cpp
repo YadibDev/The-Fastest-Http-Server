@@ -167,7 +167,6 @@ void UriParser::parseScheme(const char* buffer, uint16_t size)
 	while (_shemaIndex < 7 && _offset <= size) {
 		if (buffer[_offset] != http[_shemaIndex]) {
 			_error.setStatus(400, "Invalid scheme");
-			_state = STATE_ERROR;
 			return;
 		}
 		++_shemaIndex;
@@ -203,23 +202,32 @@ void UriParser::_parseHost(const char* buffer, uint16_t size) {
 		++_offset;
 	}
 	size_t len = _offset - start;
-	if (len == 0) { _error.setStatus(400, "Empty host"); _state = STATE_ERROR; return; }
+	if (len == 0)
+	{
+		_error.setStatus(400, "Empty host");
+		return;
+	}
 
 	bool valid = false;
-	if (validateIPv4(&buffer[start], len)) valid = true;
-	else {
-		_error = HttpError();
+	if (validateIPv4(&buffer[start], len))
+		valid = true;
+	else 
 		valid = validateRegName(&buffer[start], len);
+
+	if (!valid) {
+		return;
 	}
-	if (!valid) { _state = STATE_ERROR; return; }
 
 	_host.Data = const_cast<char*>(&buffer[start]);
 	_host.len  = static_cast<uint16_t>(len);
 
-	if (_offset <= size && buffer[_offset] == ':') {
+	if (_offset <= size && buffer[_offset] == ':')
+	{
 		_state = STATE_PORT;
 		++_offset;
-	} else {
+	}
+	else
+	{
 		finishAuthority(buffer);
 		_state = STATE_PATH;
 	}
@@ -233,13 +241,11 @@ void UriParser::_parsePort(const char* buffer, uint16_t size) {
 		if (c == '/' || c == '?' || c == '#') break;
 		if (!std::isdigit(static_cast<unsigned char>(c))) {
 			_error.setStatus(400, "Invalid port character");
-			_state = STATE_ERROR;
 			return;
 		}
 		portNum = portNum * 10 + (c - '0');
 		if (portNum > 65535) {
 			_error.setStatus(400, "Port out of range");
-			_state = STATE_ERROR;
 			return;
 		}
 		hasDigit = true;
@@ -247,7 +253,6 @@ void UriParser::_parsePort(const char* buffer, uint16_t size) {
 	}
 	if (!hasDigit) {
 		_error.setStatus(400, "Empty port");
-		_state = STATE_ERROR;
 		return;
 	}
 	_port = static_cast<unsigned short>(portNum);
@@ -284,7 +289,6 @@ void UriParser::parsePath(const char* buffer, uint16_t size) {
 		}
 		if (!isPathChar(c)) {
 			_error.setStatus(400, "Invalid path character");
-			_state = STATE_ERROR;
 			return;
 		}
 		++_offset;
@@ -314,7 +318,6 @@ void UriParser::parseQuery(const char* buffer, uint16_t size) {
 		}
 		if (!isQueryChar(c)) {
 			_error.setStatus(400, "Invalid query character");
-			_state = STATE_ERROR;
 			return;
 		}
 		++_offset;
@@ -338,7 +341,6 @@ void UriParser::parseFragment(const char* buffer, uint16_t size) {
 		}
 		if (!isFragmentChar(c)) {
 			_error.setStatus(400, "Invalid fragment character");
-			_state = STATE_ERROR;
 			return;
 		}
 		++_offset;
@@ -349,14 +351,19 @@ void UriParser::parsePctEncoded(const char* buffer, uint16_t size) {
 	while (_offset <= size && _pctDigitsRead < 2) {
 		if (!isHex(buffer[_offset])) {
 			_error.setStatus(400, "Invalid hex digit");
-			_state = STATE_ERROR;
 			return;
 		}
 		++_pctDigitsRead;
 		++_offset;
 	}
 	if (_pctDigitsRead == 2) {
-		_state = _pctReturnState;
+		if (buffer[_offset - 1] == '0' && buffer[_offset - 2] == '0')
+		{
+			_error.setStatus(400, "Bad Request");
+			return;
+		}
+		else
+			_state = _pctReturnState;
 		_pctDigitsRead = 0;
 	}
 }
@@ -364,7 +371,7 @@ void UriParser::parsePctEncoded(const char* buffer, uint16_t size) {
 void UriParser::parse(const char* buffer, uint16_t size)
 {
 
-	while (_offset <= size && !_complete && _state != STATE_ERROR)
+	while (_offset <= size && !_complete && !_error.isError())
 	{
 
 		switch (_state)
@@ -379,25 +386,12 @@ void UriParser::parse(const char* buffer, uint16_t size)
 			case STATE_PCT_ENCODED: parsePctEncoded(buffer, size); break;
 			default: break;
 		}
-
 	}
 
-	if (_offset == size && !_complete && _state != STATE_ERROR)
-	{
-		if (_state == STATE_HOST || _state == STATE_PORT)
-		{
-			finishAuthority(buffer);
-			_state = STATE_PATH;
-		}
-		if (_state == STATE_PATH) finishPath(buffer);
-		else if (_state == STATE_QUERY) finishQuery(buffer);
-		else if (_state == STATE_FRAGMENT) finishFragment(buffer);
-		_complete = true;
-	}
 }
 
 bool                    UriParser::isComplete()		const { return _complete; }
-bool					UriParser::isError()		const { return _state == STATE_ERROR; }
+bool					UriParser::isError()		const { return _error.isError(); }
 uint16_t				UriParser::getOffset()		const { return _offset; }
 unsigned short			UriParser::getPort()		const { return _port; }
 const s_view&			UriParser::getAuthority()	const { return _authority; }

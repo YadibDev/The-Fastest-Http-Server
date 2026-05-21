@@ -2,19 +2,23 @@
 """Test server handling of a very large HTTP header key."""
 
 import socket
-import sys
 
 HOST = "127.0.0.1"
 PORT = 8082
+
+LARGE_HEADER_KEY = "X-" + "A" * 8192  # مفتاح هيدر ضخم (~8KB)
+
 REQUEST = (
-    "GET /cgi-bin/%2E%2E/h%20ml.html HTTP/1.1\r\n"
+    "GET /test HTTP/1.1\r\n"
     f"Host: {HOST}\r\n"
-    f"HEADER: test-value\r\n"
+    f"{LARGE_HEADER_KEY}: test-value\r\n"
     "Connection: close\r\n"
     "\r\n"
 )
 
+
 def send_request_and_print_response():
+    print(f"Sending request with header key size: {len(LARGE_HEADER_KEY)} bytes")
     try:
         with socket.create_connection((HOST, PORT), timeout=5) as s:
             s.sendall(REQUEST.encode())
@@ -34,6 +38,7 @@ def send_request_and_print_response():
         print(f"ERROR: Connection refused – is a server listening on {HOST}:{PORT}?")
     except Exception as e:
         print(f"ERROR: {e}")
+
 
 if __name__ == "__main__":
     send_request_and_print_response()

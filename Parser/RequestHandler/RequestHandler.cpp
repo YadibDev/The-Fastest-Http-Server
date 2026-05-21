@@ -159,6 +159,11 @@ void RequestHandler::setHeader(HeaderTable Header)
 	_Header = Header;
 }
 
+void	RequestHandler::setClientMaxBodySize(unsigned long long size)
+{
+	_client_max_body_size = size;
+}
+
 void RequestHandler::setPathCgi(const std::string *pathCgi) { _pathCgi = pathCgi; }
 
 void RequestHandler::setReturn(const stReturnData &returnData) { _return = returnData; }
@@ -233,6 +238,8 @@ const stReturnData &RequestHandler::getReturn() const { return _return; }
 const std::string *RequestHandler::getUploadStore() const { return _upload_store; }
 
 const std::string *RequestHandler::getUploadLocation() const {	return _upload_location; }
+
+unsigned long long	RequestHandler::getClientMaxBodySize() const { return _client_max_body_size; }
 
 const std::string &RequestHandler::getFilePathBody() const { return _filePathBody; }
 
