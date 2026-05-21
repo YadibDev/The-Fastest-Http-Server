@@ -55,6 +55,7 @@ public:
 	static std::string						parseAlias(s_parse_context& ctx);
 
 
+	static HttpError						normalizePath(const std::string& uri, std::string& outUri);
 	static void								skipWhitespace(clsParse<TokenType>& parser);
 	static void								DefineUri(s_uri_entry &uri);
 

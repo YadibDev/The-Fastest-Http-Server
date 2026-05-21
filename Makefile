@@ -17,7 +17,7 @@ CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/Pa
 				Parser/ParseConfigFile/ServerConfig/ConfigDirectiveParser.cpp Parser/ParseConfigFile/ServerConfig/ServerConfig.cpp
 
 REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
-				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp Parser/ParseRequest/URI/URI.cpp Parser/ParseRequest/URI/URIParser.cpp \
+				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp  \
 				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp Parser/RequestHandler/PathResolver.cpp Parser/ParseRequest/Request/clsBody.cpp \
 # 				MemoryTracker.cpp #remove
 
