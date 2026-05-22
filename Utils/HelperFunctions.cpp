@@ -290,7 +290,7 @@ size_t HelperFunctions::join_views(char *dst, uint16_t dst_size, const s_view &v
 	return (v1.len + v2.len);
 }
 
-void HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
+short HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 {
 	size_t r = 0;
 	size_t w = 0;
@@ -330,7 +330,7 @@ void HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 			path[w++] = path[r++];
 	}
 
-	path[w] = '\0';
+	return w;
 }
 
 

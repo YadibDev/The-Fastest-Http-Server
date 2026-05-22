@@ -212,7 +212,12 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 {
 	HttpError error;
 	s_uri_entry uri;
+	
 
+	PathResolver::percentEncoded(const_cast<s_view &>(startLine.getRequestURI().getPath()));
+    const_cast<s_view &>(startLine.getRequestURI().getPath()).len =
+	HelperFunctions::RemoveDotSegmentsDirect(const_cast<s_view &>(startLine.getRequestURI().getPath()).Data, startLine.getRequestURI().getPath().len);
+	
 	const clsLocation* bestLocation = findBestLocation(
 		serverConfig->getLocationExact(),
 		serverConfig->getLocationPrefix(),

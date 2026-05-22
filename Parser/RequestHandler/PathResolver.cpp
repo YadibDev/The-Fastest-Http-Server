@@ -30,26 +30,25 @@ sPathType::e_path_type PathResolver::checkPath(char *path, UriStatus &flags, siz
     return (sPathType::PATH_OTHER);
 }
 
-size_t PathResolver::percentEncoded(char *buffer, size_t bufferSize, const s_view &uri) {
-    size_t svIdx = 0;
-    size_t bufIdx = 0;
-    while (svIdx < uri.len && bufIdx < bufferSize)
+size_t PathResolver::percentEncoded(s_view &uri) {
+    size_t r = 0;
+    size_t w = 0;
+
+    while (r < uri.len)
     {
-        if (uri.Data[svIdx] == '%' && svIdx + 2 < uri.len)
+        if (uri.Data[r] == '%' && r + 2 < uri.len)
         {
-            buffer[bufIdx++] = HelperFunctions::hexToDecS_view(&uri.Data[svIdx + 1], 2);
-            svIdx += 3;
+            uri.Data[w++] = HelperFunctions::hexToDecS_view(&uri.Data[r + 1], 2);
+            r += 3;
         }
         else
-            buffer[bufIdx++] = uri.Data[svIdx++];
+            uri.Data[w++] = uri.Data[r++];
     }
-    if (bufIdx < bufferSize)
-        buffer[bufIdx] = '\0';
-    return bufIdx;
+    uri.len = w;
+    return w;
 }
 
 bool PathResolver::createPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view& newUri, HttpError &error) {
-    char CleanUri[MAX_PATH_LEN];
     const std::string &base = bestLocation->getAlias().empty() ? bestLocation->getRoot() : bestLocation->getAlias();
     size_t currentPos = base.size();
 
@@ -57,32 +56,32 @@ bool PathResolver::createPhysicalPath(const clsLocation* bestLocation, char *des
         return (error.setStatus(414, "URI Too Long"), false);
 
     memcpy(destBuffer, base.c_str(), currentPos);
-    size_t uriPartLen = percentEncoded(CleanUri, MAX_PATH_LEN, newUri);
-    HelperFunctions::RemoveDotSegmentsDirect(CleanUri, 
-											uriPartLen);
-    const char* uriPart = CleanUri;
+    size_t uriPartLen = newUri.len ;
+
+    const char* uriPart = newUri.Data;
+    short uriIndex = 0;
 
     if (!bestLocation->getAlias().empty()) {
         size_t locSize = bestLocation->getLocationData().uri.size();
         if (uriPartLen >= locSize) {
-            uriPart += locSize;
+            uriIndex += locSize;
             uriPartLen -= locSize;
         }
     }
 
     if (uriPartLen > 0) {
         if (bestLocation->getAlias().empty() && currentPos > 0) {
-            if (destBuffer[currentPos - 1] != '/' && uriPart[0] != '/') {
+            if (destBuffer[currentPos - 1] != '/' && uriPart[uriIndex] != '/') {
                 if (currentPos < MAX_PATH_LEN - 1)
                     destBuffer[currentPos++] = '/';
             }
         }
-        if (currentPos > 0 && destBuffer[currentPos - 1] == '/' && uriPart[0] == '/') {
-            uriPart++;
+        if (currentPos > 0 && destBuffer[currentPos - 1] == '/' && uriPart[uriIndex] == '/') {
+            uriIndex++;
             uriPartLen--;
         }
         if (currentPos + uriPartLen < MAX_PATH_LEN) {
-            memcpy(destBuffer + currentPos, uriPart, uriPartLen);
+            memcpy(destBuffer + currentPos, &uriPart[uriIndex], uriPartLen);
             currentPos += uriPartLen;
         } else
             return (error.setStatus(414, "URI Too Long"), false);

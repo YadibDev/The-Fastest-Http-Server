@@ -215,6 +215,8 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 	short numLength = 0;
 	long long num = extractNumericPart(ctx.parser.peek().value, numLength);
 	std::string unitStr = ctx.parser.peek().value.substr(numLength);
+	if (unitStr.size() > 1)
+		return (ctx.error.setStatus(400, "Error Max Body Size Unit : " + unitStr), 0);
 	char unit = (unitStr.empty()) ? ' ' : unitStr[0];
 
 	unsigned long long bytes = convertToBytes(num, unit, ctx.error);
