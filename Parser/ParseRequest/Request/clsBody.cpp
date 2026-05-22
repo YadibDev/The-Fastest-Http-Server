@@ -173,7 +173,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
         else if (t + 1 < ofset && arr[t + 1] == '\n')
         {
             t += 2;
-            totRemoves += t - cur;
+            totRemoves += t - cur; // length of chunk size
             if (HelperFunctions::ConvertStrToNum(&arr[cur], size, 16) == false || size < 0)
             {
                 _errorPage.setStatus(400, "Bad Request");
