@@ -1,7 +1,7 @@
 <?php
 // Always output headers first in CGI
 
-header("Content-Type: text/html");
+echo "status: 200 OK\r\n"
 
 // Read GET parameters
 $name = isset($_GET['name']) ? $_GET['name'] : "Guest";
