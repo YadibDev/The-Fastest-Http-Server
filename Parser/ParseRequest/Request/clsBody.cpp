@@ -37,6 +37,7 @@ void clsBody::Reset()
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
+    this->writeSize = 0;
     writeSize = 0;
     chunkHelp.Reset();
     _errorPage.setStatus(0);
@@ -298,11 +299,12 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    int toWrite = std::max(offset + writeSize, _contentLength);
+    int toWrite = std::min<long>(offset, _contentLength - writeSize);
+
     int temp = 0;
 
     if (toWrite > 0)
-        temp = write(this->fd, data.io_chunk, offset);
+        temp = write(this->fd, data.io_chunk, toWrite);
     if (temp == -1)
     {
         _errorPage.setStatus(500, "Internal Server Error:");
