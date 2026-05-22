@@ -57,14 +57,14 @@
 
 <div class="header">
   <h1>⚡ Webserv 42 — Test Report</h1>
-  <p>Generated 2026-05-22 15:08:19 · 40 tests executed</p>
+  <p>Generated 2026-05-22 15:18:00 · 41 tests executed</p>
   <div class="stats">
     <div class="stat">
-      <div class="num" style="color:var(--pass)">32</div>
+      <div class="num" style="color:var(--pass)">11</div>
       <div class="lbl">Passed</div>
     </div>
     <div class="stat">
-      <div class="num" style="color:var(--fail)">6</div>
+      <div class="num" style="color:var(--fail)">28</div>
       <div class="lbl">Failed</div>
     </div>
     <div class="stat">
@@ -72,9 +72,9 @@
       <div class="lbl">Warnings</div>
     </div>
     <div class="stat">
-      <div class="num">80%</div>
+      <div class="num">26%</div>
       <div class="lbl">Pass Rate</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div>
     </div>
   </div>
 </div>
@@ -85,23 +85,23 @@
     
         <div class="cat-item">
           <span class="cat-name">connectivity</span>
-          <span class="cat-score" style="color:#22c55e">4/4</span>
+          <span class="cat-score" style="color:#ef4444">3/4</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">GET</span>
-          <span class="cat-score" style="color:#22c55e">10/10</span>
+          <span class="cat-score" style="color:#ef4444">3/10</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">POST</span>
-          <span class="cat-score" style="color:#ef4444">4/5</span>
+          <span class="cat-score" style="color:#ef4444">2/6</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">DELETE</span>
-          <span class="cat-score" style="color:#ef4444">2/3</span>
+          <span class="cat-score" style="color:#ef4444">1/3</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">methods</span>
-          <span class="cat-score" style="color:#ef4444">4/7</span>
+          <span class="cat-score" style="color:#ef4444">0/7</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">CGI</span>
@@ -109,22 +109,22 @@
         </div>
         <div class="cat-item">
           <span class="cat-name">multi-port</span>
-          <span class="cat-score" style="color:#22c55e">2/2</span>
+          <span class="cat-score" style="color:#ef4444">0/2</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">stress</span>
-          <span class="cat-score" style="color:#22c55e">3/3</span>
+          <span class="cat-score" style="color:#ef4444">0/3</span>
         </div>
         <div class="cat-item">
           <span class="cat-name">edge</span>
-          <span class="cat-score" style="color:#ef4444">3/4</span>
+          <span class="cat-score" style="color:#ef4444">2/4</span>
         </div>
   </div>
   <div class="main">
     <div class="controls">
-      <button class="btn active" onclick="filter('all')">All (40)</button>
-      <button class="btn" onclick="filter('PASS')">✓ Pass (32)</button>
-      <button class="btn" onclick="filter('FAIL')">✗ Fail (6)</button>
+      <button class="btn active" onclick="filter('all')">All (41)</button>
+      <button class="btn" onclick="filter('PASS')">✓ Pass (11)</button>
+      <button class="btn" onclick="filter('FAIL')">✗ Fail (28)</button>
       <button class="btn" onclick="filter('WARN')">⚠ Warn (2)</button>
     </div>
     <table id="results-table">
@@ -140,18 +140,18 @@
           <td><code>connectivity</code></td>
           <td>Server is reachable</td>
           <td><code>any response</code></td>
-          <td><code>200</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>connectivity</code></td>
           <td>Returns HTTP response (2xx/3xx/4xx)</td>
           <td><code>100-599</code></td>
-          <td><code>200</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -160,43 +160,43 @@
           <td><code>content-type present</code></td>
           <td><code>present</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
           <td><code>connectivity</code></td>
           <td>Server header present</td>
           <td><code>server header</code></td>
-          <td><code>the-fastest-server</code></td>
+          <td><code>the-fast-server</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET / returns 200</td>
           <td><code>200</code></td>
-          <td><code>200</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>Autoindex on / returns HTML listing</td>
           <td><code>HTML content</code></td>
-          <td><code>5407 bytes</code></td>
+          <td><code>0 bytes</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET / has text/html content-type</td>
           <td><code>text/html</code></td>
-          <td><code>text/html ; charset=UTF-8</code></td>
+          <td><code>text/plain ; charset=UTF-8</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:48</td>
+          <td class="ts">15:17:12</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -205,25 +205,25 @@
           <td><code>404</code></td>
           <td><code>404</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:53</td>
+          <td class="ts">15:17:17</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET /video/ with autoindex returns 200</td>
           <td><code>200</code></td>
-          <td><code>200</code></td>
+          <td><code>403</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:53</td>
+          <td class="ts">15:17:22</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET / body not empty</td>
           <td><code>>0</code></td>
-          <td><code>5407</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:53</td>
+          <td class="ts">15:17:22</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -232,16 +232,16 @@
           <td><code>present</code></td>
           <td><code>present</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:53</td>
+          <td class="ts">15:17:22</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET with query string returns 200</td>
           <td><code>200</code></td>
-          <td><code>200</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:53</td>
+          <td class="ts">15:17:22</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -250,43 +250,34 @@
           <td><code>404</code></td>
           <td><code>404</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:58</td>
+          <td class="ts">15:17:27</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>GET</code></td>
           <td>GET //index.html returns 200 or 400/404 (no crash)</td>
           <td><code>200/301/400/404</code></td>
-          <td><code>200</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:58</td>
+          <td class="ts">15:17:27</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
           <td><code>POST</code></td>
           <td>POST / returns 2xx or 4xx (not 5xx)</td>
           <td><code>not 500</code></td>
-          <td><code>201</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:58</td>
+          <td class="ts">15:17:27</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
-          <td><code>POST</code></td>
-          <td>File upload via multipart/form-data</td>
-          <td><code>200/201/204</code></td>
-          <td><code>201</code></td>
-          <td class="detail">filename: test_jkxxfslz.txt</td>
-          <td class="ts">15:06:58</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>POST</code></td>
           <td>POST with empty body handled</td>
           <td><code>2xx-4xx</code></td>
-          <td><code>201</code></td>
+          <td><code>-1</code></td>
           <td class="detail"></td>
-          <td class="ts">15:06:58</td>
+          <td class="ts">15:17:27</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -295,25 +286,43 @@
           <td><code>2xx or 413</code></td>
           <td><code>413</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:03</td>
+          <td class="ts">15:17:32</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>POST</code></td>
-          <td>Uploaded file accessible via GET at /video/</td>
+          <td>Multipart file accessible via GET at /video/upload_multi_dkaposfs.txt</td>
           <td><code>200 + correct content</code></td>
-          <td><code>upload=201, get=404</code></td>
+          <td><code>upload=-1, get=404 at /video/upload_multi_dkaposfs.txt (Check if your server uses 'root' instead of 'alias' causing double /video/video/ paths)</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:08</td>
+          <td class="ts">15:17:38</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>POST</code></td>
+          <td>Raw data upload (non-multipart) handled</td>
+          <td><code>200/201/204</code></td>
+          <td><code>500</code></td>
+          <td class="detail">filename: raw_upload_nvncrnuj.txt</td>
+          <td class="ts">15:17:43</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>POST</code></td>
+          <td>Raw uploaded file accessible via GET at /video/raw_upload_nvncrnuj.txt</td>
+          <td><code>200 + correct content</code></td>
+          <td><code>upload=500, get=404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:17:48</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>DELETE</code></td>
-          <td>DELETE existing file in /video/ returns 200/204</td>
+          <td>DELETE existing file in /video/ returns 200/202/204</td>
           <td><code>200/202/204</code></td>
           <td><code>404</code></td>
-          <td class="detail">file: to_delete_sxeeenbf.txt</td>
-          <td class="ts">15:07:13</td>
+          <td class="detail">file: to_delete_vflvtdje.txt</td>
+          <td class="ts">15:17:58</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
@@ -322,178 +331,178 @@
           <td><code>404</code></td>
           <td><code>404</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:18</td>
+          <td class="ts">15:17:59</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>DELETE</code></td>
           <td>Double DELETE returns 404 (not crash)</td>
           <td><code>404</code></td>
-          <td><code>404</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:29</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>HEAD / returns 200</td>
           <td><code>200</code></td>
-          <td><code>405</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:34</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>HEAD response body is empty</td>
           <td><code>0</code></td>
-          <td><code>157</code></td>
+          <td><code>30</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:34</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>OPTIONS / returns 200 or 405</td>
           <td><code>200/204/405</code></td>
-          <td><code>405</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:39</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>Unknown method returns 400 or 405 or 501</td>
           <td><code>400/405/501</code></td>
-          <td><code>405</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:44</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>PUT / returns 405 (Method Not Allowed)</td>
           <td><code>405</code></td>
-          <td><code>405</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:49</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>HTTP/1.0 request handled (200 or 400)</td>
           <td><code>200/400</code></td>
-          <td><code>400</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:54</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>methods</code></td>
           <td>Missing Host header returns 400</td>
           <td><code>400</code></td>
-          <td><code>200</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:54</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#f59e0b22;color:#f59e0b">⚠ WARN</span></td>
           <td><code>CGI</code></td>
           <td>GET /index.py returns 200 (Assuming file exists)</td>
           <td><code>200</code></td>
-          <td><code>404</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:07:59</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#f59e0b22;color:#f59e0b">⚠ WARN</span></td>
           <td><code>CGI</code></td>
           <td>POST to CGI /index.py returns 200</td>
           <td><code>200</code></td>
-          <td><code>404</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>multi-port</code></td>
           <td>Server port 8082 is reachable</td>
           <td><code>any response</code></td>
-          <td><code>200</code></td>
+          <td><code>no connection</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>multi-port</code></td>
           <td>Port 8082 returns 2xx-4xx</td>
           <td><code>2xx-4xx</code></td>
-          <td><code>200</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>stress</code></td>
           <td>10 concurrent connections all return 200</td>
           <td><code>10</code></td>
-          <td><code>10/10 succeeded</code></td>
+          <td><code>0/10 succeeded</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>stress</code></td>
           <td>25 sequential requests all succeed</td>
           <td><code>25</code></td>
-          <td><code>25/25 succeeded</code></td>
+          <td><code>0/25 succeeded</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>stress</code></td>
           <td>Server alive after stress test</td>
           <td><code>200</code></td>
-          <td><code>200</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:04</td>
+          <td class="ts">15:18:00</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>edge</code></td>
+          <td>Empty request handled (no crash)</td>
+          <td><code>no crash</code></td>
+          <td><code>[Errno 111] Connection refused</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>edge</code></td>
-          <td>Empty request returns 400 or closes</td>
-          <td><code>0 or 400</code></td>
-          <td><code>405</code></td>
-          <td class="detail"></td>
-          <td class="ts">15:08:06</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
-          <td><code>edge</code></td>
           <td>Very long URL (8KB) returns 414 or 400 or 404</td>
           <td><code>400/404/413/414</code></td>
-          <td><code>414</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:11</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
           <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
           <td><code>edge</code></td>
           <td>Malformed request line returns 400 (not crash)</td>
           <td><code>0/400/404</code></td>
-          <td><code>400</code></td>
+          <td><code>0</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:16</td>
+          <td class="ts">15:18:00</td>
         </tr>
         <tr>
-          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
           <td><code>edge</code></td>
           <td>Pipelined requests handled (no crash)</td>
-          <td><code>HTTP response</code></td>
-          <td><code>5576 bytes received</code></td>
+          <td><code>response</code></td>
+          <td><code>[Errno 111] Connection refused</code></td>
           <td class="detail"></td>
-          <td class="ts">15:08:19</td>
+          <td class="ts">15:18:00</td>
         </tr></tbody>
     </table>
   </div>

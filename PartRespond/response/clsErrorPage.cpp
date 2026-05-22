@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 14:48:27 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/18 16:36:42 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/22 14:50:27 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void clsErrorPage::_Date()
 
 void clsErrorPage::_Server()
 {
-    _HeaderFeild += "Server: the-fastest-server\r\n";
+    _HeaderFeild += "Server: the-fast-server\r\n";
 }
 
 void clsErrorPage::_Allow()

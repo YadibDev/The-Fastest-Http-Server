@@ -13,14 +13,13 @@ struct stHeadersCGI
         CONTENT_TYPE,
         LOCATION,
         STATUS,
-        CONTENT_LENGTH
     };
 };
 
 class clsParseOutCGI
 {
     stMod::eMod _Mod[11];
-    stHeadersCGI::eHeaders _ExistHeaders[5];
+    stHeadersCGI::eHeaders _ExistHeaders[4];
     bool _FoundBody;
     short _Status;
     short _Counter;
@@ -64,9 +63,8 @@ class clsParseOutCGI
     bool _StoredHeadersField(std::string &Str);
     void _CreatFileTemp();
     bool _IsValidHeaderValueChar(unsigned char C);
-    bool _ContentLength(const std::string &Str);
     void _InitialInternalRedirect();
-    short _AtoiStatusCode(const std::string &StringDigit, short Start, short End);
+    size_t _Atoi(const std::string &StringDigit, short Start, short End);
 
 public:
     clsParseOutCGI(RequestHandler &_DataRequest,std::string &Body,  std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);

@@ -116,7 +116,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
             if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength < 0 || (bodyHasLimit && (size_t)_contentLength > maxBodySize))
             {
-                if (_contentLength > maxBodySize)
+                if ((size_t)_contentLength > maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
                 else
                     _errorPage.setStatus(400, "Bad Request");
