@@ -245,6 +245,9 @@ std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx)
 		ctx.parser.advance();
 	}
 
+	if (indixes.empty())
+		return (ctx.error.setStatus(400, "Index Empty"), indixes);
+
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after index list"), indixes);
 
