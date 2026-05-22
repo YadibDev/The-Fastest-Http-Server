@@ -98,7 +98,17 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         bodyHasLimit = maxBodySize != 0;
 
         if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != -1)
+        {
+            char *value = data.known_headers[HttpTables::H_TRANSFER_ENCODING].val.Data;
+            int valSize = data.known_headers[HttpTables::H_TRANSFER_ENCODING].val.len;
+            if (valSize != 7 || strncmp(value, "chunked", 7) != 0)
+            {
+                _errorPage.setStatus(400, "Bad Request");
+                _state = clsBody::DONE_WIHTERROR;
+                return false;
+            }
             _isChunk = true;
+        }
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
         {
             _isChunk = false;
