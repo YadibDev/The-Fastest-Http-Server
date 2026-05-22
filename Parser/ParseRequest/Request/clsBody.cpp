@@ -114,9 +114,9 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
             _isChunk = false;
             const char *content_leng_str = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
 
-            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || (bodyHasLimit && _contentLength > (long)maxBodySize) || _contentLength < 0)
+            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength < 0 || (bodyHasLimit && (size_t)_contentLength > maxBodySize))
             {
-                if (_contentLength > (long)maxBodySize)
+                if (_contentLength > maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
                 else
                     _errorPage.setStatus(400, "Bad Request");

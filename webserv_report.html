@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webserv 42 — Test Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --text: #e2e8f0;
+    --dim: #64748b;
+    --pass: #22c55e;
+    --fail: #ef4444;
+    --warn: #f59e0b;
+    --accent: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%); border-bottom: 1px solid var(--border); padding: 2rem 3rem; position: relative; overflow: hidden; }
+  .header::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 80% at 50% -10%, #6366f130, transparent); }
+  .header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; }
+  .header p { color: var(--dim); margin-top: 0.4rem; font-size: 0.9rem; position: relative; }
+  .stats { display: flex; gap: 1.5rem; margin-top: 1.5rem; position: relative; }
+  .stat { background: #ffffff08; border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem; min-width: 120px; }
+  .stat .num { font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .stat .lbl { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
+  .progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin: 0.75rem 0 0.25rem; }
+  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #22c55e, #4ade80); transition: width 1s ease; }
+  .layout { display: flex; gap: 0; }
+  .sidebar { width: 220px; min-height: calc(100vh - 200px); background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; flex-shrink: 0; }
+  .sidebar h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--dim); margin-bottom: 1rem; }
+  .cat-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 4px; font-size: 0.82rem; }
+  .cat-item:hover { background: #ffffff08; }
+  .cat-name { color: var(--text); }
+  .cat-score { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; }
+  .main { flex: 1; padding: 2rem; overflow: auto; }
+  .controls { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .btn { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.82rem; transition: all 0.2s; }
+  .btn:hover { background: #ffffff12; border-color: var(--accent); }
+  .btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  thead th { background: var(--surface); border-bottom: 2px solid var(--border); padding: 0.75rem 1rem; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim); }
+  tbody tr { border-bottom: 1px solid #1e1e2e; transition: background 0.15s; }
+  tbody tr:hover { background: #ffffff05; }
+  tbody td { padding: 0.65rem 1rem; vertical-align: middle; }
+  .badge { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; white-space: nowrap; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #a5b4fc; }
+  .detail { color: var(--dim); font-size: 0.78rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ts { color: var(--dim); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ Webserv 42 — Test Report</h1>
+  <p>Generated 2026-05-22 15:08:19 · 40 tests executed</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="num" style="color:var(--pass)">32</div>
+      <div class="lbl">Passed</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color:var(--fail)">6</div>
+      <div class="lbl">Failed</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color:var(--warn)">2</div>
+      <div class="lbl">Warnings</div>
+    </div>
+    <div class="stat">
+      <div class="num">80%</div>
+      <div class="lbl">Pass Rate</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <h3>Categories</h3>
+    
+        <div class="cat-item">
+          <span class="cat-name">connectivity</span>
+          <span class="cat-score" style="color:#22c55e">4/4</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">GET</span>
+          <span class="cat-score" style="color:#22c55e">10/10</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">POST</span>
+          <span class="cat-score" style="color:#ef4444">4/5</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">DELETE</span>
+          <span class="cat-score" style="color:#ef4444">2/3</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">methods</span>
+          <span class="cat-score" style="color:#ef4444">4/7</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">CGI</span>
+          <span class="cat-score" style="color:#22c55e">0/2</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">multi-port</span>
+          <span class="cat-score" style="color:#22c55e">2/2</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">stress</span>
+          <span class="cat-score" style="color:#22c55e">3/3</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-name">edge</span>
+          <span class="cat-score" style="color:#ef4444">3/4</span>
+        </div>
+  </div>
+  <div class="main">
+    <div class="controls">
+      <button class="btn active" onclick="filter('all')">All (40)</button>
+      <button class="btn" onclick="filter('PASS')">✓ Pass (32)</button>
+      <button class="btn" onclick="filter('FAIL')">✗ Fail (6)</button>
+      <button class="btn" onclick="filter('WARN')">⚠ Warn (2)</button>
+    </div>
+    <table id="results-table">
+      <thead>
+        <tr>
+          <th>Status</th><th>Category</th><th>Test Name</th>
+          <th>Expected</th><th>Got</th><th>Details</th><th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>connectivity</code></td>
+          <td>Server is reachable</td>
+          <td><code>any response</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>connectivity</code></td>
+          <td>Returns HTTP response (2xx/3xx/4xx)</td>
+          <td><code>100-599</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>connectivity</code></td>
+          <td>Response has Content-Type header</td>
+          <td><code>content-type present</code></td>
+          <td><code>present</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>connectivity</code></td>
+          <td>Server header present</td>
+          <td><code>server header</code></td>
+          <td><code>the-fastest-server</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET / returns 200</td>
+          <td><code>200</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>Autoindex on / returns HTML listing</td>
+          <td><code>HTML content</code></td>
+          <td><code>5407 bytes</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET / has text/html content-type</td>
+          <td><code>text/html</code></td>
+          <td><code>text/html ; charset=UTF-8</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:48</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET non-existent file returns 404</td>
+          <td><code>404</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:53</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET /video/ with autoindex returns 200</td>
+          <td><code>200</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:53</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET / body not empty</td>
+          <td><code>>0</code></td>
+          <td><code>5407</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:53</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>Response has Content-Length or Transfer-Encoding</td>
+          <td><code>present</code></td>
+          <td><code>present</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:53</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET with query string returns 200</td>
+          <td><code>200</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:53</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET very long path returns 404 (not crash)</td>
+          <td><code>404</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:58</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>GET</code></td>
+          <td>GET //index.html returns 200 or 400/404 (no crash)</td>
+          <td><code>200/301/400/404</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:58</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>POST</code></td>
+          <td>POST / returns 2xx or 4xx (not 5xx)</td>
+          <td><code>not 500</code></td>
+          <td><code>201</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:58</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>POST</code></td>
+          <td>File upload via multipart/form-data</td>
+          <td><code>200/201/204</code></td>
+          <td><code>201</code></td>
+          <td class="detail">filename: test_jkxxfslz.txt</td>
+          <td class="ts">15:06:58</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>POST</code></td>
+          <td>POST with empty body handled</td>
+          <td><code>2xx-4xx</code></td>
+          <td><code>201</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:06:58</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>POST</code></td>
+          <td>POST large body handled (200/413)</td>
+          <td><code>2xx or 413</code></td>
+          <td><code>413</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:03</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>POST</code></td>
+          <td>Uploaded file accessible via GET at /video/</td>
+          <td><code>200 + correct content</code></td>
+          <td><code>upload=201, get=404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:08</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>DELETE</code></td>
+          <td>DELETE existing file in /video/ returns 200/204</td>
+          <td><code>200/202/204</code></td>
+          <td><code>404</code></td>
+          <td class="detail">file: to_delete_sxeeenbf.txt</td>
+          <td class="ts">15:07:13</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>DELETE</code></td>
+          <td>DELETE non-existent file returns 404</td>
+          <td><code>404</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:18</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>DELETE</code></td>
+          <td>Double DELETE returns 404 (not crash)</td>
+          <td><code>404</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:29</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>methods</code></td>
+          <td>HEAD / returns 200</td>
+          <td><code>200</code></td>
+          <td><code>405</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:34</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>methods</code></td>
+          <td>HEAD response body is empty</td>
+          <td><code>0</code></td>
+          <td><code>157</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:34</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>methods</code></td>
+          <td>OPTIONS / returns 200 or 405</td>
+          <td><code>200/204/405</code></td>
+          <td><code>405</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:39</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>methods</code></td>
+          <td>Unknown method returns 400 or 405 or 501</td>
+          <td><code>400/405/501</code></td>
+          <td><code>405</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:44</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>methods</code></td>
+          <td>PUT / returns 405 (Method Not Allowed)</td>
+          <td><code>405</code></td>
+          <td><code>405</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:49</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>methods</code></td>
+          <td>HTTP/1.0 request handled (200 or 400)</td>
+          <td><code>200/400</code></td>
+          <td><code>400</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:54</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>methods</code></td>
+          <td>Missing Host header returns 400</td>
+          <td><code>400</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:54</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#f59e0b22;color:#f59e0b">⚠ WARN</span></td>
+          <td><code>CGI</code></td>
+          <td>GET /index.py returns 200 (Assuming file exists)</td>
+          <td><code>200</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:07:59</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#f59e0b22;color:#f59e0b">⚠ WARN</span></td>
+          <td><code>CGI</code></td>
+          <td>POST to CGI /index.py returns 200</td>
+          <td><code>200</code></td>
+          <td><code>404</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>multi-port</code></td>
+          <td>Server port 8082 is reachable</td>
+          <td><code>any response</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>multi-port</code></td>
+          <td>Port 8082 returns 2xx-4xx</td>
+          <td><code>2xx-4xx</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>stress</code></td>
+          <td>10 concurrent connections all return 200</td>
+          <td><code>10</code></td>
+          <td><code>10/10 succeeded</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>stress</code></td>
+          <td>25 sequential requests all succeed</td>
+          <td><code>25</code></td>
+          <td><code>25/25 succeeded</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>stress</code></td>
+          <td>Server alive after stress test</td>
+          <td><code>200</code></td>
+          <td><code>200</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:04</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#ef444422;color:#ef4444">✗ FAIL</span></td>
+          <td><code>edge</code></td>
+          <td>Empty request returns 400 or closes</td>
+          <td><code>0 or 400</code></td>
+          <td><code>405</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:06</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>edge</code></td>
+          <td>Very long URL (8KB) returns 414 or 400 or 404</td>
+          <td><code>400/404/413/414</code></td>
+          <td><code>414</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:11</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>edge</code></td>
+          <td>Malformed request line returns 400 (not crash)</td>
+          <td><code>0/400/404</code></td>
+          <td><code>400</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:16</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#22c55e22;color:#22c55e">✓ PASS</span></td>
+          <td><code>edge</code></td>
+          <td>Pipelined requests handled (no crash)</td>
+          <td><code>HTTP response</code></td>
+          <td><code>5576 bytes received</code></td>
+          <td class="detail"></td>
+          <td class="ts">15:08:19</td>
+        </tr></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function filter(type) {
+  document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('#results-table tbody tr').forEach(row => {
+    if (type === 'all') { row.classList.remove('hidden'); return; }
+    const badge = row.querySelector('.badge');
+    if (badge && badge.textContent.includes(type)) row.classList.remove('hidden');
+    else row.classList.add('hidden');
+  });
+}
+</script>
+</body>
+</html>
