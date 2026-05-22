@@ -66,7 +66,7 @@ int clsBody::_createUploadStoreFile(char *path)
     if (this->uploadStore)
     {
         fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
-        if (errno == EISDIR) // if is dir
+        if (errno == EISDIR)                                              // if is dir
         {
             close(fd);
             fd = createRandomFile();
@@ -77,16 +77,13 @@ int clsBody::_createUploadStoreFile(char *path)
         int size = uploadStore->size();
         pathFileAbs = "";
         pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
-        pathFileAbs +=  uploadLocation->c_str();
-        std::cout << uploadLocation->c_str() << std::endl;
-        pathFileAbs +=  &_fileName[size];
+        pathFileAbs += uploadLocation->c_str();
+        pathFileAbs += &_fileName[size];
     }
     return fd;
-
 }
 bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
-    (void)path;
     uint16_t &offset = *off;
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
@@ -216,7 +213,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     {
         _errorPage.setStatus(500, "Internal Server Error:");
         error = true;
-        return false;  // error so we end the function
+        return false; // error so we end the function
     }
 
     t += temp;
@@ -229,7 +226,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
         {
             _errorPage.setStatus(400, "Bad Request");
             error = true;
-            return false;  // error so we end the function
+            return false; // error so we end the function
         }
         else
         {
@@ -241,7 +238,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     }
     else if (t + 1 >= ofset)
         return true;
-    
+
     return false;
 }
 
@@ -267,7 +264,7 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
             if (_saveChunkBody(ofset, error, totRemoves))
                 break;
         }
-        
+
         if (maxBodySize - totRemoves < 0 && bodyHasLimit)
         {
             error = true;
@@ -332,7 +329,6 @@ void clsBody::ParseBody(uint16_t &offset)
     }
     else
         _handleChunk(offset);
-
 }
 
 void clsBody::setUploadStore(const std::string *ptr)
@@ -356,7 +352,7 @@ HttpError clsBody::getError()
 
 clsBody::~clsBody()
 {
-    if (this->removeFile)
+    if (fd != -1 && (this->_state != clsBody::DONE_GOOD || removeFile))
         remove(_fileName.c_str());
     if (fd != -1)
         close(fd);

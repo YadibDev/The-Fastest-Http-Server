@@ -158,6 +158,7 @@ void clsMainProcess::Reset()
 	this->_RunCGI = false;
 	_CGI.Reset();
 	_CGI.GetclsParseOutCGI().Reset();
+    _Response.SetInternalRedirectSrc(NULL); // add by yadib
 	_Response.Reset();
 	_InternalRedirectSrc = "";
 	_HeaderFeild = "";
