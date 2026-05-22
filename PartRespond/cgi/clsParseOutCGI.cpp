@@ -156,7 +156,8 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else if (!_NameHeader.compare("status"))
 		_ExistHeaders[stHeadersCGI::STATUS] = stHeadersCGI::STATUS;
 	else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
-		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
+		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding")
+	|| !_NameHeader.compare("content-length"))
 	{
 		_NameHeader = "";
 		_ValueHeader = "";
