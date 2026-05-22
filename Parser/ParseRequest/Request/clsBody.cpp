@@ -65,7 +65,7 @@ int clsBody::_createUploadStoreFile(char *path)
 
     if (this->uploadStore)
     {
-        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
+        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
         if (errno == EISDIR) // if is dir
         {
             close(fd);
@@ -75,10 +75,14 @@ int clsBody::_createUploadStoreFile(char *path)
     if (fd != -1)
     {
         int size = uploadStore->size();
+
         pathFileAbs = "";
+        
+
         pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
+    
         pathFileAbs +=  uploadLocation->c_str();
-        std::cout << uploadLocation->c_str() << std::endl;
+
         pathFileAbs +=  &_fileName[size];
     }
     return fd;
@@ -291,7 +295,8 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    int toWrite = std::max(offset + writeSize, _contentLength);
+    int toWrite = _contentLength - writeSize;
+
     int temp = 0;
 
     if (toWrite > 0)

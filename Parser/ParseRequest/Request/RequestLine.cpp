@@ -124,7 +124,7 @@ bool    RequestLine::parseUri(const char *buffer, uint16_t size)
 
 bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 {
-	const char *expectedPrefix = "HTTP/1.";
+	const char *expectedPrefix = "HTTP/1.1";
 
     if (!_versionReady)
     {
@@ -140,7 +140,7 @@ bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
     }
 
 
-	while (_versionIndex < 7 && _offset <= size)
+	while (_versionIndex < 8 && _offset <= size)
 	{
 		if (buffer[_offset] != expectedPrefix[_versionIndex])
 			return (_error.setStatus(505, "HTTP Version Not Supported") , false);
@@ -148,21 +148,10 @@ bool    RequestLine::parseVersion(const char *buffer, uint16_t size)
 		_versionIndex++;
 	}
 
-	if (_versionIndex < 7)
+	if (_versionIndex < 8)
 		return true;
 
-	if (!_versionMinorRead)
-	{
-		if (_offset > size)
-			return true;
-		if (buffer[_offset] != '0' && buffer[_offset] != '1')
-			return (_error.setStatus(505, "HTTP Version Not Supported") , false);
-
-		_offset++;
-		_versionMinorRead = true;
-		
-		_version.len = 8;
-	}
+	_version.len = 8;
 
 	_state = STATE_CR;
 	return true;

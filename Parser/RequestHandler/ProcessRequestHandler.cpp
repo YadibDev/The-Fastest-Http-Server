@@ -235,7 +235,6 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	uri.setSview(startLine.getRequestURI().getPath());
 	handler->setMethod(startLine.getMethod());
 	handler->setClientMaxBodySize(bestLocation->getClientMaxBodySize());
-
 	handler->setReturn((bestLocation->getReturn().code != -1) ? bestLocation->getReturn() : serverConfig->getReturn());
 	
 	if (handler->getReturn().code != -1)
