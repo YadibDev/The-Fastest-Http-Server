@@ -94,6 +94,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		size++;
 		memcpy(_request.io_chunk, (&_request.request_metadata[_offset]), size - _offset);
 		_request.request_metadata[_offset - 1] = '\0'; // end request headers here
+
 		*_request.read_body_ptr = size - _offset;
 		if (_RequestHandler->getPathCgi())
 			isCgi = (_RequestHandler->getPathCgi()->size() > 0);
@@ -120,9 +121,6 @@ bool RequestParser::ParseBody(uint16_t size)
 
 bool RequestParser::Parse(uint16_t size)
 {
-	if (size >= BUFFER_REQUEST && _state != STATE_BODY)
-		return (_error.setStatus(413, "Content Too Large"), false);
-
 	if (_state != STATE_BODY)
 	{
 		while (_offset <= size)

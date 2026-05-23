@@ -20,7 +20,7 @@ public:
     static bool viewEqualsString(const s_view &view, const std::string &str);
     static bool viewStartsWithString(const s_view &view, const std::string &prefix);
     static sPathType::e_path_type checkPath(char *path, UriStatus &flags, size_t &size);
-    static size_t percentEncoded(char *buffer, size_t bufferSize, const s_view &uri);
+    static size_t percentEncoded(s_view &uri);
     static bool createPhysicalPath(const clsLocation* bestLocation, char *destBuffer, const s_view& newUri, HttpError &error);
 };
 

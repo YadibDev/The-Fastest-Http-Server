@@ -74,46 +74,10 @@ bool    Header::isHeaderValueChar(char c)
 bool    Header::canRead(uint16_t size) const { return (_offset <= size); }
 
 
-bool isValidHostFormat(s_view &VHost)
-{
-
-    int lastColon = -1;
-    for (int i = VHost.len - 1; i >= 0; --i)
-	{
-        if (VHost.Data[i] == ':')
-		{
-            lastColon = i;
-            break;
-        }
-    }
-
-    int hostLen = (lastColon == -1) ? VHost.len : lastColon;
-
-    if (hostLen == 0)
-		return false;
-
-    if (lastColon != -1)
-	{
-        if (lastColon == VHost.len - 1)
-			return false;
-
-        for (int i = lastColon + 1; i < (int)VHost.len; ++i)
-		{
-            char c = VHost.Data[i];
-            if (!(c >= '0' && c <= '9'))
-                return false;
-        }
-    }
-
-    return true;
-}
-
 bool	Header::CheckHostAbsUri(s_view &VHost)
 {
 	if (!VHost.len)
 		return (_error.setStatus(400, "Header Fields Host Is Empty"), false);
-	if (!isValidHostFormat(VHost))
-		return (_error.setStatus(400, "host[:port]"), false);
 	return true;
 }
 
@@ -131,12 +95,13 @@ bool    Header::makeUnknownHeader()
 
 bool    Header::makeKnownHeader()
 {
-	if (_request.known_headers[_currentHeader].key.Data == NULL)
-	{
-		if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1)
+	
+	if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1)
 			|| (_currentHeader == HttpTables::H_CONTENT_LENGTH && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1))
 				return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
 
+	if (_request.known_headers[_currentHeader].key.Data == NULL)
+	{
 		_request.known_headers[_currentHeader].Hash = _hash;
 		_request.known_headers[_currentHeader].key.Data = (char *)&_request.request_metadata[_keyStart];
 		_request.known_headers[_currentHeader].key.len = (_offset - 1) - _keyStart;

@@ -125,7 +125,7 @@ void clsFlow::_registerServersSockets()
 			it = _allServers.erase(it);
 		}
 	}
-	// std::cout << "out\n" << std::endl;
+
 	if (_allServers.size() == 0)
 		throw(std::runtime_error("Error\ncan't register all servers sockets"));
 
