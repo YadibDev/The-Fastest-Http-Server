@@ -4,7 +4,6 @@
 #include "../../Utils/Lexer.hpp"
 #include "../../Utils/HelperFunctions.hpp"
 #include "../../Utils/HttpError.hpp"
-#include "../ParseRequest/URI/URI.hpp"
 #include "../ParseRequest/URI/NUriParser.hpp"
 #include "../ParseRequest/Request/HttpTypes.hpp"
 

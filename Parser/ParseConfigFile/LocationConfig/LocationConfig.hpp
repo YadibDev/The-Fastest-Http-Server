@@ -71,7 +71,6 @@ private:
 	void	setCgiPass(const std::map<std::string, std::string>& cgi);
 	void	setErrorPages(const std::map<short, stErrorPagedata>& pages);
 	void	setDefaultErrorPage(const stErrorPagedata* page);
-
 };
 
 #endif

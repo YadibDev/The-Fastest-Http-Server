@@ -63,10 +63,8 @@ bool    clsLocation::ParseUploadLocation()
 
 bool    clsLocation::ParseCgiPass()
 {
-	std::map<std::string, std::string> tmpCgi;
-	ConfigDirectiveParser::ParseCGI(ctx, tmpCgi);
+	ConfigDirectiveParser::ParseCGI(ctx, _cgi_pass);
 	
-	_cgi_pass = tmpCgi;
 	return !ctx.error.isError();
 }
 

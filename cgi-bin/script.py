@@ -1,1 +1,1 @@
-print("location:/index.hml\r\n\r\n", end="")
+print("location:/index.html\r\n\r\n", end="")

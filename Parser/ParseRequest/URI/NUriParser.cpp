@@ -128,6 +128,7 @@ bool UriParser::validateRegName(const char* data, size_t len)
 	return true;
 }
 
+
 void UriParser::finishAuthority(const char* buffer) {
 	if (_authority.Data && _authority.len == 0)
 		_authority.len = static_cast<uint16_t>(&buffer[_offset] - _authority.Data);

@@ -26,6 +26,93 @@ bool ConfigDirectiveParser::validateDirectoryPath(const std::string& path,
 	return true;
 }
 
+
+inline int from_hex(char c) {
+	if (c >= '0' && c <= '9') return c - '0';
+	if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+	if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+	return -1;
+}
+
+void decode_segment(const std::string& uri, size_t start, size_t end, std::string& buffer) {
+	buffer.clear();
+	for (size_t j = start; j < end; ++j) {
+		if (uri[j] == '%' && j + 2 < end) {
+			int h1 = from_hex(uri[j + 1]);
+			int h2 = from_hex(uri[j + 2]);
+			if (h1 != -1 && h2 != -1) {
+				buffer += static_cast<char>((h1 << 4) | h2);
+				j += 2;
+			} else {
+				buffer += uri[j];
+			}
+		} else {
+			buffer += uri[j];
+		}
+	}
+}
+
+void resolve_segment(const std::string& segment, std::string& outUri, bool addSlash) {
+	if (addSlash && segment == ".") return;
+	
+	if (segment == "..")
+	{
+		if (!outUri.empty())
+		{
+			size_t lastSlash = outUri.rfind('/');
+			if (lastSlash != std::string::npos)
+				outUri.resize(lastSlash);
+			else
+				outUri.clear();
+		}
+		return;
+	}
+	if (addSlash)
+		outUri += '/';
+	outUri += segment;
+}
+
+HttpError ConfigDirectiveParser::normalizePath(const std::string& uri, std::string& outUri) {
+	if (uri.empty()) {
+		return HttpError(400, "is empty");
+	}
+	
+	outUri.clear();
+	outUri.reserve(uri.length());
+
+	std::string decodedBuffer;
+	decodedBuffer.reserve(256);
+
+	size_t len = uri.length();
+	size_t i = 0;
+	bool isStart = true;
+
+	while (i < len) {
+		if (uri[i] == '/') {
+			i++;
+			continue;
+		}
+
+		size_t start = i;
+		while (i < len && uri[i] != '/')
+			i++;
+		decode_segment(uri, start, i, decodedBuffer);
+		if (isStart && uri[0] != '/')
+			resolve_segment(decodedBuffer, outUri, false);
+		else
+			resolve_segment(decodedBuffer, outUri, true);
+		isStart = false;
+	}
+
+	if (uri.empty()) 
+		return HttpError(400, "is empty");
+
+	if (outUri[outUri.size() - 1] != '/')
+		outUri += '/';
+
+	return HttpError();
+}
+
 bool ConfigDirectiveParser::parseLocationPath(s_parse_context& ctx, stlocation& loc) {
 	
 	if (ctx.parser.peek().type != TOKEN_WORD) {
@@ -80,7 +167,7 @@ std::string ConfigDirectiveParser::ParseRoot(s_parse_context& ctx) {
 		return (ctx.error.setStatus(400, "Expected path after 'root'"), "");
 
 	std::string root;
-	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, root);
+	ctx.error = normalizePath(ctx.parser.peek().value, root);
 
 	if (ctx.error.isError()) return "";
 
@@ -104,7 +191,7 @@ std::string ConfigDirectiveParser::parseAlias(s_parse_context& ctx)
 		return (ctx.error.setStatus(400, "Expected path after 'alias'"), "");
 
 	std::string alias;
-	ctx.error = URIParser::normalizePath(ctx.parser.peek().value, alias);
+	ctx.error = normalizePath(ctx.parser.peek().value, alias);
 	if (ctx.error.isError()) return "";
 
 	if (!validateDirectoryPath(alias, ctx, "alias"))
@@ -128,6 +215,8 @@ unsigned long long ConfigDirectiveParser::ParseClientMaxBodySize(s_parse_context
 	short numLength = 0;
 	long long num = extractNumericPart(ctx.parser.peek().value, numLength);
 	std::string unitStr = ctx.parser.peek().value.substr(numLength);
+	if (unitStr.size() > 1)
+		return (ctx.error.setStatus(400, "Error Max Body Size Unit : " + unitStr), 0);
 	char unit = (unitStr.empty()) ? ' ' : unitStr[0];
 
 	unsigned long long bytes = convertToBytes(num, unit, ctx.error);
@@ -155,6 +244,9 @@ std::vector<std::string> ConfigDirectiveParser::ParseIndex(s_parse_context& ctx)
 		indixes.push_back(index);
 		ctx.parser.advance();
 	}
+
+	if (indixes.empty())
+		return (ctx.error.setStatus(400, "Index Empty"), indixes);
 
 	if (ctx.parser.peek().type != TOKEN_SEMICOLON)
 		return (ctx.error.setStatus(400, "Missing ';' after index list"), indixes);
