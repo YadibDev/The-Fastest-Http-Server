@@ -626,6 +626,7 @@ void HelperFunctions::StoredDefaultType()
 		_TypeContent[".txt"] = "text/plain";
 		_TypeContent[".mp4"] = "video/mp4";
 		_TypeContent[".webm"] = "video/webm";
+		_TypeContent[".gif"] = "image/gif";
 	}
 }
 
