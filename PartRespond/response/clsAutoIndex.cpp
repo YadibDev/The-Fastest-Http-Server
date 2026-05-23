@@ -54,7 +54,7 @@ flowAutoIndex clsAutoIndex::_canPush(short nameSize, short availableSize)
     result = (dirSize + nameSize) * 3;
     result += nameSize;
     result += preffRow.size() + suffRow.size() + preffCol.size() * 2 + suffCol.size() * 2;
-    result += 16 + 2; // preffix suffix linke and 2 for directory
+    result += 16 + 2; // preffix suffix link and 2 for slash if needed '/'
     result += 9;      // file type max
 
     if (result > availableSize)
@@ -107,6 +107,10 @@ short clsAutoIndex::_pushLink(char *buffer, short &start, char *file, unsigned c
     short result = 0;
     short fileLen = strlen(file);
 
+    // what this function insert :
+    // <a href="dir/file"> file </a> ==> case one in file
+    // <a href="dir/dir2"> dir2/ </a> ==> case two in dir
+
     result += addDataToChar(buffer, "<a href='", start, 9);
     result += addDataToChar(buffer, dir, start, dirSize, true);
     result += addDataToChar(buffer, file, start, fileLen, true);
@@ -137,6 +141,13 @@ short clsAutoIndex::_pushNewRow(char *buffer, short &start, char *file, unsigned
 {
     short result = 0;
 
+    // example of final result
+    /*
+    <tr>
+        <td> <a href="dir/file"> file </a> </td>
+        <td> file </td>
+    </tr>
+    */
     result += addDataToChar(buffer, preffRow.c_str(), start, preffRow.size());
 
     result += addDataToChar(buffer, preffCol.c_str(), start, preffCol.size());
@@ -154,7 +165,7 @@ short clsAutoIndex::_pushNewRow(char *buffer, short &start, char *file, unsigned
 
 flowAutoIndex clsAutoIndex::_insertRow(char *buffer, short &start, short &pushbytes, short limitSize)
 {
-    flowEnum = _canPush(strlen(ptrDir->d_name), (limitSize - pushbytes - 8));
+    flowEnum = _canPush(strlen(ptrDir->d_name), (limitSize - pushbytes - RESERVED));
     if (flowEnum == I_CANT_PUSH)
         return flowEnum;
     pushbytes += _pushNewRow(buffer, start, ptrDir->d_name, ptrDir->d_type);
@@ -211,7 +222,7 @@ flowAutoIndex clsAutoIndex::insertAutoDirective(char *buffer, short &start, shor
     }
     else if (flowEnum == I_CANT_PUSH)
     {
-        flowEnum = _canPush(strlen(ptrDir->d_name), (limitSize - pushbytes - 8));
+        flowEnum = _canPush(strlen(ptrDir->d_name), (limitSize - pushbytes - RESERVED));
         if (flowEnum == CAN_PUSH)
         {
             ptrSize = &buffer[start];
@@ -237,7 +248,7 @@ flowAutoIndex clsAutoIndex::insertAutoDirective(char *buffer, short &start, shor
 
     if (flowEnum == END_TAG)
     {
-        pushbytes += _closeAutoIndex(buffer, start, limitSize - pushbytes - 8);
+        pushbytes += _closeAutoIndex(buffer, start, limitSize - pushbytes - RESERVED);
     }
 
     if (pushbytes)

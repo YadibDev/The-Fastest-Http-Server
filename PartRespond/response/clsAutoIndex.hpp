@@ -11,6 +11,7 @@
 #ifndef CLS_AUTO_INDEX
 #define CLS_AUTO_INDEX
 
+#define RESERVED 8 // RESERVER FOR CHUNK SIZE AND \r\n after chunk body
 using namespace std;
 
 enum flowAutoIndex
