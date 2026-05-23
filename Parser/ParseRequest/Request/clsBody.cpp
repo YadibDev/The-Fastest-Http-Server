@@ -34,14 +34,11 @@ void clsBody::Reset()
         remove(_fileName.c_str());
     this->removeFile = false;
     this->_fileName = DEFAULT_TEMP;
-    this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
     this->writeSize = 0;
     writeSize = 0;
     chunkHelp.Reset();
-    _errorPage.setStatus(0);
-
     if (fd != -1)
         close(fd);
     fd = -1;
@@ -78,7 +75,6 @@ int clsBody::_createUploadStoreFile(char *path)
         int size = uploadStore->size();
 
         pathFileAbs = "";
-        
 
         pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
         pathFileAbs += uploadLocation->c_str();
@@ -92,8 +88,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
-        if (_state == clsBody::DONE_GOOD)
-            this->Reset();
+        _errorPage.setStatus(0);
 
         this->maxBodySize = maxBodySize;
         bodyHasLimit = maxBodySize != 0;
@@ -117,7 +112,7 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
             if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength < 0 || (bodyHasLimit && (size_t)_contentLength > maxBodySize))
             {
-                if ((size_t)_contentLength > maxBodySize)
+                if (_contentLength > 0 && (size_t)_contentLength > maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
                 else
                     _errorPage.setStatus(400, "Bad Request");
@@ -147,11 +142,12 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 
         _state = clsBody::READING_BODY;
     }
-    ParseBody(offset); // i must change name of it
+    ParseBody(offset);
 
-    if (_state == clsBody::DONE_WIHTERROR)
+    if (_state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
     {
-        removeFile = true;
+        if (_state == clsBody::DONE_WIHTERROR)
+            removeFile = true;
         this->Reset();
     }
     return true;
@@ -160,8 +156,8 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
 bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
 {
     char *arr = data.io_chunk;
-    uint16_t &cur = chunkHelp.cur;
-    uint16_t &t = chunkHelp.trav;
+    uint16_t &cur = chunkHelp.cur; // start ptr
+    uint16_t &t = chunkHelp.trav;  // end ptr
     bool &readSize = chunkHelp.readsize;
     long long &size = chunkHelp.size;
 
@@ -207,13 +203,13 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     bool &readSize = chunkHelp.readsize;
     long long &size = chunkHelp.size;
 
-    int temp;
+    int temp = 0;
     if (ofset - t < size)
-        temp = write(this->fd, &arr[t], ofset - t);
+        temp = write(this->fd, &arr[t], ofset - t); // if size too large we write only current data in buffer
     else
         temp = write(this->fd, &arr[t], size);
 
-    if (temp == -1)
+    if (temp == -1) // space is full
     {
         _errorPage.setStatus(500, "Internal Server Error:");
         error = true;
@@ -287,6 +283,7 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
 
     if (bodyHasLimit)
         maxBodySize -= totRemoves;
+
     ofset -= totRemoves;
     cur = 0;
     t -= totRemoves;
