@@ -51,8 +51,9 @@ class clsCGI
         bool _CONTENT_TYPE();
         bool _CONTENT_LENGTH();
         bool _OtherHeaders();
-        bool _ConcatonateValueHeaders(int CountHeaders);
-        bool _AddKeyHeader(int CountHeaders);
+        bool _ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader KonowHeader, bool SwitchModConcatonate);
+        bool _AddKeyHeader(int CountHeaders, bool SwitchModHedaers);
+        bool _JoinKnowheaders( HttpTables::eKnownHeader KonowHeader, bool SwitchModHedaers, bool SwitchModConcatonate);
     public:
         clsCGI(RequestHandler &DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
         bool GetIsRunCGI();
