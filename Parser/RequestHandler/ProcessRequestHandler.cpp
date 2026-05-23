@@ -76,7 +76,8 @@ bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation,
                                       HttpError &error) 
 {
     handler->ExtractCgiMetadata(newUri, bestLocation->getCgiPass());
-    if (handler->getScriptName().len) {
+    if (handler->getScriptName().len)
+	{
         s_uri_entry scriptName;
         scriptName.setSview(handler->getScriptName());
         
@@ -260,6 +261,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			else
 				return (error.setStatus(403, "Forbidden"), false);
 		}
+		
 	}
 
 	handler->setRequestUri(startLine.getRequestURI().getPath());
@@ -299,14 +301,14 @@ bool ProcessRequestHandler::internalRedirect(
 		return (error.setStatus(404, "Not Found"), false);
 
 	handler->setReturn((newLocation->getReturn().code != -1) ? newLocation->getReturn() : serverConfig->getReturn());
-	handler->setRequestUri(newUri.getView()); // Stack Use After Free
-
+	
 	if (handler->getReturn().code != -1)
-		return true;
-
+	return true;
+	
 	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
-		return false;
-
+	return false;
+	
+	handler->setRequestUriCopy(newUri.getView());
 	handler->setError(error);
 	return true;
 }
