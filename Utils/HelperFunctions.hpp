@@ -171,7 +171,7 @@ public:
 		return true;
 	}
 	static int FindChar(char *Arr, int length, char c);
-	static int FindCharFromLast(char *Arr, int length, char c);
+	static int FindCharFromLast(const char *Arr, int length, char c);
 	static void ft_str_copy(char *Buffer, const char *Str_src, short LengthBuffer, short &Offset, short LengthStr_sr, bool Flag);
 
 private:

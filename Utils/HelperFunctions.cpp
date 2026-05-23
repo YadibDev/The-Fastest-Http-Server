@@ -599,15 +599,15 @@ void HelperFunctions::NumToStr(int Number, std::string &Str)
 
 const char *HelperFunctions::GetTypeDataFile(const std::string &Str)
 {
-	size_t Pos;
+	int  Pos;
 	short i = 0;
-
-	if ((Pos = Str.find('.')) == std::string::npos)
+	
+	if ((Pos = FindCharFromLast(Str.c_str(),Str.length(), '.')) == -1)
 	{
 		_PoinerType[0] = '\0';
 		return _PoinerType;
 	}
-	while (i < 49 && Pos < Str.length())
+	while (i < 49 && Pos < (int)Str.length())
 	{
 		_PoinerType[i] = Str[Pos];
 		Pos++;
@@ -839,7 +839,7 @@ int HelperFunctions::FindChar(char *Arr, int length, char c)
 	return i;
 }
 
-int HelperFunctions::FindCharFromLast(char *Arr, int length, char c)
+int HelperFunctions::FindCharFromLast(const char *Arr, int length, char c)
 {
 	int i = length - 1;
 	if (!Arr)

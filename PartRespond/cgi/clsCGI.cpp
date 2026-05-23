@@ -457,8 +457,6 @@ bool clsCGI::_StoredArgs()
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
-    if (!_MakeEnv())
-        return (true);
     close(_pip[0]);
     if (!_DataRequest.getFilePathBody().empty())
     {
@@ -502,6 +500,8 @@ bool clsCGI::_InintialVar()
     
     if (!_StoredArgs())
         return (false);
+     if (!_MakeEnv())
+        return (true);
     if (pipe(_pip) == -1)
         return (false);
     return (true);
@@ -529,7 +529,6 @@ void clsCGI::RunCGI()
     {
         if (_childeProcesse())
             exit(1);
-        std::cout << "exit(1)"<< std::endl;
     }
     else
         _ParentProcesse();
