@@ -164,8 +164,6 @@ void RequestHandler::setPathTranslated(std::string pathTranslated)
 void RequestHandler::setHeader(HeaderTable Header)
 {
 	_Header = Header;
-
-	_Header.linkThisHeader();
 }
 
 void	RequestHandler::setClientMaxBodySize(unsigned long long size)
