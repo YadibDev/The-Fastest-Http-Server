@@ -265,7 +265,7 @@ void clsResponse::SetMod(stMod::eMod Mod)
 
 void clsResponse::Reset()
 {
-
+    _InternalRedirectSrc = NULL;
     _Status = 0;
     _BodySize = 0;
     _ModTransferData = false;

@@ -77,8 +77,8 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
-        _Response.SetStatus(_eventProcess);
         _Response.SetMod(stMod::ERROR);
+        std::cout << "achraf hna \n";
         _Response.MakeResponse();
     }
 }
@@ -143,7 +143,7 @@ void clsMainProcess::MainProcess()
         _InitializeCGI();
     else if(_DataRequest.getStatusError())
         _PartErrorRequest();
-    else if (_DataRequest.getReturn().value.raw_path.compare("") != 0)
+    else if (_DataRequest.getReturn().code != -1)
         _PartRedirection();
     else if ((_DataRequest.getMethod() == HttpTables::M_GET))
         _PartGETMethod();
