@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Test Bench</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #444;
+            margin-top: 25px;
+        }
+
+        .section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #delete-result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Webserv Test Bench</h1>
+        <p>Use this page to verify your server's routing, method handling, and parsing mechanics.</p>
+
+        <!-- 1. GET Method Test -->
+        <div class="section">
+            <h2>1. Test GET Method & Query Strings</h2>
+            <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
+            <form action="/cgi-bin/printEnv.py" method="GET">
+                <label for="get-param">Query Parameter:</label>
+                <input type="text" id="get-param" name="user" value="Musab">
+                <button type="submit" class="btn">Send GET Request</button>
+            </form>
+        </div>
+
+        <!-- 2. Standard POST Method Test -->
+        <div class="section">
+            <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
+            <p>Tests your basic request body parsing logic.</p>
+            <form action="/file.txt" method="POST">
+                <label for="post-data">Form Data:</label>
+                <input type="text" id="post-data" name="test_input" value="Hello Server">
+                <button type="submit" class="btn">Send Standard POST</button>
+            </form>
+        </div>
+
+        <!-- 3. Multipart File Upload Test -->
+        <div class="section">
+            <h2>3. Test File Upload (multipart/form-data)</h2>
+            <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the
+                <code>filename</code> attribute.
+            </p>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="file-upload">Choose a file to upload:</label>
+                <input type="file" id="file-upload" name="uploaded_file" required>
+                <button type="submit" class="btn" style="background-color: #28a745;">Upload File</button>
+            </form>
+        </div>
+
+        <!-- 4. DELETE Method Test -->
+        <div class="section">
+            <h2>4. Test DELETE Method</h2>
+            <p>Tests your server's capability to safely delete a file from the root or target upload directory.</p>
+            <label for="delete-path">File Path to Delete:</label>
+            <input type="text" id="delete-path" placeholder="/upload/delete-me.txt" value="/upload/delete-me.txt">
+            <button type="button" class="btn" style="background-color: #dc3545;" onclick="sendDeleteRequest()">Send
+                DELETE Request</button>
+            <div id="delete-result"></div>
+        </div>
+
+        <!-- 5. Error Code Tests -->
+        <div class="section">
+            <h2>5. Test Error Triggering</h2>
+            <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
+            <ul>
+                <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
+                <li><a href="/protected-directory/" id="forbidden-link">Trigger 403 Forbidden (If index/autoindex is
+                        disabled)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function sendDeleteRequest() {
+            const filePath = document.getElementById('delete-path').value;
+            const resultDiv = document.getElementById('delete-result');
+
+            if (!filePath) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = "Please specify a file path.";
+                return;
+            }
+
+            try {
+                const response = await fetch(filePath, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    resultDiv.style.color = '#28a745';
+                    resultDiv.innerText = `Success: Server responded with status ${response.status}`;
+                } else {
+                    resultDiv.style.color = '#dc3545';
+                    resultDiv.innerText = `Failed: Server responded with status ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = `Error sending request: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Test Bench</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #444;
+            margin-top: 25px;
+        }
+
+        .section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #delete-result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Webserv Test Bench</h1>
+        <p>Use this page to verify your server's routing, method handling, and parsing mechanics.</p>
+
+        <!-- 1. GET Method Test -->
+        <div class="section">
+            <h2>1. Test GET Method & Query Strings</h2>
+            <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
+            <form action="/cgi-bin/printEnv.py" method="GET">
+                <label for="get-param">Query Parameter:</label>
+                <input type="text" id="get-param" name="user" value="Musab">
+                <button type="submit" class="btn">Send GET Request</button>
+            </form>
+        </div>
+
+        <!-- 2. Standard POST Method Test -->
+        <div class="section">
+            <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
+            <p>Tests your basic request body parsing logic.</p>
+            <form action="/file.txt" method="POST">
+                <label for="post-data">Form Data:</label>
+                <input type="text" id="post-data" name="test_input" value="Hello Server">
+                <button type="submit" class="btn">Send Standard POST</button>
+            </form>
+        </div>
+
+        <!-- 3. Multipart File Upload Test -->
+        <div class="section">
+            <h2>3. Test File Upload (multipart/form-data)</h2>
+            <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the
+                <code>filename</code> attribute.
+            </p>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="file-upload">Choose a file to upload:</label>
+                <input type="file" id="file-upload" name="uploaded_file" required>
+                <button type="submit" class="btn" style="background-color: #28a745;">Upload File</button>
+            </form>
+        </div>
+
+        <!-- 4. DELETE Method Test -->
+        <div class="section">
+            <h2>4. Test DELETE Method</h2>
+            <p>Tests your server's capability to safely delete a file from the root or target upload directory.</p>
+            <label for="delete-path">File Path to Delete:</label>
+            <input type="text" id="delete-path" placeholder="/upload/delete-me.txt" value="/upload/delete-me.txt">
+            <button type="button" class="btn" style="background-color: #dc3545;" onclick="sendDeleteRequest()">Send
+                DELETE Request</button>
+            <div id="delete-result"></div>
+        </div>
+
+        <!-- 5. Error Code Tests -->
+        <div class="section">
+            <h2>5. Test Error Triggering</h2>
+            <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
+            <ul>
+                <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
+                <li><a href="/protected-directory/" id="forbidden-link">Trigger 403 Forbidden (If index/autoindex is
+                        disabled)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function sendDeleteRequest() {
+            const filePath = document.getElementById('delete-path').value;
+            const resultDiv = document.getElementById('delete-result');
+
+            if (!filePath) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = "Please specify a file path.";
+                return;
+            }
+
+            try {
+                const response = await fetch(filePath, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    resultDiv.style.color = '#28a745';
+                    resultDiv.innerText = `Success: Server responded with status ${response.status}`;
+                } else {
+                    resultDiv.style.color = '#dc3545';
+                    resultDiv.innerText = `Failed: Server responded with status ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = `Error sending request: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+
+</html><!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Test Bench</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #444;
+            margin-top: 25px;
+        }
+
+        .section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #delete-result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Webserv Test Bench</h1>
+        <p>Use this page to verify your server's routing, method handling, and parsing mechanics.</p>
+
+        <!-- 1. GET Method Test -->
+        <div class="section">
+            <h2>1. Test GET Method & Query Strings</h2>
+            <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
+            <form action="/cgi-bin/printEnv.py" method="GET">
+                <label for="get-param">Query Parameter:</label>
+                <input type="text" id="get-param" name="user" value="Musab">
+                <button type="submit" class="btn">Send GET Request</button>
+            </form>
+        </div>
+
+        <!-- 2. Standard POST Method Test -->
+        <div class="section">
+            <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
+            <p>Tests your basic request body parsing logic.</p>
+            <form action="/file.txt" method="POST">
+                <label for="post-data">Form Data:</label>
+                <input type="text" id="post-data" name="test_input" value="Hello Server">
+                <button type="submit" class="btn">Send Standard POST</button>
+            </form>
+        </div>
+
+        <!-- 3. Multipart File Upload Test -->
+        <div class="section">
+            <h2>3. Test File Upload (multipart/form-data)</h2>
+            <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the
+                <code>filename</code> attribute.
+            </p>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="file-upload">Choose a file to upload:</label>
+                <input type="file" id="file-upload" name="uploaded_file" required>
+                <button type="submit" class="btn" style="background-color: #28a745;">Upload File</button>
+            </form>
+        </div>
+
+        <!-- 4. DELETE Method Test -->
+        <div class="section">
+            <h2>4. Test DELETE Method</h2>
+            <p>Tests your server's capability to safely delete a file from the root or target upload directory.</p>
+            <label for="delete-path">File Path to Delete:</label>
+            <input type="text" id="delete-path" placeholder="/upload/delete-me.txt" value="/upload/delete-me.txt">
+            <button type="button" class="btn" style="background-color: #dc3545;" onclick="sendDeleteRequest()">Send
+                DELETE Request</button>
+            <div id="delete-result"></div>
+        </div>
+
+        <!-- 5. Error Code Tests -->
+        <div class="section">
+            <h2>5. Test Error Triggering</h2>
+            <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
+            <ul>
+                <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
+                <li><a href="/protected-directory/" id="forbidden-link">Trigger 403 Forbidden (If index/autoindex is
+                        disabled)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function sendDeleteRequest() {
+            const filePath = document.getElementById('delete-path').value;
+            const resultDiv = document.getElementById('delete-result');
+
+            if (!filePath) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = "Please specify a file path.";
+                return;
+            }
+
+            try {
+                const response = await fetch(filePath, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    resultDiv.style.color = '#28a745';
+                    resultDiv.innerText = `Success: Server responded with status ${response.status}`;
+                } else {
+                    resultDiv.style.color = '#dc3545';
+                    resultDiv.innerText = `Failed: Server responded with status ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = `Error sending request: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Test Bench</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #444;
+            margin-top: 25px;
+        }
+
+        .section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #delete-result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Webserv Test Bench</h1>
+        <p>Use this page to verify your server's routing, method handling, and parsing mechanics.</p>
+
+        <!-- 1. GET Method Test -->
+        <div class="section">
+            <h2>1. Test GET Method & Query Strings</h2>
+            <p>Tests basic file retrieval and your server's ability to extract query parameters.</p>
+            <form action="/cgi-bin/printEnv.py" method="GET">
+                <label for="get-param">Query Parameter:</label>
+                <input type="text" id="get-param" name="user" value="Musab">
+                <button type="submit" class="btn">Send GET Request</button>
+            </form>
+        </div>
+
+        <!-- 2. Standard POST Method Test -->
+        <div class="section">
+            <h2>2. Test standard POST (application/x-www-form-urlencoded)</h2>
+            <p>Tests your basic request body parsing logic.</p>
+            <form action="/file.txt" method="POST">
+                <label for="post-data">Form Data:</label>
+                <input type="text" id="post-data" name="test_input" value="Hello Server">
+                <button type="submit" class="btn">Send Standard POST</button>
+            </form>
+        </div>
+
+        <!-- 3. Multipart File Upload Test -->
+        <div class="section">
+            <h2>3. Test File Upload (multipart/form-data)</h2>
+            <p>Tests your stream-reading implementation, boundary parsing, and the extraction of the
+                <code>filename</code> attribute.
+            </p>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="file-upload">Choose a file to upload:</label>
+                <input type="file" id="file-upload" name="uploaded_file" required>
+                <button type="submit" class="btn" style="background-color: #28a745;">Upload File</button>
+            </form>
+        </div>
+
+        <!-- 4. DELETE Method Test -->
+        <div class="section">
+            <h2>4. Test DELETE Method</h2>
+            <p>Tests your server's capability to safely delete a file from the root or target upload directory.</p>
+            <label for="delete-path">File Path to Delete:</label>
+            <input type="text" id="delete-path" placeholder="/upload/delete-me.txt" value="/upload/delete-me.txt">
+            <button type="button" class="btn" style="background-color: #dc3545;" onclick="sendDeleteRequest()">Send
+                DELETE Request</button>
+            <div id="delete-result"></div>
+        </div>
+
+        <!-- 5. Error Code Tests -->
+        <div class="section">
+            <h2>5. Test Error Triggering</h2>
+            <p>Verify that your server correctly serves designated error pages instead of crashing.</p>
+            <ul>
+                <li><a href="/non-existent-file-html-12345" target="_blank">Trigger 404 Not Found</a></li>
+                <li><a href="/protected-directory/" id="forbidden-link">Trigger 403 Forbidden (If index/autoindex is
+                        disabled)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function sendDeleteRequest() {
+            const filePath = document.getElementById('delete-path').value;
+            const resultDiv = document.getElementById('delete-result');
+
+            if (!filePath) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = "Please specify a file path.";
+                return;
+            }
+
+            try {
+                const response = await fetch(filePath, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    resultDiv.style.color = '#28a745';
+                    resultDiv.innerText = `Success: Server responded with status ${response.status}`;
+                } else {
+                    resultDiv.style.color = '#dc3545';
+                    resultDiv.innerText = `Failed: Server responded with status ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.style.color = '#dc3545';
+                resultDiv.innerText = `Error sending request: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

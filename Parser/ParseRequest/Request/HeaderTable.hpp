@@ -18,7 +18,6 @@ public:
 	// const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) ;
 	const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) const;
 	const s_header_slot*	getUnknownHeader(uint8_t index) const;
-	s_header_slot* getUnknownHeader(uint8_t index);
 
 	void	linkThisHeader();
 

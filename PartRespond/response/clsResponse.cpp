@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/05/20 19:04:56 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/05/22 14:50:39 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void clsResponse::_InitialAutoIndex()
 
 void clsResponse::_InitialHeaders()
 {
+   
     if (_Mod[stMod::REDIRECTION] == stMod::REDIRECTION)
     {
         if (_Status == 444 && _DataRequest.getReturn().value.raw_path.empty())
@@ -224,7 +225,7 @@ void clsResponse::_Date()
 
 void clsResponse::_Server()
 {
-    _HeaderFeild += "Server: the-fastest-server\r\n";
+    _HeaderFeild += "Server: the-fast-server\r\n";
 }
 
 void clsResponse::_StoredInFileOrStr()

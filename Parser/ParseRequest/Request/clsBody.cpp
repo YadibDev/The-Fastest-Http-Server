@@ -37,6 +37,7 @@ void clsBody::Reset()
     this->_state = clsBody::SETTING_VARS;
     this->_isChunk = false;
     this->_contentLength = 0;
+    this->writeSize = 0;
     writeSize = 0;
     chunkHelp.Reset();
     _errorPage.setStatus(0);
@@ -65,8 +66,8 @@ int clsBody::_createUploadStoreFile(char *path)
 
     if (this->uploadStore)
     {
-        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
-        if (errno == EISDIR) // if is dir
+        fd = open(_fileName.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644); // handle directory
+        if (errno == EISDIR)                                              // if is dir
         {
             close(fd);
             fd = createRandomFile();
@@ -80,17 +81,13 @@ int clsBody::_createUploadStoreFile(char *path)
         
 
         pathFileAbs.reserve((_fileName.size() - size) + uploadLocation->size()); // reserve needed memory
-    
-        pathFileAbs +=  uploadLocation->c_str();
-
-        pathFileAbs +=  &_fileName[size];
+        pathFileAbs += uploadLocation->c_str();
+        pathFileAbs += &_fileName[size];
     }
     return fd;
-
 }
 bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, char *path)
 {
-    (void)path;
     uint16_t &offset = *off;
 
     if (_state == clsBody::SETTING_VARS || _state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
@@ -102,15 +99,25 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         bodyHasLimit = maxBodySize != 0;
 
         if (data.known_headers[HttpTables::H_TRANSFER_ENCODING].Hash != -1)
+        {
+            char *value = data.known_headers[HttpTables::H_TRANSFER_ENCODING].val.Data;
+            int valSize = data.known_headers[HttpTables::H_TRANSFER_ENCODING].val.len;
+            if (valSize != 7 || strncmp(value, "chunked", 7) != 0)
+            {
+                _errorPage.setStatus(400, "Bad Request");
+                _state = clsBody::DONE_WIHTERROR;
+                return false;
+            }
             _isChunk = true;
+        }
         else if (data.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1)
         {
             _isChunk = false;
             const char *content_leng_str = data.known_headers[HttpTables::H_CONTENT_LENGTH].val.Data;
 
-            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || (bodyHasLimit && _contentLength > (long)maxBodySize) || _contentLength < 0)
+            if (!HelperFunctions::ConvertStrToNum(content_leng_str, _contentLength) || _contentLength < 0 || (bodyHasLimit && (size_t)_contentLength > maxBodySize))
             {
-                if (_contentLength > (long)maxBodySize)
+                if ((size_t)_contentLength > maxBodySize)
                     _errorPage.setStatus(413, "Content Too Large\n");
                 else
                     _errorPage.setStatus(400, "Bad Request");
@@ -169,7 +176,7 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
         else if (t + 1 < ofset && arr[t + 1] == '\n')
         {
             t += 2;
-            totRemoves += t - cur;
+            totRemoves += t - cur; // length of chunk size
             if (HelperFunctions::ConvertStrToNum(&arr[cur], size, 16) == false || size < 0)
             {
                 _errorPage.setStatus(400, "Bad Request");
@@ -210,7 +217,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     {
         _errorPage.setStatus(500, "Internal Server Error:");
         error = true;
-        return false;  // error so we end the function
+        return false; // error so we end the function
     }
 
     t += temp;
@@ -223,7 +230,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
         {
             _errorPage.setStatus(400, "Bad Request");
             error = true;
-            return false;  // error so we end the function
+            return false; // error so we end the function
         }
         else
         {
@@ -235,7 +242,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     }
     else if (t + 1 >= ofset)
         return true;
-    
+
     return false;
 }
 
@@ -261,7 +268,7 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
             if (_saveChunkBody(ofset, error, totRemoves))
                 break;
         }
-        
+
         if (maxBodySize - totRemoves < 0 && bodyHasLimit)
         {
             error = true;
@@ -295,12 +302,12 @@ void clsBody::shiftingData(char *src, int offset, int sizeShift)
 
 void clsBody::StoreNormalBodyInDisk(uint16_t &offset)
 {
-    int toWrite = _contentLength - writeSize;
+    int toWrite = std::min<long>(offset, _contentLength - writeSize);
 
     int temp = 0;
 
     if (toWrite > 0)
-        temp = write(this->fd, data.io_chunk, offset);
+        temp = write(this->fd, data.io_chunk, toWrite);
     if (temp == -1)
     {
         _errorPage.setStatus(500, "Internal Server Error:");
@@ -327,7 +334,6 @@ void clsBody::ParseBody(uint16_t &offset)
     }
     else
         _handleChunk(offset);
-
 }
 
 void clsBody::setUploadStore(const std::string *ptr)
@@ -351,7 +357,7 @@ HttpError clsBody::getError()
 
 clsBody::~clsBody()
 {
-    if (this->removeFile)
+    if (fd != -1 && (this->_state != clsBody::DONE_GOOD || removeFile))
         remove(_fileName.c_str());
     if (fd != -1)
         close(fd);

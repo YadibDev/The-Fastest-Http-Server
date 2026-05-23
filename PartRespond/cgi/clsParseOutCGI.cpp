@@ -78,9 +78,9 @@ bool clsParseOutCGI::_LocationIsClientOrLocal(std::string &Location)
 	return (false);
 }
 
-short clsParseOutCGI::_AtoiStatusCode(const std::string &StringDigit, short Start, short End)
+size_t clsParseOutCGI::_Atoi(const std::string &StringDigit, short Start, short End)
 {
-	short Number = 0;
+	size_t Number = 0;
 	for (short i = Start; i < (short)StringDigit.size() && i < End; i++)
 		Number = (10 * Number) + (StringDigit[i] - '0');
 	return Number;
@@ -92,12 +92,11 @@ bool clsParseOutCGI::_ParseStatus(const std::string &LineValue)
 	short Start = HelperFunctions::SkeeSep(LineValue, " \t");
 	short LengthWord = HelperFunctions::LengthWord(LineValue, " \t",Start);
 	short End = Start + LengthWord;
-
 	if (LengthWord != 3)
 		return false;
 	if (!HelperFunctions::IsStringDigit(LineValue, Start, End))
 		return (false);
-	NumberStatus = _AtoiStatusCode(LineValue, Start, End); 
+	NumberStatus = _Atoi(LineValue, Start, End); 
 	if (NumberStatus < 100 || NumberStatus > 599)
 		return (false);
 	if (NumberStatus >= 400 && NumberStatus != 404)
@@ -157,7 +156,8 @@ bool clsParseOutCGI::_ValidHeaders(std::string &Str)
 	else if (!_NameHeader.compare("status"))
 		_ExistHeaders[stHeadersCGI::STATUS] = stHeadersCGI::STATUS;
 	else if (!_NameHeader.compare("date") || !_NameHeader.compare("server")
-		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding"))
+		|| !_NameHeader.compare("connection") || !_NameHeader.compare("transfer-encoding")
+	|| !_NameHeader.compare("content-length"))
 	{
 		_NameHeader = "";
 		_ValueHeader = "";
@@ -352,7 +352,7 @@ void clsParseOutCGI::_ReceivingBody(const char *Arr, short Length)
 	bool  ConvertFlag = false;
 	if (_FoundBody && _BytesBody < MAX_BODY)
 	{
-	   _BytesBody += (Length - _Counter);
+		_BytesBody += (Length - _Counter);
 	   if (_ExistHeaders[stHeadersCGI::CONTENT_TYPE]  != stHeadersCGI::CONTENT_TYPE && _BytesBody)
 		{
 			_Status = 502;
@@ -443,7 +443,7 @@ void clsParseOutCGI::_Date()
 
 void clsParseOutCGI::_Server()
 {
-	_HeadersFieldFinal += "Server: the-fastest-server\r\n";
+	_HeadersFieldFinal += "Server: the-fast-server\r\n";
 }
 
 void clsParseOutCGI::_ContentLength()
