@@ -396,8 +396,9 @@ bool clsCGI::_JoinKnowheaders( HttpTables::eKnownHeader KonowHeader, bool Switch
     uint8_t i = 0;
     if (_DataRequest.getHeader().getKnownHeader(KonowHeader)->Hash != -1)
     {
-        if (_Offset == SIZE_BUFFER)
+        if (_Offset == SIZE_BUFFER || _Counter > SIZE_VAR_ENV)
             return false;
+        _ENV[_Counter] = &_Buffer[_Offset];
         if (!_AddKeyHeader(KonowHeader, SwitchModHedaers))
             return false;
         HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getKnownHeader(KonowHeader)->val.Data,

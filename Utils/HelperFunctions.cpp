@@ -464,7 +464,7 @@ void HelperFunctions::GetCleanLineHeader(const char *BigData, std::string &Clean
 		i++;
 	}
 	if (BigData[i] == '\n')
-	{
+		{
 		(MaxSizeHeader)++;
 		CleanLine += BigData[i];
 		(Flag) = true;
