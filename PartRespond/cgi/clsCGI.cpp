@@ -356,12 +356,10 @@ bool clsCGI::_ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader
     while (_DataRequest.getHeader().getUnknownHeader(CountHeaders)  && CountHeaders != INVALID_INDEX)
     {
         if (SwitchModConcatonate)
-            HelperFunctions::ft_str_copy(_Buffer, _DataRequest.getHeader().getKnownHeader(KonowHeader)->key.Data,
-                SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader(KonowHeader)->key.len, 1);
-
-        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data,
-         SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
-
+        {
+            if (!_AddKeyHeader(KonowHeader, 1))
+                return false;
+        }
         CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
 
         if (!SwitchModConcatonate && CountHeaders != INVALID_INDEX)
