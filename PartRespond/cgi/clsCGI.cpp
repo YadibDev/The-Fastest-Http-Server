@@ -360,6 +360,8 @@ bool clsCGI::_ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader
             if (!_AddKeyHeader(KonowHeader, 1))
                 return false;
         }
+        HelperFunctions::ft_str_copy(_Buffer,_DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data, SIZE_BUFFER,
+                 _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
         CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
 
         if (!SwitchModConcatonate && CountHeaders != INVALID_INDEX)
