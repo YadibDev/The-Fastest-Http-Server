@@ -394,9 +394,11 @@ bool clsCGI::_AddKeyHeader(int CountHeaders, bool SwitchModHedaers)
 bool clsCGI::_JoinKnowheaders( HttpTables::eKnownHeader KonowHeader, bool SwitchModHedaers, bool SwitchModConcatonate)
 {
     uint8_t i = 0;
+    if (_Counter > SIZE_VAR_ENV)
+        return true;
     if (_DataRequest.getHeader().getKnownHeader(KonowHeader)->Hash != -1)
     {
-        if (_Offset == SIZE_BUFFER || _Counter > SIZE_VAR_ENV)
+        if (_Offset == SIZE_BUFFER)
             return false;
         _ENV[_Counter] = &_Buffer[_Offset];
         if (!_AddKeyHeader(KonowHeader, SwitchModHedaers))
