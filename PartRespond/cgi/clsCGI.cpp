@@ -363,7 +363,6 @@ bool clsCGI::_ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader
         HelperFunctions::ft_str_copy(_Buffer,_DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data, SIZE_BUFFER,
                  _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
         CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
-
         if (!SwitchModConcatonate && CountHeaders != INVALID_INDEX)
             HelperFunctions::ft_str_copy(_Buffer,  ",", SIZE_BUFFER, _Offset, 1, 0);
         if (_Offset == SIZE_BUFFER)
@@ -420,11 +419,11 @@ bool clsCGI::_OtherHeaders()
     uint8_t i = 0;
     if (_Offset == SIZE_BUFFER)
         return false;
-    if (!_JoinKnowheaders(HttpTables::H_COOKIE, 1, 1))
+    if (!_JoinKnowheaders(HttpTables::H_COOKIE, true, true))
         return false;
-    if (!_JoinKnowheaders(HttpTables::H_TRANSFER_ENCODING, 1, 0))
+    if (!_JoinKnowheaders(HttpTables::H_TRANSFER_ENCODING, true, false))
         return false;
-    if (!_JoinKnowheaders(HttpTables::H_HOST, 1, 0))
+    if (!_JoinKnowheaders(HttpTables::H_HOST, true, false))
         return false;
     while (_Counter < SIZE_VAR_ENV && _DataRequest.getHeader().getUnknownHeader(i))
     {
@@ -461,6 +460,8 @@ bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
     close(_pip[0]);
+     if (!_MakeEnv())
+        return (true);
     if (!_DataRequest.getFilePathBody().empty())
     {
         Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
@@ -503,8 +504,6 @@ bool clsCGI::_InintialVar()
     
     if (!_StoredArgs())
         return (false);
-     if (!_MakeEnv())
-        return (true);
     if (pipe(_pip) == -1)
         return (false);
     return (true);
