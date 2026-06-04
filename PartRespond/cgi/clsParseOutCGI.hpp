@@ -67,7 +67,7 @@ class clsParseOutCGI
     size_t _Atoi(const std::string &StringDigit, short Start, short End);
 
 public:
-    clsParseOutCGI(RequestHandler &_DataRequest,std::string &Body,  std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
+    clsParseOutCGI(RequestHandler &_DataRequest,std::string &Body, std::string &HeadersFieldFinal, std::string &_FileNameFromDisk, std::string &InternalRedirectSrc);
     const std::string &GetBody();
     const std::string &GetFileNameBody();
     const std::string &GetHeadersFieldFinal();
