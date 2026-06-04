@@ -225,6 +225,12 @@ const HeaderTable &RequestHandler::getHeader() const
 {
 	return _Header;
 }
+
+void RequestHandler::linkHeader()
+{
+	_Header.linkThisHeader();
+}
+
 // add by achraf without const
 HeaderTable &RequestHandler::getHeader()
 {

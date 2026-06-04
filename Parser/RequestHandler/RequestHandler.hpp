@@ -79,6 +79,8 @@ public:
 	void					computePathTranslated(const std::string& rootPath, const clsServerConfig* serverConfig);
 	// edited by achraf i add const 
 
+	void				linkHeader();
+
 	size_t					getSizeFile() const;
 	const s_view			&getRequestUri() const;
 	char*					getPhysicalPath() ;

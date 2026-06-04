@@ -46,60 +46,6 @@ bool RequestParser::LProcessRequestHandler()
 }
 
 
-
-
-
-void printHeaderChain(const s_header_slot *headers, size_t count, size_t start)
-{
-    uint8_t idx = (uint8_t)start;
-
-    while (idx != INVALID_INDEX && idx < count)
-    {
-        const s_header_slot &slot = headers[idx];
-
-        std::cout << "    [" << (int)idx << "] "
-                  << "key: "  << std::string(slot.key.Data, slot.key.len) << " | "
-                  << "val: "  << std::string(slot.val.Data, slot.val.len) << " | "
-                  << "hash: " << slot.Hash
-                  << "\n";
-
-        idx = slot.next;
-    }
-}
-
-void printHeaders(const s_header_slot *headers, size_t count)
-{
-    for (size_t i = 0; i < count; i++)
-    {
-        const s_header_slot &slot = headers[i];
-
-        // نبدأ فقط من الـ head — اللي ما يشير إليه أحد
-        if (slot.Hash == -1)
-            continue;
-
-        // تحقق إذا هاد الـ slot هو head وليس tail لـ chain آخر
-        bool isLinkedTo = false;
-        for (size_t j = 0; j < count; j++)
-        {
-            if (headers[j].next == (uint8_t)i)
-            {
-                isLinkedTo = true;
-                break;
-            }
-        }
-        if (isLinkedTo)
-            continue;
-
-        std::cout << "=== chain [" << i << "] ===\n";
-        printHeaderChain(headers, count, i);
-    }
-}
-
-
-
-
-
-
 bool RequestParser::ParseRequestLine(uint16_t size)
 {
 	_requestLine.parse(_request.request_metadata, size);
@@ -132,8 +78,7 @@ bool RequestParser::ParseHeader(uint16_t size)
 	}
 	if (_header.isComplete())
 	{
-		_RequestHandler->getHeader();
-		printHeaders(_request.unknown_headers, 25); // remove
+		_RequestHandler->linkHeader();
 		_state = STATE_BODY;
 	}
 
