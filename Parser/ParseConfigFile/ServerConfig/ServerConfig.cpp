@@ -40,25 +40,47 @@ bool clsServerConfig::ParseIndex()
 	return (true);
 }
 
+bool    IsThereADuplicate(std::vector<clsLocation> &loc, std::string URILocation)
+{
+    for (size_t i = 0; i < loc.size(); i++)
+    {
+        if (loc[i].getLocationData().uri == URILocation)
+            return true;
+    }
+    return false;
+}
+
 bool clsServerConfig::ParseLocation()
 {
-	clsLocation loc(ctx, _autoindex);
-	loc.parseLocation();
+    clsLocation loc(ctx, _autoindex);
+    loc.parseLocation();
 
-	if (!loc.getError().isError())
-	{
-		if (loc.getLocationData().matchType == stlocation::EXACT)
-			_LocationExact.push_back(loc);
-		else
-			_LocationPrefix.push_back(loc);
-	}
-	else
-	{
-		ctx.error = loc.getError();
-		return false;
-	}
-	return (true);
+    if (!loc.getError().isError())
+    {
+        
+        if (loc.getLocationData().matchType == stlocation::EXACT)
+        {
+            if (!IsThereADuplicate(_LocationExact, loc.getLocationData().uri))
+                _LocationExact.push_back(loc);
+            else
+                return (ctx.error.setStatus(400, "Duplicate In Location"), false);
+        }
+        else
+        {
+            if (!IsThereADuplicate(_LocationPrefix, loc.getLocationData().uri))    
+                _LocationPrefix.push_back(loc);
+            else
+                return (ctx.error.setStatus(400, "Duplicate In Location"), false);
+        }
+    }
+    else
+    {
+        ctx.error = loc.getError();
+        return false;
+    }
+    return (true);
 }
+
 
 // Logic remains identical for the rest
 bool clsServerConfig::ParseListen()
