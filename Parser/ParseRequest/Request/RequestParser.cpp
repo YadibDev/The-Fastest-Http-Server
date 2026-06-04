@@ -45,6 +45,7 @@ bool RequestParser::LProcessRequestHandler()
 	return true;
 }
 
+
 bool RequestParser::ParseRequestLine(uint16_t size)
 {
 	_requestLine.parse(_request.request_metadata, size);
@@ -77,6 +78,7 @@ bool RequestParser::ParseHeader(uint16_t size)
 	}
 	if (_header.isComplete())
 	{
+		_RequestHandler->linkHeader();
 		_state = STATE_BODY;
 	}
 
