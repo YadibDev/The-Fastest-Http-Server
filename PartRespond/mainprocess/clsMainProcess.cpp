@@ -76,8 +76,8 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     }
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
-        _Response.SetStatus(_eventProcess);
         _Response.SetMod(stMod::ERROR);
+        std::cout << "achraf hna \n";
         _Response.MakeResponse();
     }
 }
@@ -155,7 +155,6 @@ void clsMainProcess::Reset()
     this->_RunCGI = false;
     _CGI.Reset();
     _CGI.GetclsParseOutCGI().Reset();
-    _Response.SetInternalRedirectSrc(NULL); // add by yadib
     _Response.Reset();
     _InternalRedirectSrc = "";
     _HeaderFeild = "";

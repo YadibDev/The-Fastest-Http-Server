@@ -112,12 +112,16 @@ bool    Header::makeKnownHeader()
 			return false;
 		uint8_t next = _request.known_headers[_currentHeader].next;
 		if (next == INVALID_INDEX)
+		{
 			_request.known_headers[_currentHeader].next = _currentUnknownIndex;
+			_request.known_headers[_currentHeader].Hash = -1;
+		}
 		else
 		{
 			while (_request.unknown_headers[next].next != INVALID_INDEX)
 				next = _request.unknown_headers[next].next;
 			_request.unknown_headers[next].next = _currentUnknownIndex;
+			_request.unknown_headers[_currentUnknownIndex].Hash = -1;
 		}
 	}
 	return true;

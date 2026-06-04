@@ -64,6 +64,7 @@ bool RequestParser::ParseRequestLine(uint16_t size)
 	return true;
 }
 
+
 bool RequestParser::ParseHeader(uint16_t size)
 {
 	_header.Parse(size);
@@ -75,7 +76,9 @@ bool RequestParser::ParseHeader(uint16_t size)
 		return false;
 	}
 	if (_header.isComplete())
+	{
 		_state = STATE_BODY;
+	}
 
 	return true;
 }

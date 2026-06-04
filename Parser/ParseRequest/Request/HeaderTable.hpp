@@ -18,9 +18,8 @@ public:
 	// const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) ;
 	const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) const;
 	const s_header_slot*	getUnknownHeader(uint8_t index) const;
-	s_header_slot* getUnknownHeader(uint8_t index);
 
-	void	linkThisHeader(uint8_t newIndex, uint8_t currentIndex);
+	void	linkThisHeader();
 
 	bool	isDuplicate(uint8_t index);
 	uint8_t	countOccurrences(HttpTables::eKnownHeader h);

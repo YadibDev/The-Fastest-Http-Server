@@ -34,7 +34,9 @@ public:
 	enum State { STATE_REQUEST_LINE, STATE_HEADERS, STATE_BODY, STATE_COMPLETE, STATE_ERROR };
 	State			_state;
 
+
 	RequestParser(stPollRequest &request, RequestHandler	*RequestHandler);
+	void				LinkeHeaders();
 	void				init(clsServerConfig *ServerConfig, uint16_t offset = 0);
 	void				init(uint16_t offset = 0);
 	bool				Parse(uint16_t size);

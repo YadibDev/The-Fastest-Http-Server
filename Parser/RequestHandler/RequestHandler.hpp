@@ -19,6 +19,7 @@
 class RequestHandler {
 private:
 
+    std::string							_requestUriBuffer;
 	uint8_t								_allowMethods;
 	char								_physicalPath[MAX_PATH_LEN];
 	bool								_autoindex;
@@ -52,6 +53,7 @@ public:
 
 	void					setSizeFile(size_t sizeFile);
 	void					setAutoIndex(bool autoindex);
+	void					setRequestUriCopy(s_view view);
 	void					setRequestUri(const s_view &uri);
 	void					setQuery(const s_view query);
 	void					setVersion(const s_view version);

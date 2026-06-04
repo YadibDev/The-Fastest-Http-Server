@@ -76,7 +76,8 @@ bool ProcessRequestHandler::handleCgi(const clsLocation* bestLocation,
                                       HttpError &error) 
 {
     handler->ExtractCgiMetadata(newUri, bestLocation->getCgiPass());
-    if (handler->getScriptName().len) {
+    if (handler->getScriptName().len)
+	{
         s_uri_entry scriptName;
         scriptName.setSview(handler->getScriptName());
         
@@ -136,15 +137,6 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
                                        s_uri_entry& newUri,
                                        HttpError &error)
 {
-	if (newUri.getView().len > 0 && newUri.getView().Data[newUri.getView().len - 1] == '/')
-	{
-		if (!handleDirectory(serverConfig, bestLocation, handler, newUri, error))
-			return false;
-		if (handler->getPathInfo().len)
-			handler->computePathTranslated(bestLocation->getRoot(), serverConfig);
-		return true;
-	}
-
     if (!handleCgi(bestLocation, handler, newUri, handler->getPhysicalPath(), error))
 	{
         return false;
@@ -152,6 +144,15 @@ bool ProcessRequestHandler::handlePath(const clsLocation* bestLocation,
 
 	if (handler->getScriptName().len)
 	{
+		if (handler->getPathInfo().len)
+			handler->computePathTranslated(bestLocation->getRoot(), serverConfig);
+		return true;
+	}
+
+	else if (newUri.getView().len > 0 && newUri.getView().Data[newUri.getView().len - 1] == '/')
+	{
+		if (!handleDirectory(serverConfig, bestLocation, handler, newUri, error))
+			return false;
 		if (handler->getPathInfo().len)
 			handler->computePathTranslated(bestLocation->getRoot(), serverConfig);
 		return true;
@@ -241,7 +242,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 	handler->setMethod(startLine.getMethod());
 	handler->setClientMaxBodySize(bestLocation->getClientMaxBodySize());
 	handler->setReturn((bestLocation->getReturn().code != -1) ? bestLocation->getReturn() : serverConfig->getReturn());
-	
+
 	if (handler->getReturn().code != -1)
 		return true;
 
@@ -260,6 +261,7 @@ bool ProcessRequestHandler::processRequest(const RequestLine& startLine,
 			else
 				return (error.setStatus(403, "Forbidden"), false);
 		}
+		
 	}
 
 	handler->setRequestUri(startLine.getRequestURI().getPath());
@@ -299,14 +301,14 @@ bool ProcessRequestHandler::internalRedirect(
 		return (error.setStatus(404, "Not Found"), false);
 
 	handler->setReturn((newLocation->getReturn().code != -1) ? newLocation->getReturn() : serverConfig->getReturn());
-	handler->setRequestUri(newUri.getView());
-
+	
 	if (handler->getReturn().code != -1)
-		return true;
-
+	return true;
+	
 	if (!handlePath(newLocation, serverConfig, handler, newUri, error))
-		return false;
-
+	return false;
+	
+	handler->setRequestUriCopy(newUri.getView());
 	handler->setError(error);
 	return true;
 }

@@ -351,49 +351,88 @@ bool clsCGI::_CONTENT_LENGTH()
     return (true);
 }
 
-bool clsCGI::_ConcatonateValueHeaders(int CountHeaders)
+bool clsCGI::_ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader KonowHeader, bool SwitchModConcatonate)
 {
     while (_DataRequest.getHeader().getUnknownHeader(CountHeaders)  && CountHeaders != INVALID_INDEX)
     {
-        _DataRequest.getHeader().getUnknownHeader(CountHeaders)->Hash = -1;
-        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data,
-         SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
+        if (SwitchModConcatonate)
+        {
+            if (!_AddKeyHeader(KonowHeader, 1))
+                return false;
+        }
+        HelperFunctions::ft_str_copy(_Buffer,_DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.Data, SIZE_BUFFER,
+                 _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->val.len, 0);
         CountHeaders = _DataRequest.getHeader().getUnknownHeader(CountHeaders)->next;
-        if (CountHeaders != INVALID_INDEX)
+        if (!SwitchModConcatonate && CountHeaders != INVALID_INDEX)
             HelperFunctions::ft_str_copy(_Buffer,  ",", SIZE_BUFFER, _Offset, 1, 0);
         if (_Offset == SIZE_BUFFER)
             return false;
-        _Buffer[_Offset]= '\0';
     }
     return true;
 }
 
-bool clsCGI::_AddKeyHeader(int CountHeaders)
+bool clsCGI::_AddKeyHeader(int CountHeaders, bool SwitchModHedaers)
 {
     HelperFunctions::ft_str_copy(_Buffer,  "HTTP_", SIZE_BUFFER, _Offset, 5, 0);
-    HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.Data,
-         SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.len, 1);
+    if (!SwitchModHedaers)
+    {
+        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.Data,
+            SIZE_BUFFER, _Offset, _DataRequest.getHeader().getUnknownHeader(CountHeaders)->key.len, 1);
+    }
+    else
+    {
+        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getKnownHeader((HttpTables::eKnownHeader)CountHeaders)->key.Data,
+           SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader((HttpTables::eKnownHeader)CountHeaders)->key.len, 1);
+    }
     HelperFunctions::ft_str_copy(_Buffer,  "=", SIZE_BUFFER, _Offset, 1, 0);
     if (_Offset == SIZE_BUFFER)
         return false;
     return true;
 }
 
+bool clsCGI::_JoinKnowheaders( HttpTables::eKnownHeader KonowHeader, bool SwitchModHedaers, bool SwitchModConcatonate)
+{
+    uint8_t i = 0;
+    if (_Counter > SIZE_VAR_ENV)
+        return true;
+    if (_DataRequest.getHeader().getKnownHeader(KonowHeader)->Hash != -1)
+    {
+        if (_Offset == SIZE_BUFFER)
+            return false;
+        _ENV[_Counter] = &_Buffer[_Offset];
+        if (!_AddKeyHeader(KonowHeader, SwitchModHedaers))
+            return false;
+        HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getKnownHeader(KonowHeader)->val.Data,
+         SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader(KonowHeader)->val.len, 0);
+         i = _DataRequest.getHeader().getKnownHeader(KonowHeader)->next;
+        if (i && !_ConcatonateValueHeaders(i, KonowHeader, SwitchModConcatonate))
+                return false;
+        _Offset++;
+        _Counter++;
+    }
+    return true;
+}
+
 
 bool clsCGI::_OtherHeaders()
 {
-    int i = 0;
+    uint8_t i = 0;
     if (_Offset == SIZE_BUFFER)
+        return false;
+    if (!_JoinKnowheaders(HttpTables::H_COOKIE, true, true))
+        return false;
+    if (!_JoinKnowheaders(HttpTables::H_TRANSFER_ENCODING, true, false))
+        return false;
+    if (!_JoinKnowheaders(HttpTables::H_HOST, true, false))
         return false;
     while (_Counter < SIZE_VAR_ENV && _DataRequest.getHeader().getUnknownHeader(i))
     {
-        
         _ENV[_Counter] = &_Buffer[_Offset];
         if (_DataRequest.getHeader().getUnknownHeader(i)->Hash != -1)
         {
-            if (!_AddKeyHeader(i))
+            if (!_AddKeyHeader(i, 0))
                 return false;
-            if (!_ConcatonateValueHeaders(i))
+            if (!_ConcatonateValueHeaders(i, HttpTables::H_UNKNOWN,0))
                 return false;
             _Offset++;
             _Counter++;
@@ -404,6 +443,7 @@ bool clsCGI::_OtherHeaders()
     }
     return (true);
 }
+
 bool clsCGI::_StoredArgs()
 {
     _ARG[0] = (char *)_DataRequest.getPathCgi()->c_str();
@@ -419,9 +459,9 @@ bool clsCGI::_StoredArgs()
 bool clsCGI::_childeProcesse()
 {
     int Fd = -1;
-    if (!_MakeEnv())
-        return (true);
     close(_pip[0]);
+     if (!_MakeEnv())
+        return (true);
     if (!_DataRequest.getFilePathBody().empty())
     {
         Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
@@ -491,7 +531,6 @@ void clsCGI::RunCGI()
     {
         if (_childeProcesse())
             exit(1);
-        std::cout << "exit(1)"<< std::endl;
     }
     else
         _ParentProcesse();

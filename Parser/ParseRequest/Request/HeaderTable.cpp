@@ -20,8 +20,6 @@ bool HeaderTable::_keysMatch(const s_view& k1, const s_view& k2) const {
 }
 
 
-// modified by achraf here
-// const s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h)
 const s_header_slot* HeaderTable::getKnownHeader(HttpTables::eKnownHeader h) const
 {
 	if (h >= HttpTables::H_UNKNOWN)
@@ -34,43 +32,34 @@ const s_header_slot* HeaderTable::getUnknownHeader(uint8_t index) const{
 		return NULL;
 	return &_request.unknown_headers[index];
 }
-// modified by achraf here
-// add this function without const
-s_header_slot* HeaderTable::getUnknownHeader(uint8_t index){
-	if (index >= SIZE_UNKNOW_HEADER || index == INVALID_INDEX)
-		return NULL;
-	return &_request.unknown_headers[index];
-}
 
-void HeaderTable::linkThisHeader(uint8_t newIndex, uint8_t currentIndex)
+void HeaderTable::linkThisHeader()
 {
-	if (newIndex >= SIZE_UNKNOW_HEADER)
-		return;
+    for (uint8_t i = 0; i < SIZE_UNKNOW_HEADER && _request.unknown_headers[i].key.len; i++)
+    {
+        if (_request.unknown_headers[i].Hash == -1)
+            continue;
 
-	s_header_slot& newHdr = _request.unknown_headers[newIndex];
+        for (uint8_t j = 0; j < SIZE_UNKNOW_HEADER && _request.unknown_headers[j].key.len; j++)
+        {
+            if (j == i)
+                continue;
+            if (_request.unknown_headers[j].Hash == -1)
+                continue;
 
-	for (uint8_t i = 0; i < currentIndex; ++i)
-	{
-		if (i == newIndex)
-			continue;
+            if (_request.unknown_headers[i].Hash != _request.unknown_headers[j].Hash)
+                continue;
+            if (!_keysMatch(_request.unknown_headers[i].key, _request.unknown_headers[j].key))
+                continue;
 
-		s_header_slot& currentHdr = _request.unknown_headers[i];
+            uint8_t last = i;
+            while (_request.unknown_headers[last].next != INVALID_INDEX)
+                last = _request.unknown_headers[last].next;
 
-		if (newHdr.Hash == currentHdr.Hash) {
-			
-			if (_keysMatch(newHdr.key, currentHdr.key))
-			{
-				
-				uint8_t last = i;
-				while (_request.unknown_headers[last].next != INVALID_INDEX)
-					last = _request.unknown_headers[last].next;
-				
-				if (last != newIndex)
-					_request.unknown_headers[last].next = newIndex;
-				return;
-			}
-		}
-	}
+            _request.unknown_headers[last].next = j;
+            _request.unknown_headers[j].Hash = -1;
+        }
+    }
 }
 
 bool HeaderTable::isDuplicate(uint8_t index) {

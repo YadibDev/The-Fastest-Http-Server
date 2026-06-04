@@ -124,6 +124,13 @@ void RequestHandler::computePathTranslated(const std::string &rootPath, const cl
 	}
 }
 
+void RequestHandler::setRequestUriCopy(s_view view) // I didn't want this, but I had no choice
+{
+	_requestUriBuffer.assign(view.Data, view.len);
+	_requestUri.Data = &_requestUriBuffer[0];
+	_requestUri.len  = _requestUriBuffer.size();
+}
+
 void RequestHandler::setRequestUri(const s_view &uri)
 {
 	_requestUri = uri;
@@ -157,6 +164,8 @@ void RequestHandler::setPathTranslated(std::string pathTranslated)
 void RequestHandler::setHeader(HeaderTable Header)
 {
 	_Header = Header;
+
+	_Header.linkThisHeader();
 }
 
 void	RequestHandler::setClientMaxBodySize(unsigned long long size)
