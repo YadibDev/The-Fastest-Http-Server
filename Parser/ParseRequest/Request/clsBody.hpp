@@ -59,6 +59,7 @@ public:
     {
         SETTING_VARS,
         READING_BODY,
+        SECOND_CRLF,
         DONE_GOOD,
         DONE_WIHTERROR
     };

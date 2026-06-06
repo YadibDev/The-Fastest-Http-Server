@@ -117,7 +117,7 @@ bool clsServerSock::_isServerSocket(int fd)
 {
     set<int>::iterator end = _Sockets.end();
 
-    return (_Sockets.find(fd) != end);
+    return (_Sockets.find(fd) != end); // O (log n)
 }
 
 bool clsServerSock::isServerIp(unsigned int ip, unsigned int port)

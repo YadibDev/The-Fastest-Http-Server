@@ -257,10 +257,10 @@ void clsFlow::_newClientProcess(int serverFd)
 		int newClient = server.tryAcceptNewClient(serverFd, &addr);
 		if (newClient > 0)
 		{
-			// i may change this get port to functoino
 			sockaddr_in tempAddress;
 			socklen_t temp = sizeof(tempAddress);
-			int status = getsockname(serverFd, (sockaddr *)&tempAddress, &temp);
+		
+			int status = getsockname(serverFd, (sockaddr *)&tempAddress, &temp); // ip and port of the clinet
 
 			if (HelperFunctions::changeFileToNonBlocking(newClient) == -1 || status == -1)
 			{
@@ -290,7 +290,6 @@ void clsFlow::_pipeFlow(int fd)
 
 void clsFlow::_flowProcess(int fd, fdTypes &TypeFd, int indexEvent)
 {
-	// update flow of checkins is it a pipe or a server
 	if (TypeFd == CLIENT_SOCK)
 		_clientProcess(fd, _clientsEvents[indexEvent].events);
 	else if (TypeFd == SERVER_SOCK)
@@ -351,11 +350,11 @@ void clsFlow::EventLoop()
 			for (int i = 0; i < nFds; i++)
 			{
 				int fd = (_clientsEvents[i].data.fd);
-				if (_clientIdByFd.size() && _clientIdByFd.count(fd))
+				if (_clientIdByFd.size() > 0 && (_clientIdByFd.find(fd) != _clientIdByFd.end()))
 				{
 					TypeFd = CLIENT_SOCK;
 				}
-				else if (_IdByPipe.size() > 0 && _IdByPipe.count(fd))
+				else if (_IdByPipe.size() > 0 && (_IdByPipe.find(fd) != _IdByPipe.end()))
 					TypeFd = PIPE;
 				else
 					TypeFd = SERVER_SOCK;

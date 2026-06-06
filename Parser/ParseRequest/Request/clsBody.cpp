@@ -180,8 +180,9 @@ bool clsBody::readSizeChunk(uint16_t &ofset, bool &error, short &totRemoves)
                 _state = clsBody::DONE_WIHTERROR;
             }
             else if (size == 0)
-                _state = clsBody::DONE_GOOD;
-
+            {
+                _state = clsBody::SECOND_CRLF;
+            }
             readSize = false;
             cur = t;
         }
@@ -220,7 +221,7 @@ bool clsBody::_saveChunkBody(uint16_t &ofset, bool &error, short &totRemoves)
     totRemoves += temp;
     size -= temp;
 
-    if (t + 1 < ofset && size <= 0)
+    if (t + 1 < ofset && size == 0)
     {
         if (arr[t] != '\r' || arr[t + 1] != '\n')
         {
@@ -252,7 +253,7 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
     bool error = false;
     short totRemoves = 0;
 
-    while (cur < ofset && t < ofset)
+    while (cur < ofset && t < ofset && _state != clsBody::SECOND_CRLF)
     {
         if (readSize)
         {
@@ -276,6 +277,26 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
             _state = clsBody::DONE_WIHTERROR;
             return;
         }
+    }
+
+    if (_state == clsBody::SECOND_CRLF)
+    {
+        if (cur + 1 < ofset)
+        {
+            // check max body size
+            if (arr[cur] != '\r' || arr[cur + 1] != '\n')
+            {
+                _errorPage.setStatus(400, "Bad Request");
+                _state = clsBody::DONE_WIHTERROR;
+                return ; // error so we end the function
+            }
+            else
+            {
+               _state = clsBody::DONE_GOOD;
+               return ;
+            }
+        }
+        return ;
     }
 
     if (totRemoves != 0 && totRemoves < ofset)

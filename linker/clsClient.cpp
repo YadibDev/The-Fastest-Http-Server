@@ -124,8 +124,8 @@ int clsClient::_ReadDataForReq()
 
 void clsClient::ProcessRequest()
 {
-
 	HttpError error;
+
 	if (_state == BEGIN)
 	{
 		ResetAll();
@@ -211,6 +211,18 @@ void clsClient::_SendRespond(clsResponse &_Responder)
 				_fdRespond = open(_Responder.GetFileName().c_str(), (O_RDONLY | O_CLOEXEC)); // error if fd == -1
 			else
 				_fdRespond = open(_Responder.GetFileFromDiskPointer()->c_str(), O_RDONLY | O_CLOEXEC); // error if fd == -1
+
+			if (_fdRespond == -1)
+			{
+				std::string handleError = "HTTP/1.1 500 Internal Server Error\r\n"
+										  "content-length: 163\r\n"
+										  "content-type: text/html\r\n"
+										  "connection: close\r\n\r\n";
+				handleError.append(HelperFunctions::GetBody(500));
+				_state = CONNECTION_CLOSED;
+				send(_socket, handleError.c_str(), handleError.size(), MSG_NOSIGNAL);
+				return;
+			}
 		}
 		int sizeToRead = _addSizeChunkToStr();
 		if (sizeToRead)
@@ -262,47 +274,47 @@ bool clsClient::_handleInternal()
 	HttpError error;
 	clsResponse &Respond = _ResponderProecss.GetclsResponse();
 
-    // support internal location in future
-    if (_internalCounter == MAX_INTERNAL_LOOP)
-    {
-        _internalCounter = 0;
-        _RequestXconfig.reset();
-        _RequestXconfig.setDefaultErrorPage(true);
-        _RequestXconfig.setStatusError(508);
-        return true;
-    }
-    else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
-    {
-        _RequestXconfig.reset();
-        RequestLine reqLineParser;
-        std::string &redirctStr = *Respond.GetInternalRedirectSrc();
+	// support internal location in future
+	if (_internalCounter == MAX_INTERNAL_LOOP)
+	{
+		_internalCounter = 0;
+		_RequestXconfig.reset();
+		_RequestXconfig.setDefaultErrorPage(true);
+		_RequestXconfig.setStatusError(508);
+		return true;
+	}
+	else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
+	{
+		_RequestXconfig.reset();
+		RequestLine reqLineParser;
+		std::string &redirctStr = *Respond.GetInternalRedirectSrc();
 
-        int statusCode = 0;
-        if (false == reqLineParser.parse(redirctStr.c_str(), redirctStr.size()))
-        {
-            statusCode = reqLineParser.getError().getCodeStatus();
-        }
-        else if (!ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig))
-        {
-            statusCode = _RequestXconfig.getError().getCodeStatus();
-        }
+		int statusCode = 0;
+		if (false == reqLineParser.parse(redirctStr.c_str(), redirctStr.size()))
+		{
+			statusCode = reqLineParser.getError().getCodeStatus();
+		}
+		else if (!ProcessRequestHandler::processRequest(reqLineParser, block, &_RequestXconfig))
+		{
+			statusCode = _RequestXconfig.getError().getCodeStatus();
+		}
 
-        if (statusCode)
-        {
-            if (!ProcessRequestHandler::generateErrorPath(statusCode, this->block, &_RequestXconfig, error))
-                _RequestXconfig.setDefaultErrorPage(true);
-        }
+		if (statusCode)
+		{
+			if (!ProcessRequestHandler::generateErrorPath(statusCode, this->block, &_RequestXconfig, error))
+				_RequestXconfig.setDefaultErrorPage(true);
+		}
 
-        return true;
-    }
-    else if (Respond.IsError())
-    {
-        _RequestXconfig.reset();
-        if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
-            _RequestXconfig.setDefaultErrorPage(true);
-        return true;
-    }
-    return false;
+		return true;
+	}
+	else if (Respond.IsError())
+	{
+		_RequestXconfig.reset();
+		if (!ProcessRequestHandler::generateErrorPath(Respond.GetStatus(), this->block, &_RequestXconfig, error))
+			_RequestXconfig.setDefaultErrorPage(true);
+		return true;
+	}
+	return false;
 }
 
 void clsClient::_initalizeRespondBuffer()
