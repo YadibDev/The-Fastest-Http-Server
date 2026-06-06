@@ -5,7 +5,7 @@
 #include "../mainprocess/librarys.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
-# define SIZE_VAR_ENV  (17 + 31 + 1)
+# define SIZE_VAR_ENV  (19 + 31 + 1)
 
 class clsCGI
 {
