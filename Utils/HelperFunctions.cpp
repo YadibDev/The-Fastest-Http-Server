@@ -316,7 +316,7 @@ short HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 					w--;
 			}
 		}
-		if (path[r] == '.' && path[r + 1] == '.' &&
+		if (r == 0 && path[r] == '.' && path[r + 1] == '.' &&
 			(path[r + 2] == '/' || path[r + 2] == '\0'))
 		{
 			r += 2;
@@ -324,7 +324,7 @@ short HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 		}
 		else if (path[r] == '/' && path[r + 1] == '.' && (path[r + 2] == '/' || path[r + 2] == '\0'))
 			r += 2;
-		else if (path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
+		else if (r == 0 && path[r] == '.' && (path[r + 1] == '/' || path[r + 1] == '\0'))
 			r += 1;
 		else
 			path[w++] = path[r++];

@@ -5,7 +5,7 @@
 #include "../mainprocess/librarys.hpp"
 #include "../../Parser/RequestHandler/RequestHandler.hpp"
 
-# define SIZE_VAR_ENV  (17 + 31 + 1)
+# define SIZE_VAR_ENV  (19 + 31 + 1)
 
 class clsCGI
 {
@@ -50,6 +50,8 @@ class clsCGI
         bool _REMOTE_IDENT();
         bool _CONTENT_TYPE();
         bool _CONTENT_LENGTH();
+        bool _REDIRECT_STATUS();
+        bool _SCRIPT_FILENAME();
         bool _OtherHeaders();
         bool _ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader KonowHeader, bool SwitchModConcatonate);
         bool _AddKeyHeader(int CountHeaders, bool SwitchModHedaers);
