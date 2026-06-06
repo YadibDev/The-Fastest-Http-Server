@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/06/02 12:45:18 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/06/04 15:02:10 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void clsResponse::_DeleteResource()
 
 void clsResponse::MakeResponse()
 {
-    if (_Mod[stMod::GET] == stMod::GET)
+    if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::GET] == stMod::GET)
     {
         if (!_DataRequest.getAutoIndex())
         {
@@ -54,9 +54,9 @@ void clsResponse::MakeResponse()
         else
             _InitialAutoIndex();
     }
-    else if (_Mod[stMod::DELETE] == stMod::DELETE)
+    else if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::DELETE] == stMod::DELETE)
         _DeleteResource();
-    else if (_Mod[stMod::UPLOAD] == stMod::UPLOAD)
+    else if (_Mod[stMod::ERROR] != stMod::ERROR && _Mod[stMod::UPLOAD] == stMod::UPLOAD)
         _UploadResource();
     if (_Mod[stMod::ERROR] != stMod::ERROR)
         _InitialHeaders();

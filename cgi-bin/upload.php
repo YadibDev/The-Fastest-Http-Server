@@ -1,16 +1,3 @@
-<?php
-// Always output headers first in CGI
-
-echo "status: 200 OK\r\n"
-
-// Read GET parameters
-$name = isset($_GET['name']) ? $_GET['name'] : "Guest";
-
-echo "<html>";
-echo "<head><title>PHP CGI</title></head>";
-echo "<body>";
-echo "<h1>Hello, " . htmlspecialchars($name) . "</h1>";
-echo "<p>This is PHP running as CGI.</p>";
-echo "</body>";
-echo "</html>";
+<?php 
+    echo "If you are using nginx with php-cgi and have followed the standard procedure to set it up, you might often get the “No input file specified” error. This error basically occurs when the php-cgi daemon cannot find a .php file to execute using the SCRIPT_FILENAME parameter that was supplied to it. I’ll discuss about the common causes of the error and it’s solutions. Wrong path is sent to the php-cgi daemon"
 ?>

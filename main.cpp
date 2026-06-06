@@ -38,6 +38,7 @@ int main() {
     
         // 4. الاتصال بالسيرفر
         std::cout << "Connecting to " << ip_input << ":" << port_input << "..." << std::endl;
+
         if (connect(network_socket, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
         {
             std::cerr << "Error: Connection failed." << std::endl;
@@ -69,10 +70,10 @@ int main() {
     
         // 7. استقبال الـ Response وطباعته كاملاً في الـ Output
         std::cout << "--- [ Server Response ] ---" << std::endl;
-        
+
         char response_buffer[4096];
         ssize_t bytes_received;
-    
+
         // الـ Loop تستمر في القراءة حتى يغلق السيرفر الاتصال (تنتهي البيانات)
         while ((bytes_received = recv(network_socket, response_buffer, sizeof(response_buffer) - 1, 0)) > 0) {
             response_buffer[bytes_received] = '\0'; // ضمان وجود Null-terminator لطباعة النص بأمان
@@ -82,7 +83,7 @@ int main() {
         if (bytes_received < 0) {
             std::cerr << "\nError: Failed to receive data." << std::endl;
         }
-    
+
         std::cout << "\n---------------------------" << std::endl;
     
         // 8. غلق الـ Socket

@@ -77,7 +77,7 @@ void clsMainProcess::ParseCGI(const char *Buffer, short Length)
     else if (_eventProcess == stEventProcess::END_WITH_TIMOUT || _eventProcess == stEventProcess::END_UNKNOW)
     {
         _Response.SetMod(stMod::ERROR);
-        std::cout << "achraf hna \n";
+        _Response.SetStatus(_eventProcess);
         _Response.MakeResponse();
     }
 }

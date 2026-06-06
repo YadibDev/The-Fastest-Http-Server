@@ -53,6 +53,10 @@ bool clsCGI::_MakeEnv()
         return false;
     if (!_OtherHeaders())
         return false;
+    if (!_REDIRECT_STATUS())
+        return false;
+    if (!_SCRIPT_FILENAME())
+        return false;
     _ENV[_Counter] = NULL;
     return (true);
 }
@@ -351,6 +355,37 @@ bool clsCGI::_CONTENT_LENGTH()
     return (true);
 }
 
+
+bool clsCGI::_REDIRECT_STATUS()
+{
+    short Length = HelperFunctions::ft_strlen("REDIRECT_STATUS=\"\"");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(_Buffer, "REDIRECT_STATUS=\"\"", SIZE_BUFFER, _Offset, Length, 0);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _Counter++;
+    _Offset++;
+    return (true);
+}
+
+bool clsCGI::_SCRIPT_FILENAME()
+{
+     short Length = HelperFunctions::ft_strlen("SCRIPT_FILENAME=");
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _ENV[_Counter] = &_Buffer[_Offset];
+    HelperFunctions::ft_str_copy(_Buffer, "SCRIPT_FILENAME=", SIZE_BUFFER, _Offset, Length, 0);
+    Length = HelperFunctions::ft_strlen(_DataRequest.getPhysicalPath());
+    HelperFunctions::ft_str_copy(_Buffer, _DataRequest.getPhysicalPath(), SIZE_BUFFER, _Offset, Length, 0);
+    if (_Offset == SIZE_BUFFER)
+        return false;
+    _Counter++;
+    _Offset++;
+    return (true);
+}
+
 bool clsCGI::_ConcatonateValueHeaders(int CountHeaders, HttpTables::eKnownHeader KonowHeader, bool SwitchModConcatonate)
 {
     while (_DataRequest.getHeader().getUnknownHeader(CountHeaders)  && CountHeaders != INVALID_INDEX)
@@ -405,7 +440,8 @@ bool clsCGI::_JoinKnowheaders( HttpTables::eKnownHeader KonowHeader, bool Switch
         HelperFunctions::ft_str_copy(_Buffer,  _DataRequest.getHeader().getKnownHeader(KonowHeader)->val.Data,
          SIZE_BUFFER, _Offset, _DataRequest.getHeader().getKnownHeader(KonowHeader)->val.len, 0);
          i = _DataRequest.getHeader().getKnownHeader(KonowHeader)->next;
-        if (i && !_ConcatonateValueHeaders(i, KonowHeader, SwitchModConcatonate))
+        if (i != INVALID_INDEX)
+            if (!_ConcatonateValueHeaders(i, KonowHeader, SwitchModConcatonate))
                 return false;
         _Offset++;
         _Counter++;
@@ -466,10 +502,7 @@ bool clsCGI::_childeProcesse()
     {
         Fd = open(_DataRequest.getFilePathBody().c_str(), O_RDONLY | O_CLOEXEC, 0644);
         if (Fd < 0)
-        {
-            close(_pip[1]);
-            return (true);
-        }
+            return (close(_pip[1]), true);
         if (dup2(Fd, 0) == -1)
             return (close(Fd), close(_pip[1]), true);
     }

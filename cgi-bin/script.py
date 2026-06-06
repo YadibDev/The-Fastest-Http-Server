@@ -1,1 +1,2 @@
-print("location:/index.html\r\n\r\n", end="")
+while True :
+    a = 5
