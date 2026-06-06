@@ -467,6 +467,7 @@ bool clsCGI::_OtherHeaders()
         _ENV[_Counter] = &_Buffer[_Offset];
         if (_DataRequest.getHeader().getUnknownHeader(i)->Hash != -1)
         {
+            
             if (!_AddKeyHeader(i, 0))
                 return false;
             if (!_ConcatonateValueHeaders(i, HttpTables::H_UNKNOWN,0))
@@ -478,8 +479,6 @@ bool clsCGI::_OtherHeaders()
         if (_Offset == SIZE_BUFFER)
             return false;
     }
-    for (int i = 0; i < SIZE_VAR_ENV ; i++)
-        std::cout << _ENV[i] << std::endl;
     return (true);
 }
 

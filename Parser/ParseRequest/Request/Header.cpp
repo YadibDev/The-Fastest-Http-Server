@@ -114,6 +114,7 @@ bool    Header::makeKnownHeader()
 		if (next == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].next = _currentUnknownIndex;
+			_request.unknown_headers[_currentUnknownIndex].Hash = -1;
 		}
 		else
 		{
