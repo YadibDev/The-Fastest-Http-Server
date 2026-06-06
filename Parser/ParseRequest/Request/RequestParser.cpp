@@ -78,7 +78,8 @@ bool RequestParser::ParseHeader(uint16_t size)
 	}
 	if (_header.isComplete())
 	{
-		_RequestHandler->linkHeader();
+		if (_RequestHandler->getPathCgi())
+			_RequestHandler->linkHeader();
 		_state = STATE_BODY;
 	}
 
