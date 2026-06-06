@@ -1,3 +1,3 @@
 <?php 
-    echo "If you are using nginx with php-cgi and have followed the standard procedure to set it up, you might often get the “No input file specified” error. This error basically occurs when the php-cgi daemon cannot find a .php file to execute using the SCRIPT_FILENAME parameter that was supplied to it. I’ll discuss about the common causes of the error and it’s solutions. Wrong path is sent to the php-cgi daemon"
+    echo "hi achraf"
 ?>

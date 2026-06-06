@@ -52,14 +52,12 @@ int main() {
         std::string line;
     
         std::cout << "--- Enter your Request (Press ENTER on an empty line to SEND) ---" << std::endl;
-        while (std::getline(std::cin, line)) {
-            if (line.empty()) {
-                break; // التوقف عند إدخال سطر فارغ
-            }
-            custom_request += line + "\r\n"; // إضافة الفاصل المعياري للأسطر في الشبكات
-        }
-        custom_request += "\r\n"; // السطر الفارغ النهائي اللازم لإنهاء الـ HTTP Headers
-    
+        custom_request +="GET /cgi-bin/upload.php HTTP/1.1\r\n";
+        custom_request +="Connection: keep-alive \r\n";
+        custom_request +="Host: localhost:8082 \r\n";
+        custom_request +="Cookie:1\r\n";
+        custom_request +="Cookie: 2\r\n";
+        custom_request +="Cookie: 3\r\n\r\n";
         // 6. إرسال الـ Request المدخل
         std::cout << "\nSending request..." << std::endl;
         if (send(network_socket, custom_request.c_str(), custom_request.length(), 0) < 0) {
@@ -69,8 +67,6 @@ int main() {
         }
     
         // 7. استقبال الـ Response وطباعته كاملاً في الـ Output
-        std::cout << "--- [ Server Response ] ---" << std::endl;
-
         char response_buffer[4096];
         ssize_t bytes_received;
 
@@ -84,7 +80,7 @@ int main() {
             std::cerr << "\nError: Failed to receive data." << std::endl;
         }
 
-        std::cout << "\n---------------------------" << std::endl;
+        std::cout << "\nend" << std::endl;
     
         // 8. غلق الـ Socket
         close(network_socket);
