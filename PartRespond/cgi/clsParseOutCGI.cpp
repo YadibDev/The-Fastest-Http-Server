@@ -118,8 +118,16 @@ bool clsParseOutCGI::_StoredHeadersField(std::string &Str)
 		}
 		else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())
 		{
-			_HeadersField[_NameHeader] += ",";
-			_HeadersField[_NameHeader] += _ValueHeader;
+			if (_NameHeader.compare("cookie"))
+			{
+				_HeadersField[_NameHeader] += ";";
+				_HeadersField[_NameHeader] += _ValueHeader;
+			}
+			else
+			{
+				_HeadersField[_NameHeader] += ",";
+				_HeadersField[_NameHeader] += _ValueHeader;
+			}
 		}
 	}
 	else if (Skeep != (int)_ValueHeader.length() && !_ValueHeader.empty())

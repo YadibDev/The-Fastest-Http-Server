@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -g --std=c++98  -fsanitize=address
+CPPFLAGS = -Wall -Wextra -Werror  --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  serverMain.cpp \
@@ -19,7 +19,6 @@ CONFIG_FILES = Parser/ParseConfigFile/ConfigFile/ParseConfigueFile.cpp Parser/Pa
 REQUEST_FILES = Parser/ParseRequest/Request/Header.cpp Parser/ParseRequest/Request/HeaderTable.cpp Parser/ParseRequest/Request/RequestLine.cpp Parser/ParseRequest/Request/RequestParser.cpp \
 				Parser/ParseRequest/Request/Utils.cpp Parser/ParseRequest/URI/NUriParser.cpp \
 				Parser/RequestHandler/ProcessRequestHandler.cpp Parser/RequestHandler/RequestHandler.cpp Parser/RequestHandler/PathResolver.cpp Parser/ParseRequest/Request/clsBody.cpp \
-# 				MemoryTracker.cpp #remove
 
 ALL_FILES +=  $(UTILS_FILES) $(CONFIG_FILES) $(REQUEST_FILES) $(RESPOND_FILES) $(SERVER_FILES)
 
@@ -31,7 +30,7 @@ all : $(NAME)
 $(NAME) : $(OBJ)
 	$(CPP) $(CPPFLAGS)  $^ -o $(NAME)
 
-%.o : %.cpp $(Header)
+%.o : %.cpp
 	$(CPP) $(CPPFLAGS) $< -c -MMD  -o $@
 
 clean:

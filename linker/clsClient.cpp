@@ -88,6 +88,7 @@ void clsClient::ResetAll()
 
 clsClient::~clsClient()
 {
+	ResetAll();
 	if (_fdRespond > 0)
 		close(_fdRespond);
 	if (this->_socket > 0)
@@ -101,11 +102,11 @@ int clsClient::_ReadDataForReq()
 	if (_Requester._state == RequestParser::STATE_REQUEST_LINE || _Requester._state == RequestParser::STATE_HEADERS)
 	{
 		uint16_t &idx = _theData->read_offset;
-		size = recv(_socket, &_theData->request_metadata[idx], (SIZE_BUFFER - idx), 0);
+		size = recv(_socket, &_theData->request_metadata[idx], (BUFFER_REQUEST - idx), 0);
 		if (size > 0)
 			idx += size;
 
-		if (size == 0 && (SIZE_BUFFER - idx) > 0)
+		if (size == 0 && (BUFFER_REQUEST - idx) > 0)
 			_state = CONNECTION_CLOSED;
 	}
 	else if (_Requester._state == RequestParser::STATE_BODY)

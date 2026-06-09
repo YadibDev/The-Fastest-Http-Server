@@ -143,13 +143,6 @@ bool clsBody::bodyHandler(uint16_t *off, const size_t &maxBodySize, bool isCgi, 
         _state = clsBody::READING_BODY;
     }
     ParseBody(offset);
-
-    if (_state == clsBody::DONE_WIHTERROR || _state == clsBody::DONE_GOOD)
-    {
-        if (_state == clsBody::DONE_WIHTERROR)
-            removeFile = true;
-        this->Reset();
-    }
     return true;
 }
 
@@ -288,15 +281,15 @@ void clsBody::_handleChunk(uint16_t &ofset) // add here max
             {
                 _errorPage.setStatus(400, "Bad Request");
                 _state = clsBody::DONE_WIHTERROR;
-                return ; // error so we end the function
+                return; // error so we end the function
             }
             else
             {
-               _state = clsBody::DONE_GOOD;
-               return ;
+                _state = clsBody::DONE_GOOD;
+                return;
             }
         }
-        return ;
+        return;
     }
 
     if (totRemoves != 0 && totRemoves < ofset)

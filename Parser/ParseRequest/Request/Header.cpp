@@ -1,7 +1,6 @@
 #include "Header.hpp"
 #include <cctype>
 
-
 Header::Header(stPollRequest &request) : _request(request)
 {
 	_state = HttpTables::STATE_KEY;
@@ -16,7 +15,7 @@ Header::Header(stPollRequest &request) : _request(request)
 	_indexUnknownHeaders = 0;
 }
 
-void    Header::init(uint16_t offset)
+void Header::init(uint16_t offset)
 {
 	_offset = offset;
 	_keyStart = offset;
@@ -31,7 +30,7 @@ void    Header::init(uint16_t offset)
 	_error.setStatus(0, "");
 }
 
-void	Header::hashStep(char c)
+void Header::hashStep(char c)
 {
 	_hash ^= static_cast<unsigned char>(c);
 	_hash *= 0x5bd1e995;
@@ -42,63 +41,83 @@ HttpTables::eKnownHeader Header::fromHash(uint32_t h)
 {
 	switch (h)
 	{
-		case 0x1e5aeec4: return HttpTables::H_HOST;
-		case 0x240bbc50: return HttpTables::H_CONTENT_LENGTH;
-		case 0x41141d0c: return HttpTables::H_TRANSFER_ENCODING;
-		case 0xc947e5d0: return HttpTables::H_CONTENT_TYPE;
-		case 0x8fd8a976: return HttpTables::H_CONNECTION;
-		case 0x4def559a: return HttpTables::H_COOKIE;
-		default: return HttpTables::H_UNKNOWN;
+	case 0x1e5aeec4:
+		return HttpTables::H_HOST;
+	case 0x240bbc50:
+		return HttpTables::H_CONTENT_LENGTH;
+	case 0x41141d0c:
+		return HttpTables::H_TRANSFER_ENCODING;
+	case 0xc947e5d0:
+		return HttpTables::H_CONTENT_TYPE;
+	case 0x8fd8a976:
+		return HttpTables::H_CONNECTION;
+	case 0x4def559a:
+		return HttpTables::H_COOKIE;
+	default:
+		return HttpTables::H_UNKNOWN;
 	}
 }
 
-bool    Header::isHeaderKeyChar(char c)
+bool Header::isHeaderKeyChar(char c)
 {
 	unsigned char uc = static_cast<unsigned char>(c);
-	if (std::isalnum(uc)) return true;
+	if (std::isalnum(uc))
+		return true;
 	switch (c)
 	{
-		case '!': case '#': case '$': case '%': case '&': case '\'':
-		case '*': case '+': case '-': case '.': case '^': case '_':
-		case '`': case '|': case '~': return true;
-		default: return false;
+	case '!':
+	case '#':
+	case '$':
+	case '%':
+	case '&':
+	case '\'':
+	case '*':
+	case '+':
+	case '-':
+	case '.':
+	case '^':
+	case '_':
+	case '`':
+	case '|':
+	case '~':
+		return true;
+	default:
+		return false;
 	}
 }
 
-bool    Header::isHeaderValueChar(char c)
+bool Header::isHeaderValueChar(char c)
 {
 	unsigned char uc = static_cast<unsigned char>(c);
 	return (uc >= 32 && uc <= 126);
 }
 
-bool    Header::canRead(uint16_t size) const { return (_offset <= size); }
+bool Header::canRead(uint16_t size) const { return (_offset <= size); }
 
-
-bool	Header::CheckHostAbsUri(s_view &VHost)
+bool Header::CheckHostAbsUri(s_view &VHost)
 {
 	if (!VHost.len)
 		return (_error.setStatus(400, "Header Fields Host Is Empty"), false);
 	return true;
 }
 
-bool    Header::makeUnknownHeader()
+bool Header::makeUnknownHeader()
 {
 	_currentUnknownIndex = _indexUnknownHeaders;
 	_request.unknown_headers[_currentUnknownIndex].Hash = _hash;
-	
+
 	_request.unknown_headers[_currentUnknownIndex].key.Data = (char *)&_request.request_metadata[_keyStart];
 	_request.unknown_headers[_currentUnknownIndex].key.len = (_offset - 1) - _keyStart;
-	
+
 	_request.unknown_headers[_currentUnknownIndex].next = INVALID_INDEX;
 	return true;
 }
 
-bool    Header::makeKnownHeader()
+bool Header::makeKnownHeader()
 {
-	
-	if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1)
-			|| (_currentHeader == HttpTables::H_CONTENT_LENGTH && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1))
-				return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
+
+	if ((_currentHeader == HttpTables::H_HOST && _request.known_headers[HttpTables::H_HOST].Hash != -1) || (_currentHeader == HttpTables::H_CONTENT_LENGTH && _request.known_headers[HttpTables::H_CONTENT_LENGTH].Hash != -1))
+		return (_error.setStatus(400, "The Header Does Not Accept More Than One Value"), false);
 
 	if (_request.known_headers[_currentHeader].key.Data == NULL)
 	{
@@ -114,6 +133,7 @@ bool    Header::makeKnownHeader()
 		if (next == INVALID_INDEX)
 		{
 			_request.known_headers[_currentHeader].next = _currentUnknownIndex;
+			_request.unknown_headers[_currentUnknownIndex].Hash = -1;
 		}
 		else
 		{
@@ -126,7 +146,7 @@ bool    Header::makeKnownHeader()
 	return true;
 }
 
-bool    Header::selectHeaderSlot()
+bool Header::selectHeaderSlot()
 {
 	_currentHeader = fromHash(_hash);
 	_currentUnknownIndex = INVALID_INDEX;
@@ -146,7 +166,7 @@ bool    Header::selectHeaderSlot()
 	return true;
 }
 
-bool    Header::storeValue()
+bool Header::storeValue()
 {
 	uint16_t tmpOffset = _offset;
 
@@ -171,7 +191,7 @@ bool    Header::storeValue()
 	return true;
 }
 
-bool    Header::parseKey(uint16_t size)
+bool Header::parseKey(uint16_t size)
 {
 	if (_indexUnknownHeaders >= SIZE_UNKNOW_HEADER)
 		return (_error.setStatus(431, "Request Header Fields Too Large"), false);
@@ -194,7 +214,7 @@ bool    Header::parseKey(uint16_t size)
 	return true;
 }
 
-bool    Header::parseValue(uint16_t size)
+bool Header::parseValue(uint16_t size)
 {
 	if (_skipSpaceAfterColon)
 	{
@@ -219,9 +239,10 @@ bool    Header::parseValue(uint16_t size)
 	return true;
 }
 
-bool    Header::parseCR(uint16_t size)
+bool Header::parseCR(uint16_t size)
 {
-	if (!canRead(size)) return true;
+	if (!canRead(size))
+		return true;
 	if (_request.request_metadata[_offset] != '\r')
 		return (_error.setStatus(400, "Bad Request"), false);
 	_request.request_metadata[_offset] = '\0';
@@ -230,9 +251,10 @@ bool    Header::parseCR(uint16_t size)
 	return true;
 }
 
-bool    Header::parseLF(uint16_t size)
+bool Header::parseLF(uint16_t size)
 {
-	if (!canRead(size)) return true;
+	if (!canRead(size))
+		return true;
 	if (_request.request_metadata[_offset] != '\n')
 		return (_error.setStatus(400, "Bad Request"), false);
 	_offset++;
@@ -240,9 +262,10 @@ bool    Header::parseLF(uint16_t size)
 	return true;
 }
 
-bool    Header::parseDecision(uint16_t size)
+bool Header::parseDecision(uint16_t size)
 {
-	if (!canRead(size)) return true;
+	if (!canRead(size))
+		return true;
 	if (_request.request_metadata[_offset] == '\r')
 	{
 		_emptyLinePending = true;
@@ -258,27 +281,32 @@ bool    Header::parseDecision(uint16_t size)
 	return true;
 }
 
-void    Header::Parse(uint16_t size)
+void Header::Parse(uint16_t size)
 {
 	while (canRead(size))
 	{
-		if (_state == HttpTables::STATE_KEY) parseKey(size);
-		else if (_state == HttpTables::STATE_VALUE) parseValue(size);
-		else if (_state == HttpTables::STATE_CR) parseCR(size); // \r
+		if (_state == HttpTables::STATE_KEY)
+			parseKey(size);
+		else if (_state == HttpTables::STATE_VALUE)
+			parseValue(size);
+		else if (_state == HttpTables::STATE_CR)
+			parseCR(size); // \r
 		else if (_state == HttpTables::STATE_LF)
 		{
 			parseLF(size); // \n
 			if (_state == HttpTables::STATE_DECISION && _emptyLinePending)
 				_state = HttpTables::STATE_COMPLETE;
 		}
-		else if (_state == HttpTables::STATE_DECISION) parseDecision(size);
-		else break;
+		else if (_state == HttpTables::STATE_DECISION)
+			parseDecision(size);
+		else
+			break;
 		if (_error.isError() || _state == HttpTables::STATE_COMPLETE)
 			break;
 	}
 }
 
-uint16_t    Header::getOffset() const { return _offset; }
-bool        Header::isError() const { return _error.isError(); }
-bool        Header::isComplete() const { return (_state == HttpTables::STATE_COMPLETE); }
-HttpError	Header::getError() const { return _error; }
+uint16_t Header::getOffset() const { return _offset; }
+bool Header::isError() const { return _error.isError(); }
+bool Header::isComplete() const { return (_state == HttpTables::STATE_COMPLETE); }
+HttpError Header::getError() const { return _error; }
