@@ -92,7 +92,7 @@ bool Header::isHeaderValueChar(char c)
 	return (uc >= 32 && uc <= 126);
 }
 
-bool Header::canRead(uint16_t size) const { return (_offset <= size); }
+bool Header::canRead(uint16_t size) const { return (_offset <= size && _offset < BUFFER_REQUEST); }
 
 bool Header::CheckHostAbsUri(s_view &VHost)
 {
