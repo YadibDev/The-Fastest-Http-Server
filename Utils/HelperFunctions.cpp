@@ -458,7 +458,6 @@ void HelperFunctions::StoredBodys()
 {
 	if (!_Body.empty())
 		return;
-	_Body[200] = "<html><head><title>200 OK</title></head><body><center><h1>200 OK</h1></center><hr><center>faste server</center></body></html>";
 	_Body[201] = "<html><head><title>201 Created</title></head><body><center><h1>201 Created</h1></center><hr><center>faste server</center></body></html>";
 	_Body[204] = "<html><head><title>204 No Content</title></head><body><center><h1>204 No Content</h1></center><hr><center>faste server</center></body></html>";
 	_Body[301] = "<html><head><title>301 Moved Permanently</title></head><body><center><h1>301 Moved Permanently</h1></center><hr><center>faste server</center></body></html>";
@@ -471,7 +470,6 @@ void HelperFunctions::StoredBodys()
 	_Body[502] = "<html><head><title>502 Bad Gateway</title></head><body><center><h1>502 Bad Gateway</h1></center><hr><center>faste server</center></body></html>";
 	_Body[504] = "<html><head><title>504 Gateway Timeout</title></head><body><center><h1>504 Gateway Timeout</h1></center><hr><center>faste server</center></body></html>";
 	_Body[505] = "<html><head><title>505 Version Not Supported</title></head><body><center><h1>505 Version Not Supported</h1></center><hr><center>faste server</center></body></html>";
-	_Body[508] = "<html><head><title>508 Loop Detected</title></head><body><center><h1>508 Loop Detected</h1></center><hr><center>faste server</center></body></html>";
 	_Body[405] = "<html><head><title>405 Method Not Allowed</title></head><body><center><h1>405 Method Not Allowed</h1></center><hr><center>faste server</center></body></html>";
 	_Body[414] = "<html><head><title>414 URI Too Long</title></head><body><center><h1>414 URI Too Long</h1></center><hr><center>faste server</center></body></html>";
 	_Body[411] = "<html><head><title>411 ULength Required</title></head><body><center><h1>411 ULength Required</h1></center><hr><center>faste server</center></body></html>";
@@ -482,7 +480,6 @@ void HelperFunctions::StoredMessage()
 {
 	if (!_Message.empty())
 		return;
-	_Message[200] = "OK";
 	_Message[201] = "Created";
 	_Message[204] = "No Content";
 	_Message[301] = "Moved Permanently";
@@ -496,10 +493,10 @@ void HelperFunctions::StoredMessage()
 	_Message[502] = "Bad Gateway";
 	_Message[504] = "Gateway Timeout";
 	_Message[505] = "Version Not Supported";
-	_Message[508] = "Loop Detected";
 	_Message[414] = "URI Too Long";
 	_Message[411] = "ULength Required";
 	_Message[413] = "Content Too Large";
+	_Message[431] = "Request Header Fields Too Large";
 }
 
 const char *HelperFunctions::GetStatusMessage(int Status)

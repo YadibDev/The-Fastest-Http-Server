@@ -287,7 +287,7 @@ bool ProcessRequestHandler::internalRedirect(
 	handler->reset();
 
 	if (newUri.redirect_count > INTERNAL_LOOP)
-		return (error.setStatus(508, "Loop Detected"), false);
+		return (error.setStatus(500, "Internal Server Error"), false);
 
 	newUri.AddRedirectCount();
 

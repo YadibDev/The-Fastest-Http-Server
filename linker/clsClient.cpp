@@ -281,7 +281,7 @@ bool clsClient::_handleInternal()
 		_internalCounter = 0;
 		_RequestXconfig.reset();
 		_RequestXconfig.setDefaultErrorPage(true);
-		_RequestXconfig.setStatusError(508);
+		_RequestXconfig.setStatusError(500);
 		return true;
 	}
 	else if (Respond.GetInternalRedirectSrc() && Respond.GetInternalRedirectSrc()->empty() == false)
