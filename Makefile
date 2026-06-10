@@ -1,5 +1,5 @@
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror  --std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -g --std=c++98
 NAME = webserv
 
 SERVER_FILES = server/clsEpollHandler.cpp  server/clsServerSock.cpp  serverMain.cpp \
