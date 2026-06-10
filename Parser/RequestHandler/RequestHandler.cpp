@@ -37,7 +37,7 @@ void RequestHandler::reset()
 	_defaultErrorPage = false;
 	_pathCgi = NULL;
 	_upload_store = NULL;
-	_statusError = 0; // adib add this
+	_statusError = 0;
 	_error = HttpError();
 }
 
@@ -187,9 +187,6 @@ void RequestHandler::setStatusError(short statusError) { _statusError = statusEr
 
 void RequestHandler::setError(const HttpError &error) { _error = error; }
 
-// edited by achraf i add const
-// char* RequestHandler::getPhysicalPath() const { return _physicalPath; }
-
 size_t RequestHandler::getSizeFile() const
 {
 	return _sizeFile;
@@ -231,7 +228,6 @@ void RequestHandler::linkHeader()
 	_Header.linkThisHeader();
 }
 
-// add by achraf without const
 HeaderTable &RequestHandler::getHeader()
 {
 	return _Header;
@@ -260,7 +256,6 @@ short RequestHandler::getStatusError() { return _statusError; }
 
 const HttpError &RequestHandler::getError() const { return _error; }
 
-// add by adib
 const char *RequestHandler::getFilePostedAbs() const
 {
 	return this->fileUploadedAbs;

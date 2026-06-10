@@ -216,6 +216,6 @@ bool				RequestLine::isError() const { return _error.isError(); }
 HttpTables::eMethod	RequestLine::getMethod() const { return _methodType; }
 s_view				RequestLine::getVersion() const { return _version; }
 const UriParser		&RequestLine::getRequestURI() const { return _uriParser; }
-UriParser		&RequestLine::getRequestURI() { return _uriParser; } // add by yadib
+UriParser		&RequestLine::getRequestURI() { return _uriParser; }
 uint16_t			RequestLine::getOffset() const { return _offset; }
 HttpError			RequestLine::getError() const { return _error; }

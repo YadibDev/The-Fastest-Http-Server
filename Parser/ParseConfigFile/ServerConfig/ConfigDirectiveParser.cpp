@@ -577,7 +577,7 @@ long long ConfigDirectiveParser::extractNumericPart(const std::string& str, shor
 
         if (result > maxLimit || (result == maxLimit && digit > 7)) {
             result = 9223372036854775807LL; 
-            while (i < str.length() && std::isdigit(str[i])) i++; // تجاوز بقية الأرقام التالفة
+            while (i < str.length() && std::isdigit(str[i])) i++;
             length = i;
             return result;
         }

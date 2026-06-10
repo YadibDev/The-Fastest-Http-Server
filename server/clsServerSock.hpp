@@ -30,7 +30,6 @@ private:
     vector<unsigned int> _allIps;
     vector<unsigned short> _allPorts;
     int _buildSingleSocket(sockaddr_in &temp);
-    // void _initializeSockaffr(unsigned short, unsigned int);
     bool _isServerSocket(int);
 
 public:

@@ -6,7 +6,7 @@
 /*   By: achamdao <achamdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:39:28 by achamdao          #+#    #+#             */
-/*   Updated: 2026/06/04 15:02:10 by achamdao         ###   ########.fr       */
+/*   Updated: 2026/06/10 18:02:51 by achamdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ void clsResponse::_InitialHeaders()
         else
         {
             _Type = HelperFunctions::GetType(".txt");
-            _Body = _DataRequest.getReturn().value.raw_path;
             short offset = 0;
             HelperFunctions::ft_str_copy(&_Body[0], _DataRequest.getReturn().value.raw_path.c_str(), MAX_BODY, offset
                 , _DataRequest.getReturn().value.raw_path.size(),0);

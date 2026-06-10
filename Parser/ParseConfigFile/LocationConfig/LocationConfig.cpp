@@ -68,7 +68,6 @@ bool    clsLocation::ParseCgiPass()
 	return !ctx.error.isError();
 }
 
-// Remaining Parse functions kept logic-identical, only using changed types
 bool    clsLocation::ParseClientMaxBodySize() {
 	if (_flags & Directives::D_MAX_BODY)
 		return (ctx.error.setStatus(1, "Directives: client_max_body_size already set"), false);

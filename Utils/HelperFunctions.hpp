@@ -29,7 +29,6 @@ struct stEventData
 	enum eEventData {STILL_EXIST, END_PIPE};
 };
 
-// achraf headers
 
 struct UriStatus {
 	bool is_relative   : 1;
@@ -108,7 +107,28 @@ public:
 
 
 
-	// achraf part
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	static long int getCurrentTimeInS();
 	static bool CmpWord(const char *Str, const std::string &Word, short SizeStr);
 	static bool IsStringDigit(const std::string &StringDigit, short Start, short End);

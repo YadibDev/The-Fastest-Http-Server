@@ -94,7 +94,7 @@ short HelperFunctions::isValidPath(const std::string &path, bool expectDir, int 
 	struct stat info;
 
 	if (stat(path.c_str(), &info) != 0)
-		return (404); // Not Found
+		return (404);
 
 	if (expectDir && !S_ISDIR(info.st_mode))
 		return (409);
@@ -176,7 +176,30 @@ short HelperFunctions::RemoveDotSegmentsDirect(char *path, size_t length)
 	return w;
 }
 
-// Achraf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 std::map<int, std::string> HelperFunctions::_Message;
 std::map<std::string, std::string> HelperFunctions::_TypeContent;

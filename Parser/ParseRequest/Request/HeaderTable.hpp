@@ -14,8 +14,6 @@ public:
 	HeaderTable(stPollRequest& req);
 	~HeaderTable();
 	HeaderTable& operator=(const HeaderTable& rhs);
-	// modified by achraf here
-	// const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) ;
 	const s_header_slot*	getKnownHeader(HttpTables::eKnownHeader h) const;
 	const s_header_slot*	getUnknownHeader(uint8_t index) const;
 

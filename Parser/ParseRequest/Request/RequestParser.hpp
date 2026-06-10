@@ -8,7 +8,6 @@
 #include "../../ParseConfigFile/ServerConfig/ServerConfig.hpp"
 #include "../../RequestHandler/ProcessRequestHandler.hpp"
 #include "HeaderTable.hpp"
-// #include "clsBody.hpp"
 
 
 
@@ -42,7 +41,7 @@ public:
 	bool				Parse(uint16_t size);
 	bool				isComplete() const;
 	bool				isError() const;
-	const RequestLine	&getRequestLine() const; // refrence add
+	const RequestLine	&getRequestLine() const;
 	HttpError			getError() const;
 	
 };

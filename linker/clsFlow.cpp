@@ -260,7 +260,7 @@ void clsFlow::_newClientProcess(int serverFd)
 			sockaddr_in tempAddress;
 			socklen_t temp = sizeof(tempAddress);
 		
-			int status = getsockname(serverFd, (sockaddr *)&tempAddress, &temp); // ip and port of the clinet
+			int status = getsockname(serverFd, (sockaddr *)&tempAddress, &temp); // ip and port of the server that client connected with
 
 			if (HelperFunctions::changeFileToNonBlocking(newClient) == -1 || status == -1)
 			{

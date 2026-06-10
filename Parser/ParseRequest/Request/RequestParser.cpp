@@ -99,7 +99,7 @@ bool RequestParser::ParseBody(uint16_t size)
 		}
 		size++;
 		memcpy(_request.io_chunk, (&_request.request_metadata[_offset]), size - _offset);
-		_request.request_metadata[_offset - 1] = '\0'; // end request headers here
+		_request.request_metadata[_offset - 1] = '\0';
 
 		*_request.read_body_ptr = size - _offset;
 		if (_RequestHandler->getPathCgi())
@@ -138,7 +138,7 @@ bool RequestParser::Parse(uint16_t size)
 			else
 				break;
 
-			if (this->getRequestLine().getMethod() != HttpTables::M_POST && _state == STATE_BODY) // this line do a lot of work
+			if (this->getRequestLine().getMethod() != HttpTables::M_POST && _state == STATE_BODY)
 				_state = STATE_COMPLETE;
 
 			if (_state == STATE_COMPLETE)

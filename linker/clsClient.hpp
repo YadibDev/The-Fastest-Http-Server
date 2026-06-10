@@ -99,7 +99,7 @@ public:
 
     // methods
     void UpdateTime(); // update last connection
-    void ResetAll();   // will reset all things
+    void ResetAll();
 
     void ProcessRequest();
     void ProcessRespond();
